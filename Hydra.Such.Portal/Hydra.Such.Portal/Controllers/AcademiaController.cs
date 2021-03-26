@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,41 @@ namespace Hydra.Such.Portal.Controllers
             _hostingEnvironment = hostingEnvironment;
             UploadPath = _config.FileUploadFolder + "Academia";
         }
+
+        private const string ChiefEmailTemplate = "Caro(a) Chefia,\n\n" +
+                                    "O Colaborador {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}, realizou um pedido de participação em formação externa para a seguinte acção de formação:\n" +
+                                    "Acção: {4}\n" +
+                                    "Data Inicio: {5}\n\n" +
+                                    "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Chefia, e aprove/rejeite fundamentando o mesmo.\n\n" +
+                                    "Com os melhores cumprimentos.\n" +
+                                    "Academia\n\n" +
+                                    "SUCH | Serviço de Utilização Comum dos Hospitais";
+
+        private const string DirectorEmailTemplate = "Caro(a) Director(a),\n\n" +
+                                    "O Colaborador {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}, realizou um pedido de participação em formação externa para a seguinte acção de formação:\n" +
+                                    "Acção: {4}\n" +
+                                    "Data Inicio: {5}\n\n" +
+                                    "O pedido foi aprovado pela chefia directa.\n\n" +
+                                    "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Director, e aprove/rejeite o mesmo.\n\n" +
+                                    "Com os melhores cumprimentos.\n" +
+                                    "Academia\n\n" +
+                                    "SUCH | Serviço de Utilização Comum dos Hospitais";
+
+        private const string RejectionToDirectorTemplate = "Caro(a) Director(a),\n\n" +
+                                    "O pedido de participação em formação externa nº {0}, do colaborador(a) {1} ({2}), pertencente ao Centro de Responsabilidade {3} - {4}, para a acção de formação:" +
+                                    "Acção: {5}\n" +
+                                    "Data Inicio: {6}\n" +
+                                    "Foi rejeitado com a seguinte mensagem: \n\"{7}\"\n." +
+                                    "Por favor corrija e reenvie o pedido à Academia.\n\n" +
+                                    "Com os melhores cumprimentos.\n" +
+                                    "Academia\n\n" +
+                                    "SUCH | Serviço de Utilização Comum dos Hospitais";
+
+
+
+        private const string BoardApprovalTemplate = "";
+
+        private const string BoardRejectionTemplate = "";
 
         private string GetMimeType(string fileName)
         {
@@ -182,6 +218,74 @@ namespace Hydra.Such.Portal.Controllers
 
             return result;
         }
+
+        private void SendNotification(PedidoParticipacaoFormacao pedido, int newStatus, int currStatus)
+        {
+            if (pedido != null && !string.IsNullOrEmpty(pedido.IdPedido) && !string.IsNullOrEmpty(pedido.IdEmpregado))
+            {
+                Formando f = DBAcademia.__GetDetailsFormando(pedido.IdEmpregado);
+
+                if (f != null && !string.IsNullOrEmpty(f.No))
+                {
+                    f.GetTraineeManagers(TrainingRequestApprovalType);
+                    switch (newStatus)
+                    {
+                        case 1:
+                            {
+                                EmailAcademia e = new EmailAcademia {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = string.Format(ChiefEmailTemplate, 
+                                            pedido.NomeEmpregado, 
+                                            pedido.IdEmpregado,
+                                            f.CrespNav2017,
+                                            f.DescCrespNav2017,
+                                            pedido.DesignacaoAccao,
+                                            pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                                    SubjectText = "Pedido de Participação em Formação Externa para validar",
+                                    SenderAddress = "academia@such.pt",
+                                    SenderName = "SUCH Academia",
+                                    IsHtml = true,
+                                    ToAddresses = f.GetManagersEmailAddresses(1)
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToChiefForApproval(f, pedido.DesignacaoAccao, pedido.DataInicio.Value);
+
+                                email.SendEmail();
+                            }
+                            break;
+                        case 2:
+                            {
+                                EmailAcademia e = new EmailAcademia
+                                {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = string.Format(DirectorEmailTemplate,
+                                            pedido.NomeEmpregado,
+                                            pedido.IdEmpregado,
+                                            f.CrespNav2017,
+                                            f.DescCrespNav2017,
+                                            pedido.DesignacaoAccao,
+                                            pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                                    SubjectText = "Pedido de Participação em Formação Externa para aprovar",
+                                    SenderAddress = "academia@such.pt",
+                                    SenderName = "SUCH Academia",
+                                    IsHtml = true,
+                                    ToAddresses = f.GetManagersEmailAddresses(1)
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToDirectorForApproval(f, pedido.DesignacaoAccao, pedido.DataInicio.Value);
+
+                                email.SendEmail();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+            }
+        }
         #endregion
 
         [HttpPost]
@@ -327,6 +431,8 @@ namespace Hydra.Such.Portal.Controllers
                                     User.Identity.Name);
                             }
 
+                            SendNotification(pedido, newEstado.Id, currEstado);
+
                             return Json(true);
                         }
                     }
@@ -387,6 +493,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 PedidoParticipacaoFormacaoView pedido = new PedidoParticipacaoFormacaoView(DBAcademia.__GetDetailsPedidoFormacao(idPedido));
                 //pedido
+
+               
                 return Json(pedido);
             }
             return Json(null);
@@ -395,9 +503,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMeusPedidos([FromBody] JObject requestParams)
         {
-            //ClickSource = 0;
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);           
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             if (UPerm != null && UPerm.Read.Value)
@@ -414,6 +521,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 return Json(meusPedidosView);
             }
+
             return Json(null);
         }
 

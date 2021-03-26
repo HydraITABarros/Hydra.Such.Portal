@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
+using System.Net;
+using System.ComponentModel;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -22,7 +25,9 @@ namespace Hydra.Such.Data.Logic
         public string Funcao { get; set; }
         public string CodEstabelecimento { get; set; }
         public string DescricaoEstabelecimento { get; set; }
-        public ICollection<PedidoParticipacaoFormacao> PedidosFormacao { get; set; }       
+
+        public List<ConfiguracaoAprovacaoAcademia> ChefiasFormando { get; set; }
+        public ICollection<PedidoParticipacaoFormacao> PedidosFormacao { get; set; }    
 
 
         public Formando()
@@ -79,30 +84,86 @@ namespace Hydra.Such.Data.Logic
             PedidosFormacao = DBAcademia.__GetAllPedidosFormacao(No);
         }
 
-        #region implements IEquatable<T> generic interface
-        //public bool Equals(Formando other)
-        //{
-        //    if (other == null || string.IsNullOrEmpty(other.No) || string.IsNullOrWhiteSpace(other.No))
-        //    {
-        //        return false;
-        //    }
+        public void GetTraineeManagers(int type)
+        {
+            ChefiasFormando = new List<ConfiguracaoAprovacaoAcademia>();
 
-        //    return this.No == other.No;
-        //}
+            // obter todas as configurações de aprovações para Pedidos de Participação em Formação referentes à Área do Formando
+            // o "Nível de Aprovação" é que distinguirá quem é Director e quem é Chefia
+            List<ConfiguraçãoAprovações> configAprovadores = DBApprovalConfigurations.GetAllByType(type)
+                .Where(a => a.CódigoÁreaFuncional == AreaNav2017 && a.CódigoCentroResponsabilidade == CrespNav2017).ToList();
 
-        //public override bool Equals(object obj) => Equals(obj as Formando);
-        //public override int GetHashCode() => (No).GetHashCode(); 
-        #endregion
+            List<string> utilizadoresAprovacao = new List<string>();
+
+            foreach(var c in configAprovadores)
+            {
+                if (!string.IsNullOrEmpty(c.UtilizadorAprovação))
+                {
+                    ConfigUtilizadores userConfig = DBUserConfigurations.GetById(c.UtilizadorAprovação);
+                    ConfiguracaoAprovacaoAcademia u = new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c);
+
+                    if (u != null && !string.IsNullOrEmpty(u.IdUtilizador) && !CheckIfManagerExists(u))
+                    {
+                        ChefiasFormando.Add(u);
+                    }
+                }
+                else
+                {
+                    if (c.GrupoAprovação.HasValue)
+                    {
+                        utilizadoresAprovacao = DBApprovalUserGroup.GetAllFromGroup(c.GrupoAprovação.Value);
+                        foreach (var ua in utilizadoresAprovacao)
+                        {
+                            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(ua);
+                            ConfiguracaoAprovacaoAcademia u = new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c);
+                            if (u != null && !string.IsNullOrEmpty(u.IdUtilizador) && !CheckIfManagerExists(u))
+                            {
+                                ChefiasFormando.Add(u);
+                            }
+                        }
+                    }                    
+                }
+            }
+        }
+
+        public List<string> GetManagersEmailAddresses(int approvalLevel)
+        {
+            List<string> addresses = new List<string>();
+
+            foreach (var c in ChefiasFormando)
+            {
+                if (c.NívelAprovação == approvalLevel)
+                {
+                    addresses.Add(c.IdUtilizador);
+                }
+            }
+            return addresses;
+        }
+
+        private bool CheckIfManagerExists(ConfiguracaoAprovacaoAcademia config)
+        {
+            foreach (var c in ChefiasFormando)
+            {
+                if (c.IdUtilizador == config.IdUtilizador && c.NívelAprovação == config.NívelAprovação)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public class ConfiguracaoAprovacaoAcademia : ConfiguraçãoAprovações
     {
         public string IdUtilizador { get; set; }
+        public string NomeAprovador { get; set; }
+
         public Enumerations.TipoUtilizadorFluxoPedidoFormacao TipoUtilizadorConfiguracao { get; set; }
 
-        public ConfiguracaoAprovacaoAcademia(string userName, ConfiguraçãoAprovações config)
+        public ConfiguracaoAprovacaoAcademia(string userId, string userName, ConfiguraçãoAprovações config)
         {
-            IdUtilizador = userName;
+            IdUtilizador = userId;
+            NomeAprovador = userName;
             if (config.NívelAprovação == 1)
                 TipoUtilizadorConfiguracao = Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia;
 
@@ -122,6 +183,8 @@ namespace Hydra.Such.Data.Logic
             UtilizadorAprovação = config.UtilizadorAprovação;
             GrupoAprovação = config.GrupoAprovação;
         }
+
+        
     }
 
     public class ConfiguracaoAprovacaoUtilizador
@@ -166,7 +229,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         if(c.NívelAprovação == 1 || c.NívelAprovação == 2)
                         {
-                            ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, c));
+                            ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c));
                             if (c.NívelAprovação.Value == 1)
                             {
                                 if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
@@ -212,8 +275,492 @@ namespace Hydra.Such.Data.Logic
             return TipoUtilizadorGlobal == Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao;
         }
 
-    }   
-    
+    }
+
+    #region Envio de emails
+    public class EmailAcademia
+    {
+        public string IdPedido { get; set; }
+        public string BodyText { get; set; }
+        public string SubjectText { get; set; }
+        public string SenderAddress { get; set; }
+        public string SenderName { get; set; }
+        public List<string> ToAddresses { get; set; }
+        public List<string> CcAddresses { get; set; }
+        public List<string> BccAddresses { get; set; }
+        public bool IsHtml { get; set; }
+
+    }
+    public class SendEmailsAcademia : EmailAutomation
+    {
+        public EmailAcademia NotificationEmail { get; set; }
+        public int ReturnCode { get; set; }
+
+        private bool MailSent = false;
+
+
+        public SendEmailsAcademia(EmailAcademia email)
+            : base(email.SenderAddress, email.SenderName, email.SubjectText, email.BodyText, email.IsHtml)
+        {
+            NotificationEmail = email;
+
+            To = email.ToAddresses;
+            CC = email.CcAddresses;
+            BCC = email.BccAddresses;
+
+        }
+
+        public void MakeBodyContent()
+        {
+            if (!IsBodyHtml)
+            {
+                Body = NotificationEmail.BodyText;
+
+            }
+            else
+            {
+                Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmos (as) Senhores (as)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                NotificationEmail.BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                NotificationEmail.SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+            }
+        }
+
+        public void MakeEmailToChiefForApproval(Formando f, string designacaoAccao, DateTime dataInicio)
+        {
+            if (!IsBodyHtml)
+            {
+                Body = NotificationEmail.BodyText;
+
+            }
+            else
+            {
+                if (f.ChefiasFormando == null || f.ChefiasFormando.Count == 0)
+                {
+                    return;
+                }
+
+                List<string> nomesChefias = new List<string>();
+                string chefias;
+                string bodyTxt;
+
+                foreach (var item in f.ChefiasFormando)
+                {
+                    if (item.NívelAprovação == 1)
+                    {
+                        nomesChefias.Add(item.NomeAprovador);
+                    }
+                }
+
+                if (nomesChefias == null || nomesChefias.Count == 0)
+                {
+                    return;
+                }
+
+                if (nomesChefias.Count == 1)
+                {
+                    chefias = "Caro(a) " + string.Join(", ", nomesChefias) + ",";
+                }
+                else
+                {
+                    chefias = "Caros(as)<br />" + string.Join(",<br />", nomesChefias) + ",";
+                }
+
+                bodyTxt = "O Colaborador " + f.Name + " (" + f.No + "), " +
+                    "pertencente ao Centro de Responsabilidade" + f.CrespNav2017 + " - " + f.DescCrespNav2017 + ", realizou um pedido de participação em formação externa " +
+                    "para a seguinte acção de formação:<br />" +
+                    "Acção: " + designacaoAccao + "<br />" +
+                    "Data Inicio: " + dataInicio.Date.ToString("dd-MM-yyyy") + "<br /><br />" +
+                    "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Chefia, e aprove/rejeite fundamentando o mesmo.";
+
+                Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:800px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                chefias +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                bodyTxt +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                NotificationEmail.SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+            }
+        }
+
+        public void MakeEmailToDirectorForApproval(Formando f, string designacaoAccao, DateTime dataInicio)
+        {
+            if (!IsBodyHtml)
+            {
+                Body = NotificationEmail.BodyText;
+
+            }
+            else
+            {
+                if (f.ChefiasFormando == null || f.ChefiasFormando.Count == 0)
+                {
+                    return;
+                }
+
+                List<string> nomesDirectores = new List<string>();
+                string directores;
+                string bodyTxt;
+
+                foreach (var item in f.ChefiasFormando)
+                {
+                    if (item.NívelAprovação == 2)
+                    {
+                        nomesDirectores.Add(item.NomeAprovador);
+                    }
+                }
+
+                if (nomesDirectores == null || nomesDirectores.Count == 0)
+                {
+                    return;
+                }
+
+                if (nomesDirectores.Count == 1)
+                {
+                    directores = "Caro(a) " + string.Join(", ", nomesDirectores) + ",";
+                }
+                else
+                {
+                    directores = "Caros(as)<br />" + string.Join(",<br />", nomesDirectores) + ",";
+                }
+
+                bodyTxt = "O Colaborador " + f.Name + " (" + f.No + "), " +
+                    "pertencente ao " + f.CrespNav2017 + " - " + f.DescCrespNav2017 + ", realizou um pedido de participação em formação externa " +
+                    "para a seguinte acção de formação:<br />" +
+                    "Acção: " + designacaoAccao + "<br />" +
+                    "Data Inicio: " + dataInicio.Date.ToString("dd-MM-yyyy") + "<br /><br />" +
+                    "O pedido foi aprovado pela chefia directa.<br /><br />" +
+                    "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Direcção, e aprove/rejeite o mesmo.";
+
+                Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:800px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                directores +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                bodyTxt +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                NotificationEmail.SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+            }
+        }
+
+        public void MakeEmailToDirectorRequestDenial(Formando f, string idPedido, string designacaoAccao, DateTime dataInicio)
+        {
+            if (!IsBodyHtml)
+            {
+                Body = NotificationEmail.BodyText;
+            }
+            else
+            {
+                if (f.ChefiasFormando == null || f.ChefiasFormando.Count == 0)
+                {
+                    return;
+                }
+
+                List<string> nomesDirectores = new List<string>();
+                string directores;
+                string bodyTxt;
+
+                foreach (var item in f.ChefiasFormando)
+                {
+                    if (item.NívelAprovação == 2)
+                    {
+                        nomesDirectores.Add(item.NomeAprovador);
+                    }
+                }
+
+                if (nomesDirectores == null || nomesDirectores.Count == 0)
+                {
+                    return;
+                }
+
+                if (nomesDirectores.Count == 1)
+                {
+                    directores = "Caro(a) " + string.Join(", ", nomesDirectores) + ",";
+                }
+                else
+                {
+                    directores = "Caros(as)<br />" + string.Join(",<br />", nomesDirectores) + ",";
+                }
+
+                bodyTxt = "O pedido de participação em formação externa nº" + idPedido + "," +
+                    "do colaborador " + f.Name + "(" + f.No + "), pertencente ao Centro de Responsabilidade " + f.CrespNav2017 + " - " + f.DescCrespNav2017 +
+                    ", para a acção de formação:<br />" +
+                    "Acção: " + designacaoAccao + "<br />" +
+                    "Data Inicio: " + dataInicio.Date.ToString("dd-MM-yyyy") + "<br />" +
+                    "Foi rejeitado por falha de dotação orçamental, por favor corrija e reenvie o pedido à Academia.<br /><br />";
+
+                Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:800px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                directores +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                bodyTxt +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                NotificationEmail.SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+            }
+        }
+
+        public void MakeEmailBoardDecision(Formando f, bool approved, string idPedido, string designacaoAccao, DateTime dataInicio)
+        {
+            if (approved)   // if request is not approved, then is denied
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+
+
+        private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
+        {
+            MailSent = false;
+            string Token = (string)e.UserState;
+            if (!e.Cancelled && e.Error == null)
+            {
+                MailSent = true;
+                ReturnCode = 0;
+            }
+
+            if (e.Error != null)
+            {
+                ReturnCode = -1;
+            }
+        }
+
+        public void SendEmail()
+        {
+            if (string.IsNullOrEmpty(From) || !IsValidEmail(From))
+            {
+                ReturnCode = -10;
+                return;
+            }
+
+            foreach (var t in To)
+            {
+                if (!IsValidEmail(t))
+                {
+                    To.Remove(t);
+                }
+            }
+
+            if (To == null || To.Count <= 0)
+            {
+                ReturnCode = -20;
+                return;
+            }
+
+            SmtpClient Client = new SmtpClient(Config.Host, Config.Port);
+            NetworkCredential Credentials = new NetworkCredential(Config.Username, Config.Password);
+
+            Client.UseDefaultCredentials = true;
+            Client.Credentials = Credentials;
+            Client.EnableSsl = Config.SSL;
+
+            MailMessage MMessage = new MailMessage
+            {
+                From = new MailAddress(From, DisplayName)
+            };
+
+            foreach (var t in To)
+            {
+                MMessage.To.Add(new MailAddress(t));
+            }
+
+            foreach (var cc in CC)
+            {
+                if (IsValidEmail(cc))
+                    MMessage.CC.Add(cc);
+            }
+
+            foreach (var bcc in BCC)
+            {
+                if (IsValidEmail(bcc))
+                    MMessage.Bcc.Add(bcc);
+            }
+
+            MMessage.Subject = Subject;
+            MMessage.Body = Body;
+            MMessage.IsBodyHtml = IsBodyHtml;
+
+            Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
+
+            string UserState = "EmailAcademia";
+            Client.SendAsync(MMessage, UserState);
+        }
+    }
+    #endregion
+
 
     /// <summary>
     /// 14-07-2020

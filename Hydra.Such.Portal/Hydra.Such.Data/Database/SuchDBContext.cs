@@ -214,6 +214,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<RegistoAlteracoesPedidoFormacao> RegistoAlteracoesPedidoFormacao { get; set; }
         public virtual DbSet<SessaoAccaoFormacao> SessaoAccaoFormacao { get; set; }
         public virtual DbSet<TemaFormacao> TemaFormacao { get; set; }
+
+        public virtual DbSet<Comentario> Comentario { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -13468,6 +13470,34 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Activo)
                     .HasColumnType("tinyint");
 
+            });
+
+            modelBuilder.Entity<Comentario>(entity => {
+                entity.HasKey(e => new { e.NoDocumento, e.DataHoraComentario});
+
+                entity.Property(e => e.NoDocumento)
+                    .HasColumnName("NoDocumento")
+                    .HasMaxLength(50)
+                    .IsRequired(true);
+
+                entity.Property(e => e.DataHoraComentario)
+                    .HasColumnName("DataHoraComentario")
+                    .IsRequired(true);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao");
+
+                entity.Property(e => e.TextoComentario)
+                    .HasColumnName("TextoComentario");
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao");
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHoraModificacao");
             });
             #endregion
 
