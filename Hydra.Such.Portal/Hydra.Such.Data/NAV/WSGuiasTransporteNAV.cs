@@ -49,7 +49,7 @@ namespace Hydra.Such.Data.NAV
                 WSNovaGuiaTransporte_Result result = await ws_Client.WSNovaGuiaTransporteAsync(userId);
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return null;
