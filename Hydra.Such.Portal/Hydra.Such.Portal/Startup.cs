@@ -64,6 +64,20 @@ namespace Hydra.Such.Portal
                 x.ValueLengthLimit = int.MaxValue;
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
             });
+
+            // JPM.16032021.Override the Correlation Error in Chrome.b                
+            if (bool.TryParse(Configuration["isTestEnvironment"], out bool isTestEnvironment))
+            {
+                if (isTestEnvironment)
+                {
+                    services.Configure<CookiePolicyOptions>(options => {
+                        options.MinimumSameSitePolicy = SameSiteMode.None;
+                        options.Secure = CookieSecurePolicy.Always;
+                    });
+                }
+            }
+            // JPM.e
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(sharedOptions =>
@@ -80,6 +94,14 @@ namespace Hydra.Such.Portal
                 {
                     OnRemoteFailure = OnAuthenticationFailed,
                 };
+
+                // JPM.16032021.Override the Correlation Error in Chrome.b              
+                if (isTestEnvironment)
+                {
+                    option.NonceCookie.SameSite = SameSiteMode.None;
+                    option.CorrelationCookie.SameSite = SameSiteMode.None;
+                }
+                // JPM.e
             })
             .AddCookie();
 
@@ -117,6 +139,9 @@ namespace Hydra.Such.Portal
         {
             if (env.IsDevelopment())
             {
+                // JPM.16032021.Override the Correlation Error in Chrome.b
+                app.UseCookiePolicy();
+                // JPM.e
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions

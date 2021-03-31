@@ -60,35 +60,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
                 return;
             }
-            /*
-                        if (string.IsNullOrEmpty(EmailProcedimento.EmailDestinatário))
-                        {
-                            if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                                EmailProcedimento.ObservacoesEnvio = "Não há Destinatários!";
-                            else
-                                EmailProcedimento.ObservacoesEnvio = " ** Não há Destinatários!";
-
-                            DBProcedimentosCCP.__UpdateEmailProcedimento(EmailProcedimento);
-                            return;
-                        }
-
-
-                         split EmailDestinatários to obtain the valid email addresses
-                        foreach(var eaddr in EmailProcedimento.EmailDestinatário.Split(';'))
-                        {
-                            if (IsValidEmail(eaddr))
-                            {
-                                To.Add(eaddr);
-                            }
-                            else
-                            {
-                                if (string.IsNullOrEmpty(EmailProcedimento.ObservacoesEnvio))
-                                    EmailProcedimento.ObservacoesEnvio = "Endereço " + eaddr + " não é válido!";
-                                else
-                                    EmailProcedimento.ObservacoesEnvio = " ** Endereço " + eaddr + " não é válido!";
-                            }
-                        }
-                        */
+            
 
             if (To == null || To.Count <= 0)
             {
