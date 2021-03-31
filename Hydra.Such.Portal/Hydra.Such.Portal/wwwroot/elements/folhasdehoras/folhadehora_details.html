@@ -55,6 +55,12 @@
         <link rel="stylesheet" href="/css/main.css" />
 
         <style>
+            :host([disabled]) {
+                color: #a8a8a8;
+                cursor: auto;
+                pointer-events: none;
+            }
+
             vaadin-combo-box {
                 margin-top: 0px !important;
                 width: 100% !important;
@@ -1867,9 +1873,17 @@
                         notify: true,
                         value: false
                     },
+                    disabled: {
+                        type: Boolean,
+                        notify: true,
+                        value: false,
+                        reflectToAttribute: true
+                    },
                 },
 
                 ready: function () {
+                    this.disabled = false;
+
                     //GET FOLHADEHORA DATA
                     window.history.replaceState('', '', '/FolhasDeHoras/Detalhes/?FHNo=' + this._folhadehoraid);
 
@@ -2418,29 +2432,34 @@
                 },
 
                 _validarFolhaDeHoras: function () {
-                    $(this.$.btn_validarFolhaDeHoras).addClass('disabled');
-                    $(this.$.btn_Voltar).addClass('disabled');
+                    if (this.disabled == false) {
+                        this.disabled = true;
+                        $(this.$.btn_validarFolhaDeHoras).addClass('disabled');
+                        $(this.$.btn_Voltar).addClass('disabled');
 
-                    if (this._validateFolhaHoras()) {
-                        if (this.$.tipoDeslocacao.value == 1) {
-                            if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                        if (this._validateFolhaHoras()) {
+                            if (this.$.tipoDeslocacao.value == 1) {
+                                if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                    this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
+                                    this.$.validarfolhadehoras_ajax.generateRequest();
+                                }
+                                else {
+                                    this._showErrorMessage("Falta preencher o campo Matrícula.");
+                                    this.disabled = false;
+                                    $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                                    $(this.$.btn_Voltar).removeClass('disabled');
+                                }
+                            }
+                            else {
                                 this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
                                 this.$.validarfolhadehoras_ajax.generateRequest();
                             }
-                            else {
-                                this._showErrorMessage("Falta preencher o campo Matrícula.");
-                                $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
-                                $(this.$.btn_Voltar).removeClass('disabled');
-                            }
                         }
                         else {
-                            this.$.validarfolhadehoras_ajax.body = JSON.stringify(this.data);
-                            this.$.validarfolhadehoras_ajax.generateRequest();
+                            this.disabled = false;
+                            $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                            $(this.$.btn_Voltar).removeClass('disabled');
                         }
-                    }
-                    else {
-                        $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
-                        $(this.$.btn_Voltar).removeClass('disabled');
                     }
                 },
 
@@ -3918,6 +3937,7 @@
                 _validarfolhadehorasResponse: function (e) {
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
+                        this.disabled = false;
                         $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
                         $(this.$.btn_Voltar).removeClass('disabled');
 
@@ -3928,6 +3948,7 @@
                         //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
+                        this.disabled = false;
                         $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
                         $(this.$.btn_Voltar).removeClass('disabled');
                     };
