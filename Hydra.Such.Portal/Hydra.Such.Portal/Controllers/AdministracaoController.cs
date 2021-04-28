@@ -8879,10 +8879,9 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Indicador"); Col = Col + 1; }
-                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área"); Col = Col + 1; }
+                if (dp["idCResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Produção"); Col = Col + 1; }
-                if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Produção Gráfico"); Col = Col + 1; }
+                if (dp["numContratos"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contratos"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -8892,10 +8891,9 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Indicador); Col = Col + 1; }
-                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area); Col = Col + 1; }
+                        if (dp["idCResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IdCResp); Col = Col + 1; }
                         if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPro); Col = Col + 1; }
-                        if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VProdGrafico.Replace(".", ",")); Col = Col + 1; }
+                        if (dp["numContratos"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumContratos); Col = Col + 1; }
                         count++;
                     }
                 }

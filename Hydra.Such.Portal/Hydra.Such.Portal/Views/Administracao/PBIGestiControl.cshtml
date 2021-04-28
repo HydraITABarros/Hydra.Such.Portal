@@ -585,23 +585,13 @@
                 </paper-collapse-item>*@
 
                                     <vaadin-grid id="gridMovProducaoCresp" aria-label="gridMovProducaoCresp" items="{{ tabMovProducaoCresp }}" class="grid" multi-sort="true" column-reordering-allowed>
-                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.indicador.hidden }}">
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.idCResp.hidden }}">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="indicador" value="[[filter.indicador]]" />
+                                                <vaadin-grid-sorter path="idCResp">Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="idCResp" value="[[filter.idCResp]]" />
                                             </template>
                                             <template>
-                                                {{item.indicador}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.area.hidden }}">
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="area" value="[[filter.area]]" />
-                                            </template>
-                                            <template>
-                                                {{item.area}}
+                                                {{item.idCResp}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -617,14 +607,14 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.vProdGrafico.hidden }}">
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.numContratos.hidden }}">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="vProdGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vProdGrafico" value="[[filter.vProdGrafico]]" />
+                                                <vaadin-grid-sorter path="numContratos">Nº Contratos</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="numContratos" value="[[filter.numContratos]]" />
                                             </template>
                                             <template>
                                                 <div class="text-right">
-                                                    {{item.vProdGrafico}}
+                                                    {{item.numContratos}}
                                                 </div>
                                             </template>
                                         </vaadin-grid-column>
@@ -1139,10 +1129,9 @@
 
                 _startColumnToggleMovProdCresp: function () {
                     var columnsMovProdCresp = {
-                        "indicador": { hidden: false, label: "Indicador" },
-                        "area": { hidden: false, label: "Área" },
+                        "idCResp": { hidden: false, label: "Centro Responsabilidade" },
                         "dataPro": { hidden: false, label: "Data Produção" },
-                        "vProdGrafico": { hidden: false, label: "Valor Produção Gráfico" },
+                        "numContratos": { hidden: false, label: "Nº Contratos" },
                     };
 
                     if (localStorage["pbigesticontrol.ToggleColumn"]) {
