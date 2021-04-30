@@ -2,12 +2,29 @@
 using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Hydra.Such.Data.Logic.Project
 {
     public static class DBAuthotizedProjects
     {
+        public static List<ProjectosAutorizados> GetAll()
+        {
+            try
+            {
+                using (SuchDBContext ctx = new SuchDBContext())
+                {
+                    return ctx.ProjectosAutorizados.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static ProjectosAutorizados Update(ProjectosAutorizados ObjectToUpdate)
         {
             try

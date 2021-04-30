@@ -3863,6 +3863,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (customerRequestNoValue != null)
                     customerRequestNo = (string)customerRequestNoValue.Value;
 
+                DateTime customerRequestDate = DateTime.MinValue;
+                JValue customerRequestDateValue = requestParams["customerRequestDate"] as JValue;
+                if (customerRequestDateValue != null)
+                    DateTime.TryParse((string)customerRequestDateValue.Value, out customerRequestDate);
+
                 DateTime serviceDate;
                 JValue serviceDateValue = requestParams["serviceDate"] as JValue;
                 if (serviceDateValue != null)
@@ -3873,18 +3878,24 @@ namespace Hydra.Such.Portal.Controllers
                 if (serviceDateFimValue != null)
                     DateTime.TryParse((string)serviceDateFimValue.Value, out serviceDateFim);
 
-                decimal authorizationTotal;
+                decimal authorizationTotal = 0;
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
                 if (authorizationTotalValue != null)
                 {
-                    string str = authorizationTotalValue.Value.ToString();
-                    authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
+                    string str = authorizationTotalValue.Value as string;
+                    if (!string.IsNullOrEmpty(str))
+                        authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
                 List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                string billingPeriod = string.Empty;
+                JValue billingPeriodValue = requestParams["dataServPrestado"] as JValue;
+                if (billingPeriodValue != null)
+                    billingPeriod = (string)billingPeriodValue.Value;
 
                 List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").ToList();
                 NAVResourcesViewModel Resource = new NAVResourcesViewModel();
@@ -3982,6 +3993,20 @@ namespace Hydra.Such.Portal.Controllers
                     var authorizedItems = projMovements.Where(x => x.AutorizatedInvoice.Value);
                     if (authorizedItems.Count() > 0)
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "Existem movimentos que já foram autorizados (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
+
+                    //Procurar por Projetos Autorizados iguais
+                    List<ProjectosAutorizados> ProjetosAutorizados = DBAuthotizedProjects.GetAll();
+                    if (ProjetosAutorizados != null && ProjetosAutorizados.Count > 0)
+                    {
+                        List<ProjectosAutorizados> ProjetosAutorizadosIguais = new List<ProjectosAutorizados>();
+                        ProjetosAutorizadosIguais = ProjetosAutorizados.Where(x => x.CodProjeto == projectNo && x.CodCliente == project.NºCliente && x.ValorAutorizado == Math.Round((decimal)authorizationTotal, 2) &&
+                        x.DataServPrestado == billingPeriod && x.PedidoCliente == customerRequestNo && x.DataPedido == (customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null)).ToList();
+
+                        if (ProjetosAutorizadosIguais != null && ProjetosAutorizadosIguais.Count > 0)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Já existe uma Autorização de Faturação para estes Movimentos."));
+                        }
+                    }
 
                     if (contract != null)
                     {
