@@ -7,19 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WSSisLog
+namespace WSSisLogTeste
 {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://out.ws.sislog.atos.net/SislogOutputWebServices", ConfigurationName="WSSisLog.StockActualSOAP")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://out.ws.sislog.atos.net/SislogOutputWebServices", ConfigurationName="WSSisLogTeste.StockActualSOAP")]
     public interface StockActualSOAP
     {
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="getStock", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSSisLog.getStockResponse> getStockAsync(WSSisLog.getStock request);
+        System.Threading.Tasks.Task<WSSisLogTeste.getStockResponse> getStockAsync(WSSisLogTeste.getStock request);
     }
     
     /// <remarks/>
@@ -485,13 +485,13 @@ namespace WSSisLog
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://out.ws.sislog.atos.net/inputParametersStockActual", Order=0)]
-        public WSSisLog.InputParametersStockActual inputParametersStockActual;
+        public WSSisLogTeste.InputParametersStockActual inputParametersStockActual;
         
         public getStock()
         {
         }
         
-        public getStock(WSSisLog.InputParametersStockActual inputParametersStockActual)
+        public getStock(WSSisLogTeste.InputParametersStockActual inputParametersStockActual)
         {
             this.inputParametersStockActual = inputParametersStockActual;
         }
@@ -504,17 +504,17 @@ namespace WSSisLog
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://out.ws.sislog.atos.net/response", Order=0)]
-        public WSSisLog.PagedResponse pagedResponse;
+        public WSSisLogTeste.PagedResponse pagedResponse;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="http://out.ws.sislog.atos.net/stockActual", Order=1)]
         [System.Xml.Serialization.XmlArrayItemAttribute("stock")]
-        public WSSisLog.StockActual[] stocksActuales;
+        public WSSisLogTeste.StockActual[] stocksActuales;
         
         public getStockResponse()
         {
         }
         
-        public getStockResponse(WSSisLog.PagedResponse pagedResponse, WSSisLog.StockActual[] stocksActuales)
+        public getStockResponse(WSSisLogTeste.PagedResponse pagedResponse, WSSisLogTeste.StockActual[] stocksActuales)
         {
             this.pagedResponse = pagedResponse;
             this.stocksActuales = stocksActuales;
@@ -522,13 +522,13 @@ namespace WSSisLog
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
-    public interface StockActualSOAPChannel : WSSisLog.StockActualSOAP, System.ServiceModel.IClientChannel
+    public interface StockActualSOAPChannel : WSSisLogTeste.StockActualSOAP, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
-    public partial class StockActualSOAPClient : System.ServiceModel.ClientBase<WSSisLog.StockActualSOAP>, WSSisLog.StockActualSOAP
+    public partial class StockActualSOAPClient : System.ServiceModel.ClientBase<WSSisLogTeste.StockActualSOAP>, WSSisLogTeste.StockActualSOAP
     {
         
     /// <summary>
@@ -571,7 +571,7 @@ namespace WSSisLog
         {
         }
         
-        public System.Threading.Tasks.Task<WSSisLog.getStockResponse> getStockAsync(WSSisLog.getStock request)
+        public System.Threading.Tasks.Task<WSSisLogTeste.getStockResponse> getStockAsync(WSSisLogTeste.getStock request)
         {
             return base.Channel.getStockAsync(request);
         }

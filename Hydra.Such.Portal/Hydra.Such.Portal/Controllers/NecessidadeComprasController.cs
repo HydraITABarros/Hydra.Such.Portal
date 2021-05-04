@@ -1542,7 +1542,7 @@ namespace Hydra.Such.Portal.Controllers
 
             //if (!string.IsNullOrEmpty(produto) && !string.IsNullOrEmpty(armazem) && armazem == "4300")
             //{
-            //    Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto);
+            //    Task<WSSisLogProd.getStockResponse> TReadStock = WS_SisLogProd.GetSTOCK(armazem, produto);
             //    try
             //    {
             //        TReadStock.Wait();

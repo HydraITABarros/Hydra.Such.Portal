@@ -29,7 +29,8 @@ namespace Hydra.Such.Data.NAV
         public string WS_PurchaseHeaderDocs_URL { get; set; }
         public string WS_PaymentJournalNAV_URL { get; set; }
         public string WS_Vendor_URL { get; set; }
-        public string WS_SisLog_URL { get; set; }
+        public string WS_SisLog_Prod_URL { get; set; }
+        public string WS_SisLog_Teste_URL { get; set; }
 
         // zpgm.20122018
         public string Ws_SuchNav2017_URL { get; set; }
