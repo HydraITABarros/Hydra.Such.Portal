@@ -210,6 +210,9 @@ namespace Hydra.Such.Portal.Controllers
             List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
             List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
             List<Viaturas2GestoresGestor>  AllResponsaveis = DBViaturas2GestoresGestor.GetByTipo(1);
+            List<Viaturas2Afetacao> AllAfetacao = DBViaturas2Afetacao.GetAll();
+            Viaturas2Afetacao LastAfetacao = new Viaturas2Afetacao();
+            List<Viaturas2AfetacaoAreaReal> AllAfetacaoAreaReal = DBViaturas2AfetacaoAreaReal.GetAll();
 
             result.ForEach(x =>
             {
@@ -227,7 +230,17 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.IDLocalParqueamento != null && x.IDLocalParqueamento > 0) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
                 if (x.IDGestor != null && x.IDGestor > 0) x.Gestor = AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault() != null ? AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault().Gestor : "";
-
+                LastAfetacao = AllAfetacao.Where(y => y.Matricula == x.Matricula).OrderByDescending(z => z.DataInicio).FirstOrDefault();
+                if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue && LastAfetacao.DataInicio.HasValue)
+                {
+                    if (Convert.ToDateTime(LastAfetacao.DataInicio) <= DateTime.Now.Date && (LastAfetacao.DataFim.HasValue ? Convert.ToDateTime(LastAfetacao.DataFim) : DateTime.Now.Date) >= DateTime.Now.Date)
+                        x.Afetacao = AllAfetacaoAreaReal.Where(y => y.ID == LastAfetacao.IDAreaReal).FirstOrDefault().AreaReal;
+                }
+                else
+                {
+                    if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue)
+                        x.Afetacao = AllAfetacaoAreaReal.Where(y => y.ID == LastAfetacao.IDAreaReal).FirstOrDefault().AreaReal;
+                }
                 if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
             });
 
@@ -464,8 +477,15 @@ namespace Hydra.Such.Portal.Controllers
 
                 Viaturas2Afetacao LastAfetacao = DBViaturas2Afetacao.GetByMatriculaRecent(data.Matricula);
                 if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue && LastAfetacao.DataInicio.HasValue)
+                {
                     if (Convert.ToDateTime(LastAfetacao.DataInicio) <= DateTime.Now.Date && (LastAfetacao.DataFim.HasValue ? Convert.ToDateTime(LastAfetacao.DataFim) : DateTime.Now.Date) >= DateTime.Now.Date)
                         viatura.Afetacao = DBViaturas2AfetacaoAreaReal.GetByID((int)LastAfetacao.IDAreaReal).AreaReal;
+                }
+                else
+                {
+                    if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue)
+                        viatura.Afetacao = DBViaturas2AfetacaoAreaReal.GetByID((int)LastAfetacao.IDAreaReal).AreaReal;
+                }
             }
             return Json(viatura);
         }
@@ -3849,6 +3869,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["afetacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Área real"); Col = Col + 1; }
                 if (dp["noProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
                 if (dp["projeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto"); Col = Col + 1; }
 
@@ -3898,6 +3919,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
                         if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
+                        if (dp["afetacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Afetacao); Col = Col + 1; }
                         if (dp["noProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoProjeto); Col = Col + 1; }
                         if (dp["projeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Projeto); Col = Col + 1; }
                         count++;

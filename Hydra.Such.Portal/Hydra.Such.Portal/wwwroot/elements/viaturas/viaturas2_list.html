@@ -475,6 +475,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.afetacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="afetacao">Afetação Área Real</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="afetacao" value="[[filter.afetacao]]" />
+                </template>
+                <template>
+                    {{item.afetacao}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.noProjeto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noProjeto">Nº Projeto</vaadin-grid-sorter>
@@ -657,6 +667,7 @@
                         "codRegiao": { hidden: false, label: "Código Região" },
                         "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
                         "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "afetacao": { hidden: false, label: "Afetação Área Real" },
                         "noProjeto": { hidden: false, label: "Nº Projeto" },
                         "projeto": { hidden: false, label: "Projeto" }
                     };
