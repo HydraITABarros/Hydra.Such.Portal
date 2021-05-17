@@ -3818,8 +3818,10 @@
                 },
 
                 _changeStatusChanged: function () {
+                    debugger;
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
                         if (this.$.mChangeStatus.value == "2") {
+                            var faturacaoConsumoOK = true;
                             if (this._validateData()) {
 
                                 for (i = 0; i < this.dataLines.lines.length; i++) {
@@ -3830,12 +3832,27 @@
                                         this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
                                         return;
                                     }
+
+                                    if (this.dataLines.lines[i].unitPrice != null && this.dataLines.lines[i].unitPrice < 0) {
+
+                                        this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Preço Unitário inferior a 0.");
+                                        return;
+                                    }
+
+                                    if (this.data.billingType == 2 && (this.dataLines.lines[i].quantity != null && this.dataLines.lines[i].quantity > 0)) {
+                                        faturacaoConsumoOK = false;
+                                    }
                                 }
                             }
                             else {
                                 return;
                             }
                         }
+
+                        if (faturacaoConsumoOK == false) {
+                            this._openToastError("O Contrato é do tipo Faturação Consumo. As Linhas com Quantidade superior a 0, não serão faturadas.");
+                        }
+
                         this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
                         this.$.changeStatusChanged_databound_ajax.generateRequest();
 

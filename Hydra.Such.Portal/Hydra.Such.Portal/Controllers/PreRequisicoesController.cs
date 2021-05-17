@@ -4445,6 +4445,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
                 }
+
+                Quantidades.QuantReservada = (decimal)DBSISLOGReservas.GetQuantReservada(produto);
             }
 
             return Json(Quantidades);
