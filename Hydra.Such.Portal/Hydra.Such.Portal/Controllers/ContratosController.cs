@@ -460,12 +460,25 @@ namespace Hydra.Such.Portal.Controllers
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x)));
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<EnumData> status = EnumerablesFixed.ContractStatus;
+            List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
+            List<EnumData> AllEstadosAlteracao = EnumerablesFixed.ContractChangeStatus;
+            List<EnumData> AllRescisoes = EnumerablesFixed.ContractTerminationDeadlineNotice;
+            List<EnumData> AllCondicoesRenovacao = EnumerablesFixed.ContractTerminationTerms;
+            List<EnumData> AllCondicoesPagamento = EnumerablesFixed.ContractPaymentTerms;
 
             result.ForEach(x =>
             {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
                 x.FixedVowsAgreementText = x.FixedVowsAgreement.HasValue ? x.FixedVowsAgreement == true ? "Sim" : "Não" : "Não";
+
+                x.ProvisionUnitText = x.ProvisionUnit != null ? AllUnidadesPrestacao.Where(y => y.Código == x.ProvisionUnit).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.ProvisionUnit).FirstOrDefault().Descrição : "" : "";
+                x.ChangeStatusText = x.ChangeStatus != null ? AllEstadosAlteracao.Where(y => y.Id == x.ChangeStatus).FirstOrDefault() != null ? AllEstadosAlteracao.Where(y => y.Id == x.ChangeStatus).FirstOrDefault().Value : "" : "";
+                x.TerminationTermNoticeText = x.TerminationTermNotice != null ? AllRescisoes.Where(y => y.Id == x.TerminationTermNotice).FirstOrDefault() != null ? AllRescisoes.Where(y => y.Id == x.TerminationTermNotice).FirstOrDefault().Value : "" : "";
+                x.RenovationConditionsText = x.RenovationConditions != null ? AllCondicoesRenovacao.Where(y => y.Id == x.RenovationConditions).FirstOrDefault() != null ? AllCondicoesRenovacao.Where(y => y.Id == x.RenovationConditions).FirstOrDefault().Value : "" : "";
+                x.PaymentTermsText = x.PaymentTerms != null ? AllCondicoesPagamento.Where(y => y.Id == x.PaymentTerms).FirstOrDefault() != null ? AllCondicoesPagamento.Where(y => y.Id == x.PaymentTerms).FirstOrDefault().Value : "" : "";
+                x.CustomerSignedText = x.CustomerSigned.HasValue ? x.CustomerSigned == true ? "Sim" : "Não" : "Não";
+                x.InterestsText = x.Interests.HasValue ? x.Interests == true ? "Sim" : "Não" : "Não";
             });
 
             return Json(result);
@@ -5154,7 +5167,8 @@ namespace Hydra.Such.Portal.Controllers
                                 thisHeader.NºProposta = contractNo;
                                 thisHeader.NºDeContrato = newNumeration;
                                 thisHeader.EstadoAlteração = 1;
-                                thisHeader.DataEnvioCliente = thiscontract != null ? thiscontract.DataEnvioCliente.HasValue ? thiscontract.DataEnvioCliente : (DateTime?)null : (DateTime?)null;
+                                thisHeader.DataEnvioCliente = null;
+                                //thisHeader.DataEnvioCliente = thiscontract != null ? thiscontract.DataEnvioCliente.HasValue ? thiscontract.DataEnvioCliente : (DateTime?)null : (DateTime?)null;
                                 thisHeader.DataDaAssinatura = thiscontract != null ? thiscontract.DataDaAssinatura.HasValue ? thiscontract.DataDaAssinatura : (DateTime?)null : (DateTime?)null;
                                 thisHeader.NºVersão = 1;
                                 thisHeader.NºContrato = "";
@@ -5838,71 +5852,39 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["contractNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Contrato");
-                    Col = Col + 1;
-                }
-                if (dp["type"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Tipo");
-                    Col = Col + 1;
-                }
-                if (dp["startData"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Início Versão");
-                    Col = Col + 1;
-                }
-                if (dp["dueDate"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Data Fim Versão");
-                    Col = Col + 1;
-                }
-                if (dp["clientNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Cliente");
-                    Col = Col + 1;
-                }
-                if (dp["clientName"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nome Cliente");
-                    Col = Col + 1;
-                }
-                if (dp["description"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Âmbito dos Serviços");
-                    Col = Col + 1;
-                }
-                if (dp["statusDescription"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Estado");
-                    Col = Col + 1;
-                }
-                if (dp["codeRegion"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Região");
-                    Col = Col + 1;
-                }
-                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
-                    Col = Col + 1;
-                }
-                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
-                    Col = Col + 1;
-                }
-                if (dp["versionNo"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Nº Versão");
-                    Col = Col + 1;
-                }
-                if (dp["fixedVowsAgreementText"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Contrato Avença Fixa");
-                    Col = Col + 1;
-                }
+                if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
+                if (dp["versionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Versão"); Col = Col + 1; }
+                if (dp["type"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo de contrato"); Col = Col + 1; }
+                if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Âmbito dos Serviços"); Col = Col + 1; }
+                if (dp["clientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Cliente"); Col = Col + 1; }
+                if (dp["provisionUnitText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade de Prestação"); Col = Col + 1; }
+                if (dp["codeRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Respon."); Col = Col + 1; }
+                if (dp["proposalNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Proposta"); Col = Col + 1; }
+                if (dp["codePaymentTerms"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Termos Pagamento"); Col = Col + 1; }
+                if (dp["startDateFirstContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Inicio 1º Contrato"); Col = Col + 1; }
+                if (dp["firstContractReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Referência 1º Contrato"); Col = Col + 1; }
+                if (dp["notes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Notas"); Col = Col + 1; }
+                if (dp["startData"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Início Versão"); Col = Col + 1; }
+                if (dp["dueDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Fim Versão"); Col = Col + 1; }
+                if (dp["statusDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                if (dp["changeStatusText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado Alteração"); Col = Col + 1; }
+                if (dp["relatedContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Referência do contrato"); Col = Col + 1; }
+                if (dp["contractStartDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Inicio Contrato"); Col = Col + 1; }
+                if (dp["contractEndDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Final Contrato"); Col = Col + 1; }
+                if (dp["customerShipmentDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data envio cliente"); Col = Col + 1; }
+                if (dp["terminationTermNoticeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Rescisão (Prazo de Aviso)"); Col = Col + 1; }
+                if (dp["renovationConditionsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Condições para renovação"); Col = Col + 1; }
+                if (dp["renovationConditionsAnother"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Condições para renovação (Outras)"); Col = Col + 1; }
+                if (dp["paymentTermsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Condições Pagamento"); Col = Col + 1; }
+                if (dp["paymentTermsAnother"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Condições Pagamento (Outras)"); Col = Col + 1; }
+                if (dp["signatureDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Assinatura"); Col = Col + 1; }
+                if (dp["contractMaxDuration"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Duração máxima contrato"); Col = Col + 1; }
+                if (dp["customerSignedText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Assinado Cliente"); Col = Col + 1; }
+                if (dp["interestsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Juros"); Col = Col + 1; }
+                if (dp["contractDurationDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Duração Contrato"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -5912,71 +5894,39 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["contractNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ContractNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["type"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Type);
-                            Col = Col + 1;
-                        }
-                        if (dp["startData"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.StartData);
-                            Col = Col + 1;
-                        }
-                        if (dp["dueDate"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.DueDate);
-                            Col = Col + 1;
-                        }
-                        if (dp["clientNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ClientNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["clientName"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.ClientName);
-                            Col = Col + 1;
-                        }
-                        if (dp["description"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Description);
-                            Col = Col + 1;
-                        }
-                        if (dp["statusDescription"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
-                            Col = Col + 1;
-                        }
-                        if (dp["codeRegion"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
-                            Col = Col + 1;
-                        }
-                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
-                            Col = Col + 1;
-                        }
-                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
-                            Col = Col + 1;
-                        }
-                        if (dp["versionNo"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.VersionNo);
-                            Col = Col + 1;
-                        }
-                        if (dp["fixedVowsAgreementText"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.FixedVowsAgreementText);
-                            Col = Col + 1;
-                        }
+                        if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractNo); Col = Col + 1; }
+                        if (dp["versionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VersionNo); Col = Col + 1; }
+                        if (dp["type"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Type); Col = Col + 1; }
+                        if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
+                        if (dp["clientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientNo); Col = Col + 1; }
+                        if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientName); Col = Col + 1; }
+                        if (dp["provisionUnitText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProvisionUnitText); Col = Col + 1; }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeRegion); Col = Col + 1; }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea); Col = Col + 1; }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter); Col = Col + 1; }
+                        if (dp["proposalNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProposalNo); Col = Col + 1; }
+                        if (dp["codePaymentTerms"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodePaymentTerms); Col = Col + 1; }
+                        if (dp["startDateFirstContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StartDateFirstContract); Col = Col + 1; }
+                        if (dp["firstContractReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FirstContractReference); Col = Col + 1; }
+                        if (dp["notes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Notes); Col = Col + 1; }
+                        if (dp["startData"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StartData); Col = Col + 1; }
+                        if (dp["dueDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DueDate); Col = Col + 1; }
+                        if (dp["statusDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StatusDescription); Col = Col + 1; }
+                        if (dp["changeStatusText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ChangeStatusText); Col = Col + 1; }
+                        if (dp["relatedContract"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RelatedContract); Col = Col + 1; }
+                        if (dp["contractStartDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractStartDate); Col = Col + 1; }
+                        if (dp["contractEndDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractEndDate); Col = Col + 1; }
+                        if (dp["customerShipmentDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerShipmentDate); Col = Col + 1; }
+                        if (dp["terminationTermNoticeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TerminationTermNoticeText); Col = Col + 1; }
+                        if (dp["renovationConditionsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RenovationConditionsText); Col = Col + 1; }
+                        if (dp["renovationConditionsAnother"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RenovationConditionsAnother); Col = Col + 1; }
+                        if (dp["paymentTermsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PaymentTermsText); Col = Col + 1; }
+                        if (dp["paymentTermsAnother"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PaymentTermsAnother); Col = Col + 1; }
+                        if (dp["signatureDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SignatureDate); Col = Col + 1; }
+                        if (dp["contractMaxDuration"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractMaxDuration); Col = Col + 1; }
+                        if (dp["customerSignedText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerSignedText); Col = Col + 1; }
+                        if (dp["interestsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InterestsText); Col = Col + 1; }
+                        if (dp["contractDurationDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractDurationDescription); Col = Col + 1; }
                         count++;
                     }
                 }

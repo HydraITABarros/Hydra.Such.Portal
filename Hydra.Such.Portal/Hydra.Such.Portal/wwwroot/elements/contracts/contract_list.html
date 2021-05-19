@@ -196,19 +196,21 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.oportunityNo.hidden }}">
+            <vaadin-grid-column width="5%" resizable hidden$="{{ _columns.versionNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="oportunityNo" value="[[filter.oportunityNo]]" />
+                    <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="versionNo" value="[[filter.versionNo]]" />
                 </template>
                 <template>
-                    {{item.oportunityNo}}
+                    <div class="text-right">
+                        {{item.versionNo}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="type">Tipo de contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" value="[[filter.type]]" />
                 </template>
                 <template>
@@ -216,23 +218,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.startData.hidden }}">
+            <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="startData">Data Início Versão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
+                    <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
                 </template>
                 <template>
-                    {{item.startData}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dueDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dueDate">Data Fim Versão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
-                </template>
-                <template>
-                    {{item.dueDate}}
+                    {{item.description}}
                 </template>
             </vaadin-grid-column>
 
@@ -256,23 +248,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.description.hidden }}">
+            <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.provisionUnitText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
+                    <vaadin-grid-sorter path="provisionUnitText">Unidade de Prestação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="provisionUnitText" value="[[filter.provisionUnitText]]" />
                 </template>
                 <template>
-                    {{item.description}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.statusDescription.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="statusDescription" value="[[filter.statusDescription]]" />
-                </template>
-                <template>
-                    {{item.statusDescription}}
+                    {{item.provisionUnitText}}
                 </template>
             </vaadin-grid-column>
 
@@ -298,7 +280,7 @@
 
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Respon.</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" value="[[filter.codeResponsabilityCenter]]" />
                 </template>
                 <template>
@@ -306,27 +288,258 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.versionNo.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.proposalNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="versionNo" value="[[filter.versionNo]]" />
+                    <vaadin-grid-sorter path="proposalNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalNo" value="[[filter.proposalNo]]" />
                 </template>
                 <template>
-                    <div class="text-right">
-                        {{item.versionNo}}
-                    </div>
+                    {{item.proposalNo}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.fixedVowsAgreementText.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codePaymentTerms.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="fixedVowsAgreementText">Contrato Avença Fixa</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fixedVowsAgreementText" value="[[filter.fixedVowsAgreementText]]" />
+                    <vaadin-grid-sorter path="codePaymentTerms">Cód. Termos Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codePaymentTerms" value="[[filter.codePaymentTerms]]" />
                 </template>
                 <template>
-                    {{item.fixedVowsAgreementText}}
+                    {{item.codePaymentTerms}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.startDateFirstContract.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="startDateFirstContract">Data Inicio 1º Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startDateFirstContract" value="[[filter.startDateFirstContract]]" />
+                </template>
+                <template>
+                    {{item.startDateFirstContract}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.firstContractReference.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="firstContractReference">Referência 1º Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="firstContractReference" value="[[filter.firstContractReference]]" />
+                </template>
+                <template>
+                    {{item.firstContractReference}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.notes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notes" value="[[filter.notes]]" />
+                </template>
+                <template>
+                    {{item.notes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.startData.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="startData">Data Início Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
+                </template>
+                <template>
+                    {{item.startData}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dueDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dueDate">Data Fim Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
+                </template>
+                <template>
+                    {{item.dueDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusDescription" value="[[filter.statusDescription]]" />
+                </template>
+                <template>
+                    {{item.statusDescription}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.changeStatusText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="changeStatusText">Estado Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="changeStatusText" value="[[filter.changeStatusText]]" />
+                </template>
+                <template>
+                    {{item.changeStatusText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.relatedContract.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="relatedContract">Referência do contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="relatedContract" value="[[filter.relatedContract]]" />
+                </template>
+                <template>
+                    {{item.relatedContract}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractStartDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractStartDate">Data Inicio Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractStartDate" value="[[filter.contractStartDate]]" />
+                </template>
+                <template>
+                    {{item.contractStartDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractEndDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractEndDate">Data Final Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractEndDate" value="[[filter.contractEndDate]]" />
+                </template>
+                <template>
+                    {{item.contractEndDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.customerShipmentDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerShipmentDate">Data envio cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerShipmentDate" value="[[filter.customerShipmentDate]]" />
+                </template>
+                <template>
+                    {{item.customerShipmentDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.terminationTermNoticeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="terminationTermNoticeText">Rescisão (Prazo de Aviso)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="terminationTermNoticeText" value="[[filter.terminationTermNoticeText]]" />
+                </template>
+                <template>
+                    {{item.terminationTermNoticeText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.renovationConditionsText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="renovationConditionsText">Condições para renovação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="renovationConditionsText" value="[[filter.renovationConditionsText]]" />
+                </template>
+                <template>
+                    {{item.renovationConditionsText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.renovationConditionsAnother.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="renovationConditionsAnother">Condições para renovação (Outras)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="renovationConditionsAnother" value="[[filter.renovationConditionsAnother]]" />
+                </template>
+                <template>
+                    {{item.renovationConditionsAnother}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.paymentTermsText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="paymentTermsText">Condições Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="paymentTermsText" value="[[filter.paymentTermsText]]" />
+                </template>
+                <template>
+                    {{item.paymentTermsText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.paymentTermsAnother.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="paymentTermsAnother">Condições Pagamento (Outras)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="paymentTermsAnother" value="[[filter.paymentTermsAnother]]" />
+                </template>
+                <template>
+                    {{item.paymentTermsAnother}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.signatureDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="signatureDate">Data Assinatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="signatureDate" value="[[filter.signatureDate]]" />
+                </template>
+                <template>
+                    {{item.signatureDate}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractMaxDuration.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractMaxDuration">Duração máxima contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractMaxDuration" value="[[filter.contractMaxDuration]]" />
+                </template>
+                <template>
+                    {{item.contractMaxDuration}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.customerSignedText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerSignedText">Assinado Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerSignedText" value="[[filter.customerSignedText]]" />
+                </template>
+                <template>
+                    {{item.customerSignedText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.interestsText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="interestsText">Juros</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="interestsText" value="[[filter.interestsText]]" />
+                </template>
+                <template>
+                    {{item.interestsText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractDurationDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractDurationDescription">Descrição Duração Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractDurationDescription" value="[[filter.contractDurationDescription]]" />
+                </template>
+                <template>
+                    {{item.contractDurationDescription}}
+                </template>
+            </vaadin-grid-column>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <vaadin-grid-column width="10%" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
                 <template class="header">
@@ -560,19 +773,38 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "contractNo": { hidden: false, label: "Nº Contrato" },
-                        "oportunityNo": { hidden: false, label: "Nº Oportunidade" },
-                        "type": { hidden: false, label: "Tipo" },
-                        "startData": { hidden: false, label: "Data Início Versão" },
-                        "dueDate": { hidden: false, label: "Data Fim Versão" },
+                        "versionNo": { hidden: false, label: "Nº Versão" },
+                        "type": { hidden: false, label: "Tipo de contrato" },
+                        "description": { hidden: false, label: "Âmbito dos Serviços" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
-                        "description": { hidden: false, label: "Âmbito dos Serviços" },
-                        "statusDescription": { hidden: false, label: "Estado" },
+                        "provisionUnitText": { hidden: false, label: "Unidade de Prestação" },
                         "codeRegion": { hidden: false, label: "Cód. Região" },
                         "codeFunctionalArea": { hidden: false, label: "Cód. Área Funcional" },
-                        "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Responsabilidade" },
-                        "versionNo": { hidden: false, label: "Nº Versão" },
-                        "fixedVowsAgreementText": { hidden: false, label: "Contrato Avença Fixa" }
+                        "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Respon." },
+                        "proposalNo": { hidden: false, label: "Nº Proposta" },
+                        "codePaymentTerms": { hidden: false, label: "Cód. Termos Pagamento" },
+                        "startDateFirstContract": { hidden: false, label: "Data Inicio 1º Contrato" },
+                        "firstContractReference": { hidden: false, label: "Referência 1º Contrato" },
+                        "notes": { hidden: false, label: "Notas" },
+                        "startData": { hidden: false, label: "Data Início Versão" },
+                        "dueDate": { hidden: false, label: "Data Fim Versão" },
+                        "statusDescription": { hidden: false, label: "Estado" },
+                        "changeStatusText": { hidden: false, label: "Estado Alteração" },
+                        "relatedContract": { hidden: false, label: "Referência do contrato" },
+                        "contractStartDate": { hidden: false, label: "Data Inicio Contrato" },
+                        "contractEndDate": { hidden: false, label: "Data Final Contrato" },
+                        "customerShipmentDate": { hidden: false, label: "Data envio cliente" },
+                        "terminationTermNoticeText": { hidden: false, label: "Rescisão (Prazo de Aviso)" },
+                        "renovationConditionsText": { hidden: false, label: "Condições para renovação" },
+                        "renovationConditionsAnother": { hidden: false, label: "Condições para renovação (Outras)" },
+                        "paymentTermsText": { hidden: false, label: "Condições Pagamento" },
+                        "paymentTermsAnother": { hidden: false, label: "Condições Pagamento (Outras)" },
+                        "signatureDate": { hidden: false, label: "Data Assinatura" },
+                        "contractMaxDuration": { hidden: false, label: "Duração máxima contrato" },
+                        "customerSignedText": { hidden: false, label: "Assinado Cliente" },
+                        "interestsText": { hidden: false, label: "Juros" },
+                        "contractDurationDescription": { hidden: false, label: "Descrição Duração Contrato" }
                     };
 
                     if (localStorage["contractlist.ToggleColumn"]) {

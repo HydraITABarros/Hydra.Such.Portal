@@ -1390,8 +1390,18 @@
                                         //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
                                         total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
                                     }
+
+                                    if (items[i].selecionada == true) {
+                                        if ((items[i].unitCost != null && items[i].unitCost < 0) ||
+                                            (items[i].unitPrice != null && items[i].unitPrice < 0)) {
+
+                                            this.openToastError("Não é possivel Autorizar, por existirem Movimentos selecionados com Custo Unitário e/ou Preço Unitário inferior a 0.");
+                                            return;
+                                        }
+                                    }
                                 }
                             }
+
                             if (this._totalToAuthorize == this.roundToTwo(total)) {
                                 this.validationMessages = [];
                                 var validationRequest = {

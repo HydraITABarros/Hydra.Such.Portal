@@ -3999,8 +3999,13 @@ namespace Hydra.Such.Portal.Controllers
                     if (ProjetosAutorizados != null && ProjetosAutorizados.Count > 0)
                     {
                         List<ProjectosAutorizados> ProjetosAutorizadosIguais = new List<ProjectosAutorizados>();
-                        ProjetosAutorizadosIguais = ProjetosAutorizados.Where(x => x.CodProjeto == projectNo && x.CodCliente == project.NºCliente && x.ValorAutorizado == Math.Round((decimal)authorizationTotal, 2) &&
-                        x.DataServPrestado == billingPeriod && x.PedidoCliente == customerRequestNo && x.DataPedido == (customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null)).ToList();
+
+                        ProjetosAutorizadosIguais = ProjetosAutorizados.Where(x => x.CodProjeto == projectNo &&
+                        x.CodCliente == project.NºCliente &&
+                        x.ValorAutorizado == Math.Round((decimal)authorizationTotal, 2) &&
+                        x.DataServPrestado == billingPeriod &&
+                        x.PedidoCliente == customerRequestNo 
+                        && x.DataPedido == (customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null)).ToList();
 
                         if (ProjetosAutorizadosIguais != null && ProjetosAutorizadosIguais.Count > 0)
                         {

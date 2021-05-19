@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public int? OldStatus { get; set; }
         public string StatusDescription { get; set; }
         public int? ChangeStatus { get; set; }
+        public string ChangeStatusText { get; set; }
         public string ClientNo { get; set; }
         public string ClientName { get; set; }
         public string CodeRegion { get; set; }
@@ -60,12 +61,17 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string FirstContractReference { get; set; }
         public string ContractMaxDuration { get; set; }
         public int? TerminationTermNotice { get; set; }
+        public string TerminationTermNoticeText { get; set; }
         public int? RenovationConditions { get; set; }
+        public string RenovationConditionsText { get; set; }
         public string RenovationConditionsAnother { get; set; }
         public int? PaymentTerms { get; set; }
+        public string PaymentTermsText { get; set; }
         public string PaymentTermsAnother { get; set; }
         public bool? CustomerSigned { get; set; }
+        public string CustomerSignedText { get; set; }
         public bool? Interests { get; set; }
+        public string InterestsText { get; set; }
         public string SignatureDate { get; set; }
         public string CustomerShipmentDate { get; set; }
         public int? ProvisionUnit { get; set; }
