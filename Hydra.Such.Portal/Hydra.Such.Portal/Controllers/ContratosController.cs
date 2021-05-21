@@ -215,6 +215,7 @@ namespace Hydra.Such.Portal.Controllers
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
             UserAccessesViewModel UPermCriarFatura = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosCriarFatura);
+            UserAccessesViewModel UPermContratosRequisicoesCliente = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosRequisicoesCliente);
             ConfigUtilizadores UTilizador = DBUserConfigurations.GetById(User.Identity.Name);
 
             if (UPerm != null && UPerm.Read.Value)
@@ -247,7 +248,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
                 ViewBag.UPermissionsCriarFatura = UPermCriarFatura;
-                ViewBag.UPermissionsCriarFatura = UPermCriarFatura;
+                ViewBag.UPermContratosRequisicoesCliente = UPermContratosRequisicoesCliente;
                 ViewBag.VerFaturas = UTilizador != null ? UTilizador.VerFaturas.HasValue ? UTilizador.VerFaturas : false : false;
 
                 return View();

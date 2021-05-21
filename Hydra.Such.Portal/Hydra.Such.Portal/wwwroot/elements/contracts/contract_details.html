@@ -671,25 +671,25 @@
                                                             <paper-button class="tablinks" on-tap="_ExportRequisicoesCliente" title="Exportar Requisições Cliente"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar</paper-button>
                                                         </div>
 
-                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                        <template is="dom-if" if="{{ !_lockFieldsReqClientes }}">
                                                             <div class="row">
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                    <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ _lockFieldsReqClientes }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFieldsReqClientes }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ _lockFieldsReqClientes }}"> </vaadin-text-field>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                    <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFieldsReqClientes }}"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFieldsReqClientes }}"> </vaadin-text-field>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" class="alignRight">
+                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFieldsReqClientes }}" class="alignRight">
                                                                         <template>
                                                                             <b>[[item.value]]</b>
                                                                         </template>
@@ -698,7 +698,7 @@
                                                             </div>
                                                             <div class="row break_frm">
                                                                 <div class="col-lg-2">
-                                                                    <such-selectbox id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
+                                                                    <such-selectbox id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFieldsReqClientes }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="value"
                                                                                     value-path="id"
@@ -707,7 +707,7 @@
 
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                    <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ _lockFieldsReqClientes }}"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-1" style="padding:12px">
                                                                     <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
@@ -716,7 +716,7 @@
                                                         </template>
 
                                                         <!-- VAADIN GRID  Requisições Cliente -->
-                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}" active-item="{{_SelectedLineRequisicao}}">
+                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFieldsReqClientes }}" active-item="{{_SelectedLineRequisicao}}">
                                                             <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
@@ -724,7 +724,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                        <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFieldsReqClientes }}"></vaadin-date-picker>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.startDate}}
@@ -739,7 +739,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                        <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ _lockFieldsReqClientes }}"></vaadin-date-picker>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.endDate}}
@@ -754,7 +754,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                        <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ _lockFieldsReqClientes }}"> </vaadin-text-field>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.clientRequisitionNo}}
@@ -769,7 +769,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                        <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFieldsReqClientes }}"></vaadin-date-picker>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.requisitionDate}}
@@ -784,7 +784,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" maxlength="50" disabled="{{ _lockFieldsReqClientes }}"> </vaadin-text-field>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.promiseNo}}
@@ -800,7 +800,7 @@
                                                                 <template>
                                                                     <div class="alignRight">
                                                                         <template is="dom-if" if="{{ item.selected }}">
-                                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFieldsReqClientes }}">
                                                                                 <template>
                                                                                     <table width="180px">
                                                                                         <tr>
@@ -825,7 +825,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="id" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="id" id="_CRGridProjectNo" name="_CRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFieldsReqClientes }}">
                                                                             <template>
                                                                                 <paper-icon-item>
                                                                                     <paper-item-body two-line>
@@ -870,7 +870,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                        <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFieldsReqClientes }}"></vaadin-date-picker>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.lastInvoiceDate}}
@@ -883,7 +883,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <center>
-                                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                                        <template is="dom-if" if="{{ !_lockFieldsReqClientes }}">
                                                                             <center>
                                                                                 <paper-button class="btnRemove tableBtn" raised on-tap="_deleteClientRequisition" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                                             </center>
@@ -2096,12 +2096,19 @@
                         type: Boolean,
                         value: false
                     },
+                    _lockFieldsReqClientes: {
+                        type: Boolean,
+                        value: false
+                    },
                     _permissions: {
                         type: Array
                     },
                     _permissionscriarfatura: {
                         type: Boolean,
                         value: false
+                    },
+                    _permissionsrequisicoescliente: {
+                        type: Array
                     },
                     _verfaturas: {
                         type: Array
@@ -2347,6 +2354,9 @@
                         this._lockFields = true;
                         this._contractStatusLocked = true;
                     }
+                    this._lockFieldsReqClientes = this._lockFields;
+                    if (this._permissionsrequisicoescliente.update == true)
+                        this._lockFieldsReqClientes = false;
 
                     if (this._ishistoric == "true") {
                         this._isHistoricDiv = true;
@@ -2775,6 +2785,10 @@
                         this._lockFields = this.data.changeStatus == 2 || !this._permissions.update;
                         this._showContractLinesForm = this.data.changeStatus == 2 && this._permissions.update ? "none" : "";
                         this._showButtons = this.data.changeStatus != 2 && !this._permissions.update ? "none" : "";
+
+                        this._lockFieldsReqClientes = this._lockFields;
+                        if (this._permissionsrequisicoescliente.update == true)
+                            this._lockFieldsReqClientes = false;
                     }
 
                     if (this.data.filed) {
@@ -3854,7 +3868,6 @@
                 },
 
                 _changeStatusChanged: function () {
-                    debugger;
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
                         if (this.$.mChangeStatus.value == "2") {
                             var faturacaoConsumoOK = true;
