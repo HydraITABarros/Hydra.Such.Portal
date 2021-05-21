@@ -176,6 +176,15 @@
                    id="changeStatusChanged_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/VerificarPDF"
+                   last-response="{{pdf}}"
+                   id="ajax_VerificarPDF_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_VerificarPDFResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!-- PROJECT Valitador -->
         <iron-ajax url="/Contratos/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -1875,6 +1884,18 @@
                         {{item.data}}
                     </template>
                 </vaadin-grid-column>
+
+                <vaadin-grid-column width="2%" resizable hidden="{{ !_verfaturas }}">
+                    <template class="header">
+                        <vaadin-grid-sorter path="verDocumento">Ver</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="verDocumento" />
+                    </template>
+                    <template>
+                        <div class="alignCenter">
+                            <paper-button id="btn_VerDocumento" class="btnRemove tableBtn" raised on-tap="_VerDocumento" title="Ver Documento"><i class="fa fa-eye" aria-hidden="true"></i></paper-button>
+                        </div>
+                    </template>
+                </vaadin-grid-column>
             </vaadin-grid>
 
             <div class="buttons">
@@ -2046,6 +2067,17 @@
                 <paper-button raised class="btnRemove" on-tap="_closeUpdatePricesDlg">Cancelar</paper-button>
             </div>
         </paper-dialog>
+
+        <!-- Paper Dialog Ver Documento-->
+        <paper-dialog id="dlVerPDF" style="height:80%; width:60%">
+            <div id="divVerPDF" style="height:90%; width:100%">
+                <!--<embed id="embedVerPDF" src="/projetos/LoadPDF/{{ _documentoPDF }}" type="application/pdf" style="height:100%; width:100%" />-->
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -2068,6 +2100,10 @@
                         type: Array
                     },
                     _permissionscriarfatura: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _verfaturas: {
                         type: Array
                     },
                     _contractno: {
@@ -3892,6 +3928,25 @@
                     location.href = '/Contratos/ExportToRequisicoesClienteDownload?sFileName=' + FileName;
                 },
 
+                _VerDocumento: function (e) {
+                    var dataText = e.model.item.data.toString();
+                    var ano = dataText.substring(8, 10);
+                    var mes = dataText.substring(3, 5);
+
+                    this._documentoPDF = ano.toString() + mes.toString() + "@" + e.model.item.no_ + ".pdf";
+
+                    this.$.ajax_VerificarPDF_ajax.body = JSON.stringify(this._documentoPDF);
+                    this.$.ajax_VerificarPDF_ajax.generateRequest();
+                },
+                _VerificarPDFResponse: function (e) {
+                    if (this.pdf == true) {
+                        this.$.divVerPDF.innerHTML = '<embed id="embedVerPDF" src="/contratos/LoadPDF/' + this._documentoPDF + '" type="application/pdf" style="height:100%; width:100%" />';
+                        this.$.dlVerPDF.open();
+                    }
+                    else {
+                        this._openToastError("Documento não desponível.");
+                    }
+                },
             });
         });
     </script>

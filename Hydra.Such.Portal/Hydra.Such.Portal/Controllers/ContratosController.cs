@@ -215,6 +215,7 @@ namespace Hydra.Such.Portal.Controllers
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
             UserAccessesViewModel UPermCriarFatura = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosCriarFatura);
+            ConfigUtilizadores UTilizador = DBUserConfigurations.GetById(User.Identity.Name);
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -246,6 +247,9 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.VersionNo = version ?? "";
                 ViewBag.UPermissions = UPerm;
                 ViewBag.UPermissionsCriarFatura = UPermCriarFatura;
+                ViewBag.UPermissionsCriarFatura = UPermCriarFatura;
+                ViewBag.VerFaturas = UTilizador != null ? UTilizador.VerFaturas.HasValue ? UTilizador.VerFaturas : false : false;
+
                 return View();
             }
             else
@@ -7517,6 +7521,33 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return TextoFatura;
+        }
+
+        [HttpPost]
+        public JsonResult VerificarPDF([FromBody] string pdf)
+        {
+            string pdfPath = _generalConfig.FileUploadFolder + "FaturasClientes\\" + pdf.Replace("@", "\\");
+
+            if (System.IO.File.Exists(pdfPath))
+                return Json(true);
+            else
+                return Json(false);
+        }
+
+        [Route("Contratos/LoadPDF/{pdf}")]
+        public ActionResult LoadPDF(string pdf)
+        {
+            string pdfPath = _generalConfig.FileUploadFolder + "FaturasClientes\\" + pdf.Replace("@", "\\");
+
+            if (System.IO.File.Exists(pdfPath))
+            {
+                var stream = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
+                var result = new FileStreamResult(stream, "application/pdf");
+
+                return result;
+            }
+            else
+                return null;
         }
     }
 }

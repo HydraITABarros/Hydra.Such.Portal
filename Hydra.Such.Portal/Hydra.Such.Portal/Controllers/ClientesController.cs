@@ -68,6 +68,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Clientes); //4, 47);
             UserAccessesViewModel UPermCCS = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ClientesCCS); //4, 47);
+            ConfigUtilizadores UTilizador = DBUserConfigurations.GetById(User.Identity.Name);
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.No = id ?? "";
@@ -75,6 +77,8 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.userLogin = User.Identity.Name.ToString();
                 ViewBag.UPermissions = UPerm;
                 ViewBag.UPermissionsCCS = UPermCCS;
+                ViewBag.VerFaturas = UTilizador != null ? UTilizador.VerFaturas.HasValue ? UTilizador.VerFaturas : false : false;
+
                 return View();
             }
             else
@@ -1242,5 +1246,31 @@ namespace Hydra.Such.Portal.Controllers
             return new FileStreamResult(new FileStream(fileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
+        [HttpPost]
+        public JsonResult VerificarPDF([FromBody] string pdf)
+        {
+            string pdfPath = _generalConfig.FileUploadFolder + "FaturasClientes\\" + pdf.Replace("@", "\\");
+
+            if (System.IO.File.Exists(pdfPath))
+                return Json(true);
+            else
+                return Json(false);
+        }
+
+        [Route("Clientes/LoadPDF/{pdf}")]
+        public ActionResult LoadPDF(string pdf)
+        {
+            string pdfPath = _generalConfig.FileUploadFolder + "FaturasClientes\\" + pdf.Replace("@", "\\");
+
+            if (System.IO.File.Exists(pdfPath))
+            {
+                var stream = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
+                var result = new FileStreamResult(stream, "application/pdf");
+
+                return result;
+            }
+            else
+                return null;
+        }
     }
 }

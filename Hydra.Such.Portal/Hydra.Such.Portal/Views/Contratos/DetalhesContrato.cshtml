@@ -16,13 +16,13 @@ else
 }
 
 
-<x-contractdetails
-                   _ishistoric="@ViewBag.ifHistoric"
+<x-contractdetails _ishistoric="@ViewBag.ifHistoric"
                    _contractno="@ViewBag.ContractNo"
                    _versionno="@ViewBag.VersionNo"
                    _areaid="1"
                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
-                   _permissionscriarfatura='@Html.Raw(Json.Serialize(ViewBag.UPermissionsCriarFatura))'>
+                   _permissionscriarfatura='@Html.Raw(Json.Serialize(ViewBag.UPermissionsCriarFatura))'
+                   _verfaturas='@Html.Raw(Json.Serialize(ViewBag.VerFaturas))'>
 </x-contractdetails>
 
 
