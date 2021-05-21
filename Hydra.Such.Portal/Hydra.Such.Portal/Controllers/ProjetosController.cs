@@ -3892,6 +3892,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
 
+                string noFaturaRelacionada = string.Empty;
+                JValue noFaturaRelacionadaValue = requestParams["noFaturaRelacionada"] as JValue;
+                if (noFaturaRelacionadaValue != null)
+                    noFaturaRelacionada = (string)noFaturaRelacionadaValue.Value;
+
                 string billingPeriod = string.Empty;
                 JValue billingPeriodValue = requestParams["dataServPrestado"] as JValue;
                 if (billingPeriodValue != null)
@@ -3978,6 +3983,28 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (string.IsNullOrEmpty(customer.RegionCode))
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "É necessário configurar a região na Ficha do Cliente."));
+
+                    if (authorizationTotal < 0)
+                    {
+                        List<NAVClientesInvoicesViewModel> AllInvoices = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+
+                        if (AllInvoices != null && AllInvoices.Count > 0)
+                        {
+                            if (!string.IsNullOrEmpty(noFaturaRelacionada))
+                            {
+                                NAVClientesInvoicesViewModel Invoice = AllInvoices.Where(y => y.No_ == noFaturaRelacionada).FirstOrDefault();
+
+                                if (Invoice == null)
+                                {
+                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi encontrada a Fatura Relacionada no NAV2017."));
+                                }
+                            }
+                            else
+                            {
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "O campo Nº Fatura Relacionada é de preenchimento obrigatório."));
+                            }
+                        }
+                    }
                 }
                 else
                     result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));

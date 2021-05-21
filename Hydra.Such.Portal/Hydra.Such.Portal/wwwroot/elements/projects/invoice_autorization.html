@@ -1402,6 +1402,12 @@
                                 }
                             }
 
+                            if ((this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) &&
+                                (this.$.txtNoFaturaRelacionada.value == null || this.$.txtNoFaturaRelacionada.value == "")) {
+                                this.openToastError("Não é possivel Autorizar, por ser obrigatório o preenchimento do campo Nº Fatura Relacionada.");
+                                return;
+                            }
+
                             if (this._totalToAuthorize == this.roundToTwo(total)) {
                                 this.validationMessages = [];
                                 var validationRequest = {
@@ -1415,6 +1421,7 @@
                                     "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
                                     "dataServPrestado": this.$.txtDataPrestacaoServ.value,
+                                    "noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value,
                                 };
                                 this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
                                 this.$.projMovValidation_ajax.generateRequest();
