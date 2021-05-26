@@ -39,6 +39,21 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static decimal? GetQuantReservada(string CodProduto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SISLOGReservas.Where(x => x.NoProduto == CodProduto && x.Reservado == true).Sum(y => y.QuantidadeReserva);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static SISLOGReservas Create(SISLOGReservas item)
         {
             try

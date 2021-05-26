@@ -96,6 +96,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string IUCate { get; set; }
         public string Substituicao { get; set; }
         public string Afetacao { get; set; }
+        public int AfetacaoIDAreaReal { get; set; }
 
 
         //EXPORTAR PARA EXCEL

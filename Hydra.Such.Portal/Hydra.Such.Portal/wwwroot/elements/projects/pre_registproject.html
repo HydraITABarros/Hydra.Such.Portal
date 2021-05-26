@@ -2051,7 +2051,7 @@
                         this.$.ajax_related.generateRequest();
 
                         //Request Project Data
-                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value };
+                        this.$.grid_databound_ajax.params = { "allProjs": false, "projectTarget": this.$.projectTargetDlg.value, "NoDocument": this.$.DocIdDlg.value, "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value, "InverterSinal": this.invertersinal };
                         this.$.grid_databound_ajax.body = JSON.stringify(this.$.projectSourceDlg.value);
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
@@ -2138,6 +2138,15 @@
                 },
 
                 _registerPreRegist: function () {
+                    for (i = 0; i < this.result.items.length; i++) {
+                        if ((this.result.items[i].unitCost != null && this.result.items[i].unitCost < 0) ||
+                            (this.result.items[i].unitPrice != null && this.result.items[i].unitPrice < 0)) {
+
+                            this.openToastError("Não é possivel Registar as Linhas de Diário, por existirem Linhas com Custo Unitário e/ou Preço Unitário inferior a 0.");
+                            return;
+                        }
+                    }
+
                     this.$.ajax_register.body = JSON.stringify(this.result.items);
                     this.$.ajax_register.generateRequest();
                     this.$.projectDiaryProject.clearCache();

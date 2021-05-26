@@ -2086,6 +2086,16 @@
                 },
 
                 _registerDiary: function () {
+                    debugger;
+                    for (i = 0; i < this.result.items.length; i++) {
+                        if ((this.result.items[i].unitCost != null && this.result.items[i].unitCost < 0) ||
+                            (this.result.items[i].unitPrice != null && this.result.items[i].unitPrice < 0)) {
+
+                            this.openToastError("Não é possivel Registar as Linhas de Diário, por existirem Linhas com Custo Unitário e/ou Preço Unitário inferior a 0.");
+                            return;
+                        }
+                    }
+
                     //Antes de Registar as Linhas Guarda as mesmas
                     this._update();
 

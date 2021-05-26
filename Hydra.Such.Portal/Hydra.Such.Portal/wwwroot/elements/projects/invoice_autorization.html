@@ -1390,8 +1390,26 @@
                                         //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
                                         total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
                                     }
+
+                                    if (items[i].selecionada == true) {
+                                        if ((items[i].unitCost != null && items[i].unitCost < 0) ||
+                                            (items[i].unitPrice != null && items[i].unitPrice < 0)) {
+
+                                            this.openToastError("Não é possivel Autorizar, por existirem Movimentos selecionados com Custo Unitário e/ou Preço Unitário inferior a 0.");
+                                            this.$.btnConfirm.disabled = false;
+                                            return;
+                                        }
+                                    }
                                 }
                             }
+
+                            if ((this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) &&
+                                (this.$.txtNoFaturaRelacionada.value == null || this.$.txtNoFaturaRelacionada.value == "")) {
+                                this.openToastError("Não é possivel Autorizar, por ser obrigatório o preenchimento do campo Nº Fatura Relacionada.");
+                                this.$.btnConfirm.disabled = false;
+                                return;
+                            }
+
                             if (this._totalToAuthorize == this.roundToTwo(total)) {
                                 this.validationMessages = [];
                                 var validationRequest = {
@@ -1404,6 +1422,8 @@
                                     "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                                     "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
+                                    "dataServPrestado": this.$.txtDataPrestacaoServ.value,
+                                    "noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value,
                                 };
                                 this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
                                 this.$.projMovValidation_ajax.generateRequest();

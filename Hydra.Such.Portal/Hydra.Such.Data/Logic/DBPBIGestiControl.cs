@@ -128,12 +128,9 @@ namespace Hydra.Such.Data.Logic
                         result.Add(new PBIGestiControl_MovProducaoCRespViewModel()
                         {
                             ID = temp.ID.Equals(DBNull.Value) ? "" : (string)temp.ID,
-                            IdArea = temp.IdArea.Equals(DBNull.Value) ? "" : (string)temp.IdArea,
-                            Area = temp.Area.Equals(DBNull.Value) ? "" : (string)temp.Area,
-                            IdIndicador = temp.IdIndicador.Equals(DBNull.Value) ? "" : (string)temp.IdIndicador,
-                            Indicador = temp.Indicador.Equals(DBNull.Value) ? "" : (string)temp.Indicador,
+                            IdCResp = temp.IdCResp.Equals(DBNull.Value) ? "" : (string)temp.IdCResp,
                             DataPro = temp.DataPro.Equals(DBNull.Value) ? "" : (string)temp.DataPro,
-                            VProdGrafico = temp.VProdGrafico.Equals(DBNull.Value) ? "" : (string)temp.VProdGrafico
+                            NumContratos = temp.NumContratos.Equals(DBNull.Value) ? "" : (string)temp.NumContratos
                         });
                     }
 

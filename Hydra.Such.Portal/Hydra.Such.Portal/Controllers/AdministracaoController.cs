@@ -174,6 +174,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ValidarPedidoPagamento = userConfig.ValidarPedidoPagamento.HasValue ? userConfig.ValidarPedidoPagamento : false;
                 result.ArquivarREQPendentes = userConfig.ArquivarREQPendentes.HasValue ? userConfig.ArquivarREQPendentes : false;
                 result.CriarMedidasCorretivas = userConfig.CriarMedidasCorretivas.HasValue ? userConfig.CriarMedidasCorretivas : false;
+                result.VerFaturas = userConfig.VerFaturas.HasValue ? userConfig.VerFaturas : false;
 
                 #region SGPPF
                 result.TipoUtilizadorFormacao = userConfig.TipoUtilizadorFormacao;
@@ -269,6 +270,7 @@ namespace Hydra.Such.Portal.Controllers
                 CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false,
                 ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false,
                 CriarMedidasCorretivas = data.CriarMedidasCorretivas.HasValue ? data.CriarMedidasCorretivas : false,
+                VerFaturas = data.VerFaturas.HasValue ? data.VerFaturas : false,
 
                 #region SGPPF
                 TipoUtilizadorFormacao = data.TipoUtilizadorFormacao
@@ -357,6 +359,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ValidarPedidoPagamento = data.ValidarPedidoPagamento.HasValue ? data.ValidarPedidoPagamento : false;
                 userConfig.ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false;
                 userConfig.CriarMedidasCorretivas = data.CriarMedidasCorretivas.HasValue ? data.CriarMedidasCorretivas : false;
+                userConfig.VerFaturas = data.VerFaturas.HasValue ? data.VerFaturas : false;
 
                 #region SGPPF
                 userConfig.TipoUtilizadorFormacao = data.TipoUtilizadorFormacao;
@@ -5699,15 +5702,19 @@ namespace Hydra.Such.Portal.Controllers
                 Email1Regiao12 = data.Email1Regiao12,
                 Email2Regiao12 = data.Email2Regiao12,
                 Email3Regiao12 = data.Email3Regiao12,
+                Email4Regiao12 = data.Email4Regiao12,
                 Email1Regiao23 = data.Email1Regiao23,
                 Email2Regiao23 = data.Email2Regiao23,
                 Email3Regiao23 = data.Email3Regiao23,
+                Email4Regiao23 = data.Email4Regiao23,
                 Email1Regiao33 = data.Email1Regiao33,
                 Email2Regiao33 = data.Email2Regiao33,
                 Email3Regiao33 = data.Email3Regiao33,
+                Email4Regiao33 = data.Email4Regiao33,
                 Email1Regiao43 = data.Email1Regiao43,
                 Email2Regiao43 = data.Email2Regiao43,
                 Email3Regiao43 = data.Email3Regiao43,
+                Email4Regiao43 = data.Email4Regiao43,
                 DiasParaEnvioAlerta = data.DiasParaEnvioAlerta,
                 DiasParaEnvioAlertaAudienciaPrevia = data.DiasParaEnvioAlertaAudienciaPrevia,
                 UtilizadorCriacao = data.UtilizadorCriacao,
@@ -8875,10 +8882,9 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Indicador"); Col = Col + 1; }
-                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área"); Col = Col + 1; }
+                if (dp["idCResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Produção"); Col = Col + 1; }
-                if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Produção Gráfico"); Col = Col + 1; }
+                if (dp["numContratos"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contratos"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -8888,10 +8894,9 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Indicador); Col = Col + 1; }
-                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area); Col = Col + 1; }
+                        if (dp["idCResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IdCResp); Col = Col + 1; }
                         if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPro); Col = Col + 1; }
-                        if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VProdGrafico.Replace(".", ",")); Col = Col + 1; }
+                        if (dp["numContratos"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumContratos); Col = Col + 1; }
                         count++;
                     }
                 }

@@ -9,7 +9,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.Text;
 using System.Threading.Tasks;
-using WSSisLog;
+using WSSisLogProd;
 using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.NAV
@@ -24,9 +24,10 @@ namespace Hydra.Such.Data.NAV
             navWSBinding = new BasicHttpBinding();
             navWSBinding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
+            navWSBinding.MaxReceivedMessageSize = 2147483647;
         }
 
-        public static async Task<getStockResponse> GetSTOCK(string Armazem, string Produto, NAVWSConfigurations WSConfigurations)
+        public static async Task<getStockResponse> GetSTOCK_PROD(string Armazem, string Produto, NAVWSConfigurations WSConfigurations)
         {
             try
             {
@@ -35,7 +36,31 @@ namespace Hydra.Such.Data.NAV
                 input.articulo = Produto;
                 getStock stock = new getStock(input);
 
-                EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_SisLog_URL);
+                EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_SisLog_Prod_URL);
+                StockActualSOAPClient WS_Client = new StockActualSOAPClient(navWSBinding, WS_URL);
+                WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+                WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential("", "");
+
+                getStockResponse result = await WS_Client.getStockAsync(stock);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public static async Task<getStockResponse> GetSTOCK_TESTE(string Armazem, string Produto, NAVWSConfigurations WSConfigurations)
+        {
+            try
+            {
+                InputParametersStockActual input = new InputParametersStockActual();
+                input.almacen = Armazem;
+                input.articulo = Produto;
+                getStock stock = new getStock(input);
+
+                EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_SisLog_Teste_URL);
                 StockActualSOAPClient WS_Client = new StockActualSOAPClient(navWSBinding, WS_URL);
                 WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
                 WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential("", "");

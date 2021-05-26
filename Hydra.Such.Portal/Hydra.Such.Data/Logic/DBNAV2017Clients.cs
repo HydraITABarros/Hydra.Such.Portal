@@ -246,6 +246,7 @@ namespace Hydra.Such.Data.Logic
                             BillToCustomerNo = temp.BillToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.BillToCustomerNo,
                             CreationDate = (DateTime?)temp.CreationDate,
                             DocumentDate = (DateTime?)temp.DocumentDate,
+                            DocumentDateText = temp.DocumentDate != null ? Convert.ToDateTime(temp.DocumentDate).ToString("yyyy-MM-dd") : "",
                             DueDate = (DateTime?)temp.DueDate,
                             FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
                             Paid = (bool)temp.Paid,

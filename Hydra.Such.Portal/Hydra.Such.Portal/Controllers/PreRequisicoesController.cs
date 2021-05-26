@@ -26,7 +26,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.Logic.Viatura;
 using Hydra.Such.Data.NAV;
-using WSSisLog;
+using WSSisLogProd;
 using System.ServiceModel;
 using System.Net;
 
@@ -796,7 +796,12 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 string armazem = "001";
                                 string produto = linha.Code;
-                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                Task<WSSisLogProd.getStockResponse> TReadStock;
+                                if (_config.Conn == "eSUCH_Prod")
+                                    TReadStock = WS_SisLog.GetSTOCK_PROD(armazem, produto, _configws);
+                                else
+                                    TReadStock = WS_SisLog.GetSTOCK_TESTE(armazem, produto, _configws);
+                                //Task<WSSisLogProd.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
                                 try
                                 {
                                     TReadStock.Wait();
@@ -1615,7 +1620,12 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 string armazem = "001";
                                 string produto = newline.Código;
-                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                Task<WSSisLogProd.getStockResponse> TReadStock;
+                                if (_config.Conn == "eSUCH_Prod")
+                                    TReadStock = WS_SisLog.GetSTOCK_PROD(armazem, produto, _configws);
+                                else
+                                    TReadStock = WS_SisLog.GetSTOCK_TESTE(armazem, produto, _configws);
+                                //Task<WSSisLogProd.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
                                 try
                                 {
                                     TReadStock.Wait();
@@ -3436,7 +3446,12 @@ namespace Hydra.Such.Portal.Controllers
                             if (armazem == "4300")
                             {
                                 armazem = "001";
-                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                Task<WSSisLogProd.getStockResponse> TReadStock;
+                                if (_config.Conn == "eSUCH_Prod")
+                                    TReadStock = WS_SisLog.GetSTOCK_PROD(armazem, produto, _configws);
+                                else
+                                    TReadStock = WS_SisLog.GetSTOCK_TESTE(armazem, produto, _configws);
+                                //Task<WSSisLogProd.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
                                 try
                                 {
                                     TReadStock.Wait();
@@ -4394,7 +4409,12 @@ namespace Hydra.Such.Portal.Controllers
                 if (armazem == "4300")
                 {
                     armazem = "001";
-                    Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                    Task<WSSisLogProd.getStockResponse> TReadStock;
+                    if (_config.Conn == "eSUCH_Prod")
+                        TReadStock = WS_SisLog.GetSTOCK_PROD(armazem, produto, _configws);
+                    else
+                        TReadStock = WS_SisLog.GetSTOCK_TESTE(armazem, produto, _configws);
+                    //Task<WSSisLogProd.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
                     try
                     {
                         TReadStock.Wait();
@@ -4408,6 +4428,7 @@ namespace Hydra.Such.Portal.Controllers
                         else
                             Quantidades.QuantDisponivel = 0;
                     }
+
                     if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
                         Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
                     else
@@ -4424,6 +4445,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
                 }
+
+                Quantidades.QuantReservada = (decimal)DBSISLOGReservas.GetQuantReservada(produto);
             }
 
             return Json(Quantidades);

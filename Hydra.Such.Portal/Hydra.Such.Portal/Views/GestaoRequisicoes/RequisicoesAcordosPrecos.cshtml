@@ -912,6 +912,7 @@
 
                 _createPurchaseOrderResponse: function (e) {
                     this.selectedItems = [];
+                    this.selectedItemsCG = [];
 
                     if (this.Requisition.eReasonCode == "1") {
                         this._showMessage(this.Requisition.eMessage);
@@ -1061,10 +1062,16 @@
                 },
 
                 _HistoricoCG: function () {
+                    this.selectedItems = [];
+                    this.selectedItemsCG = [];
+
                     this.$.ajax_getgridHistoricoCG.generateRequest();
                 },
 
                 _btnVerCG: function () {
+                    this.selectedItems = [];
+                    this.selectedItemsCG = [];
+
                     if (this._opcaoCG == 1) {
                         this._opcaoCG = 2;
                         this._showVerMessage = "Ver Por Enviar";
@@ -1116,6 +1123,7 @@
                     }
                 },
                 _createPurchaseOrderCGResponse: function (e) {
+                    this.selectedItems = [];
                     this.selectedItemsCG = [];
 
                     if (this.RequisitionCG.eReasonCode == "1") {
@@ -1192,6 +1200,7 @@
                         this._showErrorMessage("Ocorreu um erro ao atualizar as linhas.");
                     }
 
+                    this.selectedItems = [];
                     this.selectedItemsCG = [];
                     $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
                 },

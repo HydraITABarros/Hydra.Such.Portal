@@ -3863,6 +3863,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (customerRequestNoValue != null)
                     customerRequestNo = (string)customerRequestNoValue.Value;
 
+                DateTime customerRequestDate = DateTime.MinValue;
+                JValue customerRequestDateValue = requestParams["customerRequestDate"] as JValue;
+                if (customerRequestDateValue != null)
+                    DateTime.TryParse((string)customerRequestDateValue.Value, out customerRequestDate);
+
                 DateTime serviceDate;
                 JValue serviceDateValue = requestParams["serviceDate"] as JValue;
                 if (serviceDateValue != null)
@@ -3873,18 +3878,29 @@ namespace Hydra.Such.Portal.Controllers
                 if (serviceDateFimValue != null)
                     DateTime.TryParse((string)serviceDateFimValue.Value, out serviceDateFim);
 
-                decimal authorizationTotal;
+                decimal authorizationTotal = 0;
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
                 if (authorizationTotalValue != null)
                 {
-                    string str = authorizationTotalValue.Value.ToString();
-                    authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
+                    string str = authorizationTotalValue.Value as string;
+                    if (!string.IsNullOrEmpty(str))
+                        authorizationTotal = decimal.Parse(str, CultureInfo.InvariantCulture);
                 }
 
                 List<ProjectMovementViewModel> projMovements = new List<ProjectMovementViewModel>();
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                string noFaturaRelacionada = string.Empty;
+                JValue noFaturaRelacionadaValue = requestParams["noFaturaRelacionada"] as JValue;
+                if (noFaturaRelacionadaValue != null)
+                    noFaturaRelacionada = (string)noFaturaRelacionadaValue.Value;
+
+                string billingPeriod = string.Empty;
+                JValue billingPeriodValue = requestParams["dataServPrestado"] as JValue;
+                if (billingPeriodValue != null)
+                    billingPeriod = (string)billingPeriodValue.Value;
 
                 List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").ToList();
                 NAVResourcesViewModel Resource = new NAVResourcesViewModel();
@@ -3967,6 +3983,28 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (string.IsNullOrEmpty(customer.RegionCode))
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "É necessário configurar a região na Ficha do Cliente."));
+
+                    if (authorizationTotal < 0)
+                    {
+                        List<NAVClientesInvoicesViewModel> AllInvoices = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+
+                        if (AllInvoices != null && AllInvoices.Count > 0)
+                        {
+                            if (!string.IsNullOrEmpty(noFaturaRelacionada))
+                            {
+                                NAVClientesInvoicesViewModel Invoice = AllInvoices.Where(y => y.No_ == noFaturaRelacionada).FirstOrDefault();
+
+                                if (Invoice == null)
+                                {
+                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi encontrada a Fatura Relacionada no NAV2017."));
+                                }
+                            }
+                            else
+                            {
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "O campo Nº Fatura Relacionada é de preenchimento obrigatório."));
+                            }
+                        }
+                    }
                 }
                 else
                     result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
@@ -3982,6 +4020,25 @@ namespace Hydra.Such.Portal.Controllers
                     var authorizedItems = projMovements.Where(x => x.AutorizatedInvoice.Value);
                     if (authorizedItems.Count() > 0)
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "Existem movimentos que já foram autorizados (ver movimentos: " + string.Join(',', authorizedItems) + ")."));
+
+                    //Procurar por Projetos Autorizados iguais
+                    List<ProjectosAutorizados> ProjetosAutorizados = DBAuthotizedProjects.GetAll();
+                    if (ProjetosAutorizados != null && ProjetosAutorizados.Count > 0)
+                    {
+                        List<ProjectosAutorizados> ProjetosAutorizadosIguais = new List<ProjectosAutorizados>();
+
+                        ProjetosAutorizadosIguais = ProjetosAutorizados.Where(x => x.CodProjeto == projectNo &&
+                        x.CodCliente == project.NºCliente &&
+                        x.ValorAutorizado == Math.Round((decimal)authorizationTotal, 2) &&
+                        x.DataServPrestado == billingPeriod &&
+                        x.PedidoCliente == customerRequestNo 
+                        && x.DataPedido == (customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null)).ToList();
+
+                        if (ProjetosAutorizadosIguais != null && ProjetosAutorizadosIguais.Count > 0)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Já existe uma Autorização de Faturação para estes Movimentos."));
+                        }
+                    }
 
                     if (contract != null)
                     {

@@ -528,13 +528,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
 
                         (x.NºEmpregado == CUser.EmployeeNo ||
-                        x.CriadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.TerminadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Validador.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRh.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado != 2)
@@ -653,13 +653,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
 
                         (x.NºEmpregado == CUser.EmployeeNo ||
-                        x.CriadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.TerminadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Validador.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRh.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado == 0) &&
@@ -780,13 +780,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         //(x.Validadores.ToLower().Contains(user.ToLower())) &&
 
                         (x.NºEmpregado == CUser.EmployeeNo ||
-                        x.CriadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.TerminadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Validador.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRh.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado == 0) &&
@@ -907,13 +907,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         //(x.IntegradoresEmRh.ToLower().Contains(user.ToLower())) &&
 
                         (x.NºEmpregado == CUser.EmployeeNo ||
-                        x.CriadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.TerminadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Validador.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRh.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.IntegradoEmRh == false || x.IntegradoEmRh == null) &&
@@ -1034,13 +1034,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         //x.IntegradoresEmRhkm.ToLower().Contains(user.ToLower()) &&
 
                         (x.NºEmpregado == CUser.EmployeeNo ||
-                        x.CriadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.TerminadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Validador.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRh.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.IntegradoEmRhkm == false || x.IntegradoEmRhkm == null) &&
@@ -1160,13 +1160,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
 
                         (x.NºEmpregado == CUser.EmployeeNo ||
-                        x.CriadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.TerminadoPor.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Validador.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRh.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
+                        x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado == 2) // 2 == REGISTADO

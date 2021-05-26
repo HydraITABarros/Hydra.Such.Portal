@@ -31,6 +31,14 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+        <style>
+            :host([disabled]) {
+                color: #a8a8a8;
+                cursor: auto;
+                pointer-events: none;
+            }
+        </style>
+
         @*POPULATE GRID*@
         <iron-ajax url="/Approvals/GetListApprovals"
                    last-response="{{result}}"
@@ -368,12 +376,20 @@
                         type: Object,
                         value: {},
                     },
+                    disabled: {
+                        type: Boolean,
+                        notify: true,
+                        value: false,
+                        reflectToAttribute: true
+                    },
                 },
                 /*FILTROS*/
                 created: function () {
                     this.filter = window.getGridFilter('approvals-approvalslist');
                 },
                 ready: function () {
+                    this.disabled = false;
+
                     /*FILTROS*/
                     window.handleGridListColumnsOrder(this.$.grid, 'approvals-approvalslist');
                     window.grid = this.$.grid;
@@ -416,7 +432,9 @@
                     }
                 },
                 _Approve: function (e) {
-                    if (e != null) {
+                    if (e != null && this.disabled == false) {
+                        this.disabled = true;
+
                         /*FILTROS*/
                         var filters = {};
                         this.$.grid._filters.map(function (value, index) {
@@ -476,7 +494,8 @@
                     }
                 },
                 _actionResponseProcessor: function (e) {
-                    var self = this;
+                    this.disabled = false;
+
                     if (this.actionResult.eReasonCode == 100) {
                         this.$.ToastMessage.text = this.actionResult.eMessage;
                         this.$.ToastMessage.open();

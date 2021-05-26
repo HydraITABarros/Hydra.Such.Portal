@@ -29,5 +29,7 @@ namespace Hydra.Such.Data.ViewModel
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }
         public string RespCenterId { get; set; }
+
+        public string DocumentDateText { get; set; }
     }
 }

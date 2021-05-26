@@ -1440,6 +1440,22 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Email2Regiao43).HasMaxLength(100);
 
+                entity.Property(e => e.Email3Regiao12).HasMaxLength(100);
+
+                entity.Property(e => e.Email3Regiao23).HasMaxLength(100);
+
+                entity.Property(e => e.Email3Regiao33).HasMaxLength(100);
+
+                entity.Property(e => e.Email3Regiao43).HasMaxLength(100);
+
+                entity.Property(e => e.Email4Regiao12).HasMaxLength(100);
+
+                entity.Property(e => e.Email4Regiao23).HasMaxLength(100);
+
+                entity.Property(e => e.Email4Regiao33).HasMaxLength(100);
+
+                entity.Property(e => e.Email4Regiao43).HasMaxLength(100);
+
                 entity.Property(e => e.UtilizadorCriacao).HasMaxLength(50);
 
                 entity.Property(e => e.UtilizadorModificacao).HasMaxLength(50);
