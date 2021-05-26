@@ -26,7 +26,8 @@ namespace Hydra.Such.Data.Logic
         public string CodEstabelecimento { get; set; }
         public string DescricaoEstabelecimento { get; set; }
 
-        public List<ConfiguracaoAprovacaoAcademia> ChefiasFormando { get; set; }
+        public List<ConfiguracaoAprovacaoAcademia> HierarquiaFormando { get; set; }
+        
         public ICollection<PedidoParticipacaoFormacao> PedidosFormacao { get; set; }    
 
 
@@ -86,7 +87,8 @@ namespace Hydra.Such.Data.Logic
 
         public void GetTraineeManagers(int type)
         {
-            ChefiasFormando = new List<ConfiguracaoAprovacaoAcademia>();
+            HierarquiaFormando = new List<ConfiguracaoAprovacaoAcademia>();
+          
 
             // obter todas as configurações de aprovações para Pedidos de Participação em Formação referentes à Área do Formando
             // o "Nível de Aprovação" é que distinguirá quem é Director e quem é Chefia
@@ -97,14 +99,14 @@ namespace Hydra.Such.Data.Logic
 
             foreach(var c in configAprovadores)
             {
-                if (!string.IsNullOrEmpty(c.UtilizadorAprovação))
+                if (!string.IsNullOrEmpty(c.UtilizadorAprovação) && c.NívelAprovação.Value == 3)
                 {
                     ConfigUtilizadores userConfig = DBUserConfigurations.GetById(c.UtilizadorAprovação);
                     ConfiguracaoAprovacaoAcademia u = new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c);
 
-                    if (u != null && !string.IsNullOrEmpty(u.IdUtilizador) && !CheckIfManagerExists(u))
+                    if (u != null && !string.IsNullOrEmpty(u.IdUtilizador))
                     {
-                        ChefiasFormando.Add(u);
+                        HierarquiaFormando.Add(u);
                     }
                 }
                 else
@@ -118,7 +120,7 @@ namespace Hydra.Such.Data.Logic
                             ConfiguracaoAprovacaoAcademia u = new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c);
                             if (u != null && !string.IsNullOrEmpty(u.IdUtilizador) && !CheckIfManagerExists(u))
                             {
-                                ChefiasFormando.Add(u);
+                                HierarquiaFormando.Add(u);
                             }
                         }
                     }                    
@@ -130,7 +132,7 @@ namespace Hydra.Such.Data.Logic
         {
             List<string> addresses = new List<string>();
 
-            foreach (var c in ChefiasFormando)
+            foreach (var c in HierarquiaFormando)
             {
                 if (c.NívelAprovação == approvalLevel)
                 {
@@ -142,7 +144,7 @@ namespace Hydra.Such.Data.Logic
 
         private bool CheckIfManagerExists(ConfiguracaoAprovacaoAcademia config)
         {
-            foreach (var c in ChefiasFormando)
+            foreach (var c in HierarquiaFormando)
             {
                 if (c.IdUtilizador == config.IdUtilizador && c.NívelAprovação == config.NívelAprovação)
                 {
@@ -170,6 +172,9 @@ namespace Hydra.Such.Data.Logic
             if (config.NívelAprovação == 2)
                 TipoUtilizadorConfiguracao = Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao;
 
+            if (config.NívelAprovação == 3)
+                TipoUtilizadorConfiguracao = Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao;
+
             if (config.NívelAprovação != 1 && config.NívelAprovação != 2)
                 TipoUtilizadorConfiguracao = Enumerations.TipoUtilizadorFluxoPedidoFormacao.Formando;
 
@@ -195,6 +200,7 @@ namespace Hydra.Such.Data.Logic
         public List<string> AreasChefia { get; set; }
         public List<string> CRespChefia { get; set; }
         public List<string> AreasDirige { get; set; }
+        public List<string> PelourosConselho { get; set; }
         public List<ConfiguracaoAprovacaoAcademia> ConfiguracaoAprovAcademia { get; set; }
 
         public ConfiguracaoAprovacaoUtilizador(ConfigUtilizadores userConfig, int type)
@@ -217,6 +223,7 @@ namespace Hydra.Such.Data.Logic
             AreasChefia = new List<string>();
             CRespChefia = new List<string>();
             AreasDirige = new List<string>();
+            PelourosConselho = new List<string>();
 
             List<UtilizadoresGruposAprovação> grupos = DBApprovalUserGroup.GetByUser(userConfig.IdUtilizador);
             List<ConfiguraçãoAprovações> configAprovadores = DBApprovalConfigurations.GetAllByType(type);
@@ -227,23 +234,38 @@ namespace Hydra.Such.Data.Logic
                 {
                     if(grupos.Where(g => g.GrupoAprovação == c.GrupoAprovação).FirstOrDefault() != null)
                     {
-                        if(c.NívelAprovação == 1 || c.NívelAprovação == 2)
+                        ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c));
+
+                        switch (c.NívelAprovação)
                         {
-                            ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c));
-                            if (c.NívelAprovação.Value == 1)
-                            {
-                                if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
-                                    AreasChefia.Add(c.CódigoÁreaFuncional);
+                            case 1: // Chefia
+                                {
+                                    if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
+                                        AreasChefia.Add(c.CódigoÁreaFuncional);
 
-                                if (!string.IsNullOrWhiteSpace(c.CódigoCentroResponsabilidade))
-                                    CRespChefia.Add(c.CódigoCentroResponsabilidade);
-                            }
-
-                            if (c.NívelAprovação.Value == 2)
-                            {
-                                if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
-                                    AreasDirige.Add(c.CódigoÁreaFuncional);
-                            }
+                                    if (!string.IsNullOrWhiteSpace(c.CódigoCentroResponsabilidade))
+                                        CRespChefia.Add(c.CódigoCentroResponsabilidade);
+                                }
+                                break;
+                            case 2: // Director
+                                {
+                                    if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
+                                        AreasDirige.Add(c.CódigoÁreaFuncional);
+                                }
+                                break;
+                            case 3: // CA
+                                {
+                                    if (c.UtilizadorAprovação == userConfig.IdUtilizador && 
+                                        (Enumerations.TipoUtilizadorFluxoPedidoFormacao)userConfig.TipoUtilizadorFormacao.Value == Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao)
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
+                                        {
+                                            PelourosConselho.Add(c.CódigoÁreaFuncional);
+                                        }
+                                    }
+                                    
+                                }
+                                break;
                         }                                              
                         
                     }
@@ -252,6 +274,7 @@ namespace Hydra.Such.Data.Logic
                 AreasChefia = AreasChefia != null && AreasChefia.Count > 0 ? AreasChefia.Distinct().ToList() : null;
                 CRespChefia = CRespChefia != null && CRespChefia.Count > 0 ? CRespChefia.Distinct().ToList() : null;
                 AreasDirige = AreasDirige != null && AreasDirige.Count > 0 ? AreasDirige.Distinct().ToList() : null;
+                PelourosConselho = PelourosConselho != null && PelourosConselho.Count > 0 ? PelourosConselho.Distinct().ToList() : null;
             }
         }
 
@@ -371,7 +394,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public void MakeEmailToChiefForApproval(Formando f, string designacaoAccao, DateTime dataInicio)
+        public void MakeEmailToChiefForApproval(Formando f, PedidoParticipacaoFormacao p, string url)
         {
             if (!IsBodyHtml)
             {
@@ -380,7 +403,7 @@ namespace Hydra.Such.Data.Logic
             }
             else
             {
-                if (f.ChefiasFormando == null || f.ChefiasFormando.Count == 0)
+                if (f.HierarquiaFormando == null || f.HierarquiaFormando.Count == 0)
                 {
                     return;
                 }
@@ -389,7 +412,7 @@ namespace Hydra.Such.Data.Logic
                 string chefias;
                 string bodyTxt;
 
-                foreach (var item in f.ChefiasFormando)
+                foreach (var item in f.HierarquiaFormando)
                 {
                     if (item.NívelAprovação == 1)
                     {
@@ -414,9 +437,9 @@ namespace Hydra.Such.Data.Logic
                 bodyTxt = "O Colaborador " + f.Name + " (" + f.No + "), " +
                     "pertencente ao Centro de Responsabilidade" + f.CrespNav2017 + " - " + f.DescCrespNav2017 + ", realizou um pedido de participação em formação externa " +
                     "para a seguinte acção de formação:<br />" +
-                    "Acção: " + designacaoAccao + "<br />" +
-                    "Data Inicio: " + dataInicio.Date.ToString("dd-MM-yyyy") + "<br /><br />" +
-                    "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Chefia, e aprove/rejeite fundamentando o mesmo.";
+                    "Acção: " + p.DesignacaoAccao + "<br />" +
+                    "Data Inicio: " + p.DataInicio.Value.Date.ToString("dd-MM-yyyy") + "<br /><br />" +
+                    "Para tratar o pedido, por favor, aceda a: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />";
 
                 Body = @"<html>" +
                                 "<head>" +
@@ -470,7 +493,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public void MakeEmailToDirectorForApproval(Formando f, string designacaoAccao, DateTime dataInicio)
+        public void MakeEmailToDirectorForApproval(Formando f, PedidoParticipacaoFormacao p, string url)
         {
             if (!IsBodyHtml)
             {
@@ -479,7 +502,7 @@ namespace Hydra.Such.Data.Logic
             }
             else
             {
-                if (f.ChefiasFormando == null || f.ChefiasFormando.Count == 0)
+                if (f.HierarquiaFormando == null || f.HierarquiaFormando.Count == 0)
                 {
                     return;
                 }
@@ -488,7 +511,7 @@ namespace Hydra.Such.Data.Logic
                 string directores;
                 string bodyTxt;
 
-                foreach (var item in f.ChefiasFormando)
+                foreach (var item in f.HierarquiaFormando)
                 {
                     if (item.NívelAprovação == 2)
                     {
@@ -513,10 +536,10 @@ namespace Hydra.Such.Data.Logic
                 bodyTxt = "O Colaborador " + f.Name + " (" + f.No + "), " +
                     "pertencente ao " + f.CrespNav2017 + " - " + f.DescCrespNav2017 + ", realizou um pedido de participação em formação externa " +
                     "para a seguinte acção de formação:<br />" +
-                    "Acção: " + designacaoAccao + "<br />" +
-                    "Data Inicio: " + dataInicio.Date.ToString("dd-MM-yyyy") + "<br /><br />" +
+                    "Acção: " + p.DesignacaoAccao + "<br />" +
+                    "Data Inicio: " + p.DataInicio.Value.Date.ToString("dd-MM-yyyy") + "<br /><br />" +
                     "O pedido foi aprovado pela chefia directa.<br /><br />" +
-                    "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Direcção, e aprove/rejeite o mesmo.";
+                    "Para tratar o pedido, por favor, aceda a: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />";
 
                 Body = @"<html>" +
                                 "<head>" +
@@ -570,7 +593,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public void MakeEmailToDirectorRequestDenial(Formando f, string idPedido, string designacaoAccao, DateTime dataInicio)
+        public void MakeEmailToDirectorRequestDenial(Formando f, PedidoParticipacaoFormacao p, string url)
         {
             if (!IsBodyHtml)
             {
@@ -578,7 +601,7 @@ namespace Hydra.Such.Data.Logic
             }
             else
             {
-                if (f.ChefiasFormando == null || f.ChefiasFormando.Count == 0)
+                if (f.HierarquiaFormando == null || f.HierarquiaFormando.Count == 0)
                 {
                     return;
                 }
@@ -587,7 +610,7 @@ namespace Hydra.Such.Data.Logic
                 string directores;
                 string bodyTxt;
 
-                foreach (var item in f.ChefiasFormando)
+                foreach (var item in f.HierarquiaFormando)
                 {
                     if (item.NívelAprovação == 2)
                     {
@@ -609,12 +632,13 @@ namespace Hydra.Such.Data.Logic
                     directores = "Caros(as)<br />" + string.Join(",<br />", nomesDirectores) + ",";
                 }
 
-                bodyTxt = "O pedido de participação em formação externa nº" + idPedido + "," +
+                bodyTxt = "O pedido de participação em formação externa nº" + p.IdPedido + "," +
                     "do colaborador " + f.Name + "(" + f.No + "), pertencente ao Centro de Responsabilidade " + f.CrespNav2017 + " - " + f.DescCrespNav2017 +
                     ", para a acção de formação:<br />" +
-                    "Acção: " + designacaoAccao + "<br />" +
-                    "Data Inicio: " + dataInicio.Date.ToString("dd-MM-yyyy") + "<br />" +
-                    "Foi rejeitado por falha de dotação orçamental, por favor corrija e reenvie o pedido à Academia.<br /><br />";
+                    "Acção: " + p.DesignacaoAccao + "<br />" +
+                    "Data Inicio: " + p.DataInicio.Value.Date.ToString("dd-MM-yyyy") + "<br />" +
+                    "Foi rejeitado com a seguinte informação:<br />" + p.ParecerDotacaoAcademia + "<br />" +
+                    "Por favor corrija e reenvie o pedido à Academia: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />";
 
                 Body = @"<html>" +
                                 "<head>" +
@@ -667,20 +691,125 @@ namespace Hydra.Such.Data.Logic
                             "</html>";
             }
         }
-
-        public void MakeEmailBoardDecision(Formando f, bool approved, string idPedido, string designacaoAccao, DateTime dataInicio)
+        public void MakeEmailToBoardForApproval(Formando f, PedidoParticipacaoFormacao p, string url)
         {
-            if (approved)   // if request is not approved, then is denied
+            if (!IsBodyHtml)
             {
-
+                Body = NotificationEmail.BodyText;
             }
             else
             {
+                if (f.HierarquiaFormando == null || f.HierarquiaFormando.Count == 0)
+                {
+                    return;
+                }
+
+                List<string> nomesCA = new List<string>();
+                string nomes;
+                string bodyTxt;
+
+                foreach (var item in f.HierarquiaFormando)
+                {
+                    if (item.NívelAprovação.Value == 3)
+                    {
+                        nomesCA.Add(item.NomeAprovador);
+                    }
+                }
+                if (nomesCA == null || nomesCA.Count == 0)
+                {
+                    return;
+                }
+
+                if (nomesCA.Count == 1)
+                {
+                    nomes = "Exmo(a) Membro do Conselho de Administração" + string.Join(", ", nomesCA) + ",";
+                }
+                else
+                {
+                    nomes = "Exmos(as) Membros do Conselho de Administração<br />" + string.Join(",<br />", nomesCA) + ",";
+                }
+
+                bodyTxt = "Remete-se para aprovação de V.Ex.ª o pedido de participação em formação externa, do colaborador(a) " + f.Name + "(" + f.No + "), " +
+                    "pertencente ao Centro de Responsabilidade" + f.CrespNav2017 + " - " + f.DescCrespNav2017 + ".<br /><br />" +
+                    "Para tratar, por favor siga a ligação: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />";
+
+                Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:800px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                nomes +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                bodyTxt +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                NotificationEmail.SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
 
             }
         }
+        public void MakeEmailBoardDecision(PedidoParticipacaoFormacao p, string url)
+        {
+            if (!IsBodyHtml)
+            {
+                Body = NotificationEmail.BodyText;
+            }
+            else
+            {
+                string bodyTxt;
 
+                if ((Enumerations.EstadoPedidoFormacao)p.Estado == Enumerations.EstadoPedidoFormacao.PedidoAutorizadoConsAdmin)
+                {
+                    bodyTxt = "<p>Foi aprovado o pedido: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />" + "</p>";
+                }
+                else
+                {
+                    bodyTxt = "<p>Foi rejeitado o pedido: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />" + "</p>";
+                }
 
+                Body = @"<html><body>" + bodyTxt + "</body></html>";
+            }
+           
+        }
+
+        
 
         private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
         {
@@ -931,6 +1060,30 @@ namespace Hydra.Such.Data.Logic
                 return false;
             }
         }   
+
+        public static bool __CriarComentario(Comentario comment)
+        {
+            if (comment == null || string.IsNullOrEmpty(comment.NoDocumento) || string.IsNullOrEmpty(comment.UtilizadorCriacao))
+            {
+                return false;
+            }
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    _ctx.Comentario.Add(comment);
+                    _ctx.SaveChanges();
+                    return true;
+
+                }
+                
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
         #endregion
 
         #region Reads
@@ -1191,6 +1344,27 @@ namespace Hydra.Such.Data.Logic
             {
 
                 return null;
+            }
+        }
+
+        public static List<Comentario> __GetCometariosPedido(string idPedido)
+        {
+            if (string.IsNullOrEmpty(idPedido))
+            {
+                return null;
+            }
+
+            using (var _ctx = new SuchDBContext())
+            {
+                try
+                {
+                    return _ctx.Comentario.Where(c => c.NoDocumento == idPedido).ToList();
+                }
+                catch (Exception ex)
+                {
+
+                    return null;
+                }                
             }
         }
 
@@ -1750,7 +1924,29 @@ namespace Hydra.Such.Data.Logic
 
                 throw;
             }
-            return false;
+        }
+
+        public static bool __UpdateComentario(Comentario comment)
+        {
+            if (comment == null || string.IsNullOrEmpty(comment.NoDocumento))
+            {
+                return false;
+            }
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    _ctx.Comentario.Update(comment);
+                    _ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+
+                return false;
+            }
         }
         #endregion
 
