@@ -70,6 +70,7 @@ namespace Hydra.Such.Data.Database
         public bool? Selecionada { get; set; }
         public string Fatura { get; set; }
         public decimal? TaxaIVA { get; set; }
+        public string FaturaRelacionada { get; set; }
 
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }

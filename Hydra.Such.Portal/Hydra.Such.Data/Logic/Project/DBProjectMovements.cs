@@ -550,6 +550,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Selecionada = item.Selecionada;
                 projMovement.Fatura = item.Fatura;
                 projMovement.TaxaIVA = item.TaxaIVA;
+                projMovement.FaturaRelacionada = item.FaturaRelacionada;
 
                 return projMovement;
             }
@@ -638,6 +639,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Selecionada = item.Selecionada;
                 projMovement.Fatura = item.Fatura;
                 projMovement.TaxaIVA = item.TaxaIVA;
+                projMovement.FaturaRelacionada = item.FaturaRelacionada;
 
                 return projMovement;
             }
@@ -744,6 +746,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Selecionada = item.Selecionada;
                 projMovement.Fatura = item.Fatura;
                 projMovement.TaxaIVA = item.TaxaIVA;
+                projMovement.FaturaRelacionada = item.FaturaRelacionada;
 
                 return projMovement;
             }

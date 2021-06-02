@@ -30,6 +30,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.Add(new NAVSalesHeaderViewModel()
                         {
+                            No = (string)temp.DocumentNo,
                             ContractNo = (string)temp.ContractNo_,
                             DocumentType = (int)temp.DocumentType,
                            

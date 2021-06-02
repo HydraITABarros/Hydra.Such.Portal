@@ -1958,7 +1958,7 @@
                         }
 
                         this.$.dialogGetProjetStart.close();
-                        this.$.ajax_createmovproj.params = { "projectNo": "", "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value, "Date": this.$.idDateDlg.value };
+                        this.$.ajax_createmovproj.params = { "projectNo": "", "Resources": this.$.ResourcesDlg.value, "ProjDiaryPrice": this.$.ProjDiaryPriceDlg.value, "Date": this.$.idDateDlg.value, "DocumentNo": this.$.DocIdDlg.value };
                         this.$.ajax_createmovproj.body = JSON.stringify(selItms);
                         this.$.ajax_createmovproj.generateRequest();
                     } else {

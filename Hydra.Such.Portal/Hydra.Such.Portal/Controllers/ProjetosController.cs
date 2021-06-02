@@ -2348,7 +2348,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date, string DocumentNo)
         {
 
             ProjectDiaryResponse response = new ProjectDiaryResponse();
@@ -2462,6 +2462,11 @@ namespace Hydra.Such.Portal.Controllers
                                             DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
                                             CódServiçoCliente = pjD.ServiceClientCode,
                                         };
+                                        if (newdp != null && newdp.PreçoTotal.HasValue && newdp.PreçoTotal < 0)
+                                            newdp.NºDocumento = DocumentNo;
+                                        else
+                                            newdp.NºDocumento = "";
+
                                         if (pjD.LineNo > 0)
                                         {
                                             newdp.Faturada = pjD.Billed;
@@ -2586,6 +2591,10 @@ namespace Hydra.Such.Portal.Controllers
                             DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                             CódServiçoCliente = x.ServiceClientCode,
                         };
+                        if (newdp != null && newdp.PreçoTotal.HasValue && newdp.PreçoTotal < 0)
+                            newdp.NºDocumento = DocumentNo;
+                        else
+                            newdp.NºDocumento = "";
 
                         if (x.LineNo > 0)
                         {
@@ -2792,6 +2801,10 @@ namespace Hydra.Such.Portal.Controllers
                                         CriarMovNav2017 = false,
                                         TaxaIVA = newdp.TaxaIVA
                                     };
+                                    if (ProjectMovement != null && ProjectMovement.PreçoTotal.HasValue && ProjectMovement.PreçoTotal < 0)
+                                        ProjectMovement.FaturaRelacionada = newdp.NºDocumento;
+                                    else
+                                        ProjectMovement.FaturaRelacionada = "";
 
                                     DBProjectMovements.Create(ProjectMovement);
                                 }
@@ -3229,7 +3242,7 @@ namespace Hydra.Such.Portal.Controllers
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura,
                         ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : "",
-                        TaxaIVA = x.TaxaIVA
+                        TaxaIVA = x.TaxaIVA,
                     }).OrderByDescending(x => x.Date).ToList();
                 }
                 else

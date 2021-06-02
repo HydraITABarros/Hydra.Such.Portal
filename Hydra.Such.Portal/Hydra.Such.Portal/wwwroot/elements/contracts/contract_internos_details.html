@@ -311,7 +311,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field id="contractNo" name="contractNo" maxlength="20" label="Nº Contrato" value="{{data.contractNo}}" disabled="{{ !_isCreate}}"></vaadin-text-field>
+                                            <vaadin-text-field id="contractNo" name="contractNo" maxlength="20" label="Nº Contrato" value="{{data.contractNo}}" disabled></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBContractType]]" id="mContractTypes" item-value-path="id" item-label-path="value" label="Tipo de contrato" value="{{data.type}}" disabled required error-message="Este campo é obrigatório">
@@ -1198,11 +1198,10 @@
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ _lockFields }}">Cria Contrato</vaadin-checkbox>
                                     </div>
-                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                        <div class="col-lg-2" hidden="{{_isHistoricDiv}}">
-                                            <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                        </div>
-                                    </template>
+
+                                    <div class="col-lg-2" hidden="{{_isHistoricDiv}}">
+                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createContractLine" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </div>
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
@@ -2226,7 +2225,7 @@
                     return false;
                 },
                 _createNewContract: function () {
-                    window.location.href = "../DetalhesContrato";
+                    window.location.href = "/Contratos/DetalhesContratoInternos";
                 },
                 _clientChange: function (e) {
                     if (typeof this.CBClients != 'undefined') {
@@ -2590,6 +2589,7 @@
                 //        CONTRACT LINES
                 //#################################
                 _createContractLine: function () {
+                    this.$.btnCreateLine.disabled = true;
                     //if (this.$._CLInvoiceGroup.validate() && this.$._CLContractLineType.validate()) {
                     if (this.$._CLInvoiceGroup.validate()) {
                         this.dataLines.lines.unshift({
@@ -2627,6 +2627,7 @@
                         this.$.contractLines_databound_ajax.generateRequest();
                     } else {
                         this._openToastError("Inserir dados em falta!");
+                        this.$.btnCreateLine.disabled = false;
                     }
                 },
                 _updateContractLines: function () {
@@ -3272,6 +3273,9 @@
                         } else {
                             this._openToastError("Erro ao reativar contrato.");
                         }
+                    }
+                    if (this.$.contractLines_databound_ajax.url == "/Contratos/UpdateContractLines") {
+                        this.$.btnCreateLine.disabled = false;
                     }
                 },
 

@@ -518,28 +518,47 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.billingTypeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="billingTypeText">Tipo Faturação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="billingTypeText" value="[[filter.billingTypeText]]" />
+                </template>
+                <template>
+                    {{item.billingTypeText}}
+                </template>
+            </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.invocePeriodText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="invocePeriodText">Período Fatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invocePeriodText" value="[[filter.invocePeriodText]]" />
+                </template>
+                <template>
+                    {{item.invocePeriodText}}
+                </template>
+            </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.fixedVowsAgreementText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fixedVowsAgreementText">Contrato Avença Fixa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fixedVowsAgreementText" value="[[filter.fixedVowsAgreementText]]" />
+                </template>
+                <template>
+                    {{item.fixedVowsAgreementText}}
+                </template>
+            </vaadin-grid-column>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.somatorioLinhas.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="somatorioLinhas">Somatório das Linhas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="somatorioLinhas" value="[[filter.somatorioLinhas]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[ _formatCurrencyValue(item.somatorioLinhas) ]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
 
             <vaadin-grid-column width="10%" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
                 <template class="header">
@@ -804,7 +823,11 @@
                         "contractMaxDuration": { hidden: false, label: "Duração máxima contrato" },
                         "customerSignedText": { hidden: false, label: "Assinado Cliente" },
                         "interestsText": { hidden: false, label: "Juros" },
-                        "contractDurationDescription": { hidden: false, label: "Descrição Duração Contrato" }
+                        "contractDurationDescription": { hidden: false, label: "Descrição Duração Contrato" },
+                        "billingTypeText": { hidden: false, label: "Tipo Faturação" },
+                        "invocePeriodText": { hidden: false, label: "Período Fatura" },
+                        "fixedVowsAgreementText": { hidden: false, label: "Contrato Avença Fixa" },
+                        "somatorioLinhas": { hidden: false, label: "Somatório das Linhas" },
                     };
 
                     if (localStorage["contractlist.ToggleColumn"]) {
@@ -901,6 +924,16 @@
                     location.href = '../Contratos/ExportAllNotaEncomendaDownload?sFileName=' + FileName;
                 },
 
+                _formatCurrencyValue: function (value) {
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null) {
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                },
 
 
             });
