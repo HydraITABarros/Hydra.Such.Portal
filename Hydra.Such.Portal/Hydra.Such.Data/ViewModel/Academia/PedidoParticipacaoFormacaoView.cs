@@ -43,6 +43,8 @@ namespace Hydra.Such.Data.ViewModel.Academia
 
         public ICollection<AttachmentsViewModel> AnexosPedido { get; set; }
 
+        public ICollection<Comentario> ComentariosPedido { get; set; }
+
         public PedidoParticipacaoFormacaoView()
         {
 
@@ -230,6 +232,11 @@ namespace Hydra.Such.Data.ViewModel.Academia
         public void GetTrackingHistory()
         {
 
+        }
+
+        public void GetComments()
+        {
+            ComentariosPedido = DBAcademia.__GetCometariosPedido(IdPedido);
         }
 
         public PedidoParticipacaoFormacao ParseToDb()

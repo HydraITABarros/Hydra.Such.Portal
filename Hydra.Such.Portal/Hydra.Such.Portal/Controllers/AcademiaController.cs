@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
@@ -36,40 +35,46 @@ namespace Hydra.Such.Portal.Controllers
             UploadPath = _config.FileUploadFolder + "Academia";
         }
 
-        private const string ChiefEmailTemplate = "Caro(a) Chefia,\n\n" +
+        private const string EmployeeToChiefEmail = "Caro(a) Chefia,\n\n" +
                                     "O Colaborador {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}, realizou um pedido de participação em formação externa para a seguinte acção de formação:\n" +
                                     "Acção: {4}\n" +
                                     "Data Inicio: {5}\n\n" +
                                     "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Chefia, e aprove/rejeite fundamentando o mesmo.\n\n" +
                                     "Com os melhores cumprimentos.\n" +
-                                    "Academia\n\n" +
+                                    "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
-        private const string DirectorEmailTemplate = "Caro(a) Director(a),\n\n" +
+        private const string ChiefToDirectorEmail = "Caro(a) Director(a),\n\n" +
                                     "O Colaborador {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}, realizou um pedido de participação em formação externa para a seguinte acção de formação:\n" +
                                     "Acção: {4}\n" +
                                     "Data Inicio: {5}\n\n" +
                                     "O pedido foi aprovado pela chefia directa.\n\n" +
                                     "Para tratar o pedido, por favor, aceda ao e-SUCH, menu Academia - Aprovação Director, e aprove/rejeite o mesmo.\n\n" +
                                     "Com os melhores cumprimentos.\n" +
-                                    "Academia\n\n" +
+                                    "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
-        private const string RejectionToDirectorTemplate = "Caro(a) Director(a),\n\n" +
+        private const string AcademyRejectionToDirector = "Caro(a) Director(a),\n\n" +
                                     "O pedido de participação em formação externa nº {0}, do colaborador(a) {1} ({2}), pertencente ao Centro de Responsabilidade {3} - {4}, para a acção de formação:" +
                                     "Acção: {5}\n" +
                                     "Data Inicio: {6}\n" +
                                     "Foi rejeitado com a seguinte mensagem: \n\"{7}\"\n." +
                                     "Por favor corrija e reenvie o pedido à Academia.\n\n" +
                                     "Com os melhores cumprimentos.\n" +
-                                    "Academia\n\n" +
+                                    "Academia\n" +
+                                    "SUCH | Serviço de Utilização Comum dos Hospitais";
+
+        private const string AcademyToBoardForApproval = "Exmo(a) Conselho de Administração,\n\n" +
+                                    "Remete-se para aprovação de V.Ex.ª o pedido de formação, do colaborador(a) {1} ({2}), pertencente ao Centro de Responsabilidade {3} - {4}\n\n" +
+                                    "Por favor siga a ligação: {5}\n\n" +
+                                    "Com os melhores cumprimentos.\n" +
+                                    "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
 
+        private const string BoardApproval = "Foi aprovado o pedido em apreço:\n{1}";
 
-        private const string BoardApprovalTemplate = "";
-
-        private const string BoardRejectionTemplate = "";
+        private const string BoardRejection = "Foi rejeitado o pedido em apreço:\n{1}";
 
         private string GetMimeType(string fileName)
         {
@@ -219,7 +224,7 @@ namespace Hydra.Such.Portal.Controllers
             return result;
         }
 
-        private void SendNotification(PedidoParticipacaoFormacao pedido, int newStatus, int currStatus)
+        private void SendNotification(PedidoParticipacaoFormacao pedido, int newStatus, int currStatus, string url)
         {
             if (pedido != null && !string.IsNullOrEmpty(pedido.IdPedido) && !string.IsNullOrEmpty(pedido.IdEmpregado))
             {
@@ -234,7 +239,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 EmailAcademia e = new EmailAcademia {
                                     IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(ChiefEmailTemplate, 
+                                    BodyText = string.Format(EmployeeToChiefEmail, 
                                             pedido.NomeEmpregado, 
                                             pedido.IdEmpregado,
                                             f.CrespNav2017,
@@ -249,7 +254,7 @@ namespace Hydra.Such.Portal.Controllers
                                 };
 
                                 SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToChiefForApproval(f, pedido.DesignacaoAccao, pedido.DataInicio.Value);
+                                email.MakeEmailToChiefForApproval(f, pedido, url);
 
                                 email.SendEmail();
                             }
@@ -259,7 +264,7 @@ namespace Hydra.Such.Portal.Controllers
                                 EmailAcademia e = new EmailAcademia
                                 {
                                     IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(DirectorEmailTemplate,
+                                    BodyText = string.Format(ChiefToDirectorEmail,
                                             pedido.NomeEmpregado,
                                             pedido.IdEmpregado,
                                             f.CrespNav2017,
@@ -274,9 +279,21 @@ namespace Hydra.Such.Portal.Controllers
                                 };
 
                                 SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToDirectorForApproval(f, pedido.DesignacaoAccao, pedido.DataInicio.Value);
+                                email.MakeEmailToDirectorForApproval(f, pedido, "");
 
                                 email.SendEmail();
+                            }
+                            break;
+                        case 3:
+                            {
+                                if (currStatus == 1 || currStatus == 2)
+                                {
+
+                                }
+
+                                if (currStatus == 4)
+                                {
+                                }
                             }
                             break;
                         default:
@@ -390,12 +407,35 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CriarComentario([FromBody] JObject reqParam)
+        {
+            string idPedido = reqParam["idPedido"] == null ? string.Empty : (string)reqParam["idPedido"];
+            string textoComent = reqParam["txtComentario"] == null ? string.Empty : (string)reqParam["txtComentario"];            
+
+            if (string.IsNullOrEmpty(idPedido))
+            {
+                return Json(false);
+            }
+
+            Comentario comment = new Comentario() {
+                NoDocumento = idPedido,
+                DataHoraComentario = DateTime.Now,
+                DataHoraCriacao = DateTime.Now,
+                UtilizadorCriacao = User.Identity.Name,
+                TextoComentario = textoComent
+            };
+
+            return Json(DBAcademia.__CriarComentario(comment));
+        }
+
+        [HttpPost]
         public JsonResult TransitarPedidoDeEstado([FromBody] JObject reqParam)
         {
             if (reqParam != null)
             {
                 string idPedido = reqParam["idPedido"] == null ? string.Empty : (string)reqParam["idPedido"];
                 int estado = reqParam["estado"] == null ? -1 : (int)reqParam["estado"];
+                string url = reqParam["url"] == null ? string.Empty : (string)reqParam["url"];
 
                 var newEstado = EnumerablesFixed.EstadoPedidoFormacao.Where(e => e.Id == estado).FirstOrDefault();
 
@@ -403,10 +443,10 @@ namespace Hydra.Such.Portal.Controllers
                 {
 
                     PedidoParticipacaoFormacao pedido = DBAcademia.__GetDetailsPedidoFormacao(idPedido);
-
                     int currEstado = pedido.Estado ?? 0;
 
                     EnumData alteracao = ChangeStateDescription(newEstado.Id, currEstado);
+                    string _url = this.Url.Action("DetalhePedido", "Academia", pedido, Request.Scheme);                    
 
                     if (pedido != null)
                     {
@@ -430,8 +470,9 @@ namespace Hydra.Such.Portal.Controllers
                                     alteracao.Value,
                                     User.Identity.Name);
                             }
-
-                            SendNotification(pedido, newEstado.Id, currEstado);
+                            
+                            
+                            SendNotification(pedido, newEstado.Id, currEstado, url);
 
                             return Json(true);
                         }
@@ -492,9 +533,8 @@ namespace Hydra.Such.Portal.Controllers
             if (!string.IsNullOrEmpty(idPedido))
             {
                 PedidoParticipacaoFormacaoView pedido = new PedidoParticipacaoFormacaoView(DBAcademia.__GetDetailsPedidoFormacao(idPedido));
-                //pedido
+                pedido.GetComments();                
 
-               
                 return Json(pedido);
             }
             return Json(null);
@@ -1405,4 +1445,6 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
     }
+
+   
 }

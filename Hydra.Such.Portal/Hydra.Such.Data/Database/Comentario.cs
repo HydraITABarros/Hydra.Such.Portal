@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Database
     public partial class Comentario
     {
         public string NoDocumento { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy HH:mm:ss")]
         public DateTime DataHoraComentario { get; set; }
         public string TextoComentario { get; set; }
         public string UtilizadorCriacao { get; set; }
