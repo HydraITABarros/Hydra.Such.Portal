@@ -4632,6 +4632,15 @@ namespace Hydra.Such.Portal.Controllers
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
                             }
 
+                            //AMARO Clientes Internos
+                            NAVClientsViewModel ClienteNAV = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.ClientNo);
+                            if (ClienteNAV != null && ClienteNAV.InternalClient == true)
+                            {
+                                PreInvoiceToCreate.RegionCode20 = ClienteNAV.RegionCode;
+                                PreInvoiceToCreate.FunctionAreaCode20 = ClienteNAV.FunctionalAreaCode;
+                                PreInvoiceToCreate.ResponsabilityCenterCode20 = ClienteNAV.ResponsabilityCenterCode;
+                            }
+                            
                             //Contratos Tipo Quotas
                             if (Contract != null && Contract.Type == 3)
                             {
@@ -4911,6 +4920,15 @@ namespace Hydra.Such.Portal.Controllers
                                 if (ClientRequisition.DataRequisição != null)
                                     PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
+
+                            //AMARO Clientes Internos
+                            NAVClientsViewModel ClienteNAV = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.ClientNo);
+                            if (ClienteNAV != null && ClienteNAV.InternalClient == true)
+                            {
+                                PreInvoiceToCreate.RegionCode20 = ClienteNAV.RegionCode;
+                                PreInvoiceToCreate.FunctionAreaCode20 = ClienteNAV.FunctionalAreaCode;
+                                PreInvoiceToCreate.ResponsabilityCenterCode20 = ClienteNAV.ResponsabilityCenterCode;
                             }
 
                             //Contratos Tipo Quotas

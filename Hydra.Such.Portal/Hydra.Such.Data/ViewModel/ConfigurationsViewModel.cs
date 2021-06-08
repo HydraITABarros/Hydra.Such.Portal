@@ -30,6 +30,8 @@ namespace Hydra.Such.Data.ViewModel
         public string ReportUsername { get; set; }
         public string ReportPassword { get; set; }
         public string ArmazemCompraDireta { get; set; }
+        public DateTime? DataFechoFaturacao { get; set; }
+        public string DataFechoFaturacaoText { get; set; }
         #region zpgm.SGPPF
         public int? NumeracaoPedidoFormacao { get; set; }
         #endregion
