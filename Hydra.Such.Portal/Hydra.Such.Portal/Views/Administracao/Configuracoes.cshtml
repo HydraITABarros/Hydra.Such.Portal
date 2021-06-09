@@ -185,6 +185,11 @@
                         <!--Geral-->
                         <div>
                             <div class="row">
+                                <div class="col-md-2">
+                                    <h3 class="titleLabel">Data Fecho Faturação</h3>
+                                    <vaadin-date-picker id="idDataFechoFaturacao" name="idDataFechoFaturacao" value="{{response.dataFechoFaturacaoText}}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                </div>
+
                                 <div class="col-md-2 ">
                                     <h3 class="titleLabel">Inicio Hora Almoço</h3>
                                     <time-picker time="{{response.lunchStartTime}}"></time-picker>
@@ -203,10 +208,6 @@
                                 <div class="col-md-2 ">
                                     <h3 class="titleLabel">Inicio Hora Jantar</h3>
                                     <time-picker time="{{response.dinnerEndTime}}"></time-picker>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <vaadin-date-picker id="idDataFechoFaturacao" name="idDataFechoFaturacao" label="Data Fecho Faturação" value="{{response.dataFechoFaturacaoText}}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                 </div>
                             </div>
 

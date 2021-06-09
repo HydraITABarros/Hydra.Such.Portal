@@ -927,6 +927,9 @@
                     _permissions: {
                         type: Array
                     },
+                    _datafechofaturacao: {
+                        type: Array
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -1102,7 +1105,9 @@
                             }
 
                             if (saldo >= 0) {
-                                this.$._CLData.value = moment().format("YYYY-MM-DD");
+                                //this.$._CLData.value = moment().format("YYYY-MM-DD");
+                                this.$._CLData.value = this.GetDataDocumento();
+                                //this.GetDataDocumento();
                                 this.$.dlgInvoice.open();
                             }
                             else {
@@ -1112,7 +1117,9 @@
                                 this.$._CLOptionInvoiceNegativo.items = availableInvoiceTypes;
                                 this.$._CLOptionInvoiceNegativo.value = 4;
                                 this.$._CLOptionInvoiceNegativo.disabled = true;
-                                this.$._CLDataNegativo.value = moment().format("YYYY-MM-DD");
+                                //this.$._CLDataNegativo.value = moment().format("YYYY-MM-DD");
+                                this.$._CLDataNegativo.value = this.GetDataDocumento();
+                                this.GetDataDocumento();
                                 this.$.dlgInvoiceNegativo.open();
 
                                 //var erro = this._validateData(this.selectedItem);
@@ -1684,6 +1691,54 @@
                     }
                 },
 
+                GetDataDocumento: function () {
+                    var CurrentDate = new Date();
+                    var CurrentDay = CurrentDate.getUTCDate();
+                    var CurrentMonth = CurrentDate.getUTCMonth() + 1; //months from 1-12
+                    var CurrentYear = CurrentDate.getUTCFullYear();
+                    CurrentDate = new Date(CurrentYear, (CurrentMonth - 1), CurrentDay);
+                   
+                    var DataFechoDay = this._datafechofaturacao.substring(0, 2);
+                    var DataFechoMonth = this._datafechofaturacao.substring(3, 5);
+                    var DataFechoYear = this._datafechofaturacao.substring(6, 10);
+                    var DataFecho = new Date(DataFechoYear, (DataFechoMonth - 1), DataFechoDay);
+
+                    if (CurrentDate > DataFecho) {
+                        if (CurrentDay < 10) {
+                            CurrentDay = "0" + CurrentDay;
+                        }
+                        if (CurrentMonth < 10) {
+                            CurrentMonth = "0" + CurrentMonth;
+                        }
+
+                        return CurrentYear + "-" + CurrentMonth + "-" + CurrentDay;
+                    }
+                    else {
+                        if (CurrentYear == DataFechoYear && CurrentMonth == DataFechoMonth && CurrentDay <= DataFechoDay) {
+                            var PrevMonth = CurrentMonth - 1;
+                            var PrevYear = CurrentYear;
+                            if (PrevMonth == 0) {
+                                PrevMonth = 11;
+                                PrevYear = PrevYear - 1;
+                            }
+                            var PrevDay = new Date(PrevYear, PrevMonth, 0).getDate();
+
+                            if (PrevMonth < 10) {
+                                PrevMonth = "0" + PrevMonth;
+                            }
+                            return PrevYear + "-" + PrevMonth + "-" + PrevDay;
+                        }
+                        else {
+                            if (CurrentDay < 10) {
+                                CurrentDay = "0" + CurrentDay;
+                            }
+                            if (CurrentMonth < 10) {
+                                CurrentMonth = "0" + CurrentMonth;
+                            }
+                            return CurrentYear + "-" + CurrentMonth + "-" + CurrentDay;
+                        }
+                    }
+                },
 
 
 

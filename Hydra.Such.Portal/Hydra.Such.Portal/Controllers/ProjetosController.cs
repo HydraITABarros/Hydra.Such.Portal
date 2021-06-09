@@ -4235,9 +4235,11 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Faturacao()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FaturacaoDeProjetos);
+            Configuração Config = DBConfigurations.GetById(1);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
+                ViewBag.DataFechoFaturacao = Convert.ToDateTime(Config.DataFechoFaturacao).ToString("dd/MM/yyyy");
                 return View();
             }
             else
@@ -5399,6 +5401,8 @@ namespace Hydra.Such.Portal.Controllers
                         x.Faturada = false;
                         x.GrupoFatura = (int?)null;
                         x.GrupoFaturaDescricao = string.Empty;
+                        x.UtilizadorModificação = User.Identity.Name;
+                        x.DataHoraModificação = DateTime.Now;
 
                         movAutProject = new MovimentosProjectoAutorizados();
                         movAutProject.NumMovimento = x.NºLinha;
