@@ -3581,6 +3581,21 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllFaturasRelacionadas([FromBody] JObject requestParams)
+        {
+            JToken customerNoValue;
+            string customerNo = string.Empty;
+            if (requestParams != null)
+            {
+                if (requestParams.TryGetValue("customerNo", out customerNoValue))
+                    customerNo = (string)customerNoValue;
+            }
+            List<NAVClientesInvoicesViewModel> result = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult AuthorizeProjectMovements([FromBody] JObject requestParams)
         {
             ErrorHandler result = ValidateMovements(requestParams);

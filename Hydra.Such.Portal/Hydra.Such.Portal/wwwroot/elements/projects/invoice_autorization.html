@@ -295,6 +295,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Projetos/GetAllFaturasRelacionadas"
+                   last-response="{{ListaFaturasRelacionadas}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_GetListaFaturasRelacionadas"
+                   content-type="application/json">
+        </iron-ajax>
+
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
             <paper-tab>Observações</paper-tab>
@@ -320,9 +328,6 @@
                                             </div>
                                         </div>
                                         <div class="row break_clear">
-                                            <!--<div class="col-md-2 ">
-                    <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="[[Project.clientNo]]" disabled></vaadin-text-field>
-                </div>-->
                                             <div class="col-md-2 ">
                                                 <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" maxlength="50"></vaadin-text-field>
                                             </div>
@@ -348,6 +353,16 @@
                                             </div>
                                             <div class="col-md-2 alignRight">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <such-selectbox id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada"
+                                                                items="[[ListaFaturasRelacionadas]]"
+                                                                text-path="no_"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Nº Fatura"}, {"field":"projectNo", "name":"Nº Projeto"}, {"field":"documentDate", "name":"Data Documento"}, {"field":"noContrato", "name":"Nº Contrato"}, {"field":"noCompromisso", "name":"Nº Compromisso"}, {"field":"amountIncludingVAT", "name":"Preço c/ IVA"}]'
+                                                                required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
+                                                </such-selectbox>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -810,8 +825,8 @@
         <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
             <div class="row break_clear">
                 <!--<div class="col-md-2 ">
-                    <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
-                </div>-->
+                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+            </div>-->
                 <div class="col-md-12 ">
                     <vaadin-text-field id="txtDescGrupoFatura" maxlength="30" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
                 </div>
@@ -1191,6 +1206,11 @@
                         notify: true,
                         value: ""
                     },
+                    _idFaturaRelacionada: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                     ddCGTOM_Type: {
                         type: Number,
                         notify: true,
@@ -1560,6 +1580,9 @@
                             this.$.get_customer_ajax.body = JSON.stringify({ "customerNo": this.Project.clientNo });
                             this.$.get_customer_ajax.generateRequest();
 
+                            this.$.ajax_GetListaFaturasRelacionadas.body = JSON.stringify({ "customerNo": this.Project.clientNo });
+                            this.$.ajax_GetListaFaturasRelacionadas.generateRequest();
+
                             this.$.getServiceGroups_ajax.body = JSON.stringify(this.Project.clientNo);
                             this.$.getServiceGroups_ajax.params = { "allProjs": false };
                             this.$.getServiceGroups_ajax.generateRequest();
@@ -1662,7 +1685,6 @@
                 },
 
                 getBillingPeriod: function () {
-                    debugger;
                     this._billingPeriod = "";
                     var TextoInicio = this.$.dpDataPrestacaoServ.value;
                     var TextoFim = this.$.dpDataPrestacaoServFim.value;

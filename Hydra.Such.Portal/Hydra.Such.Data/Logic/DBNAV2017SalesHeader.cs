@@ -45,5 +45,41 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static List<NAVSalesHeaderViewModel> GetAllSalesHeader(string NAVDatabaseName, string NAVCompanyName, string NAVContractNo, NAVBaseDocumentTypes documentType)
+        {
+            try
+            {
+                List<NAVSalesHeaderViewModel> result = new List<NAVSalesHeaderViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@DocumentType",(int)documentType),
+                        new SqlParameter("@ContractNo_", NAVContractNo)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017CabecalhoVendas @DBName, @CompanyName, @DocumentType, @ContractNo_", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVSalesHeaderViewModel()
+                        {
+                            No = (string)temp.DocumentNo,
+                            ContractNo = (string)temp.ContractNo_,
+                            DocumentType = (int)temp.DocumentType,
+
+                        });
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
     }
 }
