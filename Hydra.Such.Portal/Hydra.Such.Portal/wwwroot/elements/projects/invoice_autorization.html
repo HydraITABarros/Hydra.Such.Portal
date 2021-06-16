@@ -339,30 +339,20 @@
                                             </div>
                                         </div>
                                         <div class="row break_clear">
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Início Prestação Serviços" on-value-changed="serviceDateInicioChanged" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-2 ">
+                                            <div class="col-md-3 ">
                                                 <vaadin-date-picker id="dpDataPrestacaoServFim" label="Data Fim Prestação Serviços" on-value-changed="serviceDateFimChanged" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                             </div>
                                             <div class="col-md-3 ">
                                                 <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" maxlength="40" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-3" hidden>
                                                 <vaadin-text-field id="txtNoFaturaRelacionada" name="txtNoFaturaRelacionada" label="Nº Fatura Relacionada " value="" maxlength="20"></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-2 alignRight">
+                                            <div class="col-md-3 alignRight">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <such-selectbox id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada"
-                                                                items="[[ListaFaturasRelacionadas]]"
-                                                                text-path="no_"
-                                                                value-path="no_"
-                                                                fields='[{"field":"no_", "name":"Nº Fatura"}, {"field":"projectNo", "name":"Nº Projeto"}, {"field":"documentDate", "name":"Data Documento"}, {"field":"noContrato", "name":"Nº Contrato"}, {"field":"noCompromisso", "name":"Nº Compromisso"}, {"field":"amountIncludingVAT", "name":"Preço c/ IVA"}]'
-                                                                required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
-                                                </such-selectbox>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -822,11 +812,21 @@
             </div>
         </iron-pages>
 
-        <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
+        <paper-dialog id="dlgValidation" modal style="height:300px; width:500px">
             <div class="row break_clear">
                 <!--<div class="col-md-2 ">
-                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
-            </div>-->
+        <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+    </div>-->
+                <div class="col-md-12">
+                    <such-selectbox id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada"
+                                    items="[[ListaFaturasRelacionadas]]"
+                                    text-path="no_"
+                                    value-path="no_"
+                                    fields='[{"field":"no_", "name":"Nº Fatura"}, {"field":"projectNo", "name":"Nº Projeto"}, {"field":"documentDate", "name":"Data Documento"}, {"field":"noContrato", "name":"Nº Contrato"}, {"field":"noCompromisso", "name":"Nº Compromisso"}, {"field":"amountIncludingVAT", "name":"Preço c/ IVA"}]'
+                                    required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
+                    </such-selectbox>
+                </div>
+
                 <div class="col-md-12 ">
                     <vaadin-text-field id="txtDescGrupoFatura" maxlength="30" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
                 </div>
@@ -1308,6 +1308,11 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
+                    if (parseFloat(this.$.txtValorAAutorizar.value).toFixed(2) < 0 && this.$.idListaFaturasRelacionadas.value == "") {
+                        this.openToastError("O campo Nº Fatura Relacionada é de preenchimento obrigatório.");
+                        return;
+                    }
+
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
@@ -1323,7 +1328,7 @@
                             "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                             "projMovements": this.selectedItems,
                             "projObs": this.$.IdObs.value,
-                            "noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value
+                            "noFaturaRelacionada": this.$.idListaFaturasRelacionadas.value
                         };
                         this.$.autorize_ajax.body = JSON.stringify(authorizationRequest);
                         this.$.autorize_ajax.generateRequest();
@@ -1423,11 +1428,63 @@
                                 }
                             }
 
-                            if ((this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) &&
-                                (this.$.txtNoFaturaRelacionada.value == null || this.$.txtNoFaturaRelacionada.value == "")) {
-                                this.openToastError("Não é possivel Autorizar, por ser obrigatório o preenchimento do campo Nº Fatura Relacionada.");
-                                this.$.btnConfirm.disabled = false;
-                                return;
+                            //if ((this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) &&
+                            //    (this.$.txtNoFaturaRelacionada.value == null || this.$.txtNoFaturaRelacionada.value == "")) {
+                            //    this.openToastError("Não é possivel Autorizar, por ser obrigatório o preenchimento do campo Nº Fatura Relacionada.");
+                            //    this.$.btnConfirm.disabled = false;
+                            //    return;
+                            //}
+
+                            this.$.idListaFaturasRelacionadas._clearSelection();
+                            if (this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) {
+                                this.$.idListaFaturasRelacionadas.hidden = false;
+
+                                if (items.length > 0) {
+                                    var textoFaturaRelacionada = "";
+                                    var firstTime = true;
+                                    var sair = false;
+
+                                    for (var i = 0; i < items.length; i++) {
+                                        if (items[i].selecionada == true) {
+                                            if (items[i].faturaRelacionada != null && items[i].faturaRelacionada != "") {
+                                                if (firstTime == true) {
+                                                    textoFaturaRelacionada = items[i].faturaRelacionada;
+                                                    firstTime = false;
+                                                }
+                                                else {
+                                                    if (sair == false) {
+                                                        if (items[i].faturaRelacionada != textoFaturaRelacionada) {
+                                                            textoFaturaRelacionada = "";
+                                                            sair = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                var existe = false;
+                                if (this.ListaFaturasRelacionadas != null && this.ListaFaturasRelacionadas.length > 0) {
+                                    for (var i = 0; i < this.ListaFaturasRelacionadas.length; i++) {
+                                        if (existe == false) {
+                                            if ((this.ListaFaturasRelacionadas[i].no_ != null && this.ListaFaturasRelacionadas[i].no_ != "") &&
+                                                (textoFaturaRelacionada != null && textoFaturaRelacionada != "") &&
+                                                (this.ListaFaturasRelacionadas[i].no_ == textoFaturaRelacionada)) {
+                                                existe = true
+                                            }
+                                        }
+                                    }
+                                }
+                                if (existe == true) {
+                                    this.$.idListaFaturasRelacionadas.value = textoFaturaRelacionada;
+                                }
+                                else {
+                                    this.$.idListaFaturasRelacionadas._clearSelection();
+                                }
+                            }
+                            else {
+                                this.$.idListaFaturasRelacionadas.hidden = true;
                             }
 
                             if (this._totalToAuthorize == this.roundToTwo(total)) {
@@ -1443,7 +1500,7 @@
                                     "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
                                     "dataServPrestado": this.$.txtDataPrestacaoServ.value,
-                                    "noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value,
+                                    //"noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value,
                                 };
                                 this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
                                 this.$.projMovValidation_ajax.generateRequest();
@@ -1496,7 +1553,7 @@
                     var items = (this._validationMessages && this._validationMessages != undefined) ? this._validationMessages.length : 0;
                     var height = dialogDefaultSize + (items * 20);
                     if (items > 0)
-                        height += 40;//for title
+                        height += 100;//for title
                     this.$.validationTitle.hidden = items <= 0;
                     dlg.height(height);
                 },
