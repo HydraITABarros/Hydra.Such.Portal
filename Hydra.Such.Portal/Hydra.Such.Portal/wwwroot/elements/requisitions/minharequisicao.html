@@ -378,54 +378,41 @@
                                 <!--Geral-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2">
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                         </div>
-                                        <!--<div class="col-md-3" id="divLocalMarketRegions">
-                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>-->
+
                                         <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
-                                        <div class="col-lg-3">
+
+                                        <div class="col-lg-2">
                                             <such-selectbox id="CBHeaderProjects" name="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_setProjectDim"
                                                             items="[[Projects]]"
                                                             text-path="no"
                                                             value-path="no"
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
-                                                -s
                                             </such-selectbox>
                                         </div>
 
                                         <div class="col-lg-3">
-                                            <!--<vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}" on-value-changed="_GetNoProjetoCabecalho">
-                                                <template>
-                                                    <b>[[item.id]]</b>
-                                                </template>
-                                            </vaadin-combo-box>-->
-                                            <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{Requisition.vehicle}}"
-                                                            on-value-changed="_GetNoProjetoCabecalho"
-                                                            items="[[CBVehicle]]"
-                                                            text-path="id"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Matrícula"}]'
-                                                            disabled="{{ !_permissions.update }}">
+                                            <such-selectbox id="CBHeaderProjectsName" name="CBHeaderProjectsName" value="{{Requisition.projectNo}}" label="Ordem/Projeto Descrição" disabled
+                                                            items="[[Projects]]"
+                                                            text-path="description"
+                                                            value-path="no"
+                                                            fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field id="txtClientName" name="txtClientName" label="Cliente" value="{{Requisition.clientName}}" disabled></vaadin-text-field>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="txtClientNo" name="txtClientNo" label="Nº Cliente" value="{{Requisition.clientCode}}" disabled></vaadin-text-field>
                                         </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="txtClientName" name="txtClientName" label="Cliente Nome" value="{{Requisition.clientName}}" disabled></vaadin-text-field>
+                                        </div>
+
                                     </div>
 
                                     <div class="row break_clear">
@@ -445,7 +432,7 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <such-selectbox id="ResponsabilityCenterCode" name="ResponsabilityCenterCode" value="{{Requisition.centerResponsibilityCode}}" label="Cód. Centro Responsabilidade" disabled required error-message="Este campo é obrigatório"
                                                             items="[[LProjectResponsabilityCenterCodes]]"
                                                             text-path="id"
@@ -453,8 +440,19 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <vaadin-text-field id="txtOrderNo" name="txtOrderNo" label="Nº Encomenda" value="{{Requisition.orderNo}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{Requisition.vehicle}}"
+                                                            on-value-changed="_GetNoProjetoCabecalho"
+                                                            items="[[CBVehicle]]"
+                                                            text-path="id"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Matrícula"}]'
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
                                         </div>
                                     </div>
 
