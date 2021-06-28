@@ -2643,6 +2643,8 @@ namespace Hydra.Such.Portal.Controllers
                             DateTime nextInvoiceDate = DateTime.MinValue;// lastDay;
                             DateTime? lastInvoiceDate = null;
                             int invoiceNumber = 0;
+                            current = Convert.ToDateTime(dateCont);
+
                             if (item.DataExpiração != null && current >= item.DataExpiração)
                             {
                                 current = item.DataExpiração.Value;
