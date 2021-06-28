@@ -2968,7 +2968,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (!Problema.Contains("Fatura no Pre-Registo!"))
                             {
-                                NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
+                                NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeaderByGrupoFatura(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura, contractLine.GrupoFatura.Value);
                                 if (result != null)
                                 {
                                     Problema += " Fatura no Pre-Registo!";

@@ -818,13 +818,23 @@
         <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
     </div>-->
                 <div class="col-md-12">
-                    <such-selectbox id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada"
+                    <!--<such-selectbox id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada"
                                     items="[[ListaFaturasRelacionadas]]"
                                     text-path="no_"
                                     value-path="no_"
                                     fields='[{"field":"no_", "name":"Nº Fatura"}, {"field":"projectNo", "name":"Nº Projeto"}, {"field":"documentDate", "name":"Data Documento"}, {"field":"noContrato", "name":"Nº Contrato"}, {"field":"noCompromisso", "name":"Nº Compromisso"}, {"field":"amountIncludingVAT", "name":"Preço c/ IVA"}]'
                                     required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
-                    </such-selectbox>
+                    </such-selectbox>-->
+
+                    <vaadin-combo-box id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" items="[[ListaFaturasRelacionadas]]" item-value-path="no_" item-label-path="no_" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada" required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
+                        <template>
+                            <paper-icon-item>
+                                <paper-item-body two-line>
+                                    <div>[[item.no_]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                 </div>
 
                 <div class="col-md-12 ">
@@ -1435,7 +1445,8 @@
                             //    return;
                             //}
 
-                            this.$.idListaFaturasRelacionadas._clearSelection();
+                            //this.$.idListaFaturasRelacionadas._clearSelection();
+                            this.$.idListaFaturasRelacionadas.value = "";
                             if (this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) {
                                 this.$.idListaFaturasRelacionadas.hidden = false;
 
@@ -1480,7 +1491,8 @@
                                     this.$.idListaFaturasRelacionadas.value = textoFaturaRelacionada;
                                 }
                                 else {
-                                    this.$.idListaFaturasRelacionadas._clearSelection();
+                                    //this.$.idListaFaturasRelacionadas._clearSelection();
+                                    this.$.idListaFaturasRelacionadas.value = "";
                                 }
                             }
                             else {

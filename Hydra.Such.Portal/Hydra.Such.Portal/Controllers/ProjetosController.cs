@@ -36,6 +36,7 @@ using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using System.ServiceModel;
 using Hydra.Such.Data.ViewModel.Contracts;
+using Hydra.Such.Data.ViewModel.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3689,6 +3690,17 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (customer != null && !string.IsNullOrEmpty(customer.Name))
                         customerName = customer.Name;
+
+                    if (authorizationTotal < 0 && !string.IsNullOrEmpty(noFaturaRelacionada))
+                    {
+                        NAVClientesInvoicesViewModel Encomenda = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente).Where(x => x.No_ == noFaturaRelacionada).FirstOrDefault();
+                        if (Encomenda != null)
+                        {
+                            commitmentNumber = Encomenda.NoCompromisso;
+                            customerRequestNo = Encomenda.NoPedido;
+                            customerRequestDate = Convert.ToDateTime(Encomenda.DocumentDate);
+                        }
+                    }
 
                     using (SuchDBContext ctx = new SuchDBContext())
                     {
