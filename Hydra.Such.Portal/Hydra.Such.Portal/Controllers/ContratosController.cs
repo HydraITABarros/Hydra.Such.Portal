@@ -470,6 +470,10 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> AllRescisoes = EnumerablesFixed.ContractTerminationDeadlineNotice;
             List<EnumData> AllCondicoesRenovacao = EnumerablesFixed.ContractTerminationTerms;
             List<EnumData> AllCondicoesPagamento = EnumerablesFixed.ContractPaymentTerms;
+            List<EnumData> ALLTiposFaturacao = EnumerablesFixed.ContractBillingTypes;
+            List<EnumData> AllPeriodosFatura = EnumerablesFixed.ContractInvoicePeriods;
+            List<LinhasContratos> AllLines = DBContractLines.GetAll();
+            List<LinhasContratos> AllLinesContract = null;
 
             result.ForEach(x =>
             {
@@ -484,6 +488,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.PaymentTermsText = x.PaymentTerms != null ? AllCondicoesPagamento.Where(y => y.Id == x.PaymentTerms).FirstOrDefault() != null ? AllCondicoesPagamento.Where(y => y.Id == x.PaymentTerms).FirstOrDefault().Value : "" : "";
                 x.CustomerSignedText = x.CustomerSigned.HasValue ? x.CustomerSigned == true ? "Sim" : "Não" : "Não";
                 x.InterestsText = x.Interests.HasValue ? x.Interests == true ? "Sim" : "Não" : "Não";
+                x.BillingTypeText = x.BillingType != null ? ALLTiposFaturacao.Where(y => y.Id == x.BillingType).FirstOrDefault() != null ? ALLTiposFaturacao.Where(y => y.Id == x.BillingType).FirstOrDefault().Value : "" : "";
+                x.InvocePeriodText = x.InvocePeriod != null ? AllPeriodosFatura.Where(y => y.Id == x.InvocePeriod).FirstOrDefault() != null ? AllPeriodosFatura.Where(y => y.Id == x.InvocePeriod).FirstOrDefault().Value : "" : "";
+
+                AllLinesContract = AllLines.Where(y => y.NºContrato == x.ContractNo && y.NºVersão == x.VersionNo).ToList();
+                if (AllLinesContract != null && AllLinesContract.Count > 0)
+                    x.SomatorioLinhas = AllLinesContract.Sum(y => (y.Quantidade.HasValue ? (decimal)y.Quantidade : 0) * (y.PreçoUnitário.HasValue ? (decimal)y.PreçoUnitário : 0));
             });
 
             return Json(result);
@@ -2485,11 +2495,19 @@ namespace Hydra.Such.Portal.Controllers
                 string DocNo_ = "";
                 string cliName = DBNAV2017Clients.GetClientNameByNo(item.NºCliente, _config.NAVDatabaseName, _config.NAVCompanyName);
                 //Pre registadas
-                List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.NºCliente);
-                if (SLines.Count > 0)
+
+                //Alteração pedida pelo Marco Marcelo no dia 27-05-2021
+                //List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.NºCliente);
+                //if (SLines.Count > 0)
+                //{
+                //    DocNo_ = SLines.LastOrDefault().DocNo;
+                //}
+                NAVSalesHeaderViewModel SLines = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, NAVBaseDocumentTypes.Fatura);
+                if (SLines != null)
                 {
-                    DocNo_ = SLines.LastOrDefault().DocNo;
+                    DocNo_ = SLines.No;
                 }
+
                 // Valor Fatura
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
                 Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
@@ -2625,6 +2643,8 @@ namespace Hydra.Such.Portal.Controllers
                             DateTime nextInvoiceDate = DateTime.MinValue;// lastDay;
                             DateTime? lastInvoiceDate = null;
                             int invoiceNumber = 0;
+                            current = Convert.ToDateTime(dateCont);
+
                             if (item.DataExpiração != null && current >= item.DataExpiração)
                             {
                                 current = item.DataExpiração.Value;
@@ -2948,7 +2968,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (!Problema.Contains("Fatura no Pre-Registo!"))
                             {
-                                NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
+                                NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeaderByGrupoFatura(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura, contractLine.GrupoFatura.Value);
                                 if (result != null)
                                 {
                                     Problema += " Fatura no Pre-Registo!";
@@ -4614,6 +4634,15 @@ namespace Hydra.Such.Portal.Controllers
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
                             }
 
+                            //AMARO Clientes Internos
+                            NAVClientsViewModel ClienteNAV = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.ClientNo);
+                            if (ClienteNAV != null && ClienteNAV.InternalClient == true)
+                            {
+                                PreInvoiceToCreate.RegionCode20 = ClienteNAV.RegionCode;
+                                PreInvoiceToCreate.FunctionAreaCode20 = ClienteNAV.FunctionalAreaCode;
+                                PreInvoiceToCreate.ResponsabilityCenterCode20 = ClienteNAV.ResponsabilityCenterCode;
+                            }
+                            
                             //Contratos Tipo Quotas
                             if (Contract != null && Contract.Type == 3)
                             {
@@ -4893,6 +4922,15 @@ namespace Hydra.Such.Portal.Controllers
                                 if (ClientRequisition.DataRequisição != null)
                                     PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
+
+                            //AMARO Clientes Internos
+                            NAVClientsViewModel ClienteNAV = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Contract.ClientNo);
+                            if (ClienteNAV != null && ClienteNAV.InternalClient == true)
+                            {
+                                PreInvoiceToCreate.RegionCode20 = ClienteNAV.RegionCode;
+                                PreInvoiceToCreate.FunctionAreaCode20 = ClienteNAV.FunctionalAreaCode;
+                                PreInvoiceToCreate.ResponsabilityCenterCode20 = ClienteNAV.ResponsabilityCenterCode;
                             }
 
                             //Contratos Tipo Quotas
@@ -5890,6 +5928,10 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["customerSignedText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Assinado Cliente"); Col = Col + 1; }
                 if (dp["interestsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Juros"); Col = Col + 1; }
                 if (dp["contractDurationDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Duração Contrato"); Col = Col + 1; }
+                if (dp["billingTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Faturação"); Col = Col + 1; }
+                if (dp["invocePeriodText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Período Fatura"); Col = Col + 1; }
+                if (dp["fixedVowsAgreementText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Contrato Avença Fixa"); Col = Col + 1; }
+                if (dp["somatorioLinhas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Somatório das Linhas"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -5932,6 +5974,10 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["customerSignedText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerSignedText); Col = Col + 1; }
                         if (dp["interestsText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InterestsText); Col = Col + 1; }
                         if (dp["contractDurationDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractDurationDescription); Col = Col + 1; }
+                        if (dp["billingTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.BillingTypeText); Col = Col + 1; }
+                        if (dp["invocePeriodText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvocePeriodText); Col = Col + 1; }
+                        if (dp["fixedVowsAgreementText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FixedVowsAgreementText); Col = Col + 1; }
+                        if (dp["somatorioLinhas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SomatorioLinhas.ToString()); Col = Col + 1; }
                         count++;
                     }
                 }

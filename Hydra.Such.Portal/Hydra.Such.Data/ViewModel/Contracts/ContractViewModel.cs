@@ -29,6 +29,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ShippingZipCode { get; set; }
         public string ShippingLocality { get; set; }
         public int? InvocePeriod { get; set; }
+        public string InvocePeriodText { get; set; }
         public string LastInvoiceDate { get; set; }
         public string NextInvoiceDate { get; set; }
         public string StartData { get; set; }
@@ -41,6 +42,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string CodePaymentMethod { get; set; }
         public int? ProposalType { get; set; }
         public int? BillingType { get; set; }
+        public string BillingTypeText { get; set; }
         public int? MaintenanceContractType { get; set; }
         public string ClientRequisitionNo { get; set; }
         public string ReceiptDateRequisition { get; set; }
@@ -124,6 +126,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string NoVEP { get; set; }
         public string TextoFatura { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
+        public decimal SomatorioLinhas { get; set; }
 
 
         //EXPORTAR PARA EXCEL

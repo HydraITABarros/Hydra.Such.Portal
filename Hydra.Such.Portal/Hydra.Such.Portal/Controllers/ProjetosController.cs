@@ -36,6 +36,7 @@ using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using System.ServiceModel;
 using Hydra.Such.Data.ViewModel.Contracts;
+using Hydra.Such.Data.ViewModel.Encomendas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2348,7 +2349,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date)
+        public JsonResult CreatePDByMovProj([FromBody] List<ProjectDiaryViewModel> dp, string projectNo, string Resources, string ProjDiaryPrice, string Date, string DocumentNo)
         {
 
             ProjectDiaryResponse response = new ProjectDiaryResponse();
@@ -2462,6 +2463,11 @@ namespace Hydra.Such.Portal.Controllers
                                             DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
                                             CódServiçoCliente = pjD.ServiceClientCode,
                                         };
+                                        if (newdp != null && newdp.PreçoTotal.HasValue && newdp.PreçoTotal < 0)
+                                            newdp.NºDocumento = DocumentNo;
+                                        else
+                                            newdp.NºDocumento = "";
+
                                         if (pjD.LineNo > 0)
                                         {
                                             newdp.Faturada = pjD.Billed;
@@ -2586,6 +2592,10 @@ namespace Hydra.Such.Portal.Controllers
                             DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                             CódServiçoCliente = x.ServiceClientCode,
                         };
+                        if (newdp != null && newdp.PreçoTotal.HasValue && newdp.PreçoTotal < 0)
+                            newdp.NºDocumento = DocumentNo;
+                        else
+                            newdp.NºDocumento = "";
 
                         if (x.LineNo > 0)
                         {
@@ -2792,6 +2802,10 @@ namespace Hydra.Such.Portal.Controllers
                                         CriarMovNav2017 = false,
                                         TaxaIVA = newdp.TaxaIVA
                                     };
+                                    if (ProjectMovement != null && ProjectMovement.PreçoTotal.HasValue && ProjectMovement.PreçoTotal < 0)
+                                        ProjectMovement.FaturaRelacionada = newdp.NºDocumento;
+                                    else
+                                        ProjectMovement.FaturaRelacionada = "";
 
                                     DBProjectMovements.Create(ProjectMovement);
                                 }
@@ -3229,7 +3243,7 @@ namespace Hydra.Such.Portal.Controllers
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura,
                         ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : "",
-                        TaxaIVA = x.TaxaIVA
+                        TaxaIVA = x.TaxaIVA,
                     }).OrderByDescending(x => x.Date).ToList();
                 }
                 else
@@ -3568,6 +3582,21 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllFaturasRelacionadas([FromBody] JObject requestParams)
+        {
+            JToken customerNoValue;
+            string customerNo = string.Empty;
+            if (requestParams != null)
+            {
+                if (requestParams.TryGetValue("customerNo", out customerNoValue))
+                    customerNo = (string)customerNoValue;
+            }
+            List<NAVClientesInvoicesViewModel> result = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult AuthorizeProjectMovements([FromBody] JObject requestParams)
         {
             ErrorHandler result = ValidateMovements(requestParams);
@@ -3661,6 +3690,17 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (customer != null && !string.IsNullOrEmpty(customer.Name))
                         customerName = customer.Name;
+
+                    if (authorizationTotal < 0 && !string.IsNullOrEmpty(noFaturaRelacionada))
+                    {
+                        NAVClientesInvoicesViewModel Encomenda = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente).Where(x => x.No_ == noFaturaRelacionada).FirstOrDefault();
+                        if (Encomenda != null)
+                        {
+                            commitmentNumber = Encomenda.NoCompromisso;
+                            customerRequestNo = Encomenda.NoPedido;
+                            customerRequestDate = Convert.ToDateTime(Encomenda.DocumentDate);
+                        }
+                    }
 
                     using (SuchDBContext ctx = new SuchDBContext())
                     {
@@ -3892,10 +3932,10 @@ namespace Hydra.Such.Portal.Controllers
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
 
-                string noFaturaRelacionada = string.Empty;
-                JValue noFaturaRelacionadaValue = requestParams["noFaturaRelacionada"] as JValue;
-                if (noFaturaRelacionadaValue != null)
-                    noFaturaRelacionada = (string)noFaturaRelacionadaValue.Value;
+                //string noFaturaRelacionada = string.Empty;
+                //JValue noFaturaRelacionadaValue = requestParams["noFaturaRelacionada"] as JValue;
+                //if (noFaturaRelacionadaValue != null)
+                //    noFaturaRelacionada = (string)noFaturaRelacionadaValue.Value;
 
                 string billingPeriod = string.Empty;
                 JValue billingPeriodValue = requestParams["dataServPrestado"] as JValue;
@@ -3984,27 +4024,27 @@ namespace Hydra.Such.Portal.Controllers
                     if (string.IsNullOrEmpty(customer.RegionCode))
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "É necessário configurar a região na Ficha do Cliente."));
 
-                    if (authorizationTotal < 0)
-                    {
-                        List<NAVClientesInvoicesViewModel> AllInvoices = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+                    //if (authorizationTotal < 0)
+                    //{
+                    //    List<NAVClientesInvoicesViewModel> AllInvoices = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
 
-                        if (AllInvoices != null && AllInvoices.Count > 0)
-                        {
-                            if (!string.IsNullOrEmpty(noFaturaRelacionada))
-                            {
-                                NAVClientesInvoicesViewModel Invoice = AllInvoices.Where(y => y.No_ == noFaturaRelacionada).FirstOrDefault();
+                    //    if (AllInvoices != null && AllInvoices.Count > 0)
+                    //    {
+                    //        if (!string.IsNullOrEmpty(noFaturaRelacionada))
+                    //        {
+                    //            NAVClientesInvoicesViewModel Invoice = AllInvoices.Where(y => y.No_ == noFaturaRelacionada).FirstOrDefault();
 
-                                if (Invoice == null)
-                                {
-                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi encontrada a Fatura Relacionada no NAV2017."));
-                                }
-                            }
-                            else
-                            {
-                                result.eMessages.Add(new TraceInformation(TraceType.Error, "O campo Nº Fatura Relacionada é de preenchimento obrigatório."));
-                            }
-                        }
-                    }
+                    //            if (Invoice == null)
+                    //            {
+                    //                result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi encontrada a Fatura Relacionada no NAV2017."));
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            result.eMessages.Add(new TraceInformation(TraceType.Error, "O campo Nº Fatura Relacionada é de preenchimento obrigatório."));
+                    //        }
+                    //    }
+                    //}
                 }
                 else
                     result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar o cliente."));
@@ -4222,9 +4262,11 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Faturacao()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FaturacaoDeProjetos);
+            Configuração Config = DBConfigurations.GetById(1);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
+                ViewBag.DataFechoFaturacao = Convert.ToDateTime(Config.DataFechoFaturacao).ToString("dd/MM/yyyy");
                 return View();
             }
             else
@@ -5386,6 +5428,8 @@ namespace Hydra.Such.Portal.Controllers
                         x.Faturada = false;
                         x.GrupoFatura = (int?)null;
                         x.GrupoFaturaDescricao = string.Empty;
+                        x.UtilizadorModificação = User.Identity.Name;
+                        x.DataHoraModificação = DateTime.Now;
 
                         movAutProject = new MovimentosProjectoAutorizados();
                         movAutProject.NumMovimento = x.NºLinha;

@@ -413,6 +413,9 @@ namespace Hydra.Such.Data.NAV
                     Payment_Method_Code = MetdoPagamento,
 
                     Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
+
+                    Grupo_Fatura = CreateInvoice.GrupoFatura,
+                    Grupo_FaturaSpecified = true,
                 }
             };
 

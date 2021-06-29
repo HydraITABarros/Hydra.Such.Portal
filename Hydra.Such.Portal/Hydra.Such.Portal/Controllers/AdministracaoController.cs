@@ -1150,7 +1150,9 @@ namespace Hydra.Such.Portal.Controllers
                 WasteAreaId = Cfg.CodAreaResiduos,
                 ReportUsername = Cfg.ReportUsername,
                 ReportPassword = Cfg.ReportPassword,
-                ArmazemCompraDireta = Cfg.ArmazemCompraDireta
+                ArmazemCompraDireta = Cfg.ArmazemCompraDireta,
+                DataFechoFaturacao = Cfg.DataFechoFaturacao,
+                DataFechoFaturacaoText = Cfg.DataFechoFaturacao.HasValue ? Cfg.DataFechoFaturacao.Value.ToString("yyyy-MM-dd") : ""
             };
             return Json(result);
         }
@@ -1190,6 +1192,7 @@ namespace Hydra.Such.Portal.Controllers
             configObj.ReportUsername = data.ReportUsername;
             configObj.ReportPassword = data.ReportPassword;
             configObj.ArmazemCompraDireta = data.ArmazemCompraDireta;
+            configObj.DataFechoFaturacao = Convert.ToDateTime(data.DataFechoFaturacaoText);
 
             #region zpgm.SGPPF
             configObj.NumeracaoPedidoFormacao = data.NumeracaoPedidoFormacao;

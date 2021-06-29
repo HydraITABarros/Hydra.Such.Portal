@@ -5,6 +5,7 @@
 }
 <link rel="import" href="~/elements/projects/invoice_1.html">
 
-<x-invoice1 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-invoice1>
+<x-invoice1 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+            _datafechofaturacao='@Html.Raw(Json.Serialize(ViewBag.DataFechoFaturacao))'></x-invoice1>
 
 
