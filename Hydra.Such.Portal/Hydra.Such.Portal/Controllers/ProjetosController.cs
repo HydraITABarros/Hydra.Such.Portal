@@ -3591,7 +3591,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (requestParams.TryGetValue("customerNo", out customerNoValue))
                     customerNo = (string)customerNoValue;
             }
-            List<NAVClientesInvoicesViewModel> result = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
+            List<NAVClientesInvoicesViewModel> result = DBNAV2017Clients.GetInvoicesFatura(_config.NAVDatabaseName, _config.NAVCompanyName, customerNo);
 
             return Json(result);
         }
