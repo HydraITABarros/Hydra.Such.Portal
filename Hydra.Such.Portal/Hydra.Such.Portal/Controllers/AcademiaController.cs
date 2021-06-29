@@ -35,6 +35,10 @@ namespace Hydra.Such.Portal.Controllers
             UploadPath = _config.FileUploadFolder + "Academia";
         }
 
+        private const string AcademiaName = "SUCH Academia";
+        private const string AcademiaEmailAddress = "academia@such.pt";
+
+        // Estado 0 -> 1
         private const string EmployeeToChiefEmail = "Caro(a) Chefia,\n\n" +
                                     "O Colaborador {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}, realizou um pedido de participação em formação externa para a seguinte acção de formação:\n" +
                                     "Acção: {4}\n" +
@@ -44,6 +48,7 @@ namespace Hydra.Such.Portal.Controllers
                                     "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
+        // Estado 1 -> 2
         private const string ChiefToDirectorEmail = "Caro(a) Director(a),\n\n" +
                                     "O Colaborador {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}, realizou um pedido de participação em formação externa para a seguinte acção de formação:\n" +
                                     "Acção: {4}\n" +
@@ -54,6 +59,10 @@ namespace Hydra.Such.Portal.Controllers
                                     "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
+        // Estado 2 -> 3
+        private const string DirectorApprovedRequest = "Foi aprovado pela Direcção o pedido ";
+
+        // Estado 3 -> 4
         private const string AcademyRejectionToDirector = "Caro(a) Director(a),\n\n" +
                                     "O pedido de participação em formação externa nº {0}, do colaborador(a) {1} ({2}), pertencente ao Centro de Responsabilidade {3} - {4}, para a acção de formação:" +
                                     "Acção: {5}\n" +
@@ -64,17 +73,23 @@ namespace Hydra.Such.Portal.Controllers
                                     "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
+        // Estado 4 -> 3 => resubmissão do pedido
+        private const string DirectorReapprovedRequest = "Foi resubmetido pela Direcção o pedido ";
+
+        // Estado 3 -> 5
         private const string AcademyToBoardForApproval = "Exmo(a) Conselho de Administração,\n\n" +
-                                    "Remete-se para aprovação de V.Ex.ª o pedido de formação, do colaborador(a) {1} ({2}), pertencente ao Centro de Responsabilidade {3} - {4}\n\n" +
-                                    "Por favor siga a ligação: {5}\n\n" +
+                                    "Remete-se para aprovação de V.Ex.ª o pedido de formação, do colaborador(a) {0} ({1}), pertencente ao Centro de Responsabilidade {2} - {3}\n\n" +
+                                    "Por favor siga a ligação: {4}\n\n" +
                                     "Com os melhores cumprimentos.\n" +
                                     "Academia\n" +
                                     "SUCH | Serviço de Utilização Comum dos Hospitais";
 
 
-        private const string BoardApproval = "Foi aprovado o pedido em apreço:\n{1}";
+        // Estado 5 -> 8
+        private const string BoardApproval = "Foi aprovado o pedido ";
 
-        private const string BoardRejection = "Foi rejeitado o pedido em apreço:\n{1}";
+        // Estado 5 -> 7
+        private const string BoardRejection = "Foi rejeitado o pedido ";
 
         private string GetMimeType(string fileName)
         {
@@ -247,8 +262,8 @@ namespace Hydra.Such.Portal.Controllers
                                             pedido.DesignacaoAccao,
                                             pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
                                     SubjectText = "Pedido de Participação em Formação Externa para validar",
-                                    SenderAddress = "academia@such.pt",
-                                    SenderName = "SUCH Academia",
+                                    SenderAddress = AcademiaEmailAddress,
+                                    SenderName = AcademiaName,
                                     IsHtml = true,
                                     ToAddresses = f.GetManagersEmailAddresses(1)
                                 };
@@ -272,14 +287,14 @@ namespace Hydra.Such.Portal.Controllers
                                             pedido.DesignacaoAccao,
                                             pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
                                     SubjectText = "Pedido de Participação em Formação Externa para aprovar",
-                                    SenderAddress = "academia@such.pt",
-                                    SenderName = "SUCH Academia",
+                                    SenderAddress = AcademiaEmailAddress,
+                                    SenderName = AcademiaName,
                                     IsHtml = true,
                                     ToAddresses = f.GetManagersEmailAddresses(1)
                                 };
 
                                 SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToDirectorForApproval(f, pedido, "");
+                                email.MakeEmailToDirectorForApproval(f, pedido, url);
 
                                 email.SendEmail();
                             }
@@ -288,12 +303,129 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (currStatus == 1 || currStatus == 2)
                                 {
+                                    EmailAcademia e = new EmailAcademia {
+                                        IdPedido = pedido.IdPedido,
+                                        BodyText = DirectorApprovedRequest,
+                                        SubjectText = "Pedido de Participação em Formação Externa Aprovado pela Direcção",
+                                        SenderAddress = "esuch@such.pt",
+                                        SenderName = "e-SUCH",
+                                        IsHtml = true,
+                                        ToAddresses = new List<string> { "academia@such.pt"}
+                                    };
 
+                                    SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                    email.MakeEmailToAcademy(pedido, url);
+
+                                    email.SendEmail();
                                 }
 
                                 if (currStatus == 4)
                                 {
+                                    EmailAcademia e = new EmailAcademia
+                                    {
+                                        IdPedido = pedido.IdPedido,
+                                        BodyText = DirectorReapprovedRequest,
+                                        SubjectText = "Pedido de Participação em Formação Externa Re-aprovado pela Direcção",
+                                        SenderAddress = "esuch@such.pt",
+                                        SenderName = "e-SUCH",
+                                        IsHtml = true,
+                                        ToAddresses = new List<string> { "academia@such.pt" }
+                                    };
+
+                                    SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                    email.MakeEmailToAcademy(pedido, url);
+
+                                    email.SendEmail();
                                 }
+                            }
+                            break;
+                        case 4:
+                            {
+                                EmailAcademia e = new EmailAcademia {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = string.Format(AcademyRejectionToDirector,
+                                        pedido.IdPedido,
+                                        pedido.NomeEmpregado,
+                                        pedido.IdEmpregado,
+                                        f.CrespNav2017,
+                                        f.DescCrespNav2017,
+                                        pedido.DesignacaoAccao,
+                                        pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy"),
+                                        pedido.ParecerDotacaoAcademia
+                                    ),
+                                    SubjectText = "Pedido de Participação em Formação Externa Rejeitado pela Academia",
+                                    SenderAddress = AcademiaEmailAddress,
+                                    SenderName = AcademiaName,
+                                    IsHtml = true,
+                                    ToAddresses = f.GetManagersEmailAddresses(1)
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToDirectorRequestDenial(f, pedido, url);
+
+                                email.SendEmail();
+                            }
+                            break;
+                        case 5:
+                            {
+                                EmailAcademia e = new EmailAcademia {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = string.Format(AcademyToBoardForApproval,
+                                        pedido.NomeEmpregado,
+                                        pedido.IdEmpregado,
+                                        f.CrespNav2017,
+                                        f.DescCrespNav2017,
+                                        url
+                                    ),
+                                    SubjectText = "Pedido de Participação em Formação Externa para Autorizar",
+                                    SenderAddress = AcademiaEmailAddress,
+                                    SenderName = AcademiaName,
+                                    IsHtml = true,
+                                    ToAddresses = f.GetManagersEmailAddresses(3)
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToBoardForApproval(f, pedido, url);
+
+                                email.SendEmail();
+                            }
+                            break;
+                        case 6:
+                            {
+                                EmailAcademia e = new EmailAcademia
+                                {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = BoardApproval,
+                                    SubjectText = "Pedido de Participação em Formação Externa Autorizado pelo CA",
+                                    SenderAddress = "esuch@such.pt",
+                                    SenderName = "e-SUCH",
+                                    IsHtml = true,
+                                    ToAddresses = new List<string> { AcademiaEmailAddress }
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToAcademy(pedido, url);
+
+                                email.SendEmail();
+                            }
+                            break;
+                        case 7:
+                            {
+                                EmailAcademia e = new EmailAcademia
+                                {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = BoardRejection,
+                                    SubjectText = "Pedido de Participação em Formação Externa Rejeitado pelo CA",
+                                    SenderAddress = "esuch@such.pt",
+                                    SenderName = "e-SUCH",
+                                    IsHtml = true,
+                                    ToAddresses = new List<string> { AcademiaEmailAddress }
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToAcademy(pedido, url);
+
+                                email.SendEmail();
                             }
                             break;
                         default:
@@ -470,11 +602,18 @@ namespace Hydra.Such.Portal.Controllers
                                     alteracao.Value,
                                     User.Identity.Name);
                             }
-                            
-                            
-                            SendNotification(pedido, newEstado.Id, currEstado, url);
 
-                            return Json(true);
+                            try
+                            {
+                                SendNotification(pedido, newEstado.Id, currEstado, url);
+                                return Json(true);
+                            }
+                            catch (Exception ex)
+                            {
+
+                                return Json(true); 
+                            }
+                            
                         }
                     }
                 }
