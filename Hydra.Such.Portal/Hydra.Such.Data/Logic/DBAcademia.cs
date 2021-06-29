@@ -785,7 +785,8 @@ namespace Hydra.Such.Data.Logic
 
             }
         }
-        public void MakeEmailBoardDecision(PedidoParticipacaoFormacao p, string url)
+
+        public void MakeEmailToAcademy(PedidoParticipacaoFormacao p, string url)
         {
             if (!IsBodyHtml)
             {
@@ -793,22 +794,9 @@ namespace Hydra.Such.Data.Logic
             }
             else
             {
-                string bodyTxt;
-
-                if ((Enumerations.EstadoPedidoFormacao)p.Estado == Enumerations.EstadoPedidoFormacao.PedidoAutorizadoConsAdmin)
-                {
-                    bodyTxt = "<p>Foi aprovado o pedido: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />" + "</p>";
-                }
-                else
-                {
-                    bodyTxt = "<p>Foi rejeitado o pedido: <a href=\"" + url + "\">" + p.IdPedido + "</a><br />" + "</p>";
-                }
-
-                Body = @"<html><body>" + bodyTxt + "</body></html>";
+                string bodyTxt = "<p>" + NotificationEmail.BodyText + "<a href=\"" + url + "\">" + p.IdPedido + "</a></p>";
             }
-           
         }
-
         
 
         private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
