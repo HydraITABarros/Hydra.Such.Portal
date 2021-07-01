@@ -269,6 +269,55 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<NAVClientesInvoicesViewModel> GetInvoicesFatura(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
+        {
+            try
+            {
+                List<NAVClientesInvoicesViewModel> result = new List<NAVClientesInvoicesViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@CustomerNo", NAVClientNo ),
+                        //new SqlParameter("@Regions", "''"),
+                        //new SqlParameter("@FunctionalAreas", "''"),
+                        //new SqlParameter("@RespCenters", "''"),
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ClientesInvoicesFatura @DBName, @CompanyName, @CustomerNo", parameters);
+                    var minDate = new DateTime(2008, 1, 1);
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVClientesInvoicesViewModel()
+                        {
+                            Tipo = temp.Tipo.Equals(DBNull.Value) ? "" : (string)temp.Tipo,
+                            No_ = temp.No_.Equals(DBNull.Value) ? "" : (string)temp.No_,
+                            ProjectNo = temp.ProjectNo.Equals(DBNull.Value) ? "" : (string)temp.ProjectNo,
+                            DataServPrestado = temp.DataServPrestado.Equals(DBNull.Value) ? "" : (string)temp.DataServPrestado,
+                            CreationDate = (DateTime?)temp.CreationDate,
+                            DocumentDate = (DateTime?)temp.DocumentDate,
+                            DocumentDateText = temp.DocumentDate != null ? Convert.ToDateTime(temp.DocumentDate).ToString("yyyy-MM-dd") : "",
+                            DueDate = (DateTime?)temp.DueDate,
+                            AmountIncludingVAT = temp.AmountIncludingVAT.Equals(DBNull.Value) ? "" : (string)temp.AmountIncludingVAT.ToString(),
+                            ValorPendente = temp.ValorPendente.Equals(DBNull.Value) ? "" : (string)temp.ValorPendente.ToString(),
+                            Paid = (bool)temp.Paid,
+                            SellToCustomerNo = temp.SellToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.SellToCustomerNo,
+                            BillToCustomerNo = temp.BillToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.BillToCustomerNo,
+                            NoContrato = temp.NoContrato.Equals(DBNull.Value) ? "" : (string)temp.NoContrato,
+                            NoCompromisso = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso,
+                            NoPedido = temp.NoPedido.Equals(DBNull.Value) ? "" : (string)temp.NoPedido
+                        });
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<NAVClientesBalanceControlViewModel> GetBalances(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo)
         {
             try

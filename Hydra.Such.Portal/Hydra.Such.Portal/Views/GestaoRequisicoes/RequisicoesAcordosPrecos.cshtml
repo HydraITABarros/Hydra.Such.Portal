@@ -1095,7 +1095,7 @@
                 _EnviarCG: function () {
                     if (this.selectedItemsCG != null && this.selectedItemsCG != "") {
 
-                        $(this.$.btnCGExportLinhasNutricao).addClass('disabled');
+                        $(this.$.btnCGEnviar).addClass('disabled');
 
                         var selItmsCG = this.selectedItemsCG;
 
@@ -1187,6 +1187,8 @@
                     else {
                         this._showErrorMessage("Ocorreu um erro.");
                     }
+
+                    $(this.$.btnCGEnviar).removeClass('disabled');
                 },
 
                 _exportEXCELCG_LinhasNutricaoUpdateResponse: function (e) {
