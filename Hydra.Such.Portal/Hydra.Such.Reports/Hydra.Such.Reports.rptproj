@@ -76,6 +76,7 @@
     <Report Include="OpotunidadeProposta_Contrato.rdl" />
     <Report Include="Orcamentos.rdl" />
     <Report Include="PedidoPagamentoAntecipado.rdl" />
+    <Report Include="PedidoParticipacaoFormacao.rdl" />
     <Report Include="PrecosServicosCliente.rdl" />
     <Report Include="Procedimento.rdl" />
     <Report Include="ProjetoMovimentos.rdl" />
