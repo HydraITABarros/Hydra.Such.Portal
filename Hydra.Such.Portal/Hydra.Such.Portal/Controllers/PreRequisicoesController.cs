@@ -4451,6 +4451,79 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(Quantidades);
         }
-    }
 
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_RequisicoesPendentes([FromBody] List<RequisitionViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições Pendentes");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                if (dp["createDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Requisição"); Col = Col + 1; }
+                if (dp["localCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Localização"); Col = Col + 1; }
+                if (dp["responsibleApproval"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Responsável Aprovação"); Col = Col + 1; }
+                if (dp["approvalDateString"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data/Hora Aprovação"); Col = Col + 1; }
+                if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Observações"); Col = Col + 1; }
+                if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Funcionário"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Cresp"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
+                        if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StateText); Col = Col + 1; }
+                        if (dp["createDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateDate); Col = Col + 1; }
+                        if (dp["localCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalCode); Col = Col + 1; }
+                        if (dp["responsibleApproval"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResponsibleApproval); Col = Col + 1; }
+                        if (dp["approvalDateString"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ApprovalDateString); Col = Col + 1; }
+                        if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
+                        if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmployeeNo); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_RequisicoesPendentes(string sFileName)
+        {
+            sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+
+    }
 }

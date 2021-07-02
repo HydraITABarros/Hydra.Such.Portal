@@ -159,6 +159,14 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/ExportToExcel_RequisicoesPendentes"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
 
         <div class="subMenu">
@@ -166,6 +174,8 @@
 
             <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Meu Histórico</paper-button>
             <paper-button class="tablinks" on-tap="_goApproval"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showMenuMessage }}</paper-button>
+
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
@@ -417,6 +427,12 @@
                         type: String,
                         value: "Minhas Aprovações"
                     },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
                 },
 
                 observers: [
@@ -619,6 +635,18 @@
                 },
                 /* end - ColumnToggle */
 
+                _exportEXCEL: function () {
+                    var result = this.$.grdPendingReqGrid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../PreRequisicoes/ExportToExcelDownload_RequisicoesPendentes?sFileName=' + FileName;
+                },
             });
         });
     </script>

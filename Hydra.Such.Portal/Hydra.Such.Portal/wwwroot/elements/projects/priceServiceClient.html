@@ -216,7 +216,7 @@
                                 items="[[lResources]]"
                                 text-path="id"
                                 value-path="id"
-                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}, {"field":"extra", "name":"Cód. Unidade Medida"}]'>
                 </such-selectbox>
             </div>
             <div class="col-lg-2">
@@ -783,9 +783,10 @@
                 _ResourceChanged: function (e) {
                     if (e.detail.value != "" && this.lResources != null && this.lResources != "") {
                         this.$.piResourcedescription.value = this.lResources.find(x => x.id == e.detail.value).value;
-
+                        this.$.piCLMeasureUnit.value = this.lResources.find(x => x.id == e.detail.value).extra;
                     } else {
                         this.$.piResourcedescription.value = "";
+                        this.$.piCLMeasureUnit._clearSelection();
                     }
                 },
                 _MealTypesChanged: function (e) {
