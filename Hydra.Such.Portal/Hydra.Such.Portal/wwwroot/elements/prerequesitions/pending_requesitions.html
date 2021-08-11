@@ -295,6 +295,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorTotalDocComIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorTotalDocComIVA">Valor Total (em €)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorTotalDocComIVA" />
+                </template>
+                <div class="text-right">
+                    [[ _formatCurrencyValue(item.valorTotalDocComIVA) ]]
+                </div>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.employeeNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="employeeNo">Nº Funcionário</vaadin-grid-sorter>
@@ -600,6 +610,7 @@
                         "responsibleApproval": { hidden: false, label: "Responsável Aprovação" },
                         "approvalDateString": { hidden: false, label: "Data/Hora Aprovação" },
                         "comments": { hidden: false, label: "Observações" },
+                        "valorTotalDocComIVA": { hidden: false, label: "Valor Total (em €)" },
                         "employeeNo": { hidden: false, label: "Nº Funcionário" },
                         "regionCode": { hidden: false, label: "Cód. Região" },
                         "centerResponsibilityCode": { hidden: false, label: "Cód. Cresp" }
@@ -646,6 +657,17 @@
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
                     location.href = '../PreRequisicoes/ExportToExcelDownload_RequisicoesPendentes?sFileName=' + FileName;
+                },
+
+                _formatCurrencyValue: function (value) {
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null) {
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
                 },
             });
         });

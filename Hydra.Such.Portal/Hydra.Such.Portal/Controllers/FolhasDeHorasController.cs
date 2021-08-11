@@ -3415,26 +3415,26 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
-                    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 1).ToList());
+                //List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
+                //    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 1).ToList());
 
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+                //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
-                int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
+                //int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
 
-                if (totalPendingApprovals == 0)
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não tem permissão para Validar a Folha de Horas para estas Dimensões.";
-                }
-                else
-                {
+                //if (totalPendingApprovals == 0)
+                //{
+                //    result.eReasonCode = 101;
+                //    result.eMessage = "Não tem permissão para Validar a Folha de Horas para estas Dimensões.";
+                //}
+                //else
+                //{
                     if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo))
                     {
                         result.eReasonCode = 101;
@@ -3922,7 +3922,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -3953,26 +3953,26 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
-                    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 2).ToList());
+                //List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
+                //    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 2).ToList());
 
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+                //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
-                int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
+                //int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
 
-                if (totalPendingApprovals == 0)
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não tem permissão para Integrar Aj. Custo da Folha de Horas para estas Dimensões.";
-                }
-                else
-                {
+                //if (totalPendingApprovals == 0)
+                //{
+                //    result.eReasonCode = 101;
+                //    result.eMessage = "Não tem permissão para Integrar Aj. Custo da Folha de Horas para estas Dimensões.";
+                //}
+                //else
+                //{
                     if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo))
                     {
                         result.eReasonCode = 101;
@@ -4242,7 +4242,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -4273,26 +4273,26 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
-                    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 3).ToList());
+                //List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
+                //    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 3).ToList());
 
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+                //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
-                int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
+                //int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
 
-                if (totalPendingApprovals == 0)
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não tem permissão para Integrar Km da Folha de Horas para estas Dimensões.";
-                }
-                else
-                {
+                //if (totalPendingApprovals == 0)
+                //{
+                //    result.eReasonCode = 101;
+                //    result.eMessage = "Não tem permissão para Integrar Km da Folha de Horas para estas Dimensões.";
+                //}
+                //else
+                //{
                     if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo))
                     {
                         result.eReasonCode = 101;
@@ -4563,7 +4563,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {

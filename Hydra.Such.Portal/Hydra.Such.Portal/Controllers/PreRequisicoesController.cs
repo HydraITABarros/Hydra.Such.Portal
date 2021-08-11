@@ -4482,6 +4482,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["responsibleApproval"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Responsável Aprovação"); Col = Col + 1; }
                 if (dp["approvalDateString"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data/Hora Aprovação"); Col = Col + 1; }
                 if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Observações"); Col = Col + 1; }
+                if (dp["valorTotalDocComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Total (em €)"); Col = Col + 1; }
                 if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Funcionário"); Col = Col + 1; }
                 if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Cresp"); Col = Col + 1; }
@@ -4501,6 +4502,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["responsibleApproval"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResponsibleApproval); Col = Col + 1; }
                         if (dp["approvalDateString"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ApprovalDateString); Col = Col + 1; }
                         if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
+                        if (dp["valorTotalDocComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValorTotalDocComIVA.ToString()); Col = Col + 1; }
                         if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmployeeNo); Col = Col + 1; }
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
