@@ -517,6 +517,7 @@
                             this.$.dlgFornecedorIBAN.open();
                         }
                     }
+                    $(this.$.btnCreate).removeClass('disabled');
                 },
 
 
@@ -602,6 +603,7 @@
                     } else {
                         this._openToastError(this.data.eMessage);
                     }
+                    $(this.$.btnCreate).removeClass('disabled');
                 },
 
                 _responseValidatorProcessor: function (data) {
@@ -682,6 +684,7 @@
                 },
 
                 _openDlgFornecedorIBAN: function () {
+                    $(this.$.btnCreate).addClass('disabled');
                     this._validateData();
                 },
                 _closeDlgFornecedorIBAN: function () {

@@ -1124,7 +1124,7 @@
                                         <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
-                                        <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
+                                        <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Faturável</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CLRegion" name="_CLRegion" value="{{_CLRegion}}" label="Cód. Região" disabled="{{ _lockFields }}"
@@ -1345,7 +1345,7 @@
 
                                 <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="billable">Fáturavel</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="billable" />
                                     </template>
                                     <template>
