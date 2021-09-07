@@ -157,7 +157,8 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.FunctionalAreaCode = item.CodAreaFuncional;
                 projMovement.ResponsabilityCenterCode = item.CodCentroResponsabilidade;
                 projMovement.CodContract = item.CodContrato;
-                projMovement.CodServiceGroup = string.IsNullOrEmpty(item.CodGrupoServico) ? 0 : int.Parse(item.CodGrupoServico);
+                //projMovement.CodServiceGroup = string.IsNullOrEmpty(item.CodGrupoServico) ? 0 : int.Parse(item.CodGrupoServico);
+                projMovement.CodServiceGroup = string.IsNullOrEmpty(item.CodGrupoServico) ? "" : item.CodGrupoServico.ToString();
                 projMovement.CodServClient = item.CodServCliente;
                 projMovement.DescServClient = item.DescServCliente;
                 projMovement.NumGuideResiduesGar = item.NumGuiaResiduosGar;

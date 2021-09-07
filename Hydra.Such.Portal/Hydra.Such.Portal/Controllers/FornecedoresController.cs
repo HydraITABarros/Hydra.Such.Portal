@@ -68,6 +68,22 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult FornecedorQuestionarioDetalhes(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Fornecedores);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.No = id ?? "";
+                ViewBag.reportServerURL = _config.ReportServerURL;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetLisFornecedores([FromBody] JObject requestParams)
         {

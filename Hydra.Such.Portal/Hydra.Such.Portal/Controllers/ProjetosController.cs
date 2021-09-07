@@ -5132,6 +5132,8 @@ namespace Hydra.Such.Portal.Controllers
                                                     wasteLineToAdd.ContractNo = projectsDetails
                                                                 .Select(y => new { ProjectNo = y.NºProjeto, ContractNo = y.NºContrato })
                                                                 .FirstOrDefault(y => y.ProjectNo == resourceFirstLine.ProjectNo)?.ContractNo;
+                                                    wasteLineToAdd.Date = data.FirstOrDefault().Date;
+                                                    wasteLineToAdd.DateFim = data.FirstOrDefault().DateFim;
 
                                                     header.Items.Add(wasteLineToAdd);
                                                 }

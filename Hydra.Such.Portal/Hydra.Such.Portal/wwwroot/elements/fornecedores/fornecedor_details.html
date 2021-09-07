@@ -157,6 +157,7 @@
 
             <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
             <paper-button id="btn_imprimirEFC" class="tablinks" on-tap="_printEFC"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto Fornecedor/Cliente</paper-button>
+            <paper-button id="btn_questionario" class="tablinks" on-tap="_questionario"><i class="fa fa-clipboard" aria-hidden="true"></i> Avaliação Desempenho Ambiental</paper-button>
         </div>
 
         <div class="panel panel-default break_clear">
@@ -658,6 +659,10 @@
                     else {
                         this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                     }
+                },
+
+                _questionario: function () {
+                    window.location.href = "/Fornecedores/FornecedorQuestionarioDetalhes/" + this._no;
                 },
 
                 //Mostra Mensagens de Erro

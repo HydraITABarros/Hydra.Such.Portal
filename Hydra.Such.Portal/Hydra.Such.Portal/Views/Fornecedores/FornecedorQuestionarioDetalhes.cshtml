@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "Questionário de Gestão Ambiental";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/fornecedores/fornecedor_questionario_details.html">
+
+<x-fornecedorquestionariodetails
+                 _no="@ViewBag.No"
+                 _reportserverurl='@ViewBag.reportServerURL'
+                 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-fornecedorquestionariodetails>
