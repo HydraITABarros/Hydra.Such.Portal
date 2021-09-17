@@ -836,10 +836,23 @@ namespace Hydra.Such.Portal.Controllers
         {
             string idTema = requestParams["idTema"] == null ? null : (string)requestParams["idTema"];
             bool fromCatalogo = requestParams["fromCatalogo"] == null ? false : (bool)requestParams["fromCatalogo"];
+            string filtroData = requestParams["filtroData"] == null ? DateTime.Today.AddMonths(DBAcademia.NoMesesMostrarAccoesPorDefeito * -1).ToShortDateString() : (string)requestParams["filtroData"];
+            DateTime filtro;
+            try
+            {
+                filtro = DateTime.Parse(filtroData);
+            }
+            catch (Exception)
+            {
+
+                filtro = DateTime.Today.AddMonths(DBAcademia.NoMesesMostrarAccoesPorDefeito * -1);
+            }
+            
+
             if (idTema == null)
                 return Json(null);
 
-            TemaFormacao tema = DBAcademia.__GetDetailsTema(idTema);
+            TemaFormacao tema = DBAcademia.__GetDetailsTema(idTema, filtro);
 
             TemaFormacaoView temaV = new TemaFormacaoView(tema);
             temaV.AccoesDoTema(tema);
@@ -1011,8 +1024,8 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        temaV.UrlImagem = temaV.ImagensTema.Where(i => i.Visivel.Value).FirstOrDefault() != null ?
-                             temaV.ImagensTema.Where(i => i.Visivel.Value).FirstOrDefault().Url : string.Empty;
+                        temaV.UrlImagem = temaV.ImagensTema.FirstOrDefault(i => i.Visivel.Value) != null ?
+                             temaV.ImagensTema.FirstOrDefault(i => i.Visivel.Value).Url : string.Empty;
 
                         return Json(DBAcademia.__UpdateTemaFormacao(temaV));
                     }
@@ -1081,6 +1094,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpGet]
+        [Route("Academia/DownloadImage/{imgPath}/{docId}")]
         [Route("Academia/DownloadImage/{imgPath}/{docId}/{id}")]
         public FileStreamResult DownloadImage(string imgPath, string docId, string id)
         {
@@ -1088,6 +1102,10 @@ namespace Hydra.Such.Portal.Controllers
             {
                 imgPath = "\\" + imgPath + "\\";
                 string _path = UploadPath + imgPath + docId + "\\" + id;
+                if (id == null || id == "")
+                {
+                    _path = UploadPath + "\\logo_such_nav.png";
+                }
                 FileStream file = new FileStream(_path, FileMode.Open);
 
                 if (IsImage(Path.GetExtension(file.Name)))
@@ -1500,23 +1518,35 @@ namespace Hydra.Such.Portal.Controllers
 
             if (UPerm != null && UPerm.Read.Value)
             {
-                TemaFormacao tema = DBAcademia.__GetDetailsTema(id);
-                if (fromCatalogo)
+                try
                 {
-                    tema.AccoesTema = tema.AccoesTema.Where(a => a.Activa.Value == 1).ToList();
-                }
-                if (tema != null)
-                {
-                    ViewBag.idTema = id;
-                    ViewBag.descricaoTema = tema.DescricaoTema;
-                    ViewBag.codInterno = codInterno;
-                    ViewBag.fromCatalogo = fromCatalogo;
+                    TemaFormacao tema = DBAcademia.__GetDetailsTema(id);
+                    if (fromCatalogo)
+                    {
+                        tema.AccoesTema = tema.AccoesTema.Where(a => a.Activa.Value == 1).ToList();
+                    }
+                    if (tema != null)
+                    {
+                        DateTime filtroData = tema.NoMesesAnterioresAccoes.HasValue && tema.NoMesesAnterioresAccoes.Value > 0 ?
+                                                DateTime.Today.AddMonths(tema.NoMesesAnterioresAccoes.Value * -1) :
+                                                DateTime.Today.AddMonths(DBAcademia.NoMesesMostrarAccoesPorDefeito * -1);
+                        ViewBag.idTema = id;
+                        ViewBag.filtroData = filtroData.ToString("yyyy-MM-dd");
+                        ViewBag.descricaoTema = tema.DescricaoTema;
+                        ViewBag.codInterno = codInterno;
+                        ViewBag.fromCatalogo = fromCatalogo;
 
-                    return View();
+                        return View();
+                    }
+                    else
+                    {
+                        return RedirectToAction("AccessDenied", "Error");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return RedirectToAction("AccessDenied", "Error");
+
+                    throw;
                 }
 
             }

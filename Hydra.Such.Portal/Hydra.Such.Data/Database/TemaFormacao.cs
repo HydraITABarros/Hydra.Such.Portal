@@ -16,6 +16,7 @@ namespace Hydra.Such.Data.Database
         public string DescricaoTema { get; set; }
         public string UrlImagem { get; set; }
         public int? Activo { get; set; }
+        public int? NoMesesAnterioresAccoes { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public ICollection<AccaoFormacao> AccoesTema { get; set; }

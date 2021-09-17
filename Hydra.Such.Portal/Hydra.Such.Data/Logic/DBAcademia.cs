@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using System.Net;
 using System.ComponentModel;
+//using System.Diagnostics;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -66,7 +67,7 @@ namespace Hydra.Such.Data.Logic
                 {
                     try
                     {
-                        requestId = PedidosFormacao.Where(p => p.IdAccaoFormacao == courseId && p.Estado <= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).FirstOrDefault().IdPedido;
+                        requestId = PedidosFormacao.FirstOrDefault(p => p.IdAccaoFormacao == courseId && p.Estado <= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).IdPedido;
                         return true;
                     }
                     catch (Exception ex)
@@ -232,7 +233,7 @@ namespace Hydra.Such.Data.Logic
             {
                 foreach(var c in configAprovadores)
                 {
-                    if(grupos.Where(g => g.GrupoAprovação == c.GrupoAprovação).FirstOrDefault() != null)
+                    if(grupos.FirstOrDefault(g => g.GrupoAprovação == c.GrupoAprovação) != null)
                     {
                         ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, userConfig.Nome, c));
 
@@ -281,15 +282,13 @@ namespace Hydra.Such.Data.Logic
         public bool IsChief()
         {
             // só é Chefia se tiver Área(s) e CResp(s) preenchido
-            return ConfiguracaoAprovAcademia.Where(
-                    c => c.TipoUtilizadorConfiguracao == Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia).FirstOrDefault() == null ||
+            return ConfiguracaoAprovAcademia.FirstOrDefault(c => c.TipoUtilizadorConfiguracao == Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia) == null ||
                     (AreasChefia == null && CRespChefia == null) ? false : true;
         }
 
         public bool IsDirector()
         {
-            return ConfiguracaoAprovAcademia.Where(
-                    c => c.TipoUtilizadorConfiguracao == Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao).FirstOrDefault() == null ||
+            return ConfiguracaoAprovAcademia.FirstOrDefault(c => c.TipoUtilizadorConfiguracao == Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao) == null ||
                     AreasDirige == null ? false : true;
         }
 
@@ -889,6 +888,7 @@ namespace Hydra.Such.Data.Logic
     /// </summary>
     public static class DBAcademia
     {
+        public const int NoMesesMostrarAccoesPorDefeito = 2;
         #region Creates
         public static PedidoParticipacaoFormacao __CriarPedidoFormacao(AccaoFormacao accao, Formando formando, ConfigUtilizadores user)
         {
@@ -1198,6 +1198,7 @@ namespace Hydra.Such.Data.Logic
                         List<TemaFormacao> temas = _ctx.TemaFormacao.Where(t => t.Activo == 1).ToList();
                         foreach (var item in temas)
                         {
+
                             item.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == item.IdTema && a.DataInicio > DateTime.Now && a.Activa.Value == 1).ToList();                                
 
                             if (item.AccoesTema == null || (item.AccoesTema != null && item.AccoesTema.Count == 0))
@@ -1229,13 +1230,16 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var _ctx = new SuchDBContext())
                 {
-                    int ano = DateTime.Now.Year - 1;
+                    //int ano = DateTime.Now.Year - 1;
 
-                    DateTime inicio = DateTime.Parse(ano.ToString()  + "-01-01");
+                    //DateTime inicio = DateTime.Parse(ano.ToString()  + "-01-01");
                     
                     List<TemaFormacao> temas = _ctx.TemaFormacao.ToList();
                     foreach (var item in temas)
                     {
+                        int noMesesAnteriores = item.NoMesesAnterioresAccoes.HasValue && item.NoMesesAnterioresAccoes.Value > 0 ? item.NoMesesAnterioresAccoes.Value : NoMesesMostrarAccoesPorDefeito;
+                        DateTime inicio = DateTime.Today.AddMonths((noMesesAnteriores * -1));
+
                         item.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == item.IdTema && a.DataInicio >= inicio)
                             .OrderBy(a => a.DataInicio).ToList();
 
@@ -1260,21 +1264,34 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static TemaFormacao __GetDetailsTema(string idTema)
+        public static TemaFormacao __GetDetailsTema(string idTema, DateTime? filtroData = null)
         {
             try
             {
                 using(var _ctx = new SuchDBContext())
                 {
-                    TemaFormacao tema = _ctx.TemaFormacao.Where(t => t.IdTema == idTema).FirstOrDefault();
-
-                    tema.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == idTema)
+                    TemaFormacao tema = _ctx.TemaFormacao.FirstOrDefault(t => t.IdTema == idTema);
+                    int noMesesAnteriores = tema.NoMesesAnterioresAccoes.HasValue && tema.NoMesesAnterioresAccoes.Value > 0 ? tema.NoMesesAnterioresAccoes.Value : NoMesesMostrarAccoesPorDefeito;
+                    DateTime inicio;
+                    if (filtroData != null)
+                    {
+                        inicio = filtroData.Value;
+                    }
+                    else
+                    {
+                        inicio = DateTime.Today.AddMonths((noMesesAnteriores * -1));
+                    }
+                    
+                    tema.AccoesTema = _ctx.AccaoFormacao
+                        .Where(a => a.IdTema == idTema && (a.DataInicio >= inicio))
                         .OrderByDescending(a => a.DataInicio)
                         .ThenByDescending(a => a.CodigoInterno)
                         .ToList();
 
                     foreach (var item in tema.AccoesTema)
                     {
+                        item.Activa = item.Activa ?? 0;
+                        
                         item.SessoesFormacao = _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == item.IdAccao).ToList();
                     }
                     return tema;
@@ -1293,10 +1310,12 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var _ctx = new SuchDBContext())
                 {
-                    DateTime inicio = DateTime.Now.AddYears(-1);
-                    TemaFormacao tema = _ctx.TemaFormacao.Where(t => t.IdTema == idTema).FirstOrDefault();
-
-                    tema.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == idTema && a.DataInicio.Value >= inicio)
+                    //DateTime inicio = DateTime.Now.AddYears(-1);
+                    TemaFormacao tema = _ctx.TemaFormacao.FirstOrDefault(t => t.IdTema == idTema);
+                    int noMesesAnteriores = tema.NoMesesAnterioresAccoes.HasValue && tema.NoMesesAnterioresAccoes.Value > 0 ? tema.NoMesesAnterioresAccoes.Value : NoMesesMostrarAccoesPorDefeito;
+                    DateTime inicio = DateTime.Today.AddMonths((noMesesAnteriores * -1));
+                    tema.AccoesTema = _ctx.AccaoFormacao
+                        .Where(a => a.IdTema == idTema && (a.DataInicio >= inicio))
                         .OrderByDescending(a => a.DataInicio)
                         .ThenByDescending(a => a.CodigoInterno)
                         .ToList();
@@ -1325,7 +1344,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var _ctx = new SuchDBContext())
                 {
-                    return _ctx.EntidadeFormadora.Where(e => e.IdEntidade == idEntidade).FirstOrDefault();
+                    return _ctx.EntidadeFormadora.FirstOrDefault(e => e.IdEntidade == idEntidade);
                 }
             }
             catch (Exception ex)
@@ -1622,7 +1641,7 @@ namespace Hydra.Such.Data.Logic
 
                     if (!string.IsNullOrEmpty(pedido.IdAccaoFormacao))
                     {
-                        pedido.Accao = _ctx.AccaoFormacao.Where(a => a.IdAccao == pedido.IdAccaoFormacao).FirstOrDefault();
+                        pedido.Accao = _ctx.AccaoFormacao.FirstOrDefault(a => a.IdAccao == pedido.IdAccaoFormacao);
                     }
                     
                     return pedido;
@@ -1895,22 +1914,27 @@ namespace Hydra.Such.Data.Logic
         {
             try
             {
-                TemaFormacao tema = temaV.ParseToDb();
+                TemaFormacao tema = temaV.ParseToDb();               
+
                 foreach(var t in temaV.ImagensTema)
                 {
                     DBAttachments.Update(DBAttachments.ParseToDB(t));
                 }
 
-                foreach (var item in temaV.Accoes)
+                if (temaV.Accoes != null && temaV.Accoes.Count > 0)
                 {
-                    __UpdateAccaoFormacao(item.ParseToDb());
+                    foreach (var item in temaV.Accoes)
+                    {
+                        __UpdateAccaoFormacao(item.ParseToDb());
+                    }
                 }
+                
                 return __UpdateTemaFormacao(tema);
             }
             catch (Exception ex)
             {
 
-                throw;
+                return false;
             }
         }
 

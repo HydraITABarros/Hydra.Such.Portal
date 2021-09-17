@@ -15,14 +15,18 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
-<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/paper-spinner/paper-spinner.html" />
 
 <dom-module id="x-detalhetema">
     <template>
@@ -41,13 +45,36 @@
                 }
 
             .break_clear {
-                margin-top: 15px;
+                margin-top: 5px;
                 margin-right: 0px !important;
                 margin-left: 0px !important;
             }
 
             .break_frm {
                 margin-top: 15px;
+            }
+
+            paper-tooltip {
+                padding: 11px;
+                right: 5px;
+                opacity: 1;
+                box-sizing: border-box;
+                pointer-events: none;
+                max-width: 500px;
+                left: 2px !important;
+                right: none;
+                white-space: initial;
+                --paper-tooltip: {
+                                  font-size: 13px;
+                                  background: #f5f5f5;
+                                  background: white;
+                                  color: #2A2A2A;
+                                  padding: 10px;
+                                  line-height: 1.3em;
+                                  -webkit-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  -moz-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                             }
             }
 
             .label_custom {
@@ -89,6 +116,66 @@
                 justify-content: center;
                 align-items: center;*/
             }
+
+            .grid {
+                font-size: 13px;
+                --vaadin-grid-header-cell: {
+                       /* background: rgba(235, 238, 246, 0.9); */
+                        background-color: rgba(235,238,246,0.9);
+                        border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+                        border-top: 1px solid rgba(248, 250, 252, 0.9);
+                        min-height: 35px;
+
+                        background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+                        background-size: 1px 100%;
+                        background-position: 100% 0%;
+                        background-repeat: no-repeat;
+                    };
+                --vaadin-grid-body-row-selected-cell: {
+                        background-color: rgb(131, 183, 236);
+                        color: #fff;
+                        border-bottom-color: rgb(108, 160, 218);
+                    };
+                --vaadin-grid-body-row-odd-cell: {
+                        background-color: rgb(251, 252, 254);
+                    };
+                --vaadin-grid-body-row-hover-cell: {
+                        background-color: rgb(235, 238, 246);
+                    };
+                --vaadin-grid-body-row-details-cell: {
+                        text-align: center;
+                    };
+                --vaadin-grid-column-resize-handle: {
+                        opacity: 0;
+                    };
+            }
+
+                .grid input {
+                    border: none;
+                    padding-left: 5px;
+                }
+
+            paper-spinner.multi {
+                display: flex;
+                --paper-spinner-layer-1-color: var(--paper-purple-500);
+                --paper-spinner-layer-2-color: var(--paper-cyan-500);
+                --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+                --paper-spinner-layer-4-color: var(--paper-amber-500);
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                z-index: 1;
+                width: 150px;
+                height: 150px;
+                margin: -75px 0 0 -75px;
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                background-color: #E0E0E0;
+                /*border-top: 16px solid #3498db;*/
+                /*width: 120px;
+                height: 120px;*/
+            }
+           
         </style>
 
         <iron-ajax url="/Academia/GetDetalhesTema"
@@ -97,7 +184,9 @@
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
-                   content-type="application/json">
+                   content-type="application/json"
+                   loading="{{loading}}">
+            >
         </iron-ajax>
         <iron-ajax url="/Academia/UpdateTema"
                    last-response="{{ temaUpdated }}"
@@ -105,7 +194,9 @@
                    handle-as="json"
                    id="page_update_ajax"
                    on-response="_updateTemaResponse"
-                   content-type="application/json">
+                   content-type="application/json"
+                   loading="{{loading}}">
+            >
         </iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetBoolValues"
@@ -150,24 +241,38 @@
                    content-type="application/json">
         </iron-ajax>
 
+
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Guardar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
         </div>
-
         <div class="row break_frm">
+            <!--<div class="row break_clear">-->
+            <div>
+                <template is="dom-if" if="{{loading}}">
+                    <paper-spinner class="multi" active></paper-spinner>
+                </template>
+            </div>
+            <!-- </div>-->
             <div class="row break_clear">
-                <div class="col-lg-3">
+                <div class="col-lg-2">
                     <vaadin-text-field id="codigoInterno" name="codigoInterno" label="Código" value="{{ data.codigoInterno }}" disabled="true"></vaadin-text-field>
                 </div>
                 <div class="col-lg-3">
                     <vaadin-text-field id="descricaoTema" name="descricaoTema" label="Descrição Tema" value="{{data.descricaoTema}}" disabled="true"></vaadin-text-field>
                 </div>
                 <div class="col-lg-3">
-                    <vaadin-text-field id="noAccoesTema" name="noAccoesTema" label="Nº Acções" value="{{data.noAccoesTema}}" disabled="true"></vaadin-text-field>
-                </div>
-                <div class="col-lg-3">
                     <vaadin-text-field id="urlImagem" name="urlImagem" label="Imagem Activa" value="{{data.urlImagem}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <paper-tooltip for="noMesesAnterioresAccoes" position="top" offset="-1" animation-delay="1">
+                        Nº meses, anteriores à data actual, para filtrar as acções de formação a mostrar no Catálogo
+                    </paper-tooltip>
+                    <vaadin-text-field id="noMesesAnterioresAccoes" name="noMesesAnterioresAccoes" label="Nº Meses Anteriores" value="{{data.noMesesAnterioresAccoes}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="noAccoesTema" name="noAccoesTema" label="Nº Acções" value="{{data.noAccoesTema}}" disabled="true"></vaadin-text-field>
                 </div>
             </div>
             <div class="row break_clear">
@@ -189,6 +294,20 @@
                                 <div class="panel panel-default">
                                     <div class="panel-body" style="padding:0">
                                         <div class="row break_clear">
+                                            <paper-collapse-item class="panel-heading" header="Acções de formação a partir de:" opened>
+                                                <div class="grid-header" id="gridheader">
+                                                    <div class="panel-body" style="padding-bottom:5px">
+                                                        <div class="row break_clear">
+                                                            <div class="col-sm-2">
+                                                                <vaadin-date-picker id="pesquisaData" name="pesquisaData" label="Data Acção:" value="{{ _filtrodata }}" title="Filtrar a Data no intervalo:"></vaadin-date-picker>
+                                                            </div>
+                                                            <div class="col-sm-2 alignPoga">
+                                                                <paper-button raised id="btnFiltroDatas" class="btnSave" on-tap="_filtrarDataAccoes"><i class="fa fa-filter" aria-hidden="true"></i>&nbsp; Filtrar</paper-button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </paper-collapse-item>
                                             <vaadin-grid id="gridAccoesTema" aria-label="gridAccoesTema" items="[[data.accoes]]" class="grid" active-item="{{activeCourse}}" multi-sort="true">
                                                 <vaadin-grid-column width="7%" resizable>
                                                     <template class="header">
@@ -316,7 +435,7 @@
                                             </vaadin-grid>
                                         </div>
                                     </div>
-                                    </div>
+                                </div>
                             </paper-collapse-group>
                         </iron-pages>
                     </div>
@@ -324,9 +443,9 @@
             </iron-form>
         </div>
 
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-    </template>
+            <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+            <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+</template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
@@ -343,6 +462,10 @@
                     selected: {
                         type: Number,
                         value: 0
+                    },
+                    _filtrodata: {
+                        type: String,
+                        value: ""
                     },
                     _lineno: {
                         type: Number,
@@ -395,7 +518,7 @@
 
                 ready: function () {
                     debugger;;
-                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema, "fromCatalogo": false });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema, "fromCatalogo": false, "filtroData": this.__formatDate(this._filtrodata, 1) });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this.$.uploadImages != null) {
@@ -554,11 +677,54 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
 
+                _filtrarDataAccoes: function (e) {
+                    debugger;;
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema, "fromCatalogo": false, "filtroData": this.__formatDate(this._filtrodata, 1) });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                __formatDate: function (_date, _dtFormat) {
+                    debugger;
+                    var d = new Date(_date),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (d == null)
+                        return null;
+
+                    if (month < 1 || month > 12)
+                        return null;
+
+                    if (day < 1 || day > 31)
+                        return null;
+
+                    if (month == 2) {
+                        var lastDayofMonth = new Date(year, month, 0).getDate();
+
+                        if (day > lastDayofMonth)
+                            return null;
+                    }
+
+                    if (month.length < 2)
+                        month = '0' + month;
+
+                    if (day.length < 2)
+                        day = '0' + day;
+
+
+                    if (_dtFormat === 1)
+                        return [year, month, day].join('-');
+
+                    return [day, month, year].join('-');
+                },
                 _dummyFunction: function (e) {
                     debugger;
                     this._isPageLoad = false;
                     console.log("on-indetermined-changed event of vaadin-checkbox");
                 },
+
+
 
                 _goBack: function (e) {
                     window.location.href = "/Academia/GestaoCatalogo";

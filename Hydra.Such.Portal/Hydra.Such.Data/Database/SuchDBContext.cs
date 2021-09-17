@@ -13513,6 +13513,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Activo)
                     .HasColumnType("tinyint");
 
+                entity.Property(e => e.NoMesesAnterioresAccoes)
+                    .HasColumnName("NoMesesAnterioresAccoes")
+                    .HasColumnType("int");
+
             });
 
             modelBuilder.Entity<Comentario>(entity => {
