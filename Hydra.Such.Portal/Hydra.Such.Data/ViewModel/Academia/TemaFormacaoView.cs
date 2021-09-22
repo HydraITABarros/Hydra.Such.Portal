@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Academia
 {
     public class TemaFormacaoView : TemaFormacao
     {
+        
         public int NoAccoesTema { get; set; }
         public bool TemaActivo { get; set; }
         public ICollection<AttachmentsViewModel> ImagensTema { get; set; }
@@ -30,9 +31,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
                     IdTema = tema.IdTema;
                     CodigoInterno = tema.CodigoInterno;
                     DescricaoTema = tema.DescricaoTema;
-                    Activo = tema.Activo;
+                    Activo = tema.Activo ?? 0;
                     UrlImagem = tema.UrlImagem;
                     AccoesTema = tema.AccoesTema;
+                    NoMesesAnterioresAccoes = tema.NoMesesAnterioresAccoes ?? 0;
 
                     Accoes = CastToAccaoView(AccoesTema.Where(a => a.Activa.Value == 1).ToList());
                     ImagensTema = new List<AttachmentsViewModel>();
@@ -50,9 +52,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
             IdTema = tema.IdTema;
             CodigoInterno = tema.CodigoInterno;
             DescricaoTema = tema.DescricaoTema;
-            Activo = tema.Activo == null ? 0 : tema.Activo.Value;
-            TemaActivo = tema.Activo == null ? false : tema.Activo.Value == 1;
+            Activo = tema.Activo ?? 0;
+            TemaActivo = tema.Activo.HasValue ? tema.Activo.Value == 1 : false;
             UrlImagem = tema.UrlImagem;
+            NoMesesAnterioresAccoes = tema.NoMesesAnterioresAccoes ?? 0;
 
         }
 
@@ -81,7 +84,8 @@ namespace Hydra.Such.Data.ViewModel.Academia
                 CodigoInterno = CodigoInterno,
                 DescricaoTema = DescricaoTema,
                 UrlImagem = UrlImagem,
-                Activo = TemaActivo ? 1 : 0
+                Activo = TemaActivo ? 1 : 0,
+                NoMesesAnterioresAccoes = NoMesesAnterioresAccoes
             };
 
             return tema;
@@ -96,10 +100,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
                     IdTema = tema.IdTema,
                     CodigoInterno = tema.CodigoInterno,
                     DescricaoTema = tema.DescricaoTema,
-                    Activo = tema.Activo == null ? 0 : tema.Activo.Value,
-                    TemaActivo = tema.Activo == null ? false : tema.Activo.Value == 1,
-                    UrlImagem = tema.UrlImagem
-
+                    Activo = tema.Activo ?? 0,
+                    TemaActivo = tema.Activo.HasValue ? tema.Activo.Value == 1 : false,
+                    UrlImagem = tema.UrlImagem,
+                    NoMesesAnterioresAccoes = tema.NoMesesAnterioresAccoes ?? 0
                 };
             }
             else
