@@ -35,7 +35,7 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <style>
-            vaadin-combo-box {
+52+60877            vaadin-combo-box {
                 margin-top: 0px !important;
                 width: 100% !important;
             }
@@ -45,18 +45,10 @@
                 width: 100% !important;
             }
 
-            vaadin-text-field {
-                margin-top: 0px !important;
-                width: 100%;
-            }
-
             .break_clear {
                 margin-top: 15px;
             }
 
-            .panel-heading {
-                font-size: 16px;
-            }
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
@@ -73,58 +65,775 @@
                     border-top:  solid #ddd 1px;
                 };
             }
-            /*
-            .panel-body {
-                padding-top: 0px !important;
-            }*/
-            .header {
-                margin-top: -1px;
-            }
-
-            .spacer10 {
-                height: 10px;
-            }
-
-            .spacer20 {
-                height: 20px;
-            }
-
-            .spacer40 {
-                height: 40px;
-            }
-
-            .spacer60 {
-                height: 60px;
-            }
-
-            .grid--modal__wrapper {
-                height: 86% !important;
-            }
-
-            .grid--modal {
-                height: 100% !important;
-            }
         </style>
 
         <!-- DROPDOWNS POPULATE -->
-
         <!-- CUSTOMER CRUDS -->
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
         </div>
 
-                <div class="col-lg-1">
-                    <img src="/images/SUCH_Logo_Horizontal.jpg" alt="SUCH" width="100%" height="100%" />
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <img src="/images/SUCH_Logo_Horizontal.jpg" alt="SUCH" width="100%" height="100%" />
+            </div>
+            <div class="col-lg-11">
+                <!--Geral-->
+                <div class="col-xs-12">
+                    <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                        <paper-tab>QUESTIONÁRIO DE GESTÃO AMBIENTAL</paper-tab>
+                    </paper-tabs>
                 </div>
-                <div class="col-lg-11">
-                    <!--Geral-->
-                    <div class="col-xs-12">
-                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                            <paper-tab>QUESTIONÁRIO DE GESTÃO AMBIENTAL</paper-tab>
-                        </paper-tabs>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelEmpresa">Empresa / Instituição:</label>
+            </div>
+            <div class="col-lg-11" align="left">
+                <vaadin-text-field id="fornecedor" name="fornecedor" value="{{data.fornecedor}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelActividade">Actividade:</label>
+            </div>
+            <div class="col-lg-11" align="left">
+                <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelResponsavel">Responsável:</label>
+            </div>
+            <div class="col-lg-5" align="left">
+                <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-1">
+                <label id="labelFuncao">Função:</label>
+            </div>
+            <div class="col-lg-5" align="left">
+                <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelTelefone">Telf:</label>
+            </div>
+            <div class="col-lg-2" align="left">
+                <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <label id="labelProcedimento">Procedimento n. (se aplicável):</label>
+            </div>
+            <div class="col-lg-4" align="left">
+                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-1">
+                <label id="labelEMail">e-mail:</label>
+            </div>
+            <div class="col-lg-2" align="left">
+                <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-12" align="left">
+                <label id="labelPreenchimento">Preenchimento</label>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="center">
+                <label id="labelTema">Tema</label>
+            </div>
+            <div class="col-lg-5" align="center">
+                <label id="labelQuestao">Questão</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-2" align="center">
+                    <label id="labelSim">Sim</label>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <label id="labelNao">Não</label>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <label id="labelNA">NA</label>
+                </div>
+                <div class="col-lg-6" align="center">
+                    <label id="labelObservacoes">Observações</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema1">1. Sistema de Gestão de Ambiental</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao11">Possui um Sistema de Gestão Ambiental certificado?</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-2" align="center">
+                    <vaadin-checkbox id="resposta_11_Sim" name="resposta_11_Sim" checked="{{data.resposta_11_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <vaadin-checkbox id="resposta_11_Nao" name="resposta_11_Nao" checked="{{data.resposta_11_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <vaadin-checkbox id="resposta_11_NA" name="resposta_11_NA" checked="{{data.resposta_11_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                </div>
+                <div class="col-lg-6">
+                    <vaadin-text-field id="resposta_11_Texto" name="resposta_11_Texto" value="{{data.resposta_11_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao12">Qual é o referencial?</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <vaadin-text-field id="resposta_12_Texto" name="resposta_12_Texto" value="{{data.resposta_12_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2" align="left">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao13">Nº Certificado</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <vaadin-text-field id="resposta_13_Texto" name="resposta_13_Texto" value="{{data.resposta_13_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear" align="center">
+            <label id="labelNota1">Caso tenha respondido afirmativamente ao ponto 1 não é necessário preencher os pontos seguintes do questionário</label>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema2">2. Resíduos</label>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao21">Promove a separação dos resíduos que produz?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao22">Envia os Resíduos para gestores licenciados?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao23">Qual o seu nº APA?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_21_Sim" name="resposta_21_Sim" checked="{{data.resposta_21_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_21_Nao" name="resposta_21_Nao" checked="{{data.resposta_21_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_21_NA" name="resposta_21_NA" checked="{{data.resposta_21_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_22_Sim" name="resposta_22_Sim" checked="{{data.resposta_22_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_22_Nao" name="resposta_22_Nao" checked="{{data.resposta_22_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_22_NA" name="resposta_22_NA" checked="{{data.resposta_22_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-12" align="left">
+                        <vaadin-text-field id="resposta_23_Texto" name="resposta_23_Texto" value="{{data.resposta_23_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
                     </div>
                 </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_2_Texto" name="resposta_2_Texto" value="{{data.resposta_2_Texto}}" disabled="{{ _lockFields }}" rows="3" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema3">3. Emissões para a atmosfera</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao31">Possui fontes fixas de emissão e efectua a caracterização das emissões gasosas?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao32">Nº de excedências/ano dos Limites de Emissão com comunicação à APA?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_31_Sim" name="resposta_31_Sim" checked="{{data.resposta_31_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_31_Nao" name="resposta_31_Nao" checked="{{data.resposta_31_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_31_NA" name="resposta_31_NA" checked="{{data.resposta_31_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <vaadin-text-field id="resposta_32_Texto" name="resposta_32_Texto" value="{{data.resposta_32_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_32_NA" name="resposta_32_NA" checked="{{data.resposta_32_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_3_Texto" name="resposta_3_Texto" value="{{data.resposta_3_Texto}}" disabled="{{ _lockFields }}" rows="2" maxlength="100"> </such-textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema4">4. Águas residuais</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao41">Produz águas residuais e possui autorização para descarga?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao42">Possui ETAR?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao43">Tipo de tratamento?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_41_Sim" name="resposta_41_Sim" checked="{{data.resposta_41_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_41_Nao" name="resposta_41_Nao" checked="{{data.resposta_41_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_41_NA" name="resposta_41_NA" checked="{{data.resposta_41_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_42_Sim" name="resposta_42_Sim" checked="{{data.resposta_42_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_42_Nao" name="resposta_42_Nao" checked="{{data.resposta_42_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_42_NA" name="resposta_42_NA" checked="{{data.resposta_42_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-12" align="left">
+                        <vaadin-text-field id="resposta_43_Texto" name="resposta_43_Texto" value="{{data.resposta_43_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_4_Texto" name="resposta_4_Texto" value="{{data.resposta_4_Texto}}" disabled="{{ _lockFields }}" rows="3" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema5">5. Ruído para o ambiente</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao51">Monitoriza o ruído produzido para o exterior?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao52">Cumpre os Valores Limite?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_51_Sim" name="resposta_51_Sim" checked="{{data.resposta_51_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_51_Nao" name="resposta_51_Nao" checked="{{data.resposta_51_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_51_NA" name="resposta_51_NA" checked="{{data.resposta_51_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_52_Sim" name="resposta_52_Sim" checked="{{data.resposta_52_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_52_Nao" name="resposta_52_Nao" checked="{{data.resposta_52_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_52_NA" name="resposta_52_NA" checked="{{data.resposta_52_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_5_Texto" name="resposta_5_Texto" value="{{data.resposta_5_Texto}}" disabled="{{ _lockFields }}" rows="2" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema6">6. Consumo de água</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao61">Consome água da rede pública no seu processo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao62">Controla o seu consumo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao63">Possui furo de captação?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao64">Controla o seu consumo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao65">Implementa acções de melhoria para redução do consumo?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_61_Sim" name="resposta_61_Sim" checked="{{data.resposta_61_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_61_Nao" name="resposta_61_Nao" checked="{{data.resposta_61_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_61_NA" name="resposta_61_NA" checked="{{data.resposta_61_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_62_Sim" name="resposta_62_Sim" checked="{{data.resposta_62_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_62_Nao" name="resposta_62_Nao" checked="{{data.resposta_62_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_62_NA" name="resposta_62_NA" checked="{{data.resposta_62_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_63_Sim" name="resposta_63_Sim" checked="{{data.resposta_63_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_63_Nao" name="resposta_63_Nao" checked="{{data.resposta_63_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_63_NA" name="resposta_63_NA" checked="{{data.resposta_63_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Sim" name="resposta_64_Sim" checked="{{data.resposta_64_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Nao" name="resposta_64_Nao" checked="{{data.resposta_64_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_NA" name="resposta_64_NA" checked="{{data.resposta_64_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Sim" name="resposta_65_Sim" checked="{{data.resposta_65_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Nao" name="resposta_65_Nao" checked="{{data.resposta_65_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_NA" name="resposta_65_NA" checked="{{data.resposta_65_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_6_Texto" name="resposta_6_Texto" value="{{data.resposta_6_Texto}}" disabled="{{ _lockFields }}" rows="5" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema7">7. Consumo de combustível (aplicável exclusivamente a transportadores)</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao71">A frota automóvel possui menos de 10 anos?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao72">Existe recurso a combustíveis mais limpos?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_71_Sim" name="resposta_71_Sim" checked="{{data.resposta_71_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_71_Nao" name="resposta_71_Nao" checked="{{data.resposta_71_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_71_NA" name="resposta_71_NA" checked="{{data.resposta_71_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_72_Sim" name="resposta_72_Sim" checked="{{data.resposta_72_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_72_Nao" name="resposta_72_Nao" checked="{{data.resposta_72_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_72_NA" name="resposta_72_NA" checked="{{data.resposta_72_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_7_Texto" name="resposta_7_Texto" value="{{data.resposta_7_Texto}}" disabled="{{ _lockFields }}" rows="2" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema8">8. Consumo de energia</label>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao81">Consome energia e controla o seu consumo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao82">Existe recurso a energias renováveis?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao83">Implementa acções de melhoria para redução do consumo?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_81_Sim" name="resposta_81_Sim" checked="{{data.resposta_81_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_81_Nao" name="resposta_81_Nao" checked="{{data.resposta_81_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_81_NA" name="resposta_81_NA" checked="{{data.resposta_81_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_82_Sim" name="resposta_82_Sim" checked="{{data.resposta_82_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_82_Nao" name="resposta_82_Nao" checked="{{data.resposta_82_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_82_NA" name="resposta_82_NA" checked="{{data.resposta_82_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Sim" name="resposta_83_Sim" checked="{{data.resposta_83_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Nao" name="resposta_83_Nao" checked="{{data.resposta_83_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_NA" name="resposta_83_NA" checked="{{data.resposta_83_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_8_Texto" name="resposta_8_Texto" value="{{data.resposta_8_Texto}}" disabled="{{ _lockFields }}" rows="3" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema9">9. Formação</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao91">Promove a formação/sensibilização ambiental dos seus colaboradores?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_91_Sim" name="resposta_91_Sim" checked="{{data.resposta_91_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_91_Nao" name="resposta_91_Nao" checked="{{data.resposta_91_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_91_NA" name="resposta_91_NA" checked="{{data.resposta_91_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <vaadin-text-field id="resposta_9_Texto" name="resposta_9_Texto" value="{{data.resposta_9_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema10">10. Qualidade e Ambiente</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao101">Tem Seguro de Responsabilidade Ambiental/Garantia Bancária? Em caso afirmativo solicitamos envie cópia.</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_101_Sim" name="resposta_101_Sim" checked="{{data.resposta_101_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_101_Nao" name="resposta_101_Nao" checked="{{data.resposta_101_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_101_NA" name="resposta_101_NA" checked="{{data.resposta_101_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6" align="left">
+                    <vaadin-text-field id="resposta_101_Texto" name="resposta_101_Texto" value="{{data.resposta_101_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao102">Existe algum responsável pela Área da Qualidade e Ambiente?</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_102_Sim" name="resposta_102_Sim" checked="{{data.resposta_102_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_102_Nao" name="resposta_102_Nao" checked="{{data.resposta_102_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_102_NA" name="resposta_102_NA" checked="{{data.resposta_102_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6" align="left">
+                    <vaadin-text-field id="resposta_102_Texto" name="resposta_102_Texto" value="{{data.resposta_102_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5" align="left">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao103">Em caso afirmativo indique nome e contato</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_103_Sim" name="resposta_103_Sim" checked="{{data.resposta_103_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_103_Nao" name="resposta_103_Nao" checked="{{data.resposta_103_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_103_NA" name="resposta_103_NA" checked="{{data.resposta_103_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6" align="left">
+                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row">
+            <div class="col-lg-1" align="center">
+                <img src="/images/201801-P01.png" alt="20180-P01" />
+            </div>
+            <div class="col-lg-11">
+                <div class="col-lg-12">
+                    <label id="labelLegenda1">Legenda:</label>
+                </div>
+                <div class="col-lg-12">
+                    <label id="labelLegendaNA">NA - Não aplicável</label>
+                </div>
+                <div class="col-lg-12">
+                    <label id="labelLegendaAPA">APA - Agência Portuguesa do Ambiente</label>
+                </div>
+                <div class="col-lg-12">
+                    <label id="labelLegendaETAR">ETAR - Estação de Tratamento de Águas Resíduais</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-3">
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-2">
+                    <label id="labelResponsavelFinal">Responsável:</label>
+                </div>
+                <div class="col-lg-10">
+                    <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ _lockFields }}" maxlength="50"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="col-lg-2">
+                    <label id="labelDataFinal">Data:</label>
+                </div>
+                <div class="col-lg-4">
+                    <vaadin-date-picker id="dataFinal" name="final_Data" value="{{data.final_Data}}" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                </div>
+                <div class="col-lg-6">
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
 
 
 
