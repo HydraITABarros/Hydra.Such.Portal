@@ -3043,27 +3043,30 @@ namespace Hydra.Such.Portal.Controllers
                             //Se existir algum problema
                             if (!string.IsNullOrEmpty(Problema))
                             {
-                                if (!Problema.Contains("Contrato Não Vigente"))
+                                if (!Problema.Contains("Data da próxima fatura superior á data de Expiração"))
                                 {
-                                    int GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value;
-
-                                    List<LinhasContratos> AllLines = DBContractLines.GetAllByContractAndVersionAndGroup(item.NºDeContrato, item.NºVersão, GrupoFatura);
-
-                                    if (AllLines != null && AllLines.Count > 0)
+                                    if (!Problema.Contains("Contrato Não Vigente"))
                                     {
-                                        DateTime MaxLineDataFimVersao = AllLines.OrderByDescending(x => x.DataFimVersão).FirstOrDefault().DataFimVersão.HasValue ? Convert.ToDateTime(AllLines.OrderByDescending(x => x.DataFimVersão).FirstOrDefault().DataFimVersão) : DateTime.MinValue;
+                                        int GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value;
 
-                                        if (MaxLineDataFimVersao > DateTime.MinValue)
+                                        List<LinhasContratos> AllLines = DBContractLines.GetAllByContractAndVersionAndGroup(item.NºDeContrato, item.NºVersão, GrupoFatura);
+
+                                        if (AllLines != null && AllLines.Count > 0)
                                         {
-                                            if (nextInvoiceDate > MaxLineDataFimVersao)
+                                            DateTime MaxLineDataFimVersao = AllLines.OrderByDescending(x => x.DataFimVersão).FirstOrDefault().DataFimVersão.HasValue ? Convert.ToDateTime(AllLines.OrderByDescending(x => x.DataFimVersão).FirstOrDefault().DataFimVersão) : DateTime.MinValue;
+
+                                            if (MaxLineDataFimVersao > DateTime.MinValue)
                                             {
-                                                Problema = "Contrato Não Vigente - Grupo de Fatura " + GrupoFatura.ToString();
+                                                if (nextInvoiceDate > MaxLineDataFimVersao)
+                                                {
+                                                    Problema = "Contrato Não Vigente - Grupo de Fatura " + GrupoFatura.ToString();
+                                                }
                                             }
                                         }
                                     }
+                                    else
+                                        Problema = "Contrato Não Vigente!";
                                 }
-                                else
-                                    Problema = "Contrato Não Vigente!";
                             }
                             #endregion
 
