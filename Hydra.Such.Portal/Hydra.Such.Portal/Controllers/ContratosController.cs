@@ -2543,8 +2543,9 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data, string dateCont)
         {
-            //AMARO TESTE DELETEALL
+            //AMARO COMENTAR
             //string teste = "";
+
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
 
@@ -2552,11 +2553,12 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
             //AMARO COMENTAR
-            //contractList.RemoveAll(x => x.NºDeContrato != "VCI190038");
+            //contractList.RemoveAll(x => x.NºDeContrato != "VC210074");
 
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VCI190038" || item.NºDeContrato == "VCI190039" || item.NºDeContrato == "VCI190040" || item.NºDeContrato == "VCI190041")
+                //AMARO COMENTAR
+                //if (item.NºDeContrato == "VC200132")
                 //    teste = "";
 
                 if (!string.IsNullOrEmpty(item.NºCliente))
@@ -2590,7 +2592,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (var contractLine in contractLines)
                     {
-                        //if (item.NºDeContrato == "VCI190038" || item.NºDeContrato == "VCI190039" || item.NºDeContrato == "VCI190040" || item.NºDeContrato == "VCI190041")
+                        //AMARO COMENTAR
+                        //if (item.NºDeContrato == "VC200132")
                         //{
                         //    teste = "";
                         //}
@@ -2831,7 +2834,14 @@ namespace Hydra.Such.Portal.Controllers
                                             AddMonth = 6 - rest;
                                             if (AddMonth != 6)
                                             {
-                                                LastInvoice = current.AddMonths(AddMonth);
+                                                if (MonthDiff <= 6)
+                                                    LastInvoice = current.AddMonths(AddMonth);
+                                                else
+                                                {
+                                                    //FATURA A EMITIR NOS MESES SEGUINTES
+                                                    LastInvoice = nextInvoiceDate;
+                                                    AddMonth = 0;
+                                                }
                                             }
                                             else
                                             {
@@ -3027,6 +3037,27 @@ namespace Hydra.Such.Portal.Controllers
                                 if (string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
                                 {
                                     Problema += " Falta Nota Encomenda!";
+                                }
+                            }
+
+                            //Se existir algum problema
+                            if (!string.IsNullOrEmpty(Problema))
+                            {
+                                int GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value;
+
+                                List<LinhasContratos> AllLines = DBContractLines.GetAllByContractAndVersionAndGroup(item.NºDeContrato, item.NºVersão, GrupoFatura);
+
+                                if (AllLines != null && AllLines.Count > 0)
+                                {
+                                    DateTime MaxLineDataFimVersao = AllLines.OrderByDescending(x => x.DataFimVersão).FirstOrDefault().DataFimVersão.HasValue ? Convert.ToDateTime(AllLines.OrderByDescending(x => x.DataFimVersão).FirstOrDefault().DataFimVersão) : DateTime.MinValue;
+
+                                    if (MaxLineDataFimVersao > DateTime.MinValue)
+                                    {
+                                        if (nextInvoiceDate > MaxLineDataFimVersao)
+                                        {
+                                            Problema = "Contrato Não Vigente - Grupo de Fatura " + GrupoFatura.ToString();
+                                        }
+                                    }
                                 }
                             }
                             #endregion
