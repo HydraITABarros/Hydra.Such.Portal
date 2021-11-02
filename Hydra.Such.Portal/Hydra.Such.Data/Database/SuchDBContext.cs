@@ -200,6 +200,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<SISLOGReservas> SISLOGReservas { get; set; }
         public virtual DbSet<SISLOGProdutos> SISLOGProdutos { get; set; }
         public virtual DbSet<Ocorrencias> Ocorrencias { get; set; }
+        public virtual DbSet<QuestionarioFornecedorGestaoAmbiental> QuestionarioFornecedorGestaoAmbiental { get; set; }
 
         #region zpgm.ALT_CCP_#001.y2019
         public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
@@ -13181,6 +13182,141 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataModificacao)
                     .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<QuestionarioFornecedorGestaoAmbiental>(entity =>
+            {
+                entity.HasKey(e => new { e.ID });
+
+                entity.ToTable("Questionario_Fornecedor_Gestao_Ambiental");
+
+                entity.Property(e => e.Codigo)
+                    .HasColumnName("Codigo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ID_Fornecedor)
+                    .HasColumnName("ID_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Fornecedor)
+                    .HasColumnName("Fornecedor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Actividade)
+                    .HasColumnName("Actividade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Responsavel)
+                    .HasColumnName("Responsavel")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Funcao)
+                    .HasColumnName("Funcao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Telefone)
+                    .HasColumnName("Telefone")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Procedimento)
+                    .HasColumnName("Procedimento")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("Email")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Resposta_11_Texto)
+                    .HasColumnName("Resposta_11_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_12_Texto)
+                    .HasColumnName("Resposta_12_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_13_Texto)
+                    .HasColumnName("Resposta_13_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_23_Texto)
+                    .HasColumnName("Resposta_23_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_2_Texto)
+                    .HasColumnName("Resposta_2_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_32_Texto)
+                    .HasColumnName("Resposta_32_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_3_Texto)
+                    .HasColumnName("Resposta_3_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_43_Texto)
+                    .HasColumnName("Resposta_43_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_4_Texto)
+                    .HasColumnName("Resposta_4_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_5_Texto)
+                    .HasColumnName("Resposta_5_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_6_Texto)
+                    .HasColumnName("Resposta_6_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_7_Texto)
+                    .HasColumnName("Resposta_7_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_8_Texto)
+                    .HasColumnName("Resposta_8_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_9_Texto)
+                    .HasColumnName("Resposta_9_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_101_Texto)
+                    .HasColumnName("Resposta_101_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_102_Texto)
+                    .HasColumnName("Resposta_102_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Resposta_103_Texto)
+                    .HasColumnName("Resposta_103_Texto")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Final_Responsavel)
+                    .HasColumnName("Final_Responsavel")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Utilizador_Criacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Utilizador_Modificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Final_Data)
+                    .HasColumnName("Final_Data")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHora_Criacao)
+                    .HasColumnName("DataHora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHora_Modificacao)
+                    .HasColumnName("DataHora_Modificacao")
                     .HasColumnType("datetime");
             });
 

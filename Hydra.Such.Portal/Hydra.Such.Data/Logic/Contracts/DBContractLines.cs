@@ -206,6 +206,22 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<LinhasContratos> GetAllByContractAndVersionAndGroup(string contractNo, int versionNo, int Group)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºContrato == contractNo && x.NºVersão == versionNo && x.GrupoFatura == Group).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<LinhasContratos> GetAllByContractLinesTypeAndType(ContractType contractType, int Type)
         {
             try
