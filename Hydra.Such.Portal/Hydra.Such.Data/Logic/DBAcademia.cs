@@ -876,7 +876,57 @@ namespace Hydra.Such.Data.Logic
         }
     }
     #endregion
+    /// <summary>
+    /// Obter os pedidos que a Academia deverá gerir
+    /// 1. Pedidos a Tratar: Estado 3-AprovadoDireccao
+    /// 2. Pedidos em Curso: Estado 5-Analisado
+    /// 3. Pedidos Autorizados pelo CA: Estado 6-AutorizadoCA
+    /// 4. Pedidos Rejeitados pelo CA: Estado 7-RejeitadoCA
+    /// 5. Pedidos Finalizados(Histórico): Estado 8-Finalizado
+    /// </summary>
+    public class GestaoPedidos
+    {
+        public List<PedidoParticipacaoFormacaoView> Tratar { get; set; } 
+        public List<PedidoParticipacaoFormacaoView> EmCurso { get; set; }
+        public List<PedidoParticipacaoFormacaoView> Autorizados { get; set; }
+        public List<PedidoParticipacaoFormacaoView> Rejeitados { get; set; }
+        public List<PedidoParticipacaoFormacaoView> Encerrados { get; set; } 
 
+        public GestaoPedidos()
+        {
+            Tratar = new List<PedidoParticipacaoFormacaoView>();
+            EmCurso = new List<PedidoParticipacaoFormacaoView>();
+            Autorizados = new List<PedidoParticipacaoFormacaoView>();
+            Rejeitados = new List<PedidoParticipacaoFormacaoView>();
+            Encerrados = new List<PedidoParticipacaoFormacaoView>();
+
+            Tratar = ToView(DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 3));
+            EmCurso = ToView(DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 5));
+            Autorizados = ToView(DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 6));
+            Rejeitados = ToView(DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 7));
+            Encerrados = ToView(DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 8));
+
+        }
+
+        private List<PedidoParticipacaoFormacaoView> ToView(List<PedidoParticipacaoFormacao> pedidos)
+        {
+            try
+            {
+                List<PedidoParticipacaoFormacaoView> returnList = new List<PedidoParticipacaoFormacaoView>();
+                foreach (var p in pedidos)
+                {
+                    returnList.Add(new PedidoParticipacaoFormacaoView(p));
+                }
+                return returnList;
+            }
+            catch (Exception ex)
+            {
+
+                return new List<PedidoParticipacaoFormacaoView>();
+            }
+        }
+        
+    }
 
     /// <summary>
     /// 14-07-2020
@@ -889,6 +939,7 @@ namespace Hydra.Such.Data.Logic
     public static class DBAcademia
     {
         public const int NoMesesMostrarAccoesPorDefeito = 2;
+
         #region Creates
         public static PedidoParticipacaoFormacao __CriarPedidoFormacao(AccaoFormacao accao, Formando formando, ConfigUtilizadores user)
         {
@@ -1615,11 +1666,45 @@ namespace Hydra.Such.Data.Logic
                             return null;
 
                         return _ctx.PedidoParticipacaoFormacao.Where(
-                            p => p.Estado.Value >= (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && 
+                            p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && 
                             p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
 
 
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade origin, int state)
+        {
+            if (origin != Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao)
+                return null;
+
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    //if (onlyCompleted)
+                    //{
+                    //    // pedidos Finalizados
+                    //    return _ctx.PedidoParticipacaoFormacao.Where(p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                    //}
+                    //else
+                    //{
+                        // Os pedidos finalizados são tratados no ciclo if acima
+                        if (state < (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && state > (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA)
+                            return null;
+
+                        return _ctx.PedidoParticipacaoFormacao.Where(
+                            p => p.Estado.Value == state).ToList();
+
+
+                    //}
                 }
             }
             catch (Exception ex)

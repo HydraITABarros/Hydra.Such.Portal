@@ -863,14 +863,6 @@
                 <template class="row-details">
                     <div class="details">
                         <vaadin-grid name="gridAccoes" aria-label="gridAccoes" id="gridAccoes" items="[[temaDetail.accoes]]" active-item="{{activeCourse}}" multi-sort="true">
-                            <!--<vaadin-grid-column width="8%">
-                            <template class="header">
-                                <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                [[item.codigoInterno]]
-                            </template>
-                        </vaadin-grid-column>-->
                             <vaadin-grid-column resizable width="40%">
                                 <template class="header">
                                     <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
@@ -1154,7 +1146,7 @@
 
                         this._url = window.location.href;
 
-                        if (this.data.estado == 0) {
+                        if (this.data.estado == 0 || this._istrainingmanager) {
                             this.$.page_catalogo_ajax.body = JSON.stringify();
                             this.$.page_catalogo_ajax.generateRequest();
                             this.$.entidades_page_ajax.generateRequest();
@@ -1178,6 +1170,8 @@
                             $(self.$.idEmpregado).addClass('hidden');
                             $(self.$.idEmpregadoCbox).removeClass('hidden');
                         }
+
+
 
                         this.txtComentario = "";
                         $(self.$.comentariosSection).addClass('hidden');
@@ -1203,9 +1197,9 @@
                 },
 
                 _onClickCourse: function (e) {
-                    //if (this.data.estado == 0) {
+                    if (this.data.estado == 0 || (this._istrainingmanager && (this.data.estado == 3 || this.data.estado == 7))) {
                         this.$.selectCourse.open();
-                   // }                                
+                   }                                
                 },
 
                 _catalogoResponse: function (e) {
@@ -1215,7 +1209,7 @@
                 },
 
                 _onClickSchedule: function (e) {
-                    this.courseDescription = this.data.designacaoAccao; 
+                    this.courseDescription = this.data.designacaoAccao;
 
                     this.$.sessoes_page_ajax.body = JSON.stringify({ "idAccao": this.data.idAccaoFormacao });
                     this.$.sessoes_page_ajax.generateRequest();                       
@@ -1902,16 +1896,32 @@
                             self.$.idEmpregadoCbox.disabled = true;
                             self.$.projectoEmpregado.disabled = true;
                             self.$.projectoEmpregadoCbox.disabled = true;
-                            self.$.designacaoAccao.disabled = true;
-                            self.$.horario.disabled = true;
-                            self.$.idEntidadeFormadora.disabled = true;
-                            self.$.dataInicio.disabled = true;
-                            self.$.dataFim.disabled = true;
-                            self.$.numeroTotalHoras.disabled = true;
-                            self.$.custoInscricao.disabled = true;
-                            self.$.valorIva.disabled = true;
-                            self.$.custoDeslocacoes.disabled = true;
-                            self.$.custoEstadia.disabled = true;
+                            if (!this._istrainingmanager) {
+                                self.$.designacaoAccao.disabled = true;
+                                self.$.horario.disabled = true;
+                                self.$.idEntidadeFormadora.disabled = true;
+                                self.$.dataInicio.disabled = true;
+                                self.$.dataFim.disabled = true;
+                                self.$.numeroTotalHoras.disabled = true;
+                                self.$.custoInscricao.disabled = true;
+                                self.$.valorIva.disabled = true;
+                                self.$.custoDeslocacoes.disabled = true;
+                                self.$.custoEstadia.disabled = true;
+                            } else {
+                                if (data.estado > 3 && data.estado != 7) {
+                                    self.$.designacaoAccao.disabled = true;
+                                    self.$.horario.disabled = true;
+                                    self.$.idEntidadeFormadora.disabled = true;
+                                    self.$.dataInicio.disabled = true;
+                                    self.$.dataFim.disabled = true;
+                                    self.$.numeroTotalHoras.disabled = true;
+                                    self.$.custoInscricao.disabled = true;
+                                    self.$.valorIva.disabled = true;
+                                    self.$.custoDeslocacoes.disabled = true;
+                                    self.$.custoEstadia.disabled = true;
+                                }
+                            }
+                            
                             self.$.descricaoConhecimentos.disabled = true;
                             self.$.planeada.disabled = true;
                             self.$.cursoPlanoFormacao.disabled = true;
@@ -1932,7 +1942,7 @@
                             $(self.$.btnSubmeteCA).addClass('disabled');
                             self.$.temDotacaoOrcamental.disabled = true;
                             self.$.parecerDotacaoAcademia.disabled = true;
-                            self.$.parecerAcademia.disabled = true;
+                            self.$.parecerAcademia.disabled = true;                           
                         }
                     }
                 },

@@ -104,6 +104,30 @@
                 paper-input {
                     max-width: 200px !important;
                 }
+
+                #tratar {
+                    padding: 0;
+                    background-color: #F9FFA8;
+                }
+                #curso {
+                    padding: 0;
+                    background-color: #30D9FF;
+                }
+                #autorizados {
+                    padding: 0;
+                    background-color: #E2FFC9;
+                }
+                #rejeitados {
+                    padding: 0;
+                    background-color: #FFC6C8;
+                }
+                #finalizados {
+                    padding: 0;
+                    background-color: #D3D3FF;
+                }
+                h3 {
+                    padding:0 0 10px 10px;
+                }
             </style>
         </custom-style>
         <iron-ajax url="/PopulateDropdowns/GetEstadoPedidoFormacao"
@@ -112,113 +136,601 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Academia/GetMeusPedidosAprovacao"
+        <!--ORIGINAL -->
+        <!--<iron-ajax url="/Academia/GetMeusPedidosAprovacao"
+               last-response="{{ result }}"
+               method="post"
+               handle-as="json"
+               id="grid_databound_ajax"
+               on-response="_responseProcessor"
+               content-type="application/json">
+    </iron-ajax>-->
+        <iron-ajax url="/Academia/GetPedidosParaGestao"
                    last-response="{{ result }}"
                    method="post"
                    handle-as="json"
-                   id="grid_databound_ajax"
+                   id="pedidos_databound_ajax"
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="subMenu">
-            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-            <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-        </div>
-        <div class="row break_clear">
-            <vaadin-grid aria-label="pedidosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-                <vaadin-grid-column width="7.5%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="idPedido" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="7.5%">
-                    <template class="header">
-                        <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="idEmpregado" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="20%">
-                    <template class="header">
-                        <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="nomeEmpregado" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="7.5%">
-                    <template class="header">
-                        <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="idCentroResponsabilidade" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="20%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="designacaoAccao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="7.5%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataInicio" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="7.5%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataFim" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="5%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="numeroTotalHoras" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="10%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localRealizacao" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="7.5%" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="descricaoEntidadeFormadora" />
-                    </template>
-                    <template>
-                        <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
-        </div>
+        <!--<div class="subMenu">
+        <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
+        <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
+    </div>-->
+        <iron-form id="formContract">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                        <paper-tab>A Tratar</paper-tab>
+                        <paper-tab>Submetidos CA</paper-tab>
+                        <paper-tab>Autorizados CA</paper-tab>
+                        <paper-tab>Rejeitados CA</paper-tab>
+                        <paper-tab>Histórico</paper-tab>
+                    </paper-tabs>
+                    <iron-pages selected="{{selected}}">
+                        <!--    1. A Tratar => Pedidos Estado 3 -->
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="tratar">
+                                <!--<div class="row break_clear">-->
+                                <h3>Pedidos submetidos pela direcção dos SP/SAG</h3>
+                                <!--</div>-->
+                                <vaadin-grid aria-label="pedidosGrid" id="gridTratar" items="[[result.tratar]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idPedido" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="15%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido-cbox" item-label-path="value" item-value-path="id" value="{{item.estado}}" disabled>
+                                                <template>
+                                                    [[item.value]]
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idCentroResponsabilidade" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="designacaoAccao" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataInicio" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataFim" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="numeroTotalHoras" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <!--<vaadin-grid-column width="10%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localRealizacao" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="7.5%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+                <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>-->
+                                </vaadin-grid>
+
+                            </div>
+                        </div>
+                        <!--    2. Submetidos CA => Pedidos Estado 5 -->
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="curso">
+                                <h3>Pedidos submetidos ao Conselho de Administração</h3>
+                                <vaadin-grid aria-label="pedidosGrid" id="gridEmCurso" items="[[result.emCurso]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idPedido" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="15%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido-cbox" item-label-path="value" item-value-path="id" value="{{item.estado}}" disabled>
+                                                <template>
+                                                    [[item.value]]
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idCentroResponsabilidade" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="designacaoAccao" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataInicio" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataFim" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="numeroTotalHoras" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <!--<vaadin-grid-column width="10%" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+            <vaadin-grid-filter path="localRealizacao" />
+        </template>
+        <template>
+            <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+        </template>
+    </vaadin-grid-column>
+    <vaadin-grid-column width="7.5%" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+            <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+        </template>
+        <template>
+            <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+        </template>
+    </vaadin-grid-column>-->
+                                </vaadin-grid>
+                            </div>
+                        </div>
+                        <!--    3. Autorizados CA => Pedidos Estado 6 -->
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="autorizados">
+                                <h3>Pedidos Autorizados pelo Conselho de Administração</h3>
+                                <vaadin-grid aria-label="pedidosGrid" id="gridAutorizados" items="[[result.autorizados]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idPedido" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="15%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido-cbox" item-label-path="value" item-value-path="id" value="{{item.estado}}" disabled>
+                                                <template>
+                                                    [[item.value]]
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idCentroResponsabilidade" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="designacaoAccao" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataInicio" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataFim" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="numeroTotalHoras" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <!--<vaadin-grid-column width="10%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localRealizacao" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="7.5%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+                <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>-->
+                                </vaadin-grid>
+                            </div>
+                        </div>
+                        <!--    4. Rejeitados CA => Pedidos Estado 7 -->
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="rejeitados">
+                                <h3>Pedidos Rejeitados pelo Conselho de Administração</h3>
+                                <vaadin-grid aria-label="pedidosGrid" id="gridRejeitados" items="[[result.rejeitados]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idPedido" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="15%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido-cbox" item-label-path="value" item-value-path="id" value="{{item.estado}}" disabled>
+                                                <template>
+                                                    [[item.value]]
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idCentroResponsabilidade" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="designacaoAccao" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataInicio" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataFim" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="numeroTotalHoras" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <!--<vaadin-grid-column width="10%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localRealizacao" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="7.5%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+                <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>-->
+                                </vaadin-grid>
+                            </div>
+                        </div>
+                        <!--    5. Finalizados => Pedidos Estado 8 -->
+                        <div class="panel panel-default">
+                            <div class="panel-body" id="finalizados">
+                                <h3>Pedidos Finalizados</h3>
+                                <vaadin-grid aria-label="pedidosGrid" id="gridEncerrados" items="[[result.encerrados]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idPedido" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="15%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido-cbox" item-label-path="value" item-value-path="id" value="{{item.estado}}" disabled>
+                                                <template>
+                                                    [[item.value]]
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeEmpregado" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="idCentroResponsabilidade" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="20%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="designacaoAccao" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataInicio" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="7.5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataFim" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <vaadin-grid-column width="5%" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="numeroTotalHoras" />
+                                        </template>
+                                        <template>
+                                            <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                                        </template>
+                                    </vaadin-grid-column>
+                                    <!--<vaadin-grid-column width="10%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localRealizacao" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>
+        <vaadin-grid-column width="7.5%" resizable>
+            <template class="header">
+                <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+                <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+            </template>
+            <template>
+                <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+            </template>
+        </vaadin-grid-column>-->
+                                </vaadin-grid>
+                            </div>
+                        </div>
+                    </iron-pages>
+                </div>
+            </div>
+        </iron-form>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -238,6 +750,10 @@
                     filter: {
                         type: Object,
                         value: {},
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
                     },
                     _onlycompleted: {
                         type: Boolean,
@@ -279,11 +795,16 @@
 
                     //this.$.estados_databound_ajax.generateRequest();
 
-                    this.$.grid_databound_ajax.body = JSON.stringify({
-                        "apenasCompletos": this._onlycompleted,
-                        "requestOrigin": this._requestorigin
-                    });
-                    this.$.grid_databound_ajax.generateRequest();
+                    // ORIGINAL
+                    //this.$.grid_databound_ajax.body = JSON.stringify({
+                    //    "apenasCompletos": this._onlycompleted,
+                    //    "requestOrigin": this._requestorigin
+                    //});
+                    //this.$.grid_databound_ajax.generateRequest();
+
+
+                    this.$.pedidos_databound_ajax.body = JSON.stringify({"requestOrigin": this._requestorigin});
+                    this.$.pedidos_databound_ajax.generateRequest();
 
                     if (!this._onlyCompleted) {
                         $(this.$.showActive).removeClass('hidden');
@@ -298,8 +819,8 @@
                     }
 
                     /*FILTROS*/
-                    window.handleGridListColumnsOrder(this.$.grid, 'pedido-meuspedidos');
-                    window.grid = this.$.grid;
+                    window.handleGridListColumnsOrder(this.$.gridTratar, 'pedido-meuspedidos');
+                    window.grid = this.$.gridTratar;
                     window._this = this;
 
                     var _this = this;
@@ -322,18 +843,25 @@
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.grid);
+                    var grid_el = $(this.$.gridTratar);
                     var parentHeight = $(this).offsetParent().height();
                     var windowHeight = $(window).height();
                     //var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop;// - paddingTop;
-                    $(this.$.grid).height(height);
+                    $(this.$.gridTratar).height(height);
+                    $(this.$.gridEmCurso).height(height);
+                    $(this.$.gridAutorizados).height(height);
+                    $(this.$.gridRejeitados).height(height);
+                    $(this.$.gridEncerrados).height(height);
                 },
+
                 _rowSelected: function (item) {
+                    debugger;;
+
                     if (item != null) {
                         var filters = {};
-                        this.$.grid._filters.map(function (value, index) {
+                        this.$.gridTratar._filters.map(function (value, index) {
                             filters[value.path] = value.value;
                         });
                         window.setGridFilter('pedido-pedidoformacao', filters || {});

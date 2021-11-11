@@ -86,10 +86,10 @@ namespace Hydra.Such.Portal.Controllers
 
 
         // Estado 5 -> 8
-        private const string BoardApproval = "Foi aprovado o pedido ";
+        private const string BoardApproval = "Foi aprovado o pedido de participação em formação externa ";
 
         // Estado 5 -> 7
-        private const string BoardRejection = "Foi rejeitado o pedido ";
+        private const string BoardRejection = "Foi rejeitado o pedido de participação em formação externa";
 
         private string GetMimeType(string fileName)
         {
@@ -392,6 +392,8 @@ namespace Hydra.Such.Portal.Controllers
                             break;
                         case 6:
                             {
+                                PedidoParticipacaoFormacaoView p = new PedidoParticipacaoFormacaoView(pedido);
+
                                 EmailAcademia e = new EmailAcademia
                                 {
                                     IdPedido = pedido.IdPedido,
@@ -400,7 +402,11 @@ namespace Hydra.Such.Portal.Controllers
                                     SenderAddress = "esuch@such.pt",
                                     SenderName = "e-SUCH",
                                     IsHtml = true,
-                                    ToAddresses = new List<string> { AcademiaEmailAddress }
+                                    ToAddresses = new List<string> { AcademiaEmailAddress },
+                                    // CC aos envolvidos no processo
+                                    CcAddresses = new List<string> { p.UtilizadorAprovacaoChefia, p.UtilizadorAprovacaoDireccao, p.UtilizadorSubmissao}
+                                    
+                                    
                                 };
 
                                 SendEmailsAcademia email = new SendEmailsAcademia(e);
@@ -787,6 +793,36 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetPedidosParaGestao([FromBody] JObject requestParams)
+        {
+            try
+            {
+                RequestOrigin = requestParams["requestOrigin"] == null ? 0 : (int)requestParams["requestOrigin"];
+            }
+            catch (Exception)
+            {
+                return Json("-1");
+            }
+
+            if (RequestOrigin != (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao)
+            {
+                return Json("-1");
+            }
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
+            if (UPerm != null && UPerm.Read.Value && cfgUser.TipoUtilizadorGlobal == Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
+            {
+                GestaoPedidos pedidos = new GestaoPedidos();
+
+                return Json(pedidos);
+            }
+
+            return Json(null);
+        }
+
+        [HttpPost]
         [Route("Academia/GetCatalogoToPedido")]
         public JsonResult GetCatalogoToPedido()
         {
@@ -795,8 +831,19 @@ namespace Hydra.Such.Portal.Controllers
 
             if (UPerm != null)
             {
-                List<TemaFormacao> temas = DBAcademia.__GetCatalogo();
+                List<TemaFormacao> temas = new List<TemaFormacao>();
                 List<TemaFormacaoView> temasV = new List<TemaFormacaoView>();
+
+                if (userConfig.TipoUtilizadorFormacao == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
+                {
+                    temas = DBAcademia.__GetCatalogo(false);
+                    temasV = new List<TemaFormacaoView>();
+                }
+                else
+                {
+                    temas = DBAcademia.__GetCatalogo();
+                    temasV = new List<TemaFormacaoView>();
+                }                
 
                 foreach (var item in temas)
                 {
