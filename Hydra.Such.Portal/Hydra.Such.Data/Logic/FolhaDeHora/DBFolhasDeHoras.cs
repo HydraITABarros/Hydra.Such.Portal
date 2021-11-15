@@ -23,7 +23,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.FolhasDeHoras.Where(x => x.NºFolhaDeHoras == NFolhaDeHora && x.Eliminada == false).FirstOrDefault();
+                    return ctx.FolhasDeHoras.FirstOrDefault(x => x.NºFolhaDeHoras == NFolhaDeHora && x.Eliminada == false);
                 }
             }
             catch (Exception ex)
@@ -394,24 +394,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-                //string userName = "";
-
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
-
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-
                         (x.Eliminada == false)
                     ).Select(FH => new FolhaDeHorasViewModel()
                     {
@@ -490,11 +475,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
-                    //}
                     return AllFH;
                 }
             }
@@ -508,25 +488,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-                //string userName = "";
-
                 ConfigUtilizadores CUser = DBUserConfigurations.GetById(user);
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-
                         (x.NºEmpregado == CUser.EmployeeNo ||
                         x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
@@ -535,7 +501,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
-
                         (x.Eliminada == false) &&
                         (x.Estado != 2)
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -615,11 +580,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !(x.Intervenientes.ToLower().Contains(user.ToLower()) || x.CriadoPor.ToLower().Contains(user.ToLower())));
-                    //}
                     return AllFH;
                 }
             }
@@ -633,25 +593,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-                //string userName = "";
-
                 ConfigUtilizadores CUser = DBUserConfigurations.GetById(user);
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-
                         (x.NºEmpregado == CUser.EmployeeNo ||
                         x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
@@ -660,7 +606,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
-
                         (x.Eliminada == false) &&
                         (x.Estado == 0) &&
                         (x.Terminada == null || x.Terminada == false)
@@ -741,11 +686,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
-                    //}
                     return AllFH;
                 }
             }
@@ -759,26 +699,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-                //string userName = "";
-
                 ConfigUtilizadores CUser = DBUserConfigurations.GetById(user);
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-                        //(x.Validadores.ToLower().Contains(user.ToLower())) &&
-
                         (x.NºEmpregado == CUser.EmployeeNo ||
                         x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
@@ -787,7 +712,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
-
                         (x.Eliminada == false) &&
                         (x.Estado == 0) &&
                         (x.Terminada == true)
@@ -868,11 +792,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
-                    //}
                     return AllFH;
                 }
             }
@@ -886,26 +805,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-                //string userName = "";
-
                 ConfigUtilizadores CUser = DBUserConfigurations.GetById(user);
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-                        //(x.IntegradoresEmRh.ToLower().Contains(user.ToLower())) &&
-
                         (x.NºEmpregado == CUser.EmployeeNo ||
                         x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
@@ -914,7 +818,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
-
                         (x.Eliminada == false) &&
                         (x.IntegradoEmRh == false || x.IntegradoEmRh == null) &&
                         (x.Estado == 1) //1 = VALIDADO
@@ -995,11 +898,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
-                    //}
                     return AllFH;
                 }
             }
@@ -1013,26 +911,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-                //string userName = "";
-
                 ConfigUtilizadores CUser = DBUserConfigurations.GetById(user);
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-                        //x.IntegradoresEmRhkm.ToLower().Contains(user.ToLower()) &&
-
                         (x.NºEmpregado == CUser.EmployeeNo ||
                         x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
@@ -1041,7 +924,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
-
                         (x.Eliminada == false) &&
                         (x.IntegradoEmRhkm == false || x.IntegradoEmRhkm == null) &&
                         (x.Estado == 1) && // 1 == VALIDADO
@@ -1123,11 +1005,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
-                    //}
                     return AllFH;
                 }
             }
@@ -1141,24 +1018,11 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
         {
             try
             {
-                //string regiao = "";
-                //string area = "";
-                //string cresp = "";
-
                 ConfigUtilizadores CUser =DBUserConfigurations.GetById(user);
-                //regiao = GetDimensionRegiao(NAVDatabaseName, NAVCompanyName, user);
-                //area = GetDimensionArea(NAVDatabaseName, NAVCompanyName, user);
-                //cresp = GetDimensionCresp(NAVDatabaseName, NAVCompanyName, user);
-                //userName = DBUserConfigurations.GetById(user).Nome;
 
                 using (var ctx = new SuchDBContext())
                 {
                     List<FolhaDeHorasViewModel> AllFH = ctx.FolhasDeHoras.Where(x =>
-                        //(x.Intervenientes.ToLower().Contains(user.ToLower())) &&
-                        //(regiao.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        //(area.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        //(cresp.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null) &&
-
                         (x.NºEmpregado == CUser.EmployeeNo ||
                         x.CriadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.TerminadoPor.ToUpper() == CUser.IdUtilizador.ToUpper() ||
@@ -1167,7 +1031,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.IntegradorEmRhKm.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.UtilizadorModificação.ToUpper() == CUser.IdUtilizador.ToUpper() ||
                         x.Intervenientes.ToUpper().Contains(" " + CUser.IdUtilizador.ToUpper())) &&
-
                         (x.Eliminada == false) &&
                         (x.Estado == 2) // 2 == REGISTADO
                     ).Select(FH => new FolhaDeHorasViewModel()
@@ -1247,11 +1110,6 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         Intervenientes = FH.Intervenientes
                     }).ToList();
 
-                    //ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
-                    //if (ConfigUser != null && ConfigUser.Administrador != true)
-                    //{
-                    //    AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
-                    //}
                     return AllFH;
                 }
             }
@@ -1274,15 +1132,15 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 decimal CustoTotalHoras = FolhaHoras.CustoTotalHoras == null ? 0 : (decimal)FolhaHoras.CustoTotalHoras;
                 decimal CustoTotalAjudaCusto = FolhaHoras.CustoTotalAjudaCusto == null ? 0 : (decimal)FolhaHoras.CustoTotalAjudaCusto;
                 decimal CustoTotalKm = FolhaHoras.CustoTotalKm == null ? 0 : (decimal)FolhaHoras.CustoTotalKm;
-                //decimal CustoTotal = CustoTotalHoras + CustoTotalAjudaCusto + CustoTotalKm;
 
                 if (idEmployee != null && idEmployee != "")
                 {
-                    ConfigUtilizadores ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower()).FirstOrDefault();
+                    var ctx = new SuchDBContext();
+                    ConfigUtilizadores ConfUtilizadores = ctx.ConfigUtilizadores.FirstOrDefault(x => x.EmployeeNo == null ? "" == idEmployee.ToLower() : x.EmployeeNo.ToLower() == idEmployee.ToLower());
 
                     if (ConfUtilizadores == null)
                     {
-                        ConfUtilizadores = DBUserConfigurations.GetAll().Where(x => x.IdUtilizador == null ? "" == idEmployee.ToLower() : x.IdUtilizador.ToLower() == idEmployee.ToLower()).FirstOrDefault();
+                        ConfUtilizadores = ctx.ConfigUtilizadores.FirstOrDefault(x => x.IdUtilizador == null ? "" == idEmployee.ToLower() : x.IdUtilizador.ToLower() == idEmployee.ToLower());
                         if (ConfUtilizadores != null)
                         {
                             idEmployee = ConfUtilizadores.EmployeeNo == null ? "" : ConfUtilizadores.EmployeeNo;

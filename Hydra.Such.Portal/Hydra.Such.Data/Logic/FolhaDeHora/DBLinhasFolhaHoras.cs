@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == PercursoNo).FirstOrDefault();
+                    return ctx.LinhasFolhaHoras.FirstOrDefault(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == PercursoNo);
                 }
             }
             catch (Exception ex)
@@ -75,7 +75,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 {
                     int max = 0;
 
-                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo).ToList();
+                    List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo).ToList();
                     result.ForEach(x =>
                     {
                         if (x.NoLinha > max) max = x.NoLinha;
@@ -99,7 +99,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
+                    List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
                     if (result != null && result.Count > 0)
                     {
                         result.ForEach(x =>
@@ -137,7 +137,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
+                    List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
                     if (result != null && result.Count > 0)
                     {
                         result.ForEach(x =>
@@ -177,7 +177,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 2).ToList();
+                    List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 2).ToList();
                     if (result != null && result.Count > 0)
                     {
                         result.ForEach(x =>
@@ -278,7 +278,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == AjudaNo).FirstOrDefault();
+                    return ctx.LinhasFolhaHoras.FirstOrDefault(x => x.NoFolhaHoras == NoFolhaHoras && x.NoLinha == AjudaNo);
                 }
             }
             catch (Exception ex)
