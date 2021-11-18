@@ -218,6 +218,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.validationDateText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="validationDateText">Data Validação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validationDateText" value="[[filter.validationDateText]]" />
+                </template>
+                <template>
+                    {{item.validationDateText}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
                 <template class="header">
                     Urgente
@@ -662,6 +672,7 @@
                     var columns = {
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "state": { hidden: false, label: "Estado" },
+                        "validationDateText": { hidden: false, label: "Data Validação" },
                         "urgent": { hidden: false, label: "Urgente" },
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },

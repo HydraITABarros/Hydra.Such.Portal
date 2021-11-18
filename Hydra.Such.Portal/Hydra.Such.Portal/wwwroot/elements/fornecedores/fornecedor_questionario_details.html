@@ -35,7 +35,7 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <style>
-52+60877            vaadin-combo-box {
+            52+60877 vaadin-combo-box {
                 margin-top: 0px !important;
                 width: 100% !important;
             }
@@ -69,16 +69,27 @@
 
         <!-- DROPDOWNS POPULATE -->
         <!-- CUSTOMER CRUDS -->
+        <iron-ajax url="/Fornecedores/GetQuestionarioDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button class="tablinks" on-tap=""><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
+            <paper-button class="tablinks" on-tap=""><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+            <paper-button class="tablinks" on-tap=""><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
         </div>
 
         <div class="row break_clear">
-            <div class="col-lg-1">
-                <img src="/images/SUCH_Logo_Horizontal.jpg" alt="SUCH" width="100%" height="100%" />
-            </div>
-            <div class="col-lg-11">
+            <!--<div class="col-lg-1">
+            <img src="/images/SUCH_Logo_Horizontal.jpg" alt="SUCH" width="100%" height="100%" />
+        </div>-->
+            <div class="col-lg-12">
                 <!--Geral-->
                 <div class="col-xs-12">
                     <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
@@ -90,16 +101,16 @@
 
         <div class="row break_clear">
             <div class="col-lg-1">
-                <label id="labelEmpresa">Empresa / Instituição:</label>
+                <label id="labelEmpresa" style="font-family:Calibri; font-weight:bold;">Empresa / Instituição:</label>
             </div>
             <div class="col-lg-11" align="left">
-                <vaadin-text-field id="fornecedor" name="fornecedor" value="{{data.fornecedor}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="fornecedor" name="fornecedor" value="{{data.fornecedor}}" disabled></vaadin-text-field>
             </div>
         </div>
 
         <div class="row break_clear">
             <div class="col-lg-1">
-                <label id="labelActividade">Actividade:</label>
+                <label id="labelActividade" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Actividade:</label>
             </div>
             <div class="col-lg-11" align="left">
                 <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ _lockFields }}"></vaadin-text-field>
@@ -108,13 +119,13 @@
 
         <div class="row break_clear">
             <div class="col-lg-1">
-                <label id="labelResponsavel">Responsável:</label>
+                <label id="labelResponsavel" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Responsável:</label>
             </div>
             <div class="col-lg-5" align="left">
                 <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ _lockFields }}"></vaadin-text-field>
             </div>
             <div class="col-lg-1">
-                <label id="labelFuncao">Função:</label>
+                <label id="labelFuncao" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Função:</label>
             </div>
             <div class="col-lg-5" align="left">
                 <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ _lockFields }}"></vaadin-text-field>
@@ -123,73 +134,73 @@
 
         <div class="row break_clear">
             <div class="col-lg-1">
-                <label id="labelTelefone">Telf:</label>
+                <label id="labelTelefone" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Telf:</label>
             </div>
             <div class="col-lg-2" align="left">
                 <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ _lockFields }}"></vaadin-text-field>
             </div>
-            <div class="col-lg-2">
-                <label id="labelProcedimento">Procedimento n. (se aplicável):</label>
-            </div>
-            <div class="col-lg-4" align="left">
-                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ _lockFields }}"></vaadin-text-field>
-            </div>
             <div class="col-lg-1">
-                <label id="labelEMail">e-mail:</label>
+                <label id="labelEMail" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">e-mail:</label>
             </div>
             <div class="col-lg-2" align="left">
                 <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ _lockFields }}"></vaadin-text-field>
             </div>
-        </div>
-
-        <div class="row break_clear">
-        </div>
-        <div class="row break_clear">
-        </div>
-        <div class="row break_clear">
-        </div>
-        <div class="row break_clear">
-        </div>
-
-        <div class="row break_clear">
-            <div class="col-lg-12" align="left">
-                <label id="labelPreenchimento">Preenchimento</label>
+            <div class="col-lg-2">
+                <label id="labelProcedimento" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Procedimento n. (se aplicável):</label>
+            </div>
+            <div class="col-lg-4" align="left">
+                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ _lockFields }}"></vaadin-text-field>
             </div>
         </div>
 
         <div class="row break_clear">
         </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <!--<div class="row break_clear">
+        <div class="col-lg-12" align="left">
+            <label id="labelPreenchimento">Preenchimento</label>
+        </div>
+    </div>
+
+    <div class="row break_clear">
+    </div>-->
 
         <div class="row break_clear">
             <div class="col-lg-2" align="center">
-                <label id="labelTema">Tema</label>
+                <label id="labelTema" style="font-family:Calibri; font-weight:bold; color:blue">Tema</label>
             </div>
             <div class="col-lg-5" align="center">
-                <label id="labelQuestao">Questão</label>
+                <label id="labelQuestao" style="font-family:Calibri; font-weight:bold; color:blue">Questão</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-2" align="center">
-                    <label id="labelSim">Sim</label>
+                    <label id="labelSim" style="font-family:Calibri; font-weight:bold; color:blue; padding-right:15px">Sim</label>
                 </div>
                 <div class="col-lg-2" align="center">
-                    <label id="labelNao">Não</label>
+                    <label id="labelNao" style="font-family:Calibri; font-weight:bold; color:blue; padding-right:15px">Não</label>
                 </div>
                 <div class="col-lg-2" align="center">
-                    <label id="labelNA">NA</label>
+                    <label id="labelNA" style="font-family:Calibri; font-weight:bold; color:blue; padding-right:15px">NA</label>
                 </div>
                 <div class="col-lg-6" align="center">
-                    <label id="labelObservacoes">Observações</label>
+                    <label id="labelObservacoes" style="font-family:Calibri; font-weight:bold; color:blue">Observações</label>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-2" align="left">
-                <label id="labelTema1">1. Sistema de Gestão de Ambiental</label>
+                <label id="labelTema1" style="font-family:Calibri; font-weight:bold">1. Sistema de Gestão de Ambiental</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao11">Possui um Sistema de Gestão Ambiental certificado?</label>
+                    <label id="labelQuestao11" style="font-family:Calibri; font-weight:normal">Possui um Sistema de Gestão Ambiental certificado?</label>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -213,7 +224,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao12">Qual é o referencial?</label>
+                    <label id="labelQuestao12" style="font-family:Calibri; font-weight:normal">Qual é o referencial?</label>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -228,7 +239,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao13">Nº Certificado</label>
+                    <label id="labelQuestao13" style="font-family:Calibri; font-weight:normal">Nº Certificado</label>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -247,26 +258,26 @@
         <div class="row break_clear">
         </div>
 
-        <div class="row break_clear" align="center">
-            <label id="labelNota1">Caso tenha respondido afirmativamente ao ponto 1 não é necessário preencher os pontos seguintes do questionário</label>
+        <div class="row break_clear" align="left">
+            <label id="labelNota1" style="font-family:Calibri; font-weight:bold; color:blue; padding-left:15px">Caso tenha respondido afirmativamente ao ponto 1 não é necessário preencher os pontos seguintes do questionário</label>
         </div>
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema2">2. Resíduos</label>
+                <label id="labelTema2" style="font-family:Calibri; font-weight:bold">2. Resíduos</label>
             </div>
 
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao21">Promove a separação dos resíduos que produz?</label>
+                    <label id="labelQuestao21" style="font-family:Calibri; font-weight:normal">Promove a separação dos resíduos que produz?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao22">Envia os Resíduos para gestores licenciados?</label>
+                    <label id="labelQuestao22" style="font-family:Calibri; font-weight:normal">Envia os Resíduos para gestores licenciados?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao23">Qual o seu nº APA?</label>
+                    <label id="labelQuestao23" style="font-family:Calibri; font-weight:normal">Qual o seu nº APA?</label>
                 </div>
             </div>
 
@@ -308,15 +319,15 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema3">3. Emissões para a atmosfera</label>
+                <label id="labelTema3" style="font-family:Calibri; font-weight:bold">3. Emissões para a atmosfera</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao31">Possui fontes fixas de emissão e efectua a caracterização das emissões gasosas?</label>
+                    <label id="labelQuestao31" style="font-family:Calibri; font-weight:normal">Possui fontes fixas de emissão e efectua a caracterização das emissões gasosas?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao32">Nº de excedências/ano dos Limites de Emissão com comunicação à APA?</label>
+                    <label id="labelQuestao32" style="font-family:Calibri; font-weight:normal">Nº de excedências/ano dos Limites de Emissão com comunicação à APA?</label>
                 </div>
             </div>
 
@@ -352,19 +363,19 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema4">4. Águas residuais</label>
+                <label id="labelTema4" style="font-family:Calibri; font-weight:bold">4. Águas residuais</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao41">Produz águas residuais e possui autorização para descarga?</label>
+                    <label id="labelQuestao41" style="font-family:Calibri; font-weight:normal">Produz águas residuais e possui autorização para descarga?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao42">Possui ETAR?</label>
+                    <label id="labelQuestao42" style="font-family:Calibri; font-weight:normal">Possui ETAR?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao43">Tipo de tratamento?</label>
+                    <label id="labelQuestao43" style="font-family:Calibri; font-weight:normal">Tipo de tratamento?</label>
                 </div>
             </div>
 
@@ -406,15 +417,15 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema5">5. Ruído para o ambiente</label>
+                <label id="labelTema5" style="font-family:Calibri; font-weight:bold">5. Ruído para o ambiente</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao51">Monitoriza o ruído produzido para o exterior?</label>
+                    <label id="labelQuestao51" style="font-family:Calibri; font-weight:normal">Monitoriza o ruído produzido para o exterior?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao52">Cumpre os Valores Limite?</label>
+                    <label id="labelQuestao52" style="font-family:Calibri; font-weight:normal">Cumpre os Valores Limite?</label>
                 </div>
             </div>
 
@@ -452,27 +463,27 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema6">6. Consumo de água</label>
+                <label id="labelTema6" style="font-family:Calibri; font-weight:bold">6. Consumo de água</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao61">Consome água da rede pública no seu processo?</label>
+                    <label id="labelQuestao61" style="font-family:Calibri; font-weight:normal">Consome água da rede pública no seu processo?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao62">Controla o seu consumo?</label>
+                    <label id="labelQuestao62" style="font-family:Calibri; font-weight:normal">Controla o seu consumo?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao63">Possui furo de captação?</label>
+                    <label id="labelQuestao63" style="font-family:Calibri; font-weight:normal">Possui furo de captação?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao64">Controla o seu consumo?</label>
+                    <label id="labelQuestao64" style="font-family:Calibri; font-weight:normal">Controla o seu consumo?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao65">Implementa acções de melhoria para redução do consumo?</label>
+                    <label id="labelQuestao65" style="font-family:Calibri; font-weight:normal">Implementa acções de melhoria para redução do consumo?</label>
                 </div>
             </div>
 
@@ -540,15 +551,15 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema7">7. Consumo de combustível (aplicável exclusivamente a transportadores)</label>
+                <label id="labelTema7" style="font-family:Calibri; font-weight:bold">7. Consumo de combustível (aplicável exclusivamente a transportadores)</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao71">A frota automóvel possui menos de 10 anos?</label>
+                    <label id="labelQuestao71" style="font-family:Calibri; font-weight:normal">A frota automóvel possui menos de 10 anos?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao72">Existe recurso a combustíveis mais limpos?</label>
+                    <label id="labelQuestao72" style="font-family:Calibri; font-weight:normal">Existe recurso a combustíveis mais limpos?</label>
                 </div>
             </div>
 
@@ -586,20 +597,20 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema8">8. Consumo de energia</label>
+                <label id="labelTema8" style="font-family:Calibri; font-weight:bold">8. Consumo de energia</label>
             </div>
 
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao81">Consome energia e controla o seu consumo?</label>
+                    <label id="labelQuestao81" style="font-family:Calibri; font-weight:normal">Consome energia e controla o seu consumo?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao82">Existe recurso a energias renováveis?</label>
+                    <label id="labelQuestao82" style="font-family:Calibri; font-weight:normal">Existe recurso a energias renováveis?</label>
                 </div>
 
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao83">Implementa acções de melhoria para redução do consumo?</label>
+                    <label id="labelQuestao83" style="font-family:Calibri; font-weight:normal">Implementa acções de melhoria para redução do consumo?</label>
                 </div>
             </div>
 
@@ -647,11 +658,11 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema9">9. Formação</label>
+                <label id="labelTema9" style="font-family:Calibri; font-weight:bold">9. Formação</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao91">Promove a formação/sensibilização ambiental dos seus colaboradores?</label>
+                    <label id="labelQuestao91" style="font-family:Calibri; font-weight:normal">Promove a formação/sensibilização ambiental dos seus colaboradores?</label>
                 </div>
             </div>
 
@@ -678,11 +689,11 @@
 
         <div class="row break_clear">
             <div class="col-lg-2" align="left">
-                <label id="labelTema10">10. Qualidade e Ambiente</label>
+                <label id="labelTema10" style="font-family:Calibri; font-weight:bold">10. Qualidade e Ambiente</label>
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao101">Tem Seguro de Responsabilidade Ambiental/Garantia Bancária? Em caso afirmativo solicitamos envie cópia.</label>
+                    <label id="labelQuestao101" style="font-family:Calibri; font-weight:normal">Tem Seguro de Responsabilidade Ambiental/Garantia Bancária? Em caso afirmativo solicitamos envie cópia.</label>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -708,7 +719,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao102">Existe algum responsável pela Área da Qualidade e Ambiente?</label>
+                    <label id="labelQuestao102" style="font-family:Calibri; font-weight:normal">Existe algum responsável pela Área da Qualidade e Ambiente?</label>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -734,7 +745,7 @@
             </div>
             <div class="col-lg-5" align="left">
                 <div class="col-lg-12" align="left">
-                    <label id="labelQuestao103">Em caso afirmativo indique nome e contato</label>
+                    <label id="labelQuestao103" style="font-family:Calibri; font-weight:normal">Em caso afirmativo indique nome e contato</label>
                 </div>
             </div>
             <div class="col-lg-5">
@@ -760,20 +771,20 @@
 
         <div class="row">
             <div class="col-lg-1" align="center">
-                <img src="/images/201801-P01.png" alt="20180-P01" />
+                <img src="/images/201801-P01.png" alt="20180-P01" width="20%" height="20%"/>
             </div>
             <div class="col-lg-11">
                 <div class="col-lg-12">
-                    <label id="labelLegenda1">Legenda:</label>
+                    <label id="labelLegenda1" style="font-family:Calibri; font-weight:bold">Legenda:</label>
                 </div>
                 <div class="col-lg-12">
-                    <label id="labelLegendaNA">NA - Não aplicável</label>
+                    <label id="labelLegendaNA" style="font-family:Calibri; font-weight:lighter; font-size:smaller">NA - Não aplicável</label>
                 </div>
                 <div class="col-lg-12">
-                    <label id="labelLegendaAPA">APA - Agência Portuguesa do Ambiente</label>
+                    <label id="labelLegendaAPA" style="font-family:Calibri; font-weight:lighter; font-size:smaller">APA - Agência Portuguesa do Ambiente</label>
                 </div>
                 <div class="col-lg-12">
-                    <label id="labelLegendaETAR">ETAR - Estação de Tratamento de Águas Resíduais</label>
+                    <label id="labelLegendaETAR" style="font-family:Calibri; font-weight:lighter; font-size:smaller">ETAR - Estação de Tratamento de Águas Resíduais</label>
                 </div>
             </div>
         </div>
@@ -810,7 +821,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-2">
-                    <label id="labelResponsavelFinal">Responsável:</label>
+                    <label id="labelResponsavelFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Responsável:</label>
                 </div>
                 <div class="col-lg-10">
                     <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ _lockFields }}" maxlength="50"></vaadin-text-field>
@@ -818,7 +829,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="col-lg-2">
-                    <label id="labelDataFinal">Data:</label>
+                    <label id="labelDataFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Data:</label>
                 </div>
                 <div class="col-lg-4">
                     <vaadin-date-picker id="dataFinal" name="final_Data" value="{{data.final_Data}}" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
@@ -864,6 +875,8 @@
                 },
 
                 ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "ID_Fornecedor": this._no });
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _goBack: function (e) {

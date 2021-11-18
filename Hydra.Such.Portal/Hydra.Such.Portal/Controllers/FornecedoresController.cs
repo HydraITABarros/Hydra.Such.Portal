@@ -752,6 +752,26 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult GetQuestionarioDetails([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                if (!string.IsNullOrEmpty(data.ID_Fornecedor))
+                {
+                    NAVFornecedoresViewModel Fornecedor = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, data.ID_Fornecedor).FirstOrDefault();
+
+                    if (Fornecedor != null)
+                    {
+                        data.Fornecedor = Fornecedor.Name;
+                    }
+                }
+
+
+                return Json(data);
+            }
+            return Json(null);
+        }
 
 
 

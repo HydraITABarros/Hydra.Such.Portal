@@ -60,7 +60,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpGet]
-        public IActionResult DetalhesEncomenda(string id)
+        public IActionResult DetalhesEncomenda(string id, int version = 0, bool isHistoric = false)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
 
@@ -70,6 +70,9 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.reportServerURL = _config.ReportServerURL;
                 ViewBag.userLogin = User.Identity.Name.ToString();
                 ViewBag.UPermissions = UPerm;
+                ViewBag.IsHistoric = isHistoric.ToString();
+                ViewBag.Version = version;
+
                 return View();
             }
             else
@@ -153,8 +156,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%");
-                var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%");
+                var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%", encomenda.Version);
+                var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%", encomenda.Version);
                 return Json(new
                 {
                     details,

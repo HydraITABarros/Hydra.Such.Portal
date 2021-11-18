@@ -3370,6 +3370,25 @@ namespace Hydra.Such.Portal.Controllers
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
+            List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "").ToList();
+            if (!AllProjects.Exists(x => x.No == data.ProjectNo))
+            {
+                return Json("O campo Ordem/Projeto Nº " + data.ProjectNo + " na aba Geral não é válido.");
+            }
+            List<LinhasPréRequisição> AllLinhas = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+            string LinhasErro = "";
+            AllLinhas.ForEach(x =>
+            {
+                if (!AllProjects.Exists(y => y.No == x.NºProjeto))
+                {
+                    LinhasErro = LinhasErro + x.NºProjeto + ", ";
+                }
+            });
+            if (!string.IsNullOrEmpty(LinhasErro))
+            {
+                return Json("O campo Nº Ordem/Projeto Nº " + LinhasErro + " nas Linhas não é válido.");
+            }
+
             if (!CfgNumeration.Automático.Value)
             {
                 return Json("É obrigatório inserir o Nº Requisição.");

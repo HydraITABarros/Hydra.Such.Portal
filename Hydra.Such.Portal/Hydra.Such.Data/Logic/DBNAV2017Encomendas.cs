@@ -114,6 +114,7 @@ namespace Hydra.Such.Data.Logic
                             result.Add(new EncomendasViewModel()
                             {
                                 No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                                Version = temp.Version,
                                 PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
                                 PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
                                 YourReference = temp.YourReference.Equals(DBNull.Value) ? "" : (string)temp.YourReference,
@@ -141,7 +142,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static EncomendasViewModel GetDetailsByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression)
+        public static EncomendasViewModel GetDetailsByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression, int Version = 0)
         {
             try
             {
@@ -152,10 +153,11 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@No", No ),
+                        new SqlParameter("@Version", Version ),
                         new SqlParameter("@No_FilterExpression", No_FilterExpression )
                     };
 
-                    dynamic data = ctx.execStoredProcedure("exec NAV2017EncomendasDetails @DBName, @CompanyName, @No", parameters).FirstOrDefault();
+                    dynamic data = ctx.execStoredProcedure("exec NAV2017EncomendasDetails @DBName, @CompanyName, @No, @Version", parameters).FirstOrDefault();
 
                     result = new EncomendasViewModel()
                     {
@@ -201,7 +203,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<EncomendasLinhasViewModel> ListLinesByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression)
+        public static List<EncomendasLinhasViewModel> ListLinesByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression, int Version = 0)
         {
             try
             {
@@ -212,10 +214,11 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@No", No ),
+                        new SqlParameter("@Version", Version),
                         new SqlParameter("@No_FilterExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasLinhasList @DBName, @CompanyName, @No", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasLinhasList @DBName, @CompanyName, @No, @Version", parameters);
 
                     foreach (dynamic temp in data)
                     {

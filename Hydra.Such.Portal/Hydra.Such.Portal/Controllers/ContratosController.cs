@@ -1089,15 +1089,20 @@ namespace Hydra.Such.Portal.Controllers
                             result.ShippingZipCode = cli.PostCode;
                             result.ShippingLocality = cli.City;
                         }
+                        else
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Cliente não encontrado no NAV.";
+                        }
                     }
                     else
                     {
-                        result.ShippingName = "";
-                        result.ShippingName2 = "";
-                        result.ShippingAddress = "";
-                        result.ShippingAddress2 = "";
-                        result.ShippingZipCode = "";
-                        result.ShippingLocality = "";
+                            result.ShippingName = "";
+                            result.ShippingName2 = "";
+                            result.ShippingAddress = "";
+                            result.ShippingAddress2 = "";
+                            result.ShippingZipCode = "";
+                            result.ShippingLocality = "";
                     }
                 }
 
