@@ -389,7 +389,23 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/PreviousRequesition"
+                   last-response="{{responsePreviousRequesition}}"
+                   id="ajax_PreviousRequesition"
+                   method="post"
+                   handle-as="json"
+                   on-response="_responsePreviousRequesition"
+                   content-type="application/json">
+        </iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/NextRequesition"
+                   last-response="{{responseNextRequesition}}"
+                   id="ajax_NextRequesition"
+                   method="post"
+                   handle-as="json"
+                   on-response="_responseNextRequesition"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -416,6 +432,9 @@
             <paper-button class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</paper-button>
 
             <paper-button id="btnExport_LinhasNutricao" class="tablinks" on-tap="_exportEXCEL_LinhasNutricao" title="Exportar Linhas para Excel" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
+
+            <paper-button class="tablinks" on-tap="_goPrevious" id="goPrevious" title="Anterior"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</paper-button>
+            <paper-button class="tablinks" on-tap="_goNext" id="goNext" title="Seguinte"><i class="fa fa-arrow-right" aria-hidden="true"></i> Seguinte</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -827,8 +846,8 @@
                                     </template>
                                 </template>
                                 <!--<template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>-->
+                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            </template>-->
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. Encome.</paper-button>
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
@@ -2444,7 +2463,8 @@
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
-                        window.history.back();
+                        //window.history.back();
+                        this._goNext();
                     }
                     else {
                         this._openDlgMessageError(this.Requisition.eMessage);
@@ -3019,7 +3039,8 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
-                    window.history.back();
+                    //window.history.back();
+                    this._goNext();
                 },
                 _createTransferShipment: function () {
                     //window.open("/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
@@ -3527,6 +3548,40 @@
                     var FileName = this.export_LinhasNutricao;
                     location.href = '/GestaoRequisicoes/ExportToExcelDownload_LinhasNutricao?sFileName=' + FileName;
                 },
+
+                _goPrevious: function () {
+                    this.$.ajax_PreviousRequesition.body = JSON.stringify({ "requisitionNo": this._requisitionid });
+                    this.$.ajax_PreviousRequesition.generateRequest();
+                },
+
+                _goNext: function () {
+                    this.$.ajax_NextRequesition.body = JSON.stringify({ "requisitionNo": this._requisitionid });
+                    this.$.ajax_NextRequesition.generateRequest();
+                },
+
+                _responsePreviousRequesition: function () {
+                    if (this.responsePreviousRequesition != undefined && this.responsePreviousRequesition != null) {
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + this.responsePreviousRequesition;
+                    }
+                    else {
+                        this._openDlgMessageError("Não é possivel ir para a Requisição anterior.");
+                    }
+                },
+
+                _responseNextRequesition: function () {
+                    if (this.responseNextRequesition != undefined && this.responseNextRequesition != null) {
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + this.responseNextRequesition;
+                    }
+                    else {
+                        this._openDlgMessageError("Não é possivel ir para a Requisição seguinte.");
+                    }
+                },
+
+
+
+
+
+
 
             });
         });

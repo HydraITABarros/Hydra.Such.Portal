@@ -1095,6 +1095,86 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult PreviousRequesition([FromBody] JObject requestParams)
+        {
+            string RequisitionNo = string.Empty;
+            if (requestParams["requisitionNo"] != null)
+                RequisitionNo = requestParams["requisitionNo"].ToString();
+
+            List<RequisitionViewModel> result = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel();
+            int MaxIndex = 0;
+            int Index = 0;
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            if (result != null && result.Count > 0 && !string.IsNullOrEmpty(RequisitionNo))
+            {
+                result = result.OrderByDescending(x => x.RequisitionNo).ToList();
+                MaxIndex = result.Count() - 1;
+
+                Index = result.FindIndex(x => x.RequisitionNo == RequisitionNo);
+                if (Index <= 0)
+                    Index = MaxIndex;
+                else
+                    Index = Index - 1;
+
+                return Json(result[Index].RequisitionNo);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult NextRequesition([FromBody] JObject requestParams)
+        {
+            string RequisitionNo = string.Empty;
+            if (requestParams["requisitionNo"] != null)
+                RequisitionNo = requestParams["requisitionNo"].ToString();
+
+            List<RequisitionViewModel> result = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel();
+            int MaxIndex = 0;
+            int Index = 0;
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            if (result != null && result.Count > 0 && !string.IsNullOrEmpty(RequisitionNo))
+            {
+                result = result.OrderByDescending(x => x.RequisitionNo).ToList();
+                MaxIndex = result.Count() - 1;
+
+                Index = result.FindIndex(x => x.RequisitionNo == RequisitionNo);
+                if (Index >= MaxIndex)
+                    Index = 0;
+                else
+                    Index = Index + 1;
+
+                return Json(result[Index].RequisitionNo);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
         public JsonResult GetValidatedRequisitions([FromBody] JObject requestParams)
         {
             DateTime pesquisaData = DateTime.MinValue;
