@@ -3369,24 +3369,47 @@ namespace Hydra.Such.Portal.Controllers
 
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
-            //Validate if ProjectNo is valid
-            List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "").ToList();
-            if (!AllProjects.Exists(x => x.No == data.ProjectNo))
+            if (data.StockReplacement == false)
             {
-                return Json("O campo Ordem/Projeto Nº " + data.ProjectNo + " na aba Geral não é válido.");
-            }
-            List<LinhasPréRequisição> AllLinhas = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
-            string LinhasErro = "";
-            AllLinhas.ForEach(x =>
-            {
-                if (!AllProjects.Exists(y => y.No == x.NºProjeto))
+                //Validate if ProjectNo is valid
+                List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "").ToList();
+                if (!AllProjects.Exists(x => x.No == data.ProjectNo))
                 {
-                    LinhasErro = LinhasErro + x.NºProjeto + ", ";
+                    return Json("O campo Ordem/Projeto Nº " + data.ProjectNo + " na aba Geral não é válido.");
                 }
-            });
-            if (!string.IsNullOrEmpty(LinhasErro))
+                List<LinhasPréRequisição> AllLinhas = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+                string LinhasErro = "";
+                AllLinhas.ForEach(x =>
+                {
+                    if (!AllProjects.Exists(y => y.No == x.NºProjeto))
+                    {
+                        LinhasErro = LinhasErro + x.NºProjeto + ", ";
+                    }
+                });
+                if (!string.IsNullOrEmpty(LinhasErro))
+                {
+                    return Json("O campo Nº Ordem/Projeto Nº " + LinhasErro + " nas Linhas não é válido.");
+                }
+            }
+            else
             {
-                return Json("O campo Nº Ordem/Projeto Nº " + LinhasErro + " nas Linhas não é válido.");
+                if (!string.IsNullOrEmpty(data.ProjectNo))
+                {
+                    return Json("O campo Ordem/Projeto Nº " + data.ProjectNo + " na aba Geral não pode estar preenchido.");
+                }
+                List<LinhasPréRequisição> AllLinhas = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+                string LinhasErro = "";
+                AllLinhas.ForEach(x =>
+                {
+                    if (!string.IsNullOrEmpty(x.NºProjeto))
+                    {
+                        LinhasErro = LinhasErro + x.NºProjeto + ", ";
+                    }
+                });
+                if (!string.IsNullOrEmpty(LinhasErro))
+                {
+                    return Json("O campo Nº Ordem/Projeto Nº " + LinhasErro + " nas Linhas não pode estar preenchido.");
+                }
             }
 
             if (!CfgNumeration.Automático.Value)

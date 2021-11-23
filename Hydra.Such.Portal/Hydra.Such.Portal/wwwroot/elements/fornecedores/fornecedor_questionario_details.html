@@ -80,8 +80,8 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap=""><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
-            <paper-button class="tablinks" on-tap=""><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+            <paper-button class="tablinks" on-tap="_gravar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
+            <paper-button class="tablinks" on-tap=""><i class="fa fa-list" aria-hidden="true"></i> Anexos</paper-button>
             <paper-button class="tablinks" on-tap=""><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
         </div>
 
@@ -113,7 +113,7 @@
                 <label id="labelActividade" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Actividade:</label>
             </div>
             <div class="col-lg-11" align="left">
-                <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ _lockFields }}" required error-message="O campo Actividade é de preenchimento obrigatório."></vaadin-text-field>
             </div>
         </div>
 
@@ -122,13 +122,13 @@
                 <label id="labelResponsavel" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Responsável:</label>
             </div>
             <div class="col-lg-5" align="left">
-                <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ _lockFields }}" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
             </div>
             <div class="col-lg-1">
                 <label id="labelFuncao" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Função:</label>
             </div>
             <div class="col-lg-5" align="left">
-                <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ _lockFields }}" required error-message="O campo Função é de preenchimento obrigatório."></vaadin-text-field>
             </div>
         </div>
 
@@ -137,19 +137,19 @@
                 <label id="labelTelefone" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Telf:</label>
             </div>
             <div class="col-lg-2" align="left">
-                <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ _lockFields }}" required error-message="O campo Telef. é de preenchimento obrigatório."></vaadin-text-field>
             </div>
             <div class="col-lg-1">
                 <label id="labelEMail" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">e-mail:</label>
             </div>
             <div class="col-lg-2" align="left">
-                <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ _lockFields }}" required error-message="O campo e-mail é de preenchimento obrigatório."></vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <label id="labelProcedimento" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Procedimento n. (se aplicável):</label>
             </div>
             <div class="col-lg-4" align="left">
-                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ _lockFields }}"></vaadin-text-field>
+                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ _lockFields }}" required error-message="O campo Procedimento n. (se aplicável) é de preenchimento obrigatório."></vaadin-text-field>
             </div>
         </div>
 
@@ -205,13 +205,13 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-2" align="center">
-                    <vaadin-checkbox id="resposta_11_Sim" name="resposta_11_Sim" checked="{{data.resposta_11_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    <vaadin-checkbox id="resposta_11_Sim" name="resposta_11_Sim" checked="{{data.resposta_11_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta11Sim"></vaadin-checkbox>
                 </div>
                 <div class="col-lg-2" align="center">
-                    <vaadin-checkbox id="resposta_11_Nao" name="resposta_11_Nao" checked="{{data.resposta_11_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    <vaadin-checkbox id="resposta_11_Nao" name="resposta_11_Nao" checked="{{data.resposta_11_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta11Nao"></vaadin-checkbox>
                 </div>
                 <div class="col-lg-2" align="center">
-                    <vaadin-checkbox id="resposta_11_NA" name="resposta_11_NA" checked="{{data.resposta_11_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                    <vaadin-checkbox id="resposta_11_NA" name="resposta_11_NA" checked="{{data.resposta_11_NA}}" disabled="{{ _lockFields }}" on-click="_resposta11NA"></vaadin-checkbox>
                 </div>
                 <div class="col-lg-6">
                     <vaadin-text-field id="resposta_11_Texto" name="resposta_11_Texto" value="{{data.resposta_11_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
@@ -284,23 +284,23 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_21_Sim" name="resposta_21_Sim" checked="{{data.resposta_21_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_21_Sim" name="resposta_21_Sim" checked="{{data.resposta_21_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta21Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_21_Nao" name="resposta_21_Nao" checked="{{data.resposta_21_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_21_Nao" name="resposta_21_Nao" checked="{{data.resposta_21_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta21Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_21_NA" name="resposta_21_NA" checked="{{data.resposta_21_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_21_NA" name="resposta_21_NA" checked="{{data.resposta_21_NA}}" disabled="{{ _lockFields }}" on-click="_resposta21NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_22_Sim" name="resposta_22_Sim" checked="{{data.resposta_22_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_22_Sim" name="resposta_22_Sim" checked="{{data.resposta_22_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta22Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_22_Nao" name="resposta_22_Nao" checked="{{data.resposta_22_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_22_Nao" name="resposta_22_Nao" checked="{{data.resposta_22_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta22Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_22_NA" name="resposta_22_NA" checked="{{data.resposta_22_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_22_NA" name="resposta_22_NA" checked="{{data.resposta_22_NA}}" disabled="{{ _lockFields }}" on-click="_resposta22NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-12" align="left">
@@ -334,20 +334,20 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_31_Sim" name="resposta_31_Sim" checked="{{data.resposta_31_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_31_Sim" name="resposta_31_Sim" checked="{{data.resposta_31_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta31Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_31_Nao" name="resposta_31_Nao" checked="{{data.resposta_31_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_31_Nao" name="resposta_31_Nao" checked="{{data.resposta_31_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta31Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_31_NA" name="resposta_31_NA" checked="{{data.resposta_31_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_31_NA" name="resposta_31_NA" checked="{{data.resposta_31_NA}}" disabled="{{ _lockFields }}" on-click="_resposta31NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-8">
-                        <vaadin-text-field id="resposta_32_Texto" name="resposta_32_Texto" value="{{data.resposta_32_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                        <vaadin-text-field id="resposta_32_Texto" name="resposta_32_Texto" value="{{data.resposta_32_Texto}}" disabled="{{ _lockFields }}" maxlength="100" on-value-changed="_resposta32Texto"></vaadin-text-field>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_32_NA" name="resposta_32_NA" checked="{{data.resposta_32_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_32_NA" name="resposta_32_NA" checked="{{data.resposta_32_NA}}" disabled="{{ _lockFields }}" on-click="_resposta32NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
 
@@ -382,23 +382,23 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_41_Sim" name="resposta_41_Sim" checked="{{data.resposta_41_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_41_Sim" name="resposta_41_Sim" checked="{{data.resposta_41_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta41Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_41_Nao" name="resposta_41_Nao" checked="{{data.resposta_41_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_41_Nao" name="resposta_41_Nao" checked="{{data.resposta_41_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta41Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_41_NA" name="resposta_41_NA" checked="{{data.resposta_41_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_41_NA" name="resposta_41_NA" checked="{{data.resposta_41_NA}}" disabled="{{ _lockFields }}" on-click="_resposta41NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_42_Sim" name="resposta_42_Sim" checked="{{data.resposta_42_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_42_Sim" name="resposta_42_Sim" checked="{{data.resposta_42_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta42Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_42_Nao" name="resposta_42_Nao" checked="{{data.resposta_42_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_42_Nao" name="resposta_42_Nao" checked="{{data.resposta_42_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta42Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_42_NA" name="resposta_42_NA" checked="{{data.resposta_42_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_42_NA" name="resposta_42_NA" checked="{{data.resposta_42_NA}}" disabled="{{ _lockFields }}" on-click="_resposta42NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-12" align="left">
@@ -432,23 +432,23 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_51_Sim" name="resposta_51_Sim" checked="{{data.resposta_51_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_51_Sim" name="resposta_51_Sim" checked="{{data.resposta_51_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta51Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_51_Nao" name="resposta_51_Nao" checked="{{data.resposta_51_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_51_Nao" name="resposta_51_Nao" checked="{{data.resposta_51_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta51Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_51_NA" name="resposta_51_NA" checked="{{data.resposta_51_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_51_NA" name="resposta_51_NA" checked="{{data.resposta_51_NA}}" disabled="{{ _lockFields }}" on-click="_resposta51NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_52_Sim" name="resposta_52_Sim" checked="{{data.resposta_52_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_52_Sim" name="resposta_52_Sim" checked="{{data.resposta_52_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta52Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_52_Nao" name="resposta_52_Nao" checked="{{data.resposta_52_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_52_Nao" name="resposta_52_Nao" checked="{{data.resposta_52_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta52Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_52_NA" name="resposta_52_NA" checked="{{data.resposta_52_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_52_NA" name="resposta_52_NA" checked="{{data.resposta_52_NA}}" disabled="{{ _lockFields }}" on-click="_resposta52NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
 
@@ -490,53 +490,53 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_61_Sim" name="resposta_61_Sim" checked="{{data.resposta_61_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_61_Sim" name="resposta_61_Sim" checked="{{data.resposta_61_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta61Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_61_Nao" name="resposta_61_Nao" checked="{{data.resposta_61_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_61_Nao" name="resposta_61_Nao" checked="{{data.resposta_61_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta61Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_61_NA" name="resposta_61_NA" checked="{{data.resposta_61_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_62_Sim" name="resposta_62_Sim" checked="{{data.resposta_62_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_62_Nao" name="resposta_62_Nao" checked="{{data.resposta_62_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_62_NA" name="resposta_62_NA" checked="{{data.resposta_62_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_61_NA" name="resposta_61_NA" checked="{{data.resposta_61_NA}}" disabled="{{ _lockFields }}" on-click="_resposta61NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_63_Sim" name="resposta_63_Sim" checked="{{data.resposta_63_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_62_Sim" name="resposta_62_Sim" checked="{{data.resposta_62_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta62Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_63_Nao" name="resposta_63_Nao" checked="{{data.resposta_63_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_62_Nao" name="resposta_62_Nao" checked="{{data.resposta_62_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta62Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_63_NA" name="resposta_63_NA" checked="{{data.resposta_63_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_64_Sim" name="resposta_64_Sim" checked="{{data.resposta_64_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_64_Nao" name="resposta_64_Nao" checked="{{data.resposta_64_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_64_NA" name="resposta_64_NA" checked="{{data.resposta_64_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_62_NA" name="resposta_62_NA" checked="{{data.resposta_62_NA}}" disabled="{{ _lockFields }}" on-click="_resposta62NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_65_Sim" name="resposta_65_Sim" checked="{{data.resposta_65_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_63_Sim" name="resposta_63_Sim" checked="{{data.resposta_63_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta63Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_65_Nao" name="resposta_65_Nao" checked="{{data.resposta_65_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_63_Nao" name="resposta_63_Nao" checked="{{data.resposta_63_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta63Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_65_NA" name="resposta_65_NA" checked="{{data.resposta_65_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_63_NA" name="resposta_63_NA" checked="{{data.resposta_63_NA}}" disabled="{{ _lockFields }}" on-click="_resposta63NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Sim" name="resposta_64_Sim" checked="{{data.resposta_64_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta64Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Nao" name="resposta_64_Nao" checked="{{data.resposta_64_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta64Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_NA" name="resposta_64_NA" checked="{{data.resposta_64_NA}}" disabled="{{ _lockFields }}" on-click="_resposta64NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Sim" name="resposta_65_Sim" checked="{{data.resposta_65_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta65Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Nao" name="resposta_65_Nao" checked="{{data.resposta_65_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta65Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_NA" name="resposta_65_NA" checked="{{data.resposta_65_NA}}" disabled="{{ _lockFields }}" on-click="_resposta65NA"></vaadin-checkbox>
                     </div>
                 </div>
 
@@ -566,23 +566,23 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_71_Sim" name="resposta_71_Sim" checked="{{data.resposta_71_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_71_Sim" name="resposta_71_Sim" checked="{{data.resposta_71_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta71Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_71_Nao" name="resposta_71_Nao" checked="{{data.resposta_71_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_71_Nao" name="resposta_71_Nao" checked="{{data.resposta_71_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta71Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_71_NA" name="resposta_71_NA" checked="{{data.resposta_71_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_71_NA" name="resposta_71_NA" checked="{{data.resposta_71_NA}}" disabled="{{ _lockFields }}" on-click="_resposta71NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_72_Sim" name="resposta_72_Sim" checked="{{data.resposta_72_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_72_Sim" name="resposta_72_Sim" checked="{{data.resposta_72_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta72Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_72_Nao" name="resposta_72_Nao" checked="{{data.resposta_72_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_72_Nao" name="resposta_72_Nao" checked="{{data.resposta_72_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta72Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_72_NA" name="resposta_72_NA" checked="{{data.resposta_72_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_72_NA" name="resposta_72_NA" checked="{{data.resposta_72_NA}}" disabled="{{ _lockFields }}" on-click="_resposta72NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
 
@@ -617,33 +617,33 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_81_Sim" name="resposta_81_Sim" checked="{{data.resposta_81_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_81_Sim" name="resposta_81_Sim" checked="{{data.resposta_81_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta81Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_81_Nao" name="resposta_81_Nao" checked="{{data.resposta_81_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_81_Nao" name="resposta_81_Nao" checked="{{data.resposta_81_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta81Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_81_NA" name="resposta_81_NA" checked="{{data.resposta_81_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_82_Sim" name="resposta_82_Sim" checked="{{data.resposta_82_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_82_Nao" name="resposta_82_Nao" checked="{{data.resposta_82_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_82_NA" name="resposta_82_NA" checked="{{data.resposta_82_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_81_NA" name="resposta_81_NA" checked="{{data.resposta_81_NA}}" disabled="{{ _lockFields }}" on-click="_resposta81NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_83_Sim" name="resposta_83_Sim" checked="{{data.resposta_83_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_82_Sim" name="resposta_82_Sim" checked="{{data.resposta_82_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta82Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_83_Nao" name="resposta_83_Nao" checked="{{data.resposta_83_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_82_Nao" name="resposta_82_Nao" checked="{{data.resposta_82_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta82Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_83_NA" name="resposta_83_NA" checked="{{data.resposta_83_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_82_NA" name="resposta_82_NA" checked="{{data.resposta_82_NA}}" disabled="{{ _lockFields }}" on-click="_resposta82NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Sim" name="resposta_83_Sim" checked="{{data.resposta_83_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta83Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Nao" name="resposta_83_Nao" checked="{{data.resposta_83_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta83Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_NA" name="resposta_83_NA" checked="{{data.resposta_83_NA}}" disabled="{{ _lockFields }}" on-click="_resposta83NA"></vaadin-checkbox>
                     </div>
                 </div>
 
@@ -669,13 +669,13 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_91_Sim" name="resposta_91_Sim" checked="{{data.resposta_91_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_91_Sim" name="resposta_91_Sim" checked="{{data.resposta_91_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta91Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_91_Nao" name="resposta_91_Nao" checked="{{data.resposta_91_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_91_Nao" name="resposta_91_Nao" checked="{{data.resposta_91_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta91Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_91_NA" name="resposta_91_NA" checked="{{data.resposta_91_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_91_NA" name="resposta_91_NA" checked="{{data.resposta_91_NA}}" disabled="{{ _lockFields }}" on-click="_resposta91NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -699,13 +699,13 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_101_Sim" name="resposta_101_Sim" checked="{{data.resposta_101_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_101_Sim" name="resposta_101_Sim" checked="{{data.resposta_101_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta101Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_101_Nao" name="resposta_101_Nao" checked="{{data.resposta_101_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_101_Nao" name="resposta_101_Nao" checked="{{data.resposta_101_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta101Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_101_NA" name="resposta_101_NA" checked="{{data.resposta_101_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_101_NA" name="resposta_101_NA" checked="{{data.resposta_101_NA}}" disabled="{{ _lockFields }}" on-click="_resposta101NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6" align="left">
@@ -725,13 +725,13 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_102_Sim" name="resposta_102_Sim" checked="{{data.resposta_102_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_102_Sim" name="resposta_102_Sim" checked="{{data.resposta_102_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta102Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_102_Nao" name="resposta_102_Nao" checked="{{data.resposta_102_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_102_Nao" name="resposta_102_Nao" checked="{{data.resposta_102_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta102Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_102_NA" name="resposta_102_NA" checked="{{data.resposta_102_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_102_NA" name="resposta_102_NA" checked="{{data.resposta_102_NA}}" disabled="{{ _lockFields }}" on-click="_resposta102NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6" align="left">
@@ -751,17 +751,17 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_Sim" name="resposta_103_Sim" checked="{{data.resposta_103_Sim}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_103_Sim" name="resposta_103_Sim" checked="{{data.resposta_103_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta103Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_Nao" name="resposta_103_Nao" checked="{{data.resposta_103_Nao}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_103_Nao" name="resposta_103_Nao" checked="{{data.resposta_103_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta103Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_NA" name="resposta_103_NA" checked="{{data.resposta_103_NA}}" disabled="{{ _lockFields }}"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_103_NA" name="resposta_103_NA" checked="{{data.resposta_103_NA}}" disabled="{{ _lockFields }}" on-click="_resposta103NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6" align="left">
-                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ _lockFields }}" maxlength="100" style="padding-top:10px"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -824,15 +824,15 @@
                     <label id="labelResponsavelFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Responsável:</label>
                 </div>
                 <div class="col-lg-10">
-                    <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ _lockFields }}" maxlength="50"></vaadin-text-field>
+                    <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ _lockFields }}" maxlength="50" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="col-lg-2">
                     <label id="labelDataFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Data:</label>
                 </div>
-                <div class="col-lg-4">
-                    <vaadin-date-picker id="dataFinal" name="final_Data" value="{{data.final_Data}}" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                <div class="col-lg-6">
+                    <vaadin-date-picker id="final_Data" name="final_Data" value="{{data.final_Data}}" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório."></vaadin-date-picker>
                 </div>
                 <div class="col-lg-6">
                 </div>
@@ -883,17 +883,884 @@
                     window.history.back();
                 },
 
-
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
 
-                _closeRptDialog: function () {
-                    this.$.rptContainer.src = "about:blank";
-                    this.$.rptDialog.close();
+                _EnableCheckBox: function (e, check) {
+                    if (check == false) {
+                        e.checked = false;
+                        e.disabled = true;
+                    }
+                    else {
+                        e.checked = false;
+                        e.disabled = false;
+                    }
                 },
+
+                _EnableTextBox: function (e, check) {
+                    if (check == false) {
+                        e.value = "";
+                        e.disabled = true;
+                    }
+                    else {
+                        e.value = "";
+                        e.disabled = false;
+
+                    }
+                },
+
+
+                _resposta11Sim: function () {
+                    if (!this.$.resposta_11_Sim.checked == true) {
+                        this.$.resposta_11_Nao.checked = false;
+                        this.$.resposta_11_NA.checked = false;
+                    }
+
+                    if (!this.$.resposta_11_Sim.checked == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_21_NA, false);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_22_NA, false);
+                        this._EnableTextBox(this.$.resposta_23_Texto, false);
+                        this._EnableTextBox(this.$.resposta_2_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_31_NA, false);
+                        this._EnableTextBox(this.$.resposta_32_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false);
+                        this._EnableTextBox(this.$.resposta_3_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_41_NA, false);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_42_NA, false);
+                        this._EnableTextBox(this.$.resposta_43_Texto, false);
+                        this._EnableTextBox(this.$.resposta_4_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_51_NA, false);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_52_NA, false);
+                        this._EnableTextBox(this.$.resposta_5_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_61_NA, false);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_62_NA, false);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_63_NA, false);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_64_NA, false);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_65_NA, false);
+                        this._EnableTextBox(this.$.resposta_6_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_71_NA, false);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_72_NA, false);
+                        this._EnableTextBox(this.$.resposta_7_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_81_NA, false);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_82_NA, false);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_83_NA, false);
+                        this._EnableTextBox(this.$.resposta_8_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_91_NA, false);
+                        this._EnableTextBox(this.$.resposta_9_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_101_NA, false);
+                        this._EnableTextBox(this.$.resposta_101_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_102_NA, false);
+                        this._EnableTextBox(this.$.resposta_102_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_103_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_103_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_103_NA, false);
+                        this._EnableTextBox(this.$.resposta_103_Texto, false);
+                    }
+                    else {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_21_NA, true);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_22_NA, true);
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        this._EnableTextBox(this.$.resposta_2_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_31_NA, true);
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        this._EnableTextBox(this.$.resposta_3_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_41_NA, true);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_42_NA, true);
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        this._EnableTextBox(this.$.resposta_4_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_51_NA, true);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_52_NA, true);
+                        this._EnableTextBox(this.$.resposta_5_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_61_NA, true);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_62_NA, true);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_63_NA, true);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_64_NA, true);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_65_NA, true);
+                        this._EnableTextBox(this.$.resposta_6_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_71_NA, true);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_72_NA, true);
+                        this._EnableTextBox(this.$.resposta_7_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_81_NA, true);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_82_NA, true);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_83_NA, true);
+                        this._EnableTextBox(this.$.resposta_8_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_91_NA, true);
+                        this._EnableTextBox(this.$.resposta_9_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_101_NA, true);
+                        this._EnableTextBox(this.$.resposta_101_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_102_NA, true);
+                        this._EnableTextBox(this.$.resposta_102_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_103_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_103_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_103_NA, true);
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
+                    }
+                },
+                _resposta11Nao: function () {
+                    if (this.$.resposta_11_Sim.checked == true) {
+                        this._resposta11Sim();
+                    }
+
+                    if (!this.$.resposta_11_Nao.checked == true) {
+                        this.$.resposta_11_Sim.checked = false;
+                        this.$.resposta_11_NA.checked = false;
+                    }
+                },
+                _resposta11NA: function () {
+                    if (this.$.resposta_11_Sim.checked == true) {
+                        this._resposta11Sim();
+                    }
+
+                    if (!this.$.resposta_11_NA.checked == true) {
+                        this.$.resposta_11_Sim.checked = false;
+                        this.$.resposta_11_Nao.checked = false;
+                    }
+                },
+
+                _resposta21Sim: function () {
+                    if (!this.$.resposta_21_Sim.checked == true) {
+                        this.$.resposta_21_Nao.checked = false;
+                        this.$.resposta_21_NA.checked = false;
+                    }
+                },
+                _resposta21Nao: function () {
+                    if (!this.$.resposta_21_Nao.checked == true) {
+                        this.$.resposta_21_Sim.checked = false;
+                        this.$.resposta_21_NA.checked = false;
+                    }
+                },
+                _resposta21NA: function () {
+                    if (!this.$.resposta_21_NA.checked == true) {
+                        this.$.resposta_21_Sim.checked = false;
+                        this.$.resposta_21_Nao.checked = false;
+                    }
+                },
+                _resposta22Sim: function () {
+                    if (!this.$.resposta_22_Sim.checked == true) {
+                        this.$.resposta_22_Nao.checked = false;
+                        this.$.resposta_22_NA.checked = false;
+                    }
+                },
+                _resposta22Nao: function () {
+                    if (!this.$.resposta_22_Nao.checked == true) {
+                        this.$.resposta_22_Sim.checked = false;
+                        this.$.resposta_22_NA.checked = false;
+                    }
+                },
+                _resposta22NA: function () {
+                    if (!this.$.resposta_22_NA.checked == true) {
+                        this.$.resposta_22_Sim.checked = false;
+                        this.$.resposta_22_Nao.checked = false;
+                    }
+                },
+
+                _resposta31Sim: function () {
+                    if (!this.$.resposta_31_Sim.checked == true) {
+                        this.$.resposta_31_Nao.checked = false;
+                        this.$.resposta_31_NA.checked = false;
+                    }
+                },
+                _resposta31Nao: function () {
+                    if (!this.$.resposta_31_Nao.checked == true) {
+                        this.$.resposta_31_Sim.checked = false;
+                        this.$.resposta_31_NA.checked = false;
+                    }
+                },
+                _resposta31NA: function () {
+                    if (!this.$.resposta_31_NA.checked == true) {
+                        this.$.resposta_31_Sim.checked = false;
+                        this.$.resposta_31_Nao.checked = false;
+                    }
+                },
+                _resposta32Texto: function () {
+                    if (this.$.resposta_32_Texto.value != "") {
+                        this.$.resposta_32_NA.checked = false;
+                    }
+                },
+                _resposta32NA: function () {
+                    if (!this.$.resposta_32_NA.checked == true) {
+                        this.$.resposta_32_Texto.value = "";
+                    }
+                },
+
+                _resposta41Sim: function () {
+                    if (!this.$.resposta_41_Sim.checked == true) {
+                        this.$.resposta_41_Nao.checked = false;
+                        this.$.resposta_41_NA.checked = false;
+                    }
+                },
+                _resposta41Nao: function () {
+                    if (!this.$.resposta_41_Nao.checked == true) {
+                        this.$.resposta_41_Sim.checked = false;
+                        this.$.resposta_41_NA.checked = false;
+                    }
+                },
+                _resposta41NA: function () {
+                    if (!this.$.resposta_41_NA.checked == true) {
+                        this.$.resposta_41_Sim.checked = false;
+                        this.$.resposta_41_Nao.checked = false;
+                    }
+                },
+                _resposta42Sim: function () {
+                    if (!this.$.resposta_42_Sim.checked == true) {
+                        this.$.resposta_42_Nao.checked = false;
+                        this.$.resposta_42_NA.checked = false;
+                    }
+                },
+                _resposta42Nao: function () {
+                    if (!this.$.resposta_42_Nao.checked == true) {
+                        this.$.resposta_42_Sim.checked = false;
+                        this.$.resposta_42_NA.checked = false;
+                    }
+                },
+                _resposta42NA: function () {
+                    if (!this.$.resposta_42_NA.checked == true) {
+                        this.$.resposta_42_Sim.checked = false;
+                        this.$.resposta_42_Nao.checked = false;
+                    }
+                },
+
+                _resposta51Sim: function () {
+                    if (!this.$.resposta_51_Sim.checked == true) {
+                        this.$.resposta_51_Nao.checked = false;
+                        this.$.resposta_51_NA.checked = false;
+                    }
+                },
+                _resposta51Nao: function () {
+                    if (!this.$.resposta_51_Nao.checked == true) {
+                        this.$.resposta_51_Sim.checked = false;
+                        this.$.resposta_51_NA.checked = false;
+                    }
+                },
+                _resposta51NA: function () {
+                    if (!this.$.resposta_51_NA.checked == true) {
+                        this.$.resposta_51_Sim.checked = false;
+                        this.$.resposta_51_Nao.checked = false;
+                    }
+                },
+                _resposta52Sim: function () {
+                    if (!this.$.resposta_52_Sim.checked == true) {
+                        this.$.resposta_52_Nao.checked = false;
+                        this.$.resposta_52_NA.checked = false;
+                    }
+                },
+                _resposta52Nao: function () {
+                    if (!this.$.resposta_52_Nao.checked == true) {
+                        this.$.resposta_52_Sim.checked = false;
+                        this.$.resposta_52_NA.checked = false;
+                    }
+                },
+                _resposta52NA: function () {
+                    if (!this.$.resposta_52_NA.checked == true) {
+                        this.$.resposta_52_Sim.checked = false;
+                        this.$.resposta_52_Nao.checked = false;
+                    }
+                },
+
+                _resposta61Sim: function () {
+                    if (!this.$.resposta_61_Sim.checked == true) {
+                        this.$.resposta_61_Nao.checked = false;
+                        this.$.resposta_61_NA.checked = false;
+                    }
+                },
+                _resposta61Nao: function () {
+                    if (!this.$.resposta_61_Nao.checked == true) {
+                        this.$.resposta_61_Sim.checked = false;
+                        this.$.resposta_61_NA.checked = false;
+                    }
+                },
+                _resposta61NA: function () {
+                    if (!this.$.resposta_61_NA.checked == true) {
+                        this.$.resposta_61_Sim.checked = false;
+                        this.$.resposta_61_Nao.checked = false;
+                    }
+                },
+                _resposta62Sim: function () {
+                    if (!this.$.resposta_62_Sim.checked == true) {
+                        this.$.resposta_62_Nao.checked = false;
+                        this.$.resposta_62_NA.checked = false;
+                    }
+                },
+                _resposta62Nao: function () {
+                    if (!this.$.resposta_62_Nao.checked == true) {
+                        this.$.resposta_62_Sim.checked = false;
+                        this.$.resposta_62_NA.checked = false;
+                    }
+                },
+                _resposta62NA: function () {
+                    if (!this.$.resposta_62_NA.checked == true) {
+                        this.$.resposta_62_Sim.checked = false;
+                        this.$.resposta_62_Nao.checked = false;
+                    }
+                },
+                _resposta63Sim: function () {
+                    if (!this.$.resposta_63_Sim.checked == true) {
+                        this.$.resposta_63_Nao.checked = false;
+                        this.$.resposta_63_NA.checked = false;
+                    }
+                },
+                _resposta63Nao: function () {
+                    if (!this.$.resposta_63_Nao.checked == true) {
+                        this.$.resposta_63_Sim.checked = false;
+                        this.$.resposta_63_NA.checked = false;
+                    }
+                },
+                _resposta63NA: function () {
+                    if (!this.$.resposta_63_NA.checked == true) {
+                        this.$.resposta_63_Sim.checked = false;
+                        this.$.resposta_63_Nao.checked = false;
+                    }
+                },
+                _resposta64Sim: function () {
+                    if (!this.$.resposta_64_Sim.checked == true) {
+                        this.$.resposta_64_Nao.checked = false;
+                        this.$.resposta_64_NA.checked = false;
+                    }
+                },
+                _resposta64Nao: function () {
+                    if (!this.$.resposta_64_Nao.checked == true) {
+                        this.$.resposta_64_Sim.checked = false;
+                        this.$.resposta_64_NA.checked = false;
+                    }
+                },
+                _resposta64NA: function () {
+                    if (!this.$.resposta_64_NA.checked == true) {
+                        this.$.resposta_64_Sim.checked = false;
+                        this.$.resposta_64_Nao.checked = false;
+                    }
+                },
+                _resposta65Sim: function () {
+                    if (!this.$.resposta_65_Sim.checked == true) {
+                        this.$.resposta_65_Nao.checked = false;
+                        this.$.resposta_65_NA.checked = false;
+                    }
+                },
+                _resposta65Nao: function () {
+                    if (!this.$.resposta_65_Nao.checked == true) {
+                        this.$.resposta_65_Sim.checked = false;
+                        this.$.resposta_65_NA.checked = false;
+                    }
+                },
+                _resposta65NA: function () {
+                    if (!this.$.resposta_65_NA.checked == true) {
+                        this.$.resposta_65_Sim.checked = false;
+                        this.$.resposta_65_Nao.checked = false;
+                    }
+                },
+
+                _resposta71Sim: function () {
+                    if (!this.$.resposta_71_Sim.checked == true) {
+                        this.$.resposta_71_Nao.checked = false;
+                        this.$.resposta_71_NA.checked = false;
+                    }
+                },
+                _resposta71Nao: function () {
+                    if (!this.$.resposta_71_Nao.checked == true) {
+                        this.$.resposta_71_Sim.checked = false;
+                        this.$.resposta_71_NA.checked = false;
+                    }
+                },
+                _resposta71NA: function () {
+                    if (!this.$.resposta_71_NA.checked == true) {
+                        this.$.resposta_71_Sim.checked = false;
+                        this.$.resposta_71_Nao.checked = false;
+                    }
+                },
+                _resposta72Sim: function () {
+                    if (!this.$.resposta_72_Sim.checked == true) {
+                        this.$.resposta_72_Nao.checked = false;
+                        this.$.resposta_72_NA.checked = false;
+                    }
+                },
+                _resposta72Nao: function () {
+                    if (!this.$.resposta_72_Nao.checked == true) {
+                        this.$.resposta_72_Sim.checked = false;
+                        this.$.resposta_72_NA.checked = false;
+                    }
+                },
+                _resposta72NA: function () {
+                    if (!this.$.resposta_72_NA.checked == true) {
+                        this.$.resposta_72_Sim.checked = false;
+                        this.$.resposta_72_Nao.checked = false;
+                    }
+                },
+
+                _resposta81Sim: function () {
+                    if (!this.$.resposta_81_Sim.checked == true) {
+                        this.$.resposta_81_Nao.checked = false;
+                        this.$.resposta_81_NA.checked = false;
+                    }
+                },
+                _resposta81Nao: function () {
+                    if (!this.$.resposta_81_Nao.checked == true) {
+                        this.$.resposta_81_Sim.checked = false;
+                        this.$.resposta_81_NA.checked = false;
+                    }
+                },
+                _resposta81NA: function () {
+                    if (!this.$.resposta_81_NA.checked == true) {
+                        this.$.resposta_81_Sim.checked = false;
+                        this.$.resposta_81_Nao.checked = false;
+                    }
+                },
+                _resposta82Sim: function () {
+                    if (!this.$.resposta_82_Sim.checked == true) {
+                        this.$.resposta_82_Nao.checked = false;
+                        this.$.resposta_82_NA.checked = false;
+                    }
+                },
+                _resposta82Nao: function () {
+                    if (!this.$.resposta_82_Nao.checked == true) {
+                        this.$.resposta_82_Sim.checked = false;
+                        this.$.resposta_82_NA.checked = false;
+                    }
+                },
+                _resposta82NA: function () {
+                    if (!this.$.resposta_82_NA.checked == true) {
+                        this.$.resposta_82_Sim.checked = false;
+                        this.$.resposta_82_Nao.checked = false;
+                    }
+                },
+                _resposta83Sim: function () {
+                    if (!this.$.resposta_83_Sim.checked == true) {
+                        this.$.resposta_83_Nao.checked = false;
+                        this.$.resposta_83_NA.checked = false;
+                    }
+                },
+                _resposta83Nao: function () {
+                    if (!this.$.resposta_83_Nao.checked == true) {
+                        this.$.resposta_83_Sim.checked = false;
+                        this.$.resposta_83_NA.checked = false;
+                    }
+                },
+                _resposta83NA: function () {
+                    if (!this.$.resposta_83_NA.checked == true) {
+                        this.$.resposta_83_Sim.checked = false;
+                        this.$.resposta_83_Nao.checked = false;
+                    }
+                },
+
+                _resposta91Sim: function () {
+                    if (!this.$.resposta_91_Sim.checked == true) {
+                        this.$.resposta_91_Nao.checked = false;
+                        this.$.resposta_91_NA.checked = false;
+                    }
+                },
+                _resposta91Nao: function () {
+                    if (!this.$.resposta_91_Nao.checked == true) {
+                        this.$.resposta_91_Sim.checked = false;
+                        this.$.resposta_91_NA.checked = false;
+                    }
+                },
+                _resposta91NA: function () {
+                    if (!this.$.resposta_91_NA.checked == true) {
+                        this.$.resposta_91_Sim.checked = false;
+                        this.$.resposta_91_Nao.checked = false;
+                    }
+                },
+
+                _resposta101Sim: function () {
+                    if (!this.$.resposta_101_Sim.checked == true) {
+                        this.$.resposta_101_Nao.checked = false;
+                        this.$.resposta_101_NA.checked = false;
+                    }
+                },
+                _resposta101Nao: function () {
+                    if (!this.$.resposta_101_Nao.checked == true) {
+                        this.$.resposta_101_Sim.checked = false;
+                        this.$.resposta_101_NA.checked = false;
+                    }
+                },
+                _resposta101NA: function () {
+                    if (!this.$.resposta_101_NA.checked == true) {
+                        this.$.resposta_101_Sim.checked = false;
+                        this.$.resposta_101_Nao.checked = false;
+                    }
+                },
+                _resposta102Sim: function () {
+                    if (!this.$.resposta_102_Sim.checked == true) {
+                        this.$.resposta_102_Nao.checked = false;
+                        this.$.resposta_102_NA.checked = false;
+                    }
+                },
+                _resposta102Nao: function () {
+                    if (!this.$.resposta_102_Nao.checked == true) {
+                        this.$.resposta_102_Sim.checked = false;
+                        this.$.resposta_102_NA.checked = false;
+                    }
+                },
+                _resposta102NA: function () {
+                    if (!this.$.resposta_102_NA.checked == true) {
+                        this.$.resposta_102_Sim.checked = false;
+                        this.$.resposta_102_Nao.checked = false;
+                    }
+                },
+                _resposta103Sim: function () {
+                    if (!this.$.resposta_103_Sim.checked == true) {
+                        this.$.resposta_103_Nao.checked = false;
+                        this.$.resposta_103_NA.checked = false;
+                    }
+                },
+                _resposta103Nao: function () {
+                    if (!this.$.resposta_103_Nao.checked == true) {
+                        this.$.resposta_103_Sim.checked = false;
+                        this.$.resposta_103_NA.checked = false;
+                    }
+                },
+                _resposta103NA: function () {
+                    if (!this.$.resposta_103_NA.checked == true) {
+                        this.$.resposta_103_Sim.checked = false;
+                        this.$.resposta_103_Nao.checked = false;
+                    }
+                },
+
+                _gravar: function () {
+                    if (!this.$.actividade.validate() || this.$.actividade.value == "") {
+                        this._showErrorMessage('O campo Actividade é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.responsavel.validate() || this.$.responsavel.value == "") {
+                        this._showErrorMessage('O campo Responsável é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.funcao.validate() || this.$.funcao.value == "") {
+                        this._showErrorMessage('O campo Função é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.telefone.validate() || this.$.telefone.value == "") {
+                        this._showErrorMessage('O campo Telf. é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.email.validate() || this.$.email.value == "") {
+                        this._showErrorMessage('O campo e-mail é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.procedimento.validate() || this.$.procedimento.value == "") {
+                        this._showErrorMessage('O campo Procedimento n. (se aplicável) é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.final_Responsavel.validate() || this.$.final_Responsavel.value == "") {
+                        this._showErrorMessage('O campo Responsável é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.final_Data.validate() || this.$.final_Data.value == "") {
+                        this._showErrorMessage('O campo Data é de preenchimento obrigatório.');
+                        return;
+                    }
+
+                    if ((this.$.resposta_11_Sim.checked == null || this.$.resposta_11_Sim.checked == false) &&
+                        (this.$.resposta_11_Nao.checked == null || this.$.resposta_11_Nao.checked == false) &&
+                        (this.$.resposta_11_NA.checked == null || this.$.resposta_11_NA.checked == false)) {
+                        this._showErrorMessage('É obrigatório responder à questão 1.1');
+                        return;
+                    }
+                    if (this.$.resposta_12_Texto.value == null || this.$.resposta_12_Texto.value == "") {
+                        this._showErrorMessage('É obrigatório responder à questão 1.2');
+                        return;
+                    }
+                    if (this.$.resposta_13_Texto.value == null || this.$.resposta_13_Texto.value == "") {
+                        this._showErrorMessage('É obrigatório responder à questão 1.3');
+                        return;
+                    }
+                    if (this.$.resposta_11_Nao.checked == true || this.$.resposta_11_NA.checked == true) {
+                        if ((this.$.resposta_21_Sim.checked == null || this.$.resposta_21_Sim.checked == false) &&
+                            (this.$.resposta_21_Nao.checked == null || this.$.resposta_21_Nao.checked == false) &&
+                            (this.$.resposta_21_NA.checked == null || this.$.resposta_21_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 2.1');
+                            return;
+                        }
+                        if ((this.$.resposta_22_Sim.checked == null || this.$.resposta_22_Sim.checked == false) &&
+                            (this.$.resposta_22_Nao.checked == null || this.$.resposta_22_Nao.checked == false) &&
+                            (this.$.resposta_22_NA.checked == null || this.$.resposta_22_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 2.2');
+                            return;
+                        }
+                        if (this.$.resposta_23_Texto.value == null || this.$.resposta_23_Texto.value == "") {
+                            this._showErrorMessage('É obrigatório responder à questão 2.3');
+                            return;
+                        }
+
+                        if ((this.$.resposta_31_Sim.checked == null || this.$.resposta_31_Sim.checked == false) &&
+                            (this.$.resposta_31_Nao.checked == null || this.$.resposta_31_Nao.checked == false) &&
+                            (this.$.resposta_31_NA.checked == null || this.$.resposta_31_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 3.1');
+                            return;
+                        }
+                        if ((this.$.resposta_32_Texto.value == null || this.$.resposta_32_Texto.value == "") &&
+                            (this.$.resposta_32_NA.checked == null || this.$.resposta_32_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 3.2');
+                            return;
+                        }
+
+                        if ((this.$.resposta_41_Sim.checked == null || this.$.resposta_41_Sim.checked == false) &&
+                            (this.$.resposta_41_Nao.checked == null || this.$.resposta_41_Nao.checked == false) &&
+                            (this.$.resposta_41_NA.checked == null || this.$.resposta_41_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 4.1');
+                            return;
+                        }
+                        if ((this.$.resposta_42_Sim.checked == null || this.$.resposta_42_Sim.checked == false) &&
+                            (this.$.resposta_42_Nao.checked == null || this.$.resposta_42_Nao.checked == false) &&
+                            (this.$.resposta_42_NA.checked == null || this.$.resposta_42_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 4.2');
+                            return;
+                        }
+                        if (this.$.resposta_43_Texto.value == null || this.$.resposta_43_Texto.value == "") {
+                            this._showErrorMessage('É obrigatório responder à questão 4.3');
+                            return;
+                        }
+
+                        if ((this.$.resposta_51_Sim.checked == null || this.$.resposta_51_Sim.checked == false) &&
+                            (this.$.resposta_51_Nao.checked == null || this.$.resposta_51_Nao.checked == false) &&
+                            (this.$.resposta_51_NA.checked == null || this.$.resposta_51_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 5.1');
+                            return;
+                        }
+                        if ((this.$.resposta_52_Sim.checked == null || this.$.resposta_52_Sim.checked == false) &&
+                            (this.$.resposta_52_Nao.checked == null || this.$.resposta_52_Nao.checked == false) &&
+                            (this.$.resposta_52_NA.checked == null || this.$.resposta_52_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 5.2');
+                            return;
+                        }
+
+                        if ((this.$.resposta_61_Sim.checked == null || this.$.resposta_61_Sim.checked == false) &&
+                            (this.$.resposta_61_Nao.checked == null || this.$.resposta_61_Nao.checked == false) &&
+                            (this.$.resposta_61_NA.checked == null || this.$.resposta_61_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.1');
+                            return;
+                        }
+                        if ((this.$.resposta_62_Sim.checked == null || this.$.resposta_62_Sim.checked == false) &&
+                            (this.$.resposta_62_Nao.checked == null || this.$.resposta_62_Nao.checked == false) &&
+                            (this.$.resposta_62_NA.checked == null || this.$.resposta_62_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.2');
+                            return;
+                        }
+                        if ((this.$.resposta_63_Sim.checked == null || this.$.resposta_63_Sim.checked == false) &&
+                            (this.$.resposta_63_Nao.checked == null || this.$.resposta_63_Nao.checked == false) &&
+                            (this.$.resposta_63_NA.checked == null || this.$.resposta_63_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.3');
+                            return;
+                        }
+                        if ((this.$.resposta_64_Sim.checked == null || this.$.resposta_64_Sim.checked == false) &&
+                            (this.$.resposta_64_Nao.checked == null || this.$.resposta_64_Nao.checked == false) &&
+                            (this.$.resposta_64_NA.checked == null || this.$.resposta_64_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.4');
+                            return;
+                        }
+                        if ((this.$.resposta_65_Sim.checked == null || this.$.resposta_65_Sim.checked == false) &&
+                            (this.$.resposta_65_Nao.checked == null || this.$.resposta_65_Nao.checked == false) &&
+                            (this.$.resposta_65_NA.checked == null || this.$.resposta_65_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.5');
+                            return;
+                        }
+
+                        if ((this.$.resposta_71_Sim.checked == null || this.$.resposta_71_Sim.checked == false) &&
+                            (this.$.resposta_71_Nao.checked == null || this.$.resposta_71_Nao.checked == false) &&
+                            (this.$.resposta_71_NA.checked == null || this.$.resposta_71_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 7.1');
+                            return;
+                        }
+                        if ((this.$.resposta_72_Sim.checked == null || this.$.resposta_72_Sim.checked == false) &&
+                            (this.$.resposta_72_Nao.checked == null || this.$.resposta_72_Nao.checked == false) &&
+                            (this.$.resposta_72_NA.checked == null || this.$.resposta_72_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 7.2');
+                            return;
+                        }
+
+                        if ((this.$.resposta_81_Sim.checked == null || this.$.resposta_81_Sim.checked == false) &&
+                            (this.$.resposta_81_Nao.checked == null || this.$.resposta_81_Nao.checked == false) &&
+                            (this.$.resposta_81_NA.checked == null || this.$.resposta_81_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 8.1');
+                            return;
+                        }
+                        if ((this.$.resposta_82_Sim.checked == null || this.$.resposta_82_Sim.checked == false) &&
+                            (this.$.resposta_82_Nao.checked == null || this.$.resposta_82_Nao.checked == false) &&
+                            (this.$.resposta_82_NA.checked == null || this.$.resposta_82_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 8.2');
+                            return;
+                        }
+                        if ((this.$.resposta_83_Sim.checked == null || this.$.resposta_83_Sim.checked == false) &&
+                            (this.$.resposta_83_Nao.checked == null || this.$.resposta_83_Nao.checked == false) &&
+                            (this.$.resposta_83_NA.checked == null || this.$.resposta_83_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 8.3');
+                            return;
+                        }
+
+                        if ((this.$.resposta_91_Sim.checked == null || this.$.resposta_91_Sim.checked == false) &&
+                            (this.$.resposta_91_Nao.checked == null || this.$.resposta_91_Nao.checked == false) &&
+                            (this.$.resposta_91_NA.checked == null || this.$.resposta_91_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 9.1');
+                            return;
+                        }
+
+                        if ((this.$.resposta_101_Sim.checked == null || this.$.resposta_101_Sim.checked == false) &&
+                            (this.$.resposta_101_Nao.checked == null || this.$.resposta_101_Nao.checked == false) &&
+                            (this.$.resposta_101_NA.checked == null || this.$.resposta_101_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 10.1');
+                            return;
+                        }
+                        if ((this.$.resposta_102_Sim.checked == null || this.$.resposta_102_Sim.checked == false) &&
+                            (this.$.resposta_102_Nao.checked == null || this.$.resposta_102_Nao.checked == false) &&
+                            (this.$.resposta_102_NA.checked == null || this.$.resposta_102_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 10.2');
+                            return;
+                        }
+                        if ((this.$.resposta_103_Sim.checked == null || this.$.resposta_103_Sim.checked == false) &&
+                            (this.$.resposta_103_Nao.checked == null || this.$.resposta_103_Nao.checked == false) &&
+                            (this.$.resposta_103_NA.checked == null || this.$.resposta_103_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 10.3');
+                            return;
+                        }
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
