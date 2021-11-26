@@ -4,9 +4,9 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
 {
     public class QuestionarioFornecedorGestaoAmbientalViewModel : ErrorHandler
     {
-        public int ID { get; set; }
         public string Codigo { get; set; }
         public int Versao { get; set; }
+        public string Versao_Texto { get; set; }
         public string ID_Fornecedor { get; set; }
         public string Fornecedor { get; set; }
         public string Actividade { get; set; }
@@ -177,6 +177,7 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public string DataHora_Modificacao_Texto { get; set; }
         public string Utilizador_Modificacao { get; set; }
         public string Utilizador_Modificacao_Texto { get; set; }
+        public bool? Nova_Versao { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

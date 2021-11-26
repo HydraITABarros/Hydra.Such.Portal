@@ -120,10 +120,12 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public DateTime? DataEncomendaSubfornecedor { get; set; }
         public string DataEncomendaSubfornecedorText { get; set; }
 
-
+        //LISTA REQUISIÇÕES ORDENADAS
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
+        public Object Lista { get; set; }
+
 
         public List<RequisitionLineViewModel> Lines { get; set; }
         public List<RequisitionChangeLog> ChangeLog { get; set; }

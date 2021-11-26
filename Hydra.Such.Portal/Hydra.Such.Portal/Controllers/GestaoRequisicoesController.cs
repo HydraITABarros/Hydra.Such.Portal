@@ -175,8 +175,12 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesReqAprovada(string id)
+        public IActionResult DetalhesReqAprovada(string id, List<RequisitionViewModel> Lista = null)
         {
+            List<RequisitionViewModel> ListaREQ = null;
+            if (Lista != null)
+                ListaREQ = Lista;
+
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -1255,6 +1259,7 @@ namespace Hydra.Such.Portal.Controllers
             int Historic = 0;
             if (requestParams["Historic"] != null)
                 Historic = int.Parse(requestParams["Historic"].ToString());
+
             List<RequisitionStates> states = new List<RequisitionStates>();
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 

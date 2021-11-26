@@ -201,6 +201,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<SISLOGProdutos> SISLOGProdutos { get; set; }
         public virtual DbSet<Ocorrencias> Ocorrencias { get; set; }
         public virtual DbSet<QuestionarioFornecedorGestaoAmbiental> QuestionarioFornecedorGestaoAmbiental { get; set; }
+        public virtual DbSet<QuestionarioFornecedorGestaoAmbientalAnexos> QuestionarioFornecedorGestaoAmbientalAnexos { get; set; }
 
         #region zpgm.ALT_CCP_#001.y2019
         public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
@@ -13187,7 +13188,7 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<QuestionarioFornecedorGestaoAmbiental>(entity =>
             {
-                entity.HasKey(e => new { e.ID });
+                entity.HasKey(e => new { e.Codigo, e.Versao });
 
                 entity.ToTable("Questionario_Fornecedor_Gestao_Ambiental");
 
@@ -13314,6 +13315,41 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataHora_Criacao)
                     .HasColumnName("DataHora_Criacao")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.DataHora_Modificacao)
+                    .HasColumnName("DataHora_Modificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<QuestionarioFornecedorGestaoAmbientalAnexos>(entity =>
+            {
+                entity.HasKey(e => new { e.Codigo, e.Versao });
+
+                entity.ToTable("Questionario_Fornecedor_Gestao_Ambiental_Anexos");
+
+                entity.Property(e => e.Codigo)
+                    .HasColumnName("Codigo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ID_Fornecedor)
+                    .HasColumnName("ID_Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.URL_Anexo)
+                    .HasColumnName("URL_Anexo")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Utilizador_Criacao)
+                    .HasColumnName("Utilizador_Criacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHora_Criacao)
+                    .HasColumnName("DataHora_Criacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Utilizador_Modificacao)
+                    .HasColumnName("Utilizador_Modificacao")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.DataHora_Modificacao)
                     .HasColumnName("DataHora_Modificacao")
