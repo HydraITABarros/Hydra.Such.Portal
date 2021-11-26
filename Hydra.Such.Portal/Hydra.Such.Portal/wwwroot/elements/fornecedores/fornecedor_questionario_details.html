@@ -88,7 +88,7 @@
         </iron-ajax>
 
         <iron-ajax url="/Fornecedores/CreateQuestionario"
-                   last-response="{{createQuestionario}}"
+                   last-response="{{data}}"
                    method="post"
                    handle-as="json"
                    id="page_CreateQuestionario_ajax"
@@ -97,7 +97,7 @@
         </iron-ajax>
 
         <iron-ajax url="/Fornecedores/UpdateQuestionario"
-                   last-response="{{updateQuestionario}}"
+                   last-response="{{data}}"
                    method="post"
                    handle-as="json"
                    id="page_UpdateQuestionario_ajax"
@@ -1759,20 +1759,20 @@
                 },
 
                 _responseProcessor_CreateQuestionario: function () {
-                    if (this.createQuestionario == true) {
-                        this._showMessage('Questionário criado com sucesso.');
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
                     }
                     else {
-                        this._showErrorMessage('Não foi possivel criar um novo Questionário.');
+                        this._showErrorMessage(this.data.eMessage);
                     }
                 },
 
                 _responseProcessor_UpdateQuestionario: function () {
-                    if (this.updateQuestionario == true) {
-                        this._showMessage('Questionário atualizado com sucesso.');
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
                     }
                     else {
-                        this._showErrorMessage('Não foi possivel atualizar o Questionário.');
+                        this._showErrorMessage(this.data.eMessage);
                     }
                 },
 

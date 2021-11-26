@@ -78,7 +78,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (AllQuestionarios != null && AllQuestionarios.Count > 0)
             {
-                Versao = AllQuestionarios.LastOrDefault().Versao;
+                Versao = AllQuestionarios.OrderBy(x => x.Versao) .LastOrDefault().Versao;
             }
 
             if (UPerm != null && UPerm.Read.Value)
@@ -912,10 +912,20 @@ namespace Hydra.Such.Portal.Controllers
             {
                 data.Versao = data.Versao + 1;
                 data.Utilizador_Criacao = User.Identity.Name;
+                data.Utilizador_Modificacao = null;
+                data.DataHora_Modificacao = null;
                 if (DBQuestionarioFornecedorGestaoAmbiental.Create(data.ParseToDB()) != null)
-                    return Json(true);
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Avaliação Desempenho Ambiental criada com sucesso.";
+
+                    return Json(data);
+                }
             }
-            return Json(false);
+            data.eReasonCode = 2;
+            data.eMessage = "Não foi possivel criar uma nova Avaliação Desempenho Ambiental.";
+
+            return Json(data);
         }
 
         [HttpPost]
@@ -925,9 +935,17 @@ namespace Hydra.Such.Portal.Controllers
             {
                 data.Utilizador_Modificacao = User.Identity.Name;
                 if (DBQuestionarioFornecedorGestaoAmbiental.Update(data.ParseToDB()) != null)
-                    return Json(true);
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Avaliação Desempenho Ambiental atualizada com sucesso.";
+
+                    return Json(data);
+                }
             }
-            return Json(false);
+            data.eReasonCode = 2;
+            data.eMessage = "Não foi possivel atualizar a Avaliação Desempenho Ambiental.";
+
+            return Json(data);
         }
 
 
