@@ -1175,6 +1175,7 @@ namespace Hydra.Such.Portal.Controllers
                 int Col = 0;
 
                 var columns = dp.AsJEnumerable().ToList();
+                int colIndex = 0;
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var column = columns[i];
@@ -1189,7 +1190,8 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (!isHidden)
                     {
-                        row.CreateCell(i).SetCellValue(label);
+                        row.CreateCell(colIndex).SetCellValue(label);
+                        colIndex = colIndex + 1;
                     }
                 }
 
@@ -1199,6 +1201,7 @@ namespace Hydra.Such.Portal.Controllers
                     foreach (PedidosPagamentoViewModel item in Lista)
                     {
                         row = excelSheet.CreateRow(count);
+                        colIndex = 0;
                         for (int i = 0; i < columns.Count; i++)
                         {
                             var column = columns[i];
@@ -1215,12 +1218,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                 if ((new[] { "Valor", "ValorEncomenda", "ValorJaPedido" }).Contains(columnPath))
                                 {
-                                    row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value : 0));
+                                    row.CreateCell(colIndex).SetCellValue((double)(value != null ? (decimal)value : 0));
                                 }
                                 else
                                 {
-                                    row.CreateCell(i).SetCellValue(value?.ToString());
+                                    row.CreateCell(colIndex).SetCellValue(value?.ToString());
                                 }
+                                colIndex = colIndex + 1;
                             }
                         }
                         count++;

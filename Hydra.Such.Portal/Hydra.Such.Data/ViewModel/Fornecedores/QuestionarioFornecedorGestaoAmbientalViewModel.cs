@@ -179,6 +179,8 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public string Utilizador_Modificacao_Texto { get; set; }
         public bool? Nova_Versao { get; set; }
 
+        public QuestionarioFornecedorGestaoAmbientalAnexosViewModel Anexo { get; set; }
+
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
     }

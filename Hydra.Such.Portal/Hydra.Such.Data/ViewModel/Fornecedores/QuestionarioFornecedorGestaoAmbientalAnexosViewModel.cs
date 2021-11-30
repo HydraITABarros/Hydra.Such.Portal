@@ -4,7 +4,6 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
 {
     public class QuestionarioFornecedorGestaoAmbientalAnexosViewModel : ErrorHandler
     {
-        public int ID { get; set; }
         public string Codigo { get; set; }
         public int Versao { get; set; }
         public string ID_Fornecedor { get; set; }

@@ -11,21 +11,6 @@ namespace Hydra.Such.Data.Logic
     public static class DBQuestionarioFornecedorGestaoAmbientalAnexos
     {
         #region CRUD
-        public static QuestionarioFornecedorGestaoAmbientalAnexos GetById(int ID)
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.QuestionarioFornecedorGestaoAmbientalAnexos.Where(x => x.ID == ID).FirstOrDefault();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         public static QuestionarioFornecedorGestaoAmbientalAnexos GetByCodigoAndVersao(string Codigo, int Versao)
         {
             try
@@ -132,13 +117,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static bool Delete(int ID)
+        public static bool Delete(string Codigo, int Versao)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    QuestionarioFornecedorGestaoAmbientalAnexos Questionario = ctx.QuestionarioFornecedorGestaoAmbientalAnexos.Where(x => x.ID == ID).FirstOrDefault();
+                    QuestionarioFornecedorGestaoAmbientalAnexos Questionario = ctx.QuestionarioFornecedorGestaoAmbientalAnexos.Where(x => x.Codigo == Codigo && x.Versao == Versao).FirstOrDefault();
                     if (Questionario != null)
                     {
                         ctx.QuestionarioFornecedorGestaoAmbientalAnexos.Remove(Questionario);
@@ -181,7 +166,6 @@ namespace Hydra.Such.Data.Logic
             {
                 return new QuestionarioFornecedorGestaoAmbientalAnexosViewModel()
                 {
-                    ID = item.ID,
                     Codigo = item.Codigo,
                     Versao = item.Versao,
                     ID_Fornecedor = item.ID_Fornecedor,
@@ -216,7 +200,6 @@ namespace Hydra.Such.Data.Logic
             {
                 return new QuestionarioFornecedorGestaoAmbientalAnexos()
                 {
-                    ID = item.ID,
                     Codigo = item.Codigo,
                     Versao = item.Versao,
                     ID_Fornecedor = item.ID_Fornecedor,

@@ -73,12 +73,12 @@ namespace Hydra.Such.Portal.Controllers
             string Codigo = "QUEST_" + id;
             int Versao = 0;
 
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Fornecedores);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FornecedoresAvaliacao);
             List<QuestionarioFornecedorGestaoAmbiental> AllQuestionarios = DBQuestionarioFornecedorGestaoAmbiental.GetAllByFornecedor(id);
 
             if (AllQuestionarios != null && AllQuestionarios.Count > 0)
             {
-                Versao = AllQuestionarios.OrderBy(x => x.Versao) .LastOrDefault().Versao;
+                Versao = AllQuestionarios.OrderBy(x => x.Versao).LastOrDefault().Versao;
             }
 
             if (UPerm != null && UPerm.Read.Value)
@@ -763,6 +763,100 @@ namespace Hydra.Such.Portal.Controllers
             return Json(full_filename);
         }
 
+        [HttpPost]
+        [Route("Fornecedores/UploadQuestionarioAnexo")]
+        [Route("Fornecedores/UploadQuestionarioAnexo/{codigo}/{versao}/{idfornecedor}")]
+        public JsonResult UploadQuestionarioAnexo(string codigo, string versao, string idfornecedor)
+        {
+            string full_filename = string.Empty;
+            try
+            {
+                var files = Request.Form.Files;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+                            filename = MakeValidFileName(filename);
+                            full_filename = codigo + "_" + versao + "_" + filename;
+                            var path = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\Questionarios\\tmp", full_filename);
+
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+                            }
+
+                            QuestionarioFornecedorGestaoAmbientalAnexos Anexo = new QuestionarioFornecedorGestaoAmbientalAnexos
+                            {
+                                Codigo = codigo,
+                                Versao = int.Parse(versao),
+                                ID_Fornecedor = idfornecedor,
+                                URL_Anexo = filename,
+                                Visivel = false,
+                                Utilizador_Criacao = User.Identity.Name
+                            };
+                            DBQuestionarioFornecedorGestaoAmbientalAnexos.Create(Anexo);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+            return Json(full_filename);
+        }
+
+        [HttpGet]
+        [Route("Fornecedores/DownloadQuestionarioAnexo")]
+        [Route("Fornecedores/DownloadQuestionarioAnexo/{codigo}/{versao}/{filename}")]
+        public FileStreamResult DownloadQuestionarioAnexo(string codigo, string versao, string filename)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(codigo) && !string.IsNullOrEmpty(versao) && !string.IsNullOrEmpty(filename))
+                {
+                    string FullFileName = codigo + "_" + versao + "_" + filename;
+
+                    string sFileName = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\Questionarios", FullFileName);
+
+                    FileStream file = new FileStream(sFileName, FileMode.Open);
+                    string mimeType = GetMimeType(file.Name);
+                    return new FileStreamResult(file, mimeType);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return null;
+        }
+
+        private string GetMimeType(string fileName)
+        {
+            string mimeType = "application/unknown";
+            string ext = System.IO.Path.GetExtension(fileName).ToLower();
+
+            Microsoft.Win32.RegistryKey regKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
+
+            if (regKey != null && regKey.GetValue("Content Type") != null)
+                mimeType = regKey.GetValue("Content Type").ToString();
+            return mimeType;
+        }
 
         [HttpPost]
         public JsonResult GetQuestionarioDetails([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
@@ -773,6 +867,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (!string.IsNullOrEmpty(data.Codigo) && data.Versao > 0)
                 {
                     data = DBQuestionarioFornecedorGestaoAmbiental.GetByCodigoAndVersao(data.Codigo, data.Versao).ParseToViewModel();
+                    data.Anexo = DBQuestionarioFornecedorGestaoAmbientalAnexos.GetByCodigoAndVersao(data.Codigo, data.Versao).ParseToViewModel();
                 }
                 else
                 {
@@ -785,6 +880,26 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 return Json(data);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult GetQuestionarioHistorico([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                List<QuestionarioFornecedorGestaoAmbientalViewModel> Historico = new List<QuestionarioFornecedorGestaoAmbientalViewModel>();
+                if (!string.IsNullOrEmpty(data.ID_Fornecedor))
+                {
+                    Historico = DBQuestionarioFornecedorGestaoAmbiental.GetAllByFornecedor(data.ID_Fornecedor).ParseToViewModel().OrderByDescending(x => x.Versao).ToList();
+                    if (Historico != null && Historico.Count > 0)
+                    {
+                        Historico.RemoveAt(0);
+                    }
+                }
+
+                return Json(Historico);
             }
             return Json(null);
         }
@@ -916,6 +1031,15 @@ namespace Hydra.Such.Portal.Controllers
                 data.DataHora_Modificacao = null;
                 if (DBQuestionarioFornecedorGestaoAmbiental.Create(data.ParseToDB()) != null)
                 {
+                    QuestionarioFornecedorGestaoAmbientalAnexos Anexo = DBQuestionarioFornecedorGestaoAmbientalAnexos.GetByCodigoAndVersao(data.Codigo, data.Versao);
+
+                    var sourceFile = _generalConfig.FileUploadFolder + "Fornecedores\\" + "Questionarios\\" + "tmp\\" + Anexo.Codigo + "_" + Anexo.Versao + "_" + Anexo.URL_Anexo;
+                    var destFile = _generalConfig.FileUploadFolder + "Fornecedores\\" + "Questionarios\\" + Anexo.Codigo + "_" + Anexo.Versao + "_" + Anexo.URL_Anexo;
+                    System.IO.File.Move(sourceFile, destFile);
+
+                    Anexo.Visivel = true;
+                    DBQuestionarioFornecedorGestaoAmbientalAnexos.Update(Anexo);
+
                     data.eReasonCode = 1;
                     data.eMessage = "Avaliação Desempenho Ambiental criada com sucesso.";
 

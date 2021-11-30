@@ -35,20 +35,15 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <style>
-            52+60877 vaadin-combo-box {
-                margin-top: 0px !important;
-                width: 100% !important;
-            }
-
-            vaadin-date-picker {
-                margin-top: 0px !important;
-                width: 100% !important;
-            }
-
             .break_clear {
                 margin-top: 15px;
             }
 
+            a.disabled {
+                pointer-events: none;
+                cursor: default;
+            }
+            
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
@@ -105,11 +100,28 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Fornecedores/GetQuestionarioHistorico"
+                   last-response="{{datahistorico}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetHistorico_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/DownloadQuestionarioAnexo"
+                   last-response="{{downloadanexo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DownloadAnexo_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" on-tap="_gravar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
-            <paper-button class="tablinks" on-tap=""><i class="fa fa-list" aria-hidden="true"></i> Anexos</paper-button>
-            <paper-button class="tablinks" on-tap=""><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
+            <!--<paper-button class="tablinks" on-tap="_downloadAnexo"><i class="fa fa-download" aria-hidden="true"></i> Anexo</paper-button>-->
+            <a href="/Fornecedores/DownloadQuestionarioAnexo/{{data.anexo.codigo}}/{{data.anexo.versao}}/{{data.anexo.urL_Anexo}}" target="_blank"><i class="fa fa-download" aria-hidden="true"></i> Anexo</a>
+            <paper-button class="tablinks" on-tap="_openDlgHistorico"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
         </div>
 
         <div class="row break_clear">
@@ -120,7 +132,7 @@
                 <!--Geral-->
                 <div class="col-xs-12">
                     <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                        <paper-tab>QUESTIONÁRIO DE GESTÃO AMBIENTAL</paper-tab>
+                        <paper-tab>AVALIAÇÃO DESEMPENHO AMBIENTAL</paper-tab>
                     </paper-tabs>
                 </div>
             </div>
@@ -857,7 +869,71 @@
             </div>
         </div>
 
+        <paper-dialog id="dlgAnexo" class="dialgoBox" modal style="height:250px; width:550px;">
+            <div class="row break_clear">
+                <h2>Anexar ficheiro</h2>
+            </div>
 
+            <div class="row break_clear">
+                <vaadin-upload id="sendToQuestionario_Anexo"
+                               target="/Fornecedores/UploadQuestionarioAnexo/{{_codigo}}/{{_versao}}/{{_id_fornecedor}}"
+                               method="POST"
+                               headers="{'Accept': 'application/json'}"
+                               timeout=15000
+                               max-files="1">
+                    <span slot="drop-label">Coloque o anexo aqui......</span>
+                </vaadin-upload>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" id="btnCriarQuestionario" on-tap="_btnCriarQuestionario"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" id="btnFecharQuestionario" on-tap="_closeDlgAnexo"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="dlgHistorico" class="dialgoBox" modal style="height:550px; width:550px;">
+            <div class="row break_clear">
+                <h2>Histórico</h2>
+            </div>
+
+            <div class="row break_clear">
+                <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[datahistorico]]" class="grid" active-item="{{activeItemHistorico}}" multi-sort="true">
+                    <vaadin-grid-column width="150px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="versao">Versão</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="versao" value="[[filter.versao]]" />
+                        </template>
+                        <template>
+                            {{item.versao}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="150px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="utilizador_Criacao_Texto">Criador</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="utilizador_Criacao_Texto" value="[[filter.utilizador_Criacao_Texto]]" />
+                        </template>
+                        <template>
+                            {{item.utilizador_Criacao_Texto}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="150px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataHora_Criacao_Texto">Data de Criasão</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataHora_Criacao_Texto" value="[[filter.dataHora_Criacao_Texto]]" />
+                        </template>
+                        <template>
+                            {{item.dataHora_Criacao_Texto}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" id="btnFecharHistorico" on-tap="_closeDlgHistorico"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
 
 
 
@@ -897,11 +973,18 @@
                     _permissions: {
                         type: Array
                     },
+                    activeItemHistorico: {
+                        observer: '_rowSelectedHistorico'
+                    },
                 },
 
                 ready: function () {
                     this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": this._versao, "ID_Fornecedor": this._id_fornecedor });
                     this.$.page_databound_ajax.generateRequest();
+                },
+
+                _responseProcessor: function () {
+                    this._response_resposta11Sim();
                 },
 
                 _goBack: function (e) {
@@ -942,6 +1025,189 @@
                     }
                 },
 
+                _response_resposta11Sim: function () {
+                    if (this.data.resposta_11_Sim == true) {
+                        this.$.resposta_11_Nao.checked = false;
+                        this.$.resposta_11_NA.checked = false;
+                    }
+
+                    if (this.data.resposta_11_Sim == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_21_NA, false);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_22_NA, false);
+                        this._EnableTextBox(this.$.resposta_23_Texto, false);
+                        this._EnableTextBox(this.$.resposta_2_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_31_NA, false);
+                        this._EnableTextBox(this.$.resposta_32_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false);
+                        this._EnableTextBox(this.$.resposta_3_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_41_NA, false);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_42_NA, false);
+                        this._EnableTextBox(this.$.resposta_43_Texto, false);
+                        this._EnableTextBox(this.$.resposta_4_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_51_NA, false);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_52_NA, false);
+                        this._EnableTextBox(this.$.resposta_5_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_61_NA, false);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_62_NA, false);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_63_NA, false);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_64_NA, false);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_65_NA, false);
+                        this._EnableTextBox(this.$.resposta_6_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_71_NA, false);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_72_NA, false);
+                        this._EnableTextBox(this.$.resposta_7_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_81_NA, false);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_82_NA, false);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_83_NA, false);
+                        this._EnableTextBox(this.$.resposta_8_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_91_NA, false);
+                        this._EnableTextBox(this.$.resposta_9_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_101_NA, false);
+                        this._EnableTextBox(this.$.resposta_101_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_102_NA, false);
+                        this._EnableTextBox(this.$.resposta_102_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_103_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_103_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_103_NA, false);
+                        this._EnableTextBox(this.$.resposta_103_Texto, false);
+                    }
+                    else {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_21_NA, true);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_22_NA, true);
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        this._EnableTextBox(this.$.resposta_2_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_31_NA, true);
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        this._EnableTextBox(this.$.resposta_3_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_41_NA, true);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_42_NA, true);
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        this._EnableTextBox(this.$.resposta_4_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_51_NA, true);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_52_NA, true);
+                        this._EnableTextBox(this.$.resposta_5_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_61_NA, true);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_62_NA, true);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_63_NA, true);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_64_NA, true);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_65_NA, true);
+                        this._EnableTextBox(this.$.resposta_6_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_71_NA, true);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_72_NA, true);
+                        this._EnableTextBox(this.$.resposta_7_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_81_NA, true);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_82_NA, true);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_83_NA, true);
+                        this._EnableTextBox(this.$.resposta_8_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_91_NA, true);
+                        this._EnableTextBox(this.$.resposta_9_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_101_NA, true);
+                        this._EnableTextBox(this.$.resposta_101_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_102_NA, true);
+                        this._EnableTextBox(this.$.resposta_102_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_103_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_103_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_103_NA, true);
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
+                    }
+                },
 
                 _resposta11Sim: function () {
                     if (!this.$.resposta_11_Sim.checked == true) {
@@ -1748,8 +2014,8 @@
 
                 _responseProcessor_NovoQuestionario: function () {
                     if (this.novoQuestionario.nova_Versao == true) {
-                        this.$.page_CreateQuestionario_ajax.body = JSON.stringify(this.data);
-                        this.$.page_CreateQuestionario_ajax.generateRequest();
+                        this._versao = String(parseInt(this._versao) + 1);
+                        this.$.dlgAnexo.open();
                     }
 
                     if (this.novoQuestionario.nova_Versao == false) {
@@ -1760,7 +2026,12 @@
 
                 _responseProcessor_CreateQuestionario: function () {
                     if (this.data.eReasonCode == 1) {
+                        this.$.dlgAnexo.close();
+
                         this._showMessage(this.data.eMessage);
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": this._versao, "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         this._showErrorMessage(this.data.eMessage);
@@ -1776,11 +2047,45 @@
                     }
                 },
 
+                _openDlgAnexo: function () {
+                    this.$.dlgAnexo.open();
+                },
+                _closeDlgAnexo: function () {
+                    this._versao = String(parseInt(this._versao) - 1);
+                    this.$.dlgAnexo.close();
+                },
 
+                _openDlgHistorico: function () {
+                    this.$.page_GetHistorico_ajax.body = JSON.stringify({ "ID_Fornecedor": this._id_fornecedor });
+                    this.$.page_GetHistorico_ajax.generateRequest();
+                    this.$.dlgHistorico.open();
+                },
+                _closeDlgHistorico: function () {
+                    this.$.dlgHistorico.close();
+                },
 
+                _rowSelectedHistorico: function (item) {
+                    if (item != null) {
+                        this.$.dlgHistorico.close();
 
+                        this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": item.versao, "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_databound_ajax.generateRequest();
 
+                        this._lockFields = true;
+                    }
+                },
 
+                _downloadAnexo: function () {
+                    this.$.page_DownloadAnexo_ajax.body = JSON.stringify({ "Codigo": this.data.codigo, "ID_Fornecedor": this.data.iD_Fornecedor, "Versao": this.data.versao });
+                    this.$.page_DownloadAnexo_ajax.generateRequest();
+                },
+
+                _btnCriarQuestionario: function () {
+                    if (this.novoQuestionario.nova_Versao == true) {
+                        this.$.page_CreateQuestionario_ajax.body = JSON.stringify(this.data);
+                        this.$.page_CreateQuestionario_ajax.generateRequest();
+                    }
+                },
 
 
 

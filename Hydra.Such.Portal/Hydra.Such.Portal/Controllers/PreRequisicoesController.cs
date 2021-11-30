@@ -3648,7 +3648,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(attach);
         }
 
-        [HttpGet]
+        [HttpPost]
         public FileStreamResult DownloadFile(string id)
         {
             return new FileStreamResult(new FileStream(_config.FileUploadFolder + "Requisicoes\\" + id, FileMode.Open), "application/xlsx");
