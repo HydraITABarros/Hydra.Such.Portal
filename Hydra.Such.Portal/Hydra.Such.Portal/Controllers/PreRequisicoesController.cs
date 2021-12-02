@@ -3648,12 +3648,13 @@ namespace Hydra.Such.Portal.Controllers
             return Json(attach);
         }
 
-        [HttpPost]
+        [HttpGet]
+        [Route("PreRequisicoes/DownloadFile")]
+        [Route("PreRequisicoes/DownloadFile/{id}")]
         public FileStreamResult DownloadFile(string id)
         {
             return new FileStreamResult(new FileStream(_config.FileUploadFolder + "Requisicoes\\" + id, FileMode.Open), "application/xlsx");
         }
-
 
         [HttpPost]
         public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)

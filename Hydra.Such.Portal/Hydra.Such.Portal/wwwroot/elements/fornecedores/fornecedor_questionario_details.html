@@ -38,12 +38,12 @@
             .break_clear {
                 margin-top: 15px;
             }
-
+            
             a.disabled {
                 pointer-events: none;
                 cursor: default;
             }
-            
+
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
@@ -117,11 +117,11 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_gravar"><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
+            <paper-button class="tablinks" on-tap="_goBack" disabled="{{ !_permissions.update }}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_gravar" disabled="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
             <!--<paper-button class="tablinks" on-tap="_downloadAnexo"><i class="fa fa-download" aria-hidden="true"></i> Anexo</paper-button>-->
-            <a href="/Fornecedores/DownloadQuestionarioAnexo/{{data.anexo.codigo}}/{{data.anexo.versao}}/{{data.anexo.urL_Anexo}}" target="_blank"><i class="fa fa-download" aria-hidden="true"></i> Anexo</a>
-            <paper-button class="tablinks" on-tap="_openDlgHistorico"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
+            <a id="lnk_anexo" href="/Fornecedores/DownloadQuestionarioAnexo/{{data.anexo.codigo}}/{{data.anexo.versao}}/{{data.anexo.urL_Anexo}}" target="_blank"><i class="fa fa-download" aria-hidden="true"></i> Anexo</a>
+            <paper-button class="tablinks" on-tap="_openDlgHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
         </div>
 
         <div class="row break_clear">
@@ -152,7 +152,7 @@
                 <label id="labelActividade" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Actividade:</label>
             </div>
             <div class="col-lg-11" align="left">
-                <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ _lockFields }}" required error-message="O campo Actividade é de preenchimento obrigatório."></vaadin-text-field>
+                <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ !_permissions.update }}" required error-message="O campo Actividade é de preenchimento obrigatório."></vaadin-text-field>
             </div>
         </div>
 
@@ -161,13 +161,13 @@
                 <label id="labelResponsavel" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Responsável:</label>
             </div>
             <div class="col-lg-5" align="left">
-                <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ _lockFields }}" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
+                <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ !_permissions.update }}" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
             </div>
             <div class="col-lg-1">
                 <label id="labelFuncao" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Função:</label>
             </div>
             <div class="col-lg-5" align="left">
-                <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ _lockFields }}" required error-message="O campo Função é de preenchimento obrigatório."></vaadin-text-field>
+                <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ !_permissions.update }}" required error-message="O campo Função é de preenchimento obrigatório."></vaadin-text-field>
             </div>
         </div>
 
@@ -176,19 +176,19 @@
                 <label id="labelTelefone" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Telf:</label>
             </div>
             <div class="col-lg-2" align="left">
-                <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ _lockFields }}" required error-message="O campo Telef. é de preenchimento obrigatório."></vaadin-text-field>
+                <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ !_permissions.update }}" required error-message="O campo Telef. é de preenchimento obrigatório."></vaadin-text-field>
             </div>
             <div class="col-lg-1">
                 <label id="labelEMail" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">e-mail:</label>
             </div>
             <div class="col-lg-2" align="left">
-                <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ _lockFields }}" required error-message="O campo e-mail é de preenchimento obrigatório."></vaadin-text-field>
+                <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ !_permissions.update }}" required error-message="O campo e-mail é de preenchimento obrigatório."></vaadin-text-field>
             </div>
             <div class="col-lg-2">
                 <label id="labelProcedimento" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Procedimento n. (se aplicável):</label>
             </div>
             <div class="col-lg-4" align="left">
-                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ _lockFields }}" required error-message="O campo Procedimento n. (se aplicável) é de preenchimento obrigatório."></vaadin-text-field>
+                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ !_permissions.update }}" required error-message="O campo Procedimento n. (se aplicável) é de preenchimento obrigatório."></vaadin-text-field>
             </div>
         </div>
 
@@ -235,16 +235,16 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-2" align="center">
-                    <vaadin-checkbox id="resposta_11_Sim" name="resposta_11_Sim" checked="{{data.resposta_11_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta11Sim"></vaadin-checkbox>
+                    <vaadin-checkbox id="resposta_11_Sim" name="resposta_11_Sim" checked="{{data.resposta_11_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta11Sim"></vaadin-checkbox>
                 </div>
                 <div class="col-lg-2" align="center">
-                    <vaadin-checkbox id="resposta_11_Nao" name="resposta_11_Nao" checked="{{data.resposta_11_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta11Nao"></vaadin-checkbox>
+                    <vaadin-checkbox id="resposta_11_Nao" name="resposta_11_Nao" checked="{{data.resposta_11_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta11Nao"></vaadin-checkbox>
                 </div>
                 <div class="col-lg-2" align="center">
-                    <vaadin-checkbox id="resposta_11_NA" name="resposta_11_NA" checked="{{data.resposta_11_NA}}" disabled="{{ _lockFields }}" on-click="_resposta11NA"></vaadin-checkbox>
+                    <vaadin-checkbox id="resposta_11_NA" name="resposta_11_NA" checked="{{data.resposta_11_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta11NA"></vaadin-checkbox>
                 </div>
                 <div class="col-lg-6">
-                    <vaadin-text-field id="resposta_11_Texto" name="resposta_11_Texto" value="{{data.resposta_11_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_11_Texto" name="resposta_11_Texto" value="{{data.resposta_11_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -259,7 +259,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <vaadin-text-field id="resposta_12_Texto" name="resposta_12_Texto" value="{{data.resposta_12_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_12_Texto" name="resposta_12_Texto" value="{{data.resposta_12_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -274,7 +274,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
-                    <vaadin-text-field id="resposta_13_Texto" name="resposta_13_Texto" value="{{data.resposta_13_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_13_Texto" name="resposta_13_Texto" value="{{data.resposta_13_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -314,32 +314,32 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_21_Sim" name="resposta_21_Sim" checked="{{data.resposta_21_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta21Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_21_Sim" name="resposta_21_Sim" checked="{{data.resposta_21_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta21Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_21_Nao" name="resposta_21_Nao" checked="{{data.resposta_21_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta21Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_21_Nao" name="resposta_21_Nao" checked="{{data.resposta_21_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta21Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_21_NA" name="resposta_21_NA" checked="{{data.resposta_21_NA}}" disabled="{{ _lockFields }}" on-click="_resposta21NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_21_NA" name="resposta_21_NA" checked="{{data.resposta_21_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta21NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_22_Sim" name="resposta_22_Sim" checked="{{data.resposta_22_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta22Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_22_Sim" name="resposta_22_Sim" checked="{{data.resposta_22_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta22Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_22_Nao" name="resposta_22_Nao" checked="{{data.resposta_22_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta22Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_22_Nao" name="resposta_22_Nao" checked="{{data.resposta_22_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta22Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_22_NA" name="resposta_22_NA" checked="{{data.resposta_22_NA}}" disabled="{{ _lockFields }}" on-click="_resposta22NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_22_NA" name="resposta_22_NA" checked="{{data.resposta_22_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta22NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-12" align="left">
-                        <vaadin-text-field id="resposta_23_Texto" name="resposta_23_Texto" value="{{data.resposta_23_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                        <vaadin-text-field id="resposta_23_Texto" name="resposta_23_Texto" value="{{data.resposta_23_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_2_Texto" name="resposta_2_Texto" value="{{data.resposta_2_Texto}}" disabled="{{ _lockFields }}" rows="3" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_2_Texto" name="resposta_2_Texto" value="{{data.resposta_2_Texto}}" disabled="{{ !_permissions.update }}" rows="3" maxlength="100"> </such-textarea>
                 </div>
             </div>
         </div>
@@ -364,25 +364,25 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_31_Sim" name="resposta_31_Sim" checked="{{data.resposta_31_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta31Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_31_Sim" name="resposta_31_Sim" checked="{{data.resposta_31_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta31Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_31_Nao" name="resposta_31_Nao" checked="{{data.resposta_31_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta31Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_31_Nao" name="resposta_31_Nao" checked="{{data.resposta_31_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta31Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_31_NA" name="resposta_31_NA" checked="{{data.resposta_31_NA}}" disabled="{{ _lockFields }}" on-click="_resposta31NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_31_NA" name="resposta_31_NA" checked="{{data.resposta_31_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta31NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-8">
-                        <vaadin-text-field id="resposta_32_Texto" name="resposta_32_Texto" value="{{data.resposta_32_Texto}}" disabled="{{ _lockFields }}" maxlength="100" on-value-changed="_resposta32Texto"></vaadin-text-field>
+                        <vaadin-text-field id="resposta_32_Texto" name="resposta_32_Texto" value="{{data.resposta_32_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100" on-value-changed="_resposta32Texto"></vaadin-text-field>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_32_NA" name="resposta_32_NA" checked="{{data.resposta_32_NA}}" disabled="{{ _lockFields }}" on-click="_resposta32NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_32_NA" name="resposta_32_NA" checked="{{data.resposta_32_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta32NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_3_Texto" name="resposta_3_Texto" value="{{data.resposta_3_Texto}}" disabled="{{ _lockFields }}" rows="2" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_3_Texto" name="resposta_3_Texto" value="{{data.resposta_3_Texto}}" disabled="{{ !_permissions.update }}" rows="2" maxlength="100"> </such-textarea>
                 </div>
 
             </div>
@@ -412,32 +412,32 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_41_Sim" name="resposta_41_Sim" checked="{{data.resposta_41_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta41Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_41_Sim" name="resposta_41_Sim" checked="{{data.resposta_41_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta41Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_41_Nao" name="resposta_41_Nao" checked="{{data.resposta_41_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta41Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_41_Nao" name="resposta_41_Nao" checked="{{data.resposta_41_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta41Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_41_NA" name="resposta_41_NA" checked="{{data.resposta_41_NA}}" disabled="{{ _lockFields }}" on-click="_resposta41NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_41_NA" name="resposta_41_NA" checked="{{data.resposta_41_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta41NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_42_Sim" name="resposta_42_Sim" checked="{{data.resposta_42_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta42Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_42_Sim" name="resposta_42_Sim" checked="{{data.resposta_42_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta42Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_42_Nao" name="resposta_42_Nao" checked="{{data.resposta_42_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta42Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_42_Nao" name="resposta_42_Nao" checked="{{data.resposta_42_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta42Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_42_NA" name="resposta_42_NA" checked="{{data.resposta_42_NA}}" disabled="{{ _lockFields }}" on-click="_resposta42NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_42_NA" name="resposta_42_NA" checked="{{data.resposta_42_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta42NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-12" align="left">
-                        <vaadin-text-field id="resposta_43_Texto" name="resposta_43_Texto" value="{{data.resposta_43_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                        <vaadin-text-field id="resposta_43_Texto" name="resposta_43_Texto" value="{{data.resposta_43_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_4_Texto" name="resposta_4_Texto" value="{{data.resposta_4_Texto}}" disabled="{{ _lockFields }}" rows="3" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_4_Texto" name="resposta_4_Texto" value="{{data.resposta_4_Texto}}" disabled="{{ !_permissions.update }}" rows="3" maxlength="100"> </such-textarea>
                 </div>
             </div>
         </div>
@@ -462,28 +462,28 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_51_Sim" name="resposta_51_Sim" checked="{{data.resposta_51_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta51Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_51_Sim" name="resposta_51_Sim" checked="{{data.resposta_51_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta51Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_51_Nao" name="resposta_51_Nao" checked="{{data.resposta_51_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta51Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_51_Nao" name="resposta_51_Nao" checked="{{data.resposta_51_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta51Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_51_NA" name="resposta_51_NA" checked="{{data.resposta_51_NA}}" disabled="{{ _lockFields }}" on-click="_resposta51NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_51_NA" name="resposta_51_NA" checked="{{data.resposta_51_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta51NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_52_Sim" name="resposta_52_Sim" checked="{{data.resposta_52_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta52Sim" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_52_Sim" name="resposta_52_Sim" checked="{{data.resposta_52_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta52Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_52_Nao" name="resposta_52_Nao" checked="{{data.resposta_52_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta52Nao" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_52_Nao" name="resposta_52_Nao" checked="{{data.resposta_52_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta52Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_52_NA" name="resposta_52_NA" checked="{{data.resposta_52_NA}}" disabled="{{ _lockFields }}" on-click="_resposta52NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_52_NA" name="resposta_52_NA" checked="{{data.resposta_52_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta52NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_5_Texto" name="resposta_5_Texto" value="{{data.resposta_5_Texto}}" disabled="{{ _lockFields }}" rows="2" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_5_Texto" name="resposta_5_Texto" value="{{data.resposta_5_Texto}}" disabled="{{ !_permissions.update }}" rows="2" maxlength="100"> </such-textarea>
                 </div>
             </div>
         </div>
@@ -520,58 +520,58 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_61_Sim" name="resposta_61_Sim" checked="{{data.resposta_61_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta61Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_61_Sim" name="resposta_61_Sim" checked="{{data.resposta_61_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta61Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_61_Nao" name="resposta_61_Nao" checked="{{data.resposta_61_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta61Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_61_Nao" name="resposta_61_Nao" checked="{{data.resposta_61_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta61Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_61_NA" name="resposta_61_NA" checked="{{data.resposta_61_NA}}" disabled="{{ _lockFields }}" on-click="_resposta61NA"></vaadin-checkbox>
-                    </div>
-
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_62_Sim" name="resposta_62_Sim" checked="{{data.resposta_62_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta62Sim"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_62_Nao" name="resposta_62_Nao" checked="{{data.resposta_62_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta62Nao"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_62_NA" name="resposta_62_NA" checked="{{data.resposta_62_NA}}" disabled="{{ _lockFields }}" on-click="_resposta62NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_61_NA" name="resposta_61_NA" checked="{{data.resposta_61_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta61NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_63_Sim" name="resposta_63_Sim" checked="{{data.resposta_63_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta63Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_62_Sim" name="resposta_62_Sim" checked="{{data.resposta_62_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta62Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_63_Nao" name="resposta_63_Nao" checked="{{data.resposta_63_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta63Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_62_Nao" name="resposta_62_Nao" checked="{{data.resposta_62_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta62Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_63_NA" name="resposta_63_NA" checked="{{data.resposta_63_NA}}" disabled="{{ _lockFields }}" on-click="_resposta63NA"></vaadin-checkbox>
-                    </div>
-
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_64_Sim" name="resposta_64_Sim" checked="{{data.resposta_64_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta64Sim"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_64_Nao" name="resposta_64_Nao" checked="{{data.resposta_64_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta64Nao"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_64_NA" name="resposta_64_NA" checked="{{data.resposta_64_NA}}" disabled="{{ _lockFields }}" on-click="_resposta64NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_62_NA" name="resposta_62_NA" checked="{{data.resposta_62_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta62NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_65_Sim" name="resposta_65_Sim" checked="{{data.resposta_65_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta65Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_63_Sim" name="resposta_63_Sim" checked="{{data.resposta_63_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta63Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_65_Nao" name="resposta_65_Nao" checked="{{data.resposta_65_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta65Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_63_Nao" name="resposta_63_Nao" checked="{{data.resposta_63_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta63Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_65_NA" name="resposta_65_NA" checked="{{data.resposta_65_NA}}" disabled="{{ _lockFields }}" on-click="_resposta65NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_63_NA" name="resposta_63_NA" checked="{{data.resposta_63_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta63NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Sim" name="resposta_64_Sim" checked="{{data.resposta_64_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta64Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Nao" name="resposta_64_Nao" checked="{{data.resposta_64_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta64Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_NA" name="resposta_64_NA" checked="{{data.resposta_64_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta64NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Sim" name="resposta_65_Sim" checked="{{data.resposta_65_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta65Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Nao" name="resposta_65_Nao" checked="{{data.resposta_65_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta65Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_NA" name="resposta_65_NA" checked="{{data.resposta_65_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta65NA"></vaadin-checkbox>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_6_Texto" name="resposta_6_Texto" value="{{data.resposta_6_Texto}}" disabled="{{ _lockFields }}" rows="5" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_6_Texto" name="resposta_6_Texto" value="{{data.resposta_6_Texto}}" disabled="{{ !_permissions.update }}" rows="5" maxlength="100"> </such-textarea>
                 </div>
             </div>
         </div>
@@ -596,28 +596,28 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_71_Sim" name="resposta_71_Sim" checked="{{data.resposta_71_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta71Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_71_Sim" name="resposta_71_Sim" checked="{{data.resposta_71_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta71Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_71_Nao" name="resposta_71_Nao" checked="{{data.resposta_71_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta71Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_71_Nao" name="resposta_71_Nao" checked="{{data.resposta_71_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta71Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_71_NA" name="resposta_71_NA" checked="{{data.resposta_71_NA}}" disabled="{{ _lockFields }}" on-click="_resposta71NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_71_NA" name="resposta_71_NA" checked="{{data.resposta_71_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta71NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_72_Sim" name="resposta_72_Sim" checked="{{data.resposta_72_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta72Sim" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_72_Sim" name="resposta_72_Sim" checked="{{data.resposta_72_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta72Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_72_Nao" name="resposta_72_Nao" checked="{{data.resposta_72_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta72Nao" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_72_Nao" name="resposta_72_Nao" checked="{{data.resposta_72_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta72Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_72_NA" name="resposta_72_NA" checked="{{data.resposta_72_NA}}" disabled="{{ _lockFields }}" on-click="_resposta72NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_72_NA" name="resposta_72_NA" checked="{{data.resposta_72_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta72NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_7_Texto" name="resposta_7_Texto" value="{{data.resposta_7_Texto}}" disabled="{{ _lockFields }}" rows="2" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_7_Texto" name="resposta_7_Texto" value="{{data.resposta_7_Texto}}" disabled="{{ !_permissions.update }}" rows="2" maxlength="100"> </such-textarea>
                 </div>
             </div>
         </div>
@@ -647,38 +647,38 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_81_Sim" name="resposta_81_Sim" checked="{{data.resposta_81_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta81Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_81_Sim" name="resposta_81_Sim" checked="{{data.resposta_81_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta81Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_81_Nao" name="resposta_81_Nao" checked="{{data.resposta_81_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta81Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_81_Nao" name="resposta_81_Nao" checked="{{data.resposta_81_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta81Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_81_NA" name="resposta_81_NA" checked="{{data.resposta_81_NA}}" disabled="{{ _lockFields }}" on-click="_resposta81NA"></vaadin-checkbox>
-                    </div>
-
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_82_Sim" name="resposta_82_Sim" checked="{{data.resposta_82_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta82Sim"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_82_Nao" name="resposta_82_Nao" checked="{{data.resposta_82_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta82Nao"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_82_NA" name="resposta_82_NA" checked="{{data.resposta_82_NA}}" disabled="{{ _lockFields }}" on-click="_resposta82NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_81_NA" name="resposta_81_NA" checked="{{data.resposta_81_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta81NA"></vaadin-checkbox>
                     </div>
 
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_83_Sim" name="resposta_83_Sim" checked="{{data.resposta_83_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta83Sim"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_82_Sim" name="resposta_82_Sim" checked="{{data.resposta_82_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta82Sim"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_83_Nao" name="resposta_83_Nao" checked="{{data.resposta_83_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta83Nao"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_82_Nao" name="resposta_82_Nao" checked="{{data.resposta_82_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta82Nao"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_83_NA" name="resposta_83_NA" checked="{{data.resposta_83_NA}}" disabled="{{ _lockFields }}" on-click="_resposta83NA"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_82_NA" name="resposta_82_NA" checked="{{data.resposta_82_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta82NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Sim" name="resposta_83_Sim" checked="{{data.resposta_83_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta83Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Nao" name="resposta_83_Nao" checked="{{data.resposta_83_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta83Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_NA" name="resposta_83_NA" checked="{{data.resposta_83_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta83NA"></vaadin-checkbox>
                     </div>
                 </div>
 
                 <div class="col-lg-6">
-                    <such-textarea id="resposta_8_Texto" name="resposta_8_Texto" value="{{data.resposta_8_Texto}}" disabled="{{ _lockFields }}" rows="3" maxlength="100"> </such-textarea>
+                    <such-textarea id="resposta_8_Texto" name="resposta_8_Texto" value="{{data.resposta_8_Texto}}" disabled="{{ !_permissions.update }}" rows="3" maxlength="100"> </such-textarea>
                 </div>
             </div>
         </div>
@@ -699,17 +699,17 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_91_Sim" name="resposta_91_Sim" checked="{{data.resposta_91_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta91Sim" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_91_Sim" name="resposta_91_Sim" checked="{{data.resposta_91_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta91Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_91_Nao" name="resposta_91_Nao" checked="{{data.resposta_91_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta91Nao" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_91_Nao" name="resposta_91_Nao" checked="{{data.resposta_91_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta91Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_91_NA" name="resposta_91_NA" checked="{{data.resposta_91_NA}}" disabled="{{ _lockFields }}" on-click="_resposta91NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_91_NA" name="resposta_91_NA" checked="{{data.resposta_91_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta91NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <vaadin-text-field id="resposta_9_Texto" name="resposta_9_Texto" value="{{data.resposta_9_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_9_Texto" name="resposta_9_Texto" value="{{data.resposta_9_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -729,17 +729,17 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_101_Sim" name="resposta_101_Sim" checked="{{data.resposta_101_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta101Sim" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_101_Sim" name="resposta_101_Sim" checked="{{data.resposta_101_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta101Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_101_Nao" name="resposta_101_Nao" checked="{{data.resposta_101_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta101Nao" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_101_Nao" name="resposta_101_Nao" checked="{{data.resposta_101_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta101Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_101_NA" name="resposta_101_NA" checked="{{data.resposta_101_NA}}" disabled="{{ _lockFields }}" on-click="_resposta101NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_101_NA" name="resposta_101_NA" checked="{{data.resposta_101_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta101NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6" align="left">
-                    <vaadin-text-field id="resposta_101_Texto" name="resposta_101_Texto" value="{{data.resposta_101_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_101_Texto" name="resposta_101_Texto" value="{{data.resposta_101_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -755,17 +755,17 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_102_Sim" name="resposta_102_Sim" checked="{{data.resposta_102_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta102Sim" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_102_Sim" name="resposta_102_Sim" checked="{{data.resposta_102_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta102Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_102_Nao" name="resposta_102_Nao" checked="{{data.resposta_102_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta102Nao" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_102_Nao" name="resposta_102_Nao" checked="{{data.resposta_102_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta102Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_102_NA" name="resposta_102_NA" checked="{{data.resposta_102_NA}}" disabled="{{ _lockFields }}" on-click="_resposta102NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_102_NA" name="resposta_102_NA" checked="{{data.resposta_102_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta102NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6" align="left">
-                    <vaadin-text-field id="resposta_102_Texto" name="resposta_102_Texto" value="{{data.resposta_102_Texto}}" disabled="{{ _lockFields }}" maxlength="100"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_102_Texto" name="resposta_102_Texto" value="{{data.resposta_102_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -781,17 +781,17 @@
             <div class="col-lg-5">
                 <div class="col-lg-6">
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_Sim" name="resposta_103_Sim" checked="{{data.resposta_103_Sim}}" disabled="{{ _lockFields }}" on-click="_resposta103Sim" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_103_Sim" name="resposta_103_Sim" checked="{{data.resposta_103_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta103Sim" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_Nao" name="resposta_103_Nao" checked="{{data.resposta_103_Nao}}" disabled="{{ _lockFields }}" on-click="_resposta103Nao" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_103_Nao" name="resposta_103_Nao" checked="{{data.resposta_103_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta103Nao" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                     <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_NA" name="resposta_103_NA" checked="{{data.resposta_103_NA}}" disabled="{{ _lockFields }}" on-click="_resposta103NA" style="padding-top:10px"></vaadin-checkbox>
+                        <vaadin-checkbox id="resposta_103_NA" name="resposta_103_NA" checked="{{data.resposta_103_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta103NA" style="padding-top:10px"></vaadin-checkbox>
                     </div>
                 </div>
                 <div class="col-lg-6" align="left">
-                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ _lockFields }}" maxlength="100" style="padding-top:10px"></vaadin-text-field>
+                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100" style="padding-top:10px"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -854,7 +854,7 @@
                     <label id="labelResponsavelFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Responsável:</label>
                 </div>
                 <div class="col-lg-10">
-                    <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ _lockFields }}" maxlength="50" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
+                    <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ !_permissions.update }}" maxlength="50" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -862,7 +862,7 @@
                     <label id="labelDataFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Data:</label>
                 </div>
                 <div class="col-lg-6">
-                    <vaadin-date-picker id="final_Data" name="final_Data" value="{{data.final_Data_Texto}}" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório."></vaadin-date-picker>
+                    <vaadin-date-picker id="final_Data" name="final_Data" value="{{data.final_Data_Texto}}" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório."></vaadin-date-picker>
                 </div>
                 <div class="col-lg-6">
                 </div>
@@ -979,12 +979,32 @@
                 },
 
                 ready: function () {
+                    var _this = this;
+
+                    if (this.$.sendToQuestionario_Anexo != null) {
+                        this.$.sendToQuestionario_Anexo.addEventListener('upload-response', function (e) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results != null && results != "") {
+                                _this.data.nomeAnexo = results;
+                            }
+                            else {
+                                var msg = document.querySelector("x-fornecedorquestionariodetails");
+                                msg._showErrorMessage("Não é permitido adicionar este tipo de ficheiro.");
+                            }
+                        });
+                    }
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": this._versao, "ID_Fornecedor": this._id_fornecedor });
                     this.$.page_databound_ajax.generateRequest();
                 },
 
                 _responseProcessor: function () {
                     this._response_resposta11Sim();
+
+                    if (this._permissions.update = false) {
+                        $(this.$.lnk_anexo).addClass('disabled');
+                    }
+
                 },
 
                 _goBack: function (e) {
@@ -2071,7 +2091,7 @@
                         this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": item.versao, "ID_Fornecedor": this._id_fornecedor });
                         this.$.page_databound_ajax.generateRequest();
 
-                        this._lockFields = true;
+                        this._permissions.update = true;
                     }
                 },
 
@@ -2082,8 +2102,13 @@
 
                 _btnCriarQuestionario: function () {
                     if (this.novoQuestionario.nova_Versao == true) {
-                        this.$.page_CreateQuestionario_ajax.body = JSON.stringify(this.data);
-                        this.$.page_CreateQuestionario_ajax.generateRequest();
+                        if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "") {
+                            this._showErrorMessage("É obrigatório anexar um ficheiro à Avaliação de Desempenho Ambiental do Fornecedor.");
+                        }
+                        else {
+                            this.$.page_CreateQuestionario_ajax.body = JSON.stringify(this.data);
+                            this.$.page_CreateQuestionario_ajax.generateRequest();
+                        }
                     }
                 },
 
