@@ -38,7 +38,7 @@
             .break_clear {
                 margin-top: 15px;
             }
-            
+
             a.disabled {
                 pointer-events: none;
                 cursor: default;
@@ -70,6 +70,15 @@
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/GetQuestionarioDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databoundHistorico_ajax"
+                   on-response="_responseProcessor_Historico"
                    content-type="application/json">
         </iron-ajax>
 
@@ -2088,10 +2097,8 @@
                     if (item != null) {
                         this.$.dlgHistorico.close();
 
-                        this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": item.versao, "ID_Fornecedor": this._id_fornecedor });
-                        this.$.page_databound_ajax.generateRequest();
-
-                        this._permissions.update = true;
+                        this.$.page_databoundHistorico_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": item.versao, "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_databoundHistorico_ajax.generateRequest();
                     }
                 },
 
@@ -2112,7 +2119,10 @@
                     }
                 },
 
-
+                _responseProcessor_Historico: function () {
+                    this._permissions.update = false;
+                    alert(this._permissions.update);
+                },
 
 
             });

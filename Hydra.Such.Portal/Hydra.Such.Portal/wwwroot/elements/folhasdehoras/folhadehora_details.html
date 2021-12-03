@@ -2542,35 +2542,45 @@
                                 if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
                                     if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
                                         if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
-                                            if (this._PercursoDataValidar()) {
-                                                this.$.page_createpercurso_ajax.body = JSON.stringify({
-                                                    noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                    codTipoCusto: "AJC0003", //this.$.codigoTipoKms.value, Alterado no dia 10/12/2019 a Pedido do Marco Marcelo
-                                                    codOrigem: this.$.percursoOrigem.value,
-                                                    codDestino: this.$.percursoDestino.value,
-                                                    dataDespesa: this.$.percursoDataViagem.value,
-                                                    funcionario: this.$.empregadoNo.value,
-                                                    codRegiao: this.$.codigoRegiao.value,
-                                                    codArea: this.$.codigoAreaFuncional.value,
-                                                    codCresp: this.$.codigoCentroResponsabilidade.value,
-                                                    matricula: this.$.matricula.value,
-                                                    noProjeto: this.$.percursoProjeto.value
-                                                });
-                                                //this.$.page_createpercurso_ajax.generateRequest();
-                                                //this.$.tabPercurso.clearCache();
+                                            if (this.$.percursoOrigem.value != null && this.$.percursoOrigem.value == "OUTROS DESTINOS") {
+                                                if (this.$.percursoDestino.value != null && this.$.percursoDestino.value == "OUTROS DESTINOS") {
+                                                    if (this._PercursoDataValidar()) {
+                                                        this.$.page_createpercurso_ajax.body = JSON.stringify({
+                                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                                            codTipoCusto: "AJC0003", //this.$.codigoTipoKms.value, Alterado no dia 10/12/2019 a Pedido do Marco Marcelo
+                                                            codOrigem: this.$.percursoOrigem.value,
+                                                            codDestino: this.$.percursoDestino.value,
+                                                            dataDespesa: this.$.percursoDataViagem.value,
+                                                            funcionario: this.$.empregadoNo.value,
+                                                            codRegiao: this.$.codigoRegiao.value,
+                                                            codArea: this.$.codigoAreaFuncional.value,
+                                                            codCresp: this.$.codigoCentroResponsabilidade.value,
+                                                            matricula: this.$.matricula.value,
+                                                            noProjeto: this.$.percursoProjeto.value
+                                                        });
+                                                        //this.$.page_createpercurso_ajax.generateRequest();
+                                                        //this.$.tabPercurso.clearCache();
 
-                                                this.$.page_updatefolhadehorasnomsg_ajax.body = JSON.stringify(this.data);
+                                                        this.$.page_updatefolhadehorasnomsg_ajax.body = JSON.stringify(this.data);
 
-                                                var update = this.$.page_updatefolhadehorasnomsg_ajax.generateRequest();
-                                                var linha = this.$.page_createpercurso_ajax.generateRequest();
+                                                        var update = this.$.page_updatefolhadehorasnomsg_ajax.generateRequest();
+                                                        var linha = this.$.page_createpercurso_ajax.generateRequest();
 
-                                                Promise.all([linha.completes, update.completes]).then(function (requests) {
-                                                })
+                                                        Promise.all([linha.completes, update.completes]).then(function (requests) {
+                                                        })
 
-                                                this.$.tabPercurso.clearCache();
+                                                        this.$.tabPercurso.clearCache();
+                                                    }
+                                                    else {
+                                                        this._showErrorMessage('O campo Data Viagem tem que estar contido no período de tempo do Cabeçalho.');
+                                                    }
+                                                }
+                                                else {
+                                                    this._showErrorMessage("Não é possivel escolher este Destino.");
+                                                }
                                             }
                                             else {
-                                                this._showErrorMessage('O campo Data Viagem tem que estar contido no período de tempo do Cabeçalho.');
+                                                this._showErrorMessage("Não é possivel escolher esta Origem.");
                                             }
                                         }
                                         else {
@@ -2650,6 +2660,16 @@
                     else {
                         var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
 
+                        if (e.model.item.codOrigem != null && e.model.item.codOrigem == "OUTROS DESTINOS") {
+                            this._showErrorMessage("Não é possivel escolher esta Origem.");
+                            this.$.page_databound_ajax.generateRequest();
+                            return;
+                        }
+                        if (e.model.item.codDestino != null && e.model.item.codDestino == "OUTROS DESTINOS") {
+                            this._showErrorMessage("Não é possivel escolher este Destino.");
+                            this.$.page_databound_ajax.generateRequest();
+                            return;
+                        }
                         if (e.model.item.noProjeto == null || e.model.item.noProjeto == "") {
                             this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/Projecto.');
                             this.$.page_databound_ajax.generateRequest();
@@ -4625,8 +4645,18 @@
                 _DataInicio: function (e) {
                     var self = this;
                     if (this.$.dataPartidaTexto.value != null) {
-                        if (this.$.percursoDataViagem.value == null || this.$.percursoDataViagem.value == "")
-                        this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;
+                        if (this.$.percursoDataViagem.value == null || this.$.percursoDataViagem.value == "") {
+                            this.$.percursoDataViagem.value = this.$.dataPartidaTexto.value;
+                        }
+                    }
+
+                    if (this.$.percursoOrigem.value != null && this.$.percursoOrigem.value == "OUTROS DESTINOS") {
+                        this.$.percursoOrigem.value = "";
+                        this._showErrorMessage("Não é possivel escolher esta Origem.");
+                    }
+                    if (this.$.percursoDestino.value != null && this.$.percursoDestino.value == "OUTROS DESTINOS") {
+                        this.$.percursoDestino.value = "";
+                        this._showErrorMessage("Não é possivel escoher este Destino.");
                     }
                 },
                 _ajudaDataDespesa: function (e) {
