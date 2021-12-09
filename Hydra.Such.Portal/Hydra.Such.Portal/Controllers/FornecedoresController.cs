@@ -889,17 +889,22 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data != null)
             {
-                List<QuestionarioFornecedorGestaoAmbientalViewModel> Historico = new List<QuestionarioFornecedorGestaoAmbientalViewModel>();
+                List<QuestionarioFornecedorGestaoAmbiental> Historico = new List<QuestionarioFornecedorGestaoAmbiental>();
+                List<QuestionarioFornecedorGestaoAmbientalViewModel> HistoricoVM = new List<QuestionarioFornecedorGestaoAmbientalViewModel>();
                 if (!string.IsNullOrEmpty(data.ID_Fornecedor))
                 {
-                    Historico = DBQuestionarioFornecedorGestaoAmbiental.GetAllByFornecedor(data.ID_Fornecedor).ParseToViewModel().OrderByDescending(x => x.Versao).ToList();
+                    Historico = DBQuestionarioFornecedorGestaoAmbiental.GetAllByFornecedor(data.ID_Fornecedor);
                     if (Historico != null && Historico.Count > 0)
                     {
-                        Historico.RemoveAt(0);
+                        if (Historico != null && Historico.Count > 0)
+                        {
+                            HistoricoVM = Historico.ParseToViewModel().OrderByDescending(x => x.Versao).ToList();
+                            HistoricoVM.RemoveAt(0);
+                        }
                     }
                 }
 
-                return Json(Historico);
+                return Json(HistoricoVM);
             }
             return Json(null);
         }

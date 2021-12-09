@@ -782,25 +782,14 @@
         <div class="row">
             <div class="col-lg-2">
             </div>
-            <div class="col-lg-5" align="left">
+            <div class="col-lg-5">
                 <div class="col-lg-12" align="left">
                     <label id="labelQuestao103" style="font-family:Calibri; font-weight:normal">Em caso afirmativo indique nome e contato</label>
                 </div>
             </div>
             <div class="col-lg-5">
-                <div class="col-lg-6">
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_Sim" name="resposta_103_Sim" checked="{{data.resposta_103_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta103Sim" style="padding-top:10px"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_Nao" name="resposta_103_Nao" checked="{{data.resposta_103_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta103Nao" style="padding-top:10px"></vaadin-checkbox>
-                    </div>
-                    <div class="col-lg-4" align="center">
-                        <vaadin-checkbox id="resposta_103_NA" name="resposta_103_NA" checked="{{data.resposta_103_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta103NA" style="padding-top:10px"></vaadin-checkbox>
-                    </div>
-                </div>
-                <div class="col-lg-6" align="left">
-                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100" style="padding-top:10px"></vaadin-text-field>
+                <div class="col-lg-12" align="left">
+                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
                 </div>
             </div>
         </div>
@@ -1008,7 +997,7 @@
                 },
 
                 _responseProcessor: function () {
-                    this._response_resposta11Sim();
+                    this._Edit();
 
                     if (this._permissions.update = false) {
                         $(this.$.lnk_anexo).addClass('disabled');
@@ -1031,33 +1020,39 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _EnableCheckBox: function (e, check) {
-                    if (check == false) {
-                        e.checked = false;
-                        e.disabled = true;
-                    }
-                    else {
-                        e.checked = false;
-                        e.disabled = false;
-                    }
+                _EnableCheckBox: function (e, disabled) {
+                    e.disabled = !disabled;
+                },
+                _CleanCheckBox: function (e) {
+                    e.checked = false;
                 },
 
-                _EnableTextBox: function (e, check) {
-                    if (check == false) {
-                        e.value = "";
-                        e.disabled = true;
-                    }
-                    else {
-                        e.value = "";
-                        e.disabled = false;
-
-                    }
+                _EnableTextBox: function (e, disabled) {
+                    e.disabled = !disabled;
+                },
+                _CleanTextBox: function (e) {
+                    e.value = "";
                 },
 
-                _response_resposta11Sim: function () {
+                _Edit: function () {
+                    this._EnableTextBox(this.$.actividade, true);
+                    this._EnableTextBox(this.$.responsavel, true);
+                    this._EnableTextBox(this.$.funcao, true);
+                    this._EnableTextBox(this.$.telefone, true);
+                    this._EnableTextBox(this.$.email, true);
+                    this._EnableTextBox(this.$.procedimento, true);
+
+                    this._EnableCheckBox(this.$.resposta_11_Sim, true);
+                    this._EnableCheckBox(this.$.resposta_11_Nao, true);
+                    this._EnableCheckBox(this.$.resposta_11_NA, true);
+                    this._EnableTextBox(this.$.resposta_11_Texto, true);
                     if (this.data.resposta_11_Sim == true) {
-                        this.$.resposta_11_Nao.checked = false;
-                        this.$.resposta_11_NA.checked = false;
+                        this._EnableTextBox(this.$.resposta_12_Texto, true);
+                        this._EnableTextBox(this.$.resposta_13_Texto, true);
+                    }
+                    if (this.data.resposta_11_Nao == true || this.data.resposta_11_NA == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, false);
+                        this._EnableTextBox(this.$.resposta_13_Texto, false);
                     }
 
                     if (this.data.resposta_11_Sim == true) {
@@ -1143,26 +1138,34 @@
                         this._EnableCheckBox(this.$.resposta_102_Nao, false);
                         this._EnableCheckBox(this.$.resposta_102_NA, false);
                         this._EnableTextBox(this.$.resposta_102_Texto, false);
-                        this._EnableCheckBox(this.$.resposta_103_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_103_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_103_NA, false);
                         this._EnableTextBox(this.$.resposta_103_Texto, false);
                     }
-                    else {
+                    if (this.data.resposta_11_Nao == true || this.data.resposta_11_NA == true) {
                         this._EnableCheckBox(this.$.resposta_21_Sim, true);
                         this._EnableCheckBox(this.$.resposta_21_Nao, true);
                         this._EnableCheckBox(this.$.resposta_21_NA, true);
                         this._EnableCheckBox(this.$.resposta_22_Sim, true);
                         this._EnableCheckBox(this.$.resposta_22_Nao, true);
                         this._EnableCheckBox(this.$.resposta_22_NA, true);
-                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        if (this.data.resposta_22_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        }
+                        if (this.data.resposta_22_Nao == true || this.data.resposta_22_NA == true) {
+                            this._EnableTextBox(this.$.resposta_23_Texto, false);
+                        }
                         this._EnableTextBox(this.$.resposta_2_Texto, true);
 
                         this._EnableCheckBox(this.$.resposta_31_Sim, true);
                         this._EnableCheckBox(this.$.resposta_31_Nao, true);
                         this._EnableCheckBox(this.$.resposta_31_NA, true);
-                        this._EnableTextBox(this.$.resposta_32_Texto, true);
-                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        if (this.data.resposta_31_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_32_Texto, true);
+                            this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        }
+                        if (this.data.resposta_31_Nao == true || this.data.resposta_31_NA == true) {
+                            this._EnableTextBox(this.$.resposta_32_Texto, false);
+                            this._EnableCheckBox(this.$.resposta_32_NA, false);
+                        }
                         this._EnableTextBox(this.$.resposta_3_Texto, true);
 
                         this._EnableCheckBox(this.$.resposta_41_Sim, true);
@@ -1171,7 +1174,12 @@
                         this._EnableCheckBox(this.$.resposta_42_Sim, true);
                         this._EnableCheckBox(this.$.resposta_42_Nao, true);
                         this._EnableCheckBox(this.$.resposta_42_NA, true);
-                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        if (this.data.resposta_42_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        }
+                        if (this.data.resposta_42_Nao == true || this.data.resposta_42_NA == true) {
+                            this._EnableTextBox(this.$.resposta_43_Texto, false);
+                        }
                         this._EnableTextBox(this.$.resposta_4_Texto, true);
 
                         this._EnableCheckBox(this.$.resposta_51_Sim, true);
@@ -1231,108 +1239,230 @@
                         this._EnableCheckBox(this.$.resposta_102_Nao, true);
                         this._EnableCheckBox(this.$.resposta_102_NA, true);
                         this._EnableTextBox(this.$.resposta_102_Texto, true);
-                        this._EnableCheckBox(this.$.resposta_103_Sim, true);
-                        this._EnableCheckBox(this.$.resposta_103_Nao, true);
-                        this._EnableCheckBox(this.$.resposta_103_NA, true);
-                        this._EnableTextBox(this.$.resposta_103_Texto, true);
+                        if (this.data.resposta_102_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_103_Texto, true);
+                        }
+                        if (this.data.resposta_102_Nao == true || this.data.resposta_102_NA == true) {
+                            this._EnableTextBox(this.$.resposta_103_Texto, false);
+                        }
                     }
+
+                    this._EnableTextBox(this.$.final_Responsavel, true);
+                    this._EnableTextBox(this.$.final_Data, true);
+                },
+
+                _ReadOnly: function () {
+                    this._EnableTextBox(this.$.actividade, false);
+                    this._EnableTextBox(this.$.responsavel, false);
+                    this._EnableTextBox(this.$.funcao, false);
+                    this._EnableTextBox(this.$.telefone, false);
+                    this._EnableTextBox(this.$.email, false);
+                    this._EnableTextBox(this.$.procedimento, false);
+
+                    this._EnableCheckBox(this.$.resposta_11_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_11_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_11_NA, false);
+                    this._EnableTextBox(this.$.resposta_11_Texto, false);
+                    this._EnableTextBox(this.$.resposta_12_Texto, false);
+                    this._EnableTextBox(this.$.resposta_13_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_21_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_21_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_21_NA, false);
+                    this._EnableCheckBox(this.$.resposta_22_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_22_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_22_NA, false);
+                    this._EnableTextBox(this.$.resposta_23_Texto, false);
+                    this._EnableTextBox(this.$.resposta_2_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_31_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_31_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_31_NA, false);
+                    this._EnableTextBox(this.$.resposta_32_Texto, false);
+                    this._EnableCheckBox(this.$.resposta_32_NA, false);
+                    this._EnableTextBox(this.$.resposta_3_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_41_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_41_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_41_NA, false);
+                    this._EnableCheckBox(this.$.resposta_42_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_42_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_42_NA, false);
+                    this._EnableTextBox(this.$.resposta_43_Texto, false);
+                    this._EnableTextBox(this.$.resposta_4_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_51_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_51_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_51_NA, false);
+                    this._EnableCheckBox(this.$.resposta_52_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_52_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_52_NA, false);
+                    this._EnableTextBox(this.$.resposta_5_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_61_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_61_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_61_NA, false);
+                    this._EnableCheckBox(this.$.resposta_62_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_62_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_62_NA, false);
+                    this._EnableCheckBox(this.$.resposta_63_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_63_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_63_NA, false);
+                    this._EnableCheckBox(this.$.resposta_64_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_64_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_64_NA, false);
+                    this._EnableCheckBox(this.$.resposta_65_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_65_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_65_NA, false);
+                    this._EnableTextBox(this.$.resposta_6_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_71_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_71_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_71_NA, false);
+                    this._EnableCheckBox(this.$.resposta_72_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_72_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_72_NA, false);
+                    this._EnableTextBox(this.$.resposta_7_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_81_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_81_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_81_NA, false);
+                    this._EnableCheckBox(this.$.resposta_82_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_82_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_82_NA, false);
+                    this._EnableCheckBox(this.$.resposta_83_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_83_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_83_NA, false);
+                    this._EnableTextBox(this.$.resposta_8_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_91_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_91_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_91_NA, false);
+                    this._EnableTextBox(this.$.resposta_9_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_101_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_101_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_101_NA, false);
+                    this._EnableTextBox(this.$.resposta_101_Texto, false);
+                    this._EnableCheckBox(this.$.resposta_102_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_102_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_102_NA, false);
+                    this._EnableTextBox(this.$.resposta_102_Texto, false);
+                    this._EnableTextBox(this.$.resposta_103_Texto, false);
+
+                    this._EnableTextBox(this.$.final_Responsavel, false);
+                    this._EnableTextBox(this.$.final_Data, false);
                 },
 
                 _resposta11Sim: function () {
-                    if (!this.$.resposta_11_Sim.checked == true) {
-                        this.$.resposta_11_Nao.checked = false;
-                        this.$.resposta_11_NA.checked = false;
+                    if (!this.data.resposta_11_Sim == true) {
+                        this._CleanCheckBox(this.$.resposta_11_Nao);
+                        this._CleanCheckBox(this.$.resposta_11_NA);
                     }
 
-                    if (!this.$.resposta_11_Sim.checked == true) {
-                        this._EnableCheckBox(this.$.resposta_21_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_21_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_21_NA, false);
-                        this._EnableCheckBox(this.$.resposta_22_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_22_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_22_NA, false);
-                        this._EnableTextBox(this.$.resposta_23_Texto, false);
-                        this._EnableTextBox(this.$.resposta_2_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_31_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_31_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_31_NA, false);
-                        this._EnableTextBox(this.$.resposta_32_Texto, false);
-                        this._EnableCheckBox(this.$.resposta_32_NA, false);
-                        this._EnableTextBox(this.$.resposta_3_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_41_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_41_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_41_NA, false);
-                        this._EnableCheckBox(this.$.resposta_42_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_42_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_42_NA, false);
-                        this._EnableTextBox(this.$.resposta_43_Texto, false);
-                        this._EnableTextBox(this.$.resposta_4_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_51_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_51_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_51_NA, false);
-                        this._EnableCheckBox(this.$.resposta_52_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_52_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_52_NA, false);
-                        this._EnableTextBox(this.$.resposta_5_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_61_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_61_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_61_NA, false);
-                        this._EnableCheckBox(this.$.resposta_62_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_62_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_62_NA, false);
-                        this._EnableCheckBox(this.$.resposta_63_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_63_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_63_NA, false);
-                        this._EnableCheckBox(this.$.resposta_64_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_64_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_64_NA, false);
-                        this._EnableCheckBox(this.$.resposta_65_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_65_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_65_NA, false);
-                        this._EnableTextBox(this.$.resposta_6_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_71_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_71_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_71_NA, false);
-                        this._EnableCheckBox(this.$.resposta_72_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_72_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_72_NA, false);
-                        this._EnableTextBox(this.$.resposta_7_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_81_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_81_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_81_NA, false);
-                        this._EnableCheckBox(this.$.resposta_82_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_82_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_82_NA, false);
-                        this._EnableCheckBox(this.$.resposta_83_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_83_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_83_NA, false);
-                        this._EnableTextBox(this.$.resposta_8_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_91_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_91_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_91_NA, false);
-                        this._EnableTextBox(this.$.resposta_9_Texto, false);
-
-                        this._EnableCheckBox(this.$.resposta_101_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_101_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_101_NA, false);
-                        this._EnableTextBox(this.$.resposta_101_Texto, false);
-                        this._EnableCheckBox(this.$.resposta_102_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_102_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_102_NA, false);
-                        this._EnableTextBox(this.$.resposta_102_Texto, false);
-                        this._EnableCheckBox(this.$.resposta_103_Sim, false);
-                        this._EnableCheckBox(this.$.resposta_103_Nao, false);
-                        this._EnableCheckBox(this.$.resposta_103_NA, false);
-                        this._EnableTextBox(this.$.resposta_103_Texto, false);
+                    if (!this.data.resposta_11_Sim == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, true);
+                        this._EnableTextBox(this.$.resposta_13_Texto, true);
                     }
-                    else {
+
+                    if (!this.data.resposta_11_Sim == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, false); this._CleanCheckBox(this.$.resposta_21_Sim);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, false); this._CleanCheckBox(this.$.resposta_21_Nao);
+                        this._EnableCheckBox(this.$.resposta_21_NA, false); this._CleanCheckBox(this.$.resposta_21_NA);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, false); this._CleanCheckBox(this.$.resposta_22_Sim);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, false); this._CleanCheckBox(this.$.resposta_22_Nao);
+                        this._EnableCheckBox(this.$.resposta_22_NA, false); this._CleanCheckBox(this.$.resposta_22_NA);
+                        this._EnableTextBox(this.$.resposta_23_Texto, false); this._CleanTextBox(this.$.resposta_23_Texto);
+                        this._EnableTextBox(this.$.resposta_2_Texto, false); this._CleanTextBox(this.$.resposta_2_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, false); this._CleanCheckBox(this.$.resposta_31_Sim);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, false); this._CleanCheckBox(this.$.resposta_31_Nao);
+                        this._EnableCheckBox(this.$.resposta_31_NA, false); this._CleanCheckBox(this.$.resposta_31_NA);
+                        this._EnableTextBox(this.$.resposta_32_Texto, false); this._CleanTextBox(this.$.resposta_32_Texto);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false); this._CleanCheckBox(this.$.resposta_32_NA);
+                        this._EnableTextBox(this.$.resposta_3_Texto, false); this._CleanTextBox(this.$.resposta_3_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, false); this._CleanCheckBox(this.$.resposta_41_Sim);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, false); this._CleanCheckBox(this.$.resposta_41_Nao);
+                        this._EnableCheckBox(this.$.resposta_41_NA, false); this._CleanCheckBox(this.$.resposta_41_NA);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, false); this._CleanCheckBox(this.$.resposta_42_Sim);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, false); this._CleanCheckBox(this.$.resposta_42_Nao);
+                        this._EnableCheckBox(this.$.resposta_42_NA, false); this._CleanCheckBox(this.$.resposta_42_NA);
+                        this._EnableTextBox(this.$.resposta_43_Texto, false); this._CleanTextBox(this.$.resposta_43_Texto);
+                        this._EnableTextBox(this.$.resposta_4_Texto, false); this._CleanTextBox(this.$.resposta_4_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, false); this._CleanCheckBox(this.$.resposta_51_Sim);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, false); this._CleanCheckBox(this.$.resposta_51_Nao);
+                        this._EnableCheckBox(this.$.resposta_51_NA, false); this._CleanCheckBox(this.$.resposta_51_NA);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, false); this._CleanCheckBox(this.$.resposta_52_Sim);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, false); this._CleanCheckBox(this.$.resposta_52_Nao);
+                        this._EnableCheckBox(this.$.resposta_52_NA, false); this._CleanCheckBox(this.$.resposta_52_NA);
+                        this._EnableTextBox(this.$.resposta_5_Texto, false); this._CleanTextBox(this.$.resposta_5_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, false); this._CleanCheckBox(this.$.resposta_61_Sim);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, false); this._CleanCheckBox(this.$.resposta_61_Nao);
+                        this._EnableCheckBox(this.$.resposta_61_NA, false); this._CleanCheckBox(this.$.resposta_61_NA);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, false); this._CleanCheckBox(this.$.resposta_62_Sim);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, false); this._CleanCheckBox(this.$.resposta_62_Nao);
+                        this._EnableCheckBox(this.$.resposta_62_NA, false); this._CleanCheckBox(this.$.resposta_62_NA);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, false); this._CleanCheckBox(this.$.resposta_63_Sim);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, false); this._CleanCheckBox(this.$.resposta_63_Nao);
+                        this._EnableCheckBox(this.$.resposta_63_NA, false); this._CleanCheckBox(this.$.resposta_63_NA);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, false); this._CleanCheckBox(this.$.resposta_64_Sim);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, false); this._CleanCheckBox(this.$.resposta_64_Nao);
+                        this._EnableCheckBox(this.$.resposta_64_NA, false); this._CleanCheckBox(this.$.resposta_64_NA);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, false); this._CleanCheckBox(this.$.resposta_65_Sim);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, false); this._CleanCheckBox(this.$.resposta_65_Nao);
+                        this._EnableCheckBox(this.$.resposta_65_NA, false); this._CleanCheckBox(this.$.resposta_65_NA);
+                        this._EnableTextBox(this.$.resposta_6_Texto, false); this._CleanTextBox(this.$.resposta_6_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, false); this._CleanCheckBox(this.$.resposta_71_Sim);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, false); this._CleanCheckBox(this.$.resposta_71_Nao);
+                        this._EnableCheckBox(this.$.resposta_71_NA, false); this._CleanCheckBox(this.$.resposta_71_NA);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, false); this._CleanCheckBox(this.$.resposta_72_Sim);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, false); this._CleanCheckBox(this.$.resposta_72_Nao);
+                        this._EnableCheckBox(this.$.resposta_72_NA, false); this._CleanCheckBox(this.$.resposta_72_NA);
+                        this._EnableTextBox(this.$.resposta_7_Texto, false); this._CleanTextBox(this.$.resposta_7_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, false); this._CleanCheckBox(this.$.resposta_81_Sim);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, false); this._CleanCheckBox(this.$.resposta_81_Nao);
+                        this._EnableCheckBox(this.$.resposta_81_NA, false); this._CleanCheckBox(this.$.resposta_81_NA);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, false); this._CleanCheckBox(this.$.resposta_82_Sim);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, false); this._CleanCheckBox(this.$.resposta_82_Nao);
+                        this._EnableCheckBox(this.$.resposta_82_NA, false); this._CleanCheckBox(this.$.resposta_82_NA);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, false); this._CleanCheckBox(this.$.resposta_83_Sim);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, false); this._CleanCheckBox(this.$.resposta_83_Nao);
+                        this._EnableCheckBox(this.$.resposta_83_NA, false); this._CleanCheckBox(this.$.resposta_83_NA);
+                        this._EnableTextBox(this.$.resposta_8_Texto, false); this._CleanTextBox(this.$.resposta_8_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, false); this._CleanCheckBox(this.$.resposta_91_Sim);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, false); this._CleanCheckBox(this.$.resposta_91_Nao);
+                        this._EnableCheckBox(this.$.resposta_91_NA, false); this._CleanCheckBox(this.$.resposta_91_NA);
+                        this._EnableTextBox(this.$.resposta_9_Texto, false); this._CleanTextBox(this.$.resposta_9_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, false); this._CleanCheckBox(this.$.resposta_101_Sim);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, false); this._CleanCheckBox(this.$.resposta_101_Nao);
+                        this._EnableCheckBox(this.$.resposta_101_NA, false); this._CleanCheckBox(this.$.resposta_101_NA);
+                        this._EnableTextBox(this.$.resposta_101_Texto, false); this._CleanTextBox(this.$.resposta_101_Texto);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, false); this._CleanCheckBox(this.$.resposta_102_Sim);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, false); this._CleanCheckBox(this.$.resposta_102_Nao);
+                        this._EnableCheckBox(this.$.resposta_102_NA, false); this._CleanCheckBox(this.$.resposta_102_NA);
+                        this._EnableTextBox(this.$.resposta_102_Texto, false); this._CleanTextBox(this.$.resposta_102_Texto);
+                        this._EnableTextBox(this.$.resposta_103_Texto, false); this._CleanTextBox(this.$.resposta_103_Texto);
+                    }
+                },
+                _resposta11Nao: function () {
+                    if (!this.data.resposta_11_Nao == true) {
+                        this._CleanCheckBox(this.$.resposta_11_Sim);
+                        this._CleanCheckBox(this.$.resposta_11_NA);
+                    }
+
+                    if (!this.data.resposta_11_Nao == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, false); this._CleanTextBox(this.$.resposta_12_Texto);
+                        this._EnableTextBox(this.$.resposta_13_Texto, false); this._CleanTextBox(this.$.resposta_13_Texto);
+                    }
+
+                    if (!this.data.resposta_11_Nao == true) {
                         this._EnableCheckBox(this.$.resposta_21_Sim, true);
                         this._EnableCheckBox(this.$.resposta_21_Nao, true);
                         this._EnableCheckBox(this.$.resposta_21_NA, true);
@@ -1415,427 +1545,510 @@
                         this._EnableCheckBox(this.$.resposta_102_Nao, true);
                         this._EnableCheckBox(this.$.resposta_102_NA, true);
                         this._EnableTextBox(this.$.resposta_102_Texto, true);
-                        this._EnableCheckBox(this.$.resposta_103_Sim, true);
-                        this._EnableCheckBox(this.$.resposta_103_Nao, true);
-                        this._EnableCheckBox(this.$.resposta_103_NA, true);
                         this._EnableTextBox(this.$.resposta_103_Texto, true);
                     }
                 },
-                _resposta11Nao: function () {
-                    if (this.$.resposta_11_Sim.checked == true) {
-                        this._resposta11Sim();
-                    }
-
-                    if (!this.$.resposta_11_Nao.checked == true) {
-                        this.$.resposta_11_Sim.checked = false;
-                        this.$.resposta_11_NA.checked = false;
-                    }
-                },
                 _resposta11NA: function () {
-                    if (this.$.resposta_11_Sim.checked == true) {
-                        this._resposta11Sim();
+                    if (!this.data.resposta_11_NA == true) {
+                        this._CleanCheckBox(this.$.resposta_11_Sim);
+                        this._CleanCheckBox(this.$.resposta_11_Nao);
                     }
 
-                    if (!this.$.resposta_11_NA.checked == true) {
-                        this.$.resposta_11_Sim.checked = false;
-                        this.$.resposta_11_Nao.checked = false;
+                    if (!this.data.resposta_11_NA == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, false); this._CleanTextBox(this.$.resposta_12_Texto);
+                        this._EnableTextBox(this.$.resposta_13_Texto, false); this._CleanTextBox(this.$.resposta_13_Texto);
+                    }
+
+                    if (!this.data.resposta_11_NA == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_21_NA, true);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_22_NA, true);
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        this._EnableTextBox(this.$.resposta_2_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_31_NA, true);
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        this._EnableTextBox(this.$.resposta_3_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_41_NA, true);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_42_NA, true);
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        this._EnableTextBox(this.$.resposta_4_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_51_NA, true);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_52_NA, true);
+                        this._EnableTextBox(this.$.resposta_5_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_61_NA, true);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_62_NA, true);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_63_NA, true);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_64_NA, true);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_65_NA, true);
+                        this._EnableTextBox(this.$.resposta_6_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_71_NA, true);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_72_NA, true);
+                        this._EnableTextBox(this.$.resposta_7_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_81_NA, true);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_82_NA, true);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_83_NA, true);
+                        this._EnableTextBox(this.$.resposta_8_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_91_NA, true);
+                        this._EnableTextBox(this.$.resposta_9_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_101_NA, true);
+                        this._EnableTextBox(this.$.resposta_101_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_102_NA, true);
+                        this._EnableTextBox(this.$.resposta_102_Texto, true);
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
                     }
                 },
 
                 _resposta21Sim: function () {
                     if (!this.$.resposta_21_Sim.checked == true) {
-                        this.$.resposta_21_Nao.checked = false;
-                        this.$.resposta_21_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_21_Nao);
+                        this._CleanCheckBox(this.$.resposta_21_NA);
                     }
                 },
                 _resposta21Nao: function () {
                     if (!this.$.resposta_21_Nao.checked == true) {
-                        this.$.resposta_21_Sim.checked = false;
-                        this.$.resposta_21_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_21_Sim);
+                        this._CleanCheckBox(this.$.resposta_21_NA);
                     }
                 },
                 _resposta21NA: function () {
                     if (!this.$.resposta_21_NA.checked == true) {
-                        this.$.resposta_21_Sim.checked = false;
-                        this.$.resposta_21_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_21_Sim);
+                        this._CleanCheckBox(this.$.resposta_21_Nao);
                     }
                 },
                 _resposta22Sim: function () {
                     if (!this.$.resposta_22_Sim.checked == true) {
-                        this.$.resposta_22_Nao.checked = false;
-                        this.$.resposta_22_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_22_Nao);
+                        this._CleanCheckBox(this.$.resposta_22_NA);
+
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
                     }
                 },
                 _resposta22Nao: function () {
                     if (!this.$.resposta_22_Nao.checked == true) {
-                        this.$.resposta_22_Sim.checked = false;
-                        this.$.resposta_22_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_22_Sim);
+                        this._CleanCheckBox(this.$.resposta_22_NA);
+
+                        this._EnableTextBox(this.$.resposta_23_Texto, false); this._CleanTextBox(this.$.resposta_23_Texto);
                     }
                 },
                 _resposta22NA: function () {
                     if (!this.$.resposta_22_NA.checked == true) {
-                        this.$.resposta_22_Sim.checked = false;
-                        this.$.resposta_22_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_22_Sim);
+                        this._CleanCheckBox(this.$.resposta_22_Nao);
+
+                        this._EnableTextBox(this.$.resposta_23_Texto, false); this._CleanTextBox(this.$.resposta_23_Texto);
                     }
                 },
 
                 _resposta31Sim: function () {
                     if (!this.$.resposta_31_Sim.checked == true) {
-                        this.$.resposta_31_Nao.checked = false;
-                        this.$.resposta_31_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_31_Nao);
+                        this._CleanCheckBox(this.$.resposta_31_NA);
+
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
                     }
                 },
                 _resposta31Nao: function () {
                     if (!this.$.resposta_31_Nao.checked == true) {
-                        this.$.resposta_31_Sim.checked = false;
-                        this.$.resposta_31_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_31_Sim);
+                        this._CleanCheckBox(this.$.resposta_31_NA);
+
+                        this._EnableTextBox(this.$.resposta_32_Texto, false); this._CleanTextBox(this.$.resposta_32_Texto);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false); this._CleanCheckBox(this.$.resposta_32_NA);
                     }
                 },
                 _resposta31NA: function () {
                     if (!this.$.resposta_31_NA.checked == true) {
-                        this.$.resposta_31_Sim.checked = false;
-                        this.$.resposta_31_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_31_Sim);
+                        this._CleanCheckBox(this.$.resposta_31_Nao);
+
+                        this._EnableTextBox(this.$.resposta_32_Texto, false); this._CleanTextBox(this.$.resposta_32_Texto);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false); this._CleanCheckBox(this.$.resposta_32_NA);
                     }
                 },
                 _resposta32Texto: function () {
                     if (this.$.resposta_32_Texto.value != "") {
-                        this.$.resposta_32_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_32_NA);
                     }
                 },
                 _resposta32NA: function () {
                     if (!this.$.resposta_32_NA.checked == true) {
-                        this.$.resposta_32_Texto.value = "";
+                        this._CleanTextBox(this.$.resposta_32_Texto);
                     }
                 },
 
                 _resposta41Sim: function () {
                     if (!this.$.resposta_41_Sim.checked == true) {
-                        this.$.resposta_41_Nao.checked = false;
-                        this.$.resposta_41_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_41_Nao);
+                        this._CleanCheckBox(this.$.resposta_41_NA);
                     }
                 },
                 _resposta41Nao: function () {
                     if (!this.$.resposta_41_Nao.checked == true) {
-                        this.$.resposta_41_Sim.checked = false;
-                        this.$.resposta_41_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_41_Sim);
+                        this._CleanCheckBox(this.$.resposta_41_NA);
                     }
                 },
                 _resposta41NA: function () {
                     if (!this.$.resposta_41_NA.checked == true) {
-                        this.$.resposta_41_Sim.checked = false;
-                        this.$.resposta_41_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_41_Sim);
+                        this._CleanCheckBox(this.$.resposta_41_Nao);
                     }
                 },
                 _resposta42Sim: function () {
                     if (!this.$.resposta_42_Sim.checked == true) {
-                        this.$.resposta_42_Nao.checked = false;
-                        this.$.resposta_42_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_42_Nao);
+                        this._CleanCheckBox(this.$.resposta_42_NA);
+
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
                     }
                 },
                 _resposta42Nao: function () {
                     if (!this.$.resposta_42_Nao.checked == true) {
-                        this.$.resposta_42_Sim.checked = false;
-                        this.$.resposta_42_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_42_Sim);
+                        this._CleanCheckBox(this.$.resposta_42_NA);
+
+                        this._EnableTextBox(this.$.resposta_43_Texto, false); this._CleanTextBox(this.$.resposta_43_Texto);
                     }
                 },
                 _resposta42NA: function () {
                     if (!this.$.resposta_42_NA.checked == true) {
-                        this.$.resposta_42_Sim.checked = false;
-                        this.$.resposta_42_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_42_Sim);
+                        this._CleanCheckBox(this.$.resposta_42_Nao);
+
+                        this._EnableTextBox(this.$.resposta_43_Texto, false); this._CleanTextBox(this.$.resposta_43_Texto);
                     }
                 },
 
                 _resposta51Sim: function () {
                     if (!this.$.resposta_51_Sim.checked == true) {
-                        this.$.resposta_51_Nao.checked = false;
-                        this.$.resposta_51_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_51_Nao);
+                        this._CleanCheckBox(this.$.resposta_51_NA);
                     }
                 },
                 _resposta51Nao: function () {
                     if (!this.$.resposta_51_Nao.checked == true) {
-                        this.$.resposta_51_Sim.checked = false;
-                        this.$.resposta_51_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_51_Sim);
+                        this._CleanCheckBox(this.$.resposta_51_NA);
                     }
                 },
                 _resposta51NA: function () {
                     if (!this.$.resposta_51_NA.checked == true) {
-                        this.$.resposta_51_Sim.checked = false;
-                        this.$.resposta_51_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_51_Sim);
+                        this._CleanCheckBox(this.$.resposta_51_Nao);
                     }
                 },
                 _resposta52Sim: function () {
                     if (!this.$.resposta_52_Sim.checked == true) {
-                        this.$.resposta_52_Nao.checked = false;
-                        this.$.resposta_52_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_52_Nao);
+                        this._CleanCheckBox(this.$.resposta_52_NA);
                     }
                 },
                 _resposta52Nao: function () {
                     if (!this.$.resposta_52_Nao.checked == true) {
-                        this.$.resposta_52_Sim.checked = false;
-                        this.$.resposta_52_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_52_Sim);
+                        this._CleanCheckBox(this.$.resposta_52_NA);
                     }
                 },
                 _resposta52NA: function () {
                     if (!this.$.resposta_52_NA.checked == true) {
-                        this.$.resposta_52_Sim.checked = false;
-                        this.$.resposta_52_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_52_Sim);
+                        this._CleanCheckBox(this.$.resposta_52_Nao);
                     }
                 },
 
                 _resposta61Sim: function () {
                     if (!this.$.resposta_61_Sim.checked == true) {
-                        this.$.resposta_61_Nao.checked = false;
-                        this.$.resposta_61_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_61_Nao);
+                        this._CleanCheckBox(this.$.resposta_61_NA);
                     }
                 },
                 _resposta61Nao: function () {
                     if (!this.$.resposta_61_Nao.checked == true) {
-                        this.$.resposta_61_Sim.checked = false;
-                        this.$.resposta_61_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_61_Sim);
+                        this._CleanCheckBox(this.$.resposta_61_NA);
                     }
                 },
                 _resposta61NA: function () {
                     if (!this.$.resposta_61_NA.checked == true) {
-                        this.$.resposta_61_Sim.checked = false;
-                        this.$.resposta_61_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_61_Sim);
+                        this._CleanCheckBox(this.$.resposta_61_Nao);
                     }
                 },
                 _resposta62Sim: function () {
                     if (!this.$.resposta_62_Sim.checked == true) {
-                        this.$.resposta_62_Nao.checked = false;
-                        this.$.resposta_62_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_62_Nao);
+                        this._CleanCheckBox(this.$.resposta_62_NA);
                     }
                 },
                 _resposta62Nao: function () {
                     if (!this.$.resposta_62_Nao.checked == true) {
-                        this.$.resposta_62_Sim.checked = false;
-                        this.$.resposta_62_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_62_Sim);
+                        this._CleanCheckBox(this.$.resposta_62_NA);
                     }
                 },
                 _resposta62NA: function () {
                     if (!this.$.resposta_62_NA.checked == true) {
-                        this.$.resposta_62_Sim.checked = false;
-                        this.$.resposta_62_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_62_Sim);
+                        this._CleanCheckBox(this.$.resposta_62_Nao);
                     }
                 },
                 _resposta63Sim: function () {
                     if (!this.$.resposta_63_Sim.checked == true) {
-                        this.$.resposta_63_Nao.checked = false;
-                        this.$.resposta_63_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_63_Nao);
+                        this._CleanCheckBox(this.$.resposta_63_NA);
                     }
                 },
                 _resposta63Nao: function () {
                     if (!this.$.resposta_63_Nao.checked == true) {
-                        this.$.resposta_63_Sim.checked = false;
-                        this.$.resposta_63_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_63_Sim);
+                        this._CleanCheckBox(this.$.resposta_63_NA);
                     }
                 },
                 _resposta63NA: function () {
                     if (!this.$.resposta_63_NA.checked == true) {
-                        this.$.resposta_63_Sim.checked = false;
-                        this.$.resposta_63_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_63_Sim);
+                        this._CleanCheckBox(this.$.resposta_63_Nao);
                     }
                 },
                 _resposta64Sim: function () {
                     if (!this.$.resposta_64_Sim.checked == true) {
-                        this.$.resposta_64_Nao.checked = false;
-                        this.$.resposta_64_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_64_Nao);
+                        this._CleanCheckBox(this.$.resposta_64_NA);
                     }
                 },
                 _resposta64Nao: function () {
                     if (!this.$.resposta_64_Nao.checked == true) {
-                        this.$.resposta_64_Sim.checked = false;
-                        this.$.resposta_64_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_64_Sim);
+                        this._CleanCheckBox(this.$.resposta_64_NA);
                     }
                 },
                 _resposta64NA: function () {
                     if (!this.$.resposta_64_NA.checked == true) {
-                        this.$.resposta_64_Sim.checked = false;
-                        this.$.resposta_64_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_64_Sim);
+                        this._CleanCheckBox(this.$.resposta_64_Nao);
                     }
                 },
                 _resposta65Sim: function () {
                     if (!this.$.resposta_65_Sim.checked == true) {
-                        this.$.resposta_65_Nao.checked = false;
-                        this.$.resposta_65_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_65_Nao);
+                        this._CleanCheckBox(this.$.resposta_65_NA);
                     }
                 },
                 _resposta65Nao: function () {
                     if (!this.$.resposta_65_Nao.checked == true) {
-                        this.$.resposta_65_Sim.checked = false;
-                        this.$.resposta_65_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_65_Sim);
+                        this._CleanCheckBox(this.$.resposta_65_NA);
                     }
                 },
                 _resposta65NA: function () {
                     if (!this.$.resposta_65_NA.checked == true) {
-                        this.$.resposta_65_Sim.checked = false;
-                        this.$.resposta_65_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_65_Sim);
+                        this._CleanCheckBox(this.$.resposta_65_Nao);
                     }
                 },
 
                 _resposta71Sim: function () {
                     if (!this.$.resposta_71_Sim.checked == true) {
-                        this.$.resposta_71_Nao.checked = false;
-                        this.$.resposta_71_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_71_Nao);
+                        this._CleanCheckBox(this.$.resposta_71_NA);
                     }
                 },
                 _resposta71Nao: function () {
                     if (!this.$.resposta_71_Nao.checked == true) {
-                        this.$.resposta_71_Sim.checked = false;
-                        this.$.resposta_71_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_71_Sim);
+                        this._CleanCheckBox(this.$.resposta_71_NA);
                     }
                 },
                 _resposta71NA: function () {
                     if (!this.$.resposta_71_NA.checked == true) {
-                        this.$.resposta_71_Sim.checked = false;
-                        this.$.resposta_71_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_71_Sim);
+                        this._CleanCheckBox(this.$.resposta_71_Nao);
                     }
                 },
                 _resposta72Sim: function () {
                     if (!this.$.resposta_72_Sim.checked == true) {
-                        this.$.resposta_72_Nao.checked = false;
-                        this.$.resposta_72_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_72_Nao);
+                        this._CleanCheckBox(this.$.resposta_72_NA);
                     }
                 },
                 _resposta72Nao: function () {
                     if (!this.$.resposta_72_Nao.checked == true) {
-                        this.$.resposta_72_Sim.checked = false;
-                        this.$.resposta_72_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_72_Sim);
+                        this._CleanCheckBox(this.$.resposta_72_NA);
                     }
                 },
                 _resposta72NA: function () {
                     if (!this.$.resposta_72_NA.checked == true) {
-                        this.$.resposta_72_Sim.checked = false;
-                        this.$.resposta_72_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_72_Sim);
+                        this._CleanCheckBox(this.$.resposta_72_Nao);
                     }
                 },
 
                 _resposta81Sim: function () {
                     if (!this.$.resposta_81_Sim.checked == true) {
-                        this.$.resposta_81_Nao.checked = false;
-                        this.$.resposta_81_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_81_Nao);
+                        this._CleanCheckBox(this.$.resposta_81_NA);
                     }
                 },
                 _resposta81Nao: function () {
                     if (!this.$.resposta_81_Nao.checked == true) {
-                        this.$.resposta_81_Sim.checked = false;
-                        this.$.resposta_81_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_81_Sim);
+                        this._CleanCheckBox(this.$.resposta_81_NA);
                     }
                 },
                 _resposta81NA: function () {
                     if (!this.$.resposta_81_NA.checked == true) {
-                        this.$.resposta_81_Sim.checked = false;
-                        this.$.resposta_81_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_81_Sim);
+                        this._CleanCheckBox(this.$.resposta_81_Nao);
                     }
                 },
                 _resposta82Sim: function () {
                     if (!this.$.resposta_82_Sim.checked == true) {
-                        this.$.resposta_82_Nao.checked = false;
-                        this.$.resposta_82_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_82_Nao);
+                        this._CleanCheckBox(this.$.resposta_82_NA);
                     }
                 },
                 _resposta82Nao: function () {
                     if (!this.$.resposta_82_Nao.checked == true) {
-                        this.$.resposta_82_Sim.checked = false;
-                        this.$.resposta_82_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_82_Sim);
+                        this._CleanCheckBox(this.$.resposta_82_NA);
                     }
                 },
                 _resposta82NA: function () {
                     if (!this.$.resposta_82_NA.checked == true) {
-                        this.$.resposta_82_Sim.checked = false;
-                        this.$.resposta_82_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_82_Sim);
+                        this._CleanCheckBox(this.$.resposta_82_Nao);
                     }
                 },
                 _resposta83Sim: function () {
                     if (!this.$.resposta_83_Sim.checked == true) {
-                        this.$.resposta_83_Nao.checked = false;
-                        this.$.resposta_83_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_83_Nao);
+                        this._CleanCheckBox(this.$.resposta_83_NA);
                     }
                 },
                 _resposta83Nao: function () {
                     if (!this.$.resposta_83_Nao.checked == true) {
-                        this.$.resposta_83_Sim.checked = false;
-                        this.$.resposta_83_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_83_Sim);
+                        this._CleanCheckBox(this.$.resposta_83_NA);
                     }
                 },
                 _resposta83NA: function () {
                     if (!this.$.resposta_83_NA.checked == true) {
-                        this.$.resposta_83_Sim.checked = false;
-                        this.$.resposta_83_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_83_Sim);
+                        this._CleanCheckBox(this.$.resposta_83_Nao);
                     }
                 },
 
                 _resposta91Sim: function () {
                     if (!this.$.resposta_91_Sim.checked == true) {
-                        this.$.resposta_91_Nao.checked = false;
-                        this.$.resposta_91_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_91_Nao);
+                        this._CleanCheckBox(this.$.resposta_91_NA);
                     }
                 },
                 _resposta91Nao: function () {
                     if (!this.$.resposta_91_Nao.checked == true) {
-                        this.$.resposta_91_Sim.checked = false;
-                        this.$.resposta_91_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_91_Sim);
+                        this._CleanCheckBox(this.$.resposta_91_NA);
                     }
                 },
                 _resposta91NA: function () {
                     if (!this.$.resposta_91_NA.checked == true) {
-                        this.$.resposta_91_Sim.checked = false;
-                        this.$.resposta_91_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_91_Sim);
+                        this._CleanCheckBox(this.$.resposta_91_Nao);
                     }
                 },
 
                 _resposta101Sim: function () {
                     if (!this.$.resposta_101_Sim.checked == true) {
-                        this.$.resposta_101_Nao.checked = false;
-                        this.$.resposta_101_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_101_Nao);
+                        this._CleanCheckBox(this.$.resposta_101_NA);
                     }
                 },
                 _resposta101Nao: function () {
                     if (!this.$.resposta_101_Nao.checked == true) {
-                        this.$.resposta_101_Sim.checked = false;
-                        this.$.resposta_101_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_101_Sim);
+                        this._CleanCheckBox(this.$.resposta_101_NA);
                     }
                 },
                 _resposta101NA: function () {
                     if (!this.$.resposta_101_NA.checked == true) {
-                        this.$.resposta_101_Sim.checked = false;
-                        this.$.resposta_101_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_101_Sim);
+                        this._CleanCheckBox(this.$.resposta_101_Nao);
                     }
                 },
                 _resposta102Sim: function () {
                     if (!this.$.resposta_102_Sim.checked == true) {
-                        this.$.resposta_102_Nao.checked = false;
-                        this.$.resposta_102_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_102_Nao);
+                        this._CleanCheckBox(this.$.resposta_102_NA);
+
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
                     }
                 },
                 _resposta102Nao: function () {
                     if (!this.$.resposta_102_Nao.checked == true) {
-                        this.$.resposta_102_Sim.checked = false;
-                        this.$.resposta_102_NA.checked = false;
+                        this._CleanCheckBox(this.$.resposta_102_Sim);
+                        this._CleanCheckBox(this.$.resposta_102_NA);
+
+                        this._EnableTextBox(this.$.resposta_103_Texto, false); this._CleanTextBox(this.$.resposta_103_Texto);
                     }
                 },
                 _resposta102NA: function () {
                     if (!this.$.resposta_102_NA.checked == true) {
-                        this.$.resposta_102_Sim.checked = false;
-                        this.$.resposta_102_Nao.checked = false;
-                    }
-                },
-                _resposta103Sim: function () {
-                    if (!this.$.resposta_103_Sim.checked == true) {
-                        this.$.resposta_103_Nao.checked = false;
-                        this.$.resposta_103_NA.checked = false;
-                    }
-                },
-                _resposta103Nao: function () {
-                    if (!this.$.resposta_103_Nao.checked == true) {
-                        this.$.resposta_103_Sim.checked = false;
-                        this.$.resposta_103_NA.checked = false;
-                    }
-                },
-                _resposta103NA: function () {
-                    if (!this.$.resposta_103_NA.checked == true) {
-                        this.$.resposta_103_Sim.checked = false;
-                        this.$.resposta_103_Nao.checked = false;
+                        this._CleanCheckBox(this.$.resposta_102_Sim);
+                        this._CleanCheckBox(this.$.resposta_102_Nao);
+
+                        this._EnableTextBox(this.$.resposta_103_Texto, false); this._CleanTextBox(this.$.resposta_103_Texto);
                     }
                 },
 
@@ -1864,26 +2077,19 @@
                         this._showErrorMessage('O campo Procedimento n. (se aplicável) é de preenchimento obrigatório.');
                         return;
                     }
-                    if (!this.$.final_Responsavel.validate() || this.$.final_Responsavel.value == "") {
-                        this._showErrorMessage('O campo Responsável é de preenchimento obrigatório.');
-                        return;
-                    }
-                    if (!this.$.final_Data.validate() || this.$.final_Data.value == "") {
-                        this._showErrorMessage('O campo Data é de preenchimento obrigatório.');
-                        return;
-                    }
-
                     if ((this.$.resposta_11_Sim.checked == null || this.$.resposta_11_Sim.checked == false) &&
                         (this.$.resposta_11_Nao.checked == null || this.$.resposta_11_Nao.checked == false) &&
                         (this.$.resposta_11_NA.checked == null || this.$.resposta_11_NA.checked == false)) {
                         this._showErrorMessage('É obrigatório responder à questão 1.1');
                         return;
                     }
-                    if (this.$.resposta_12_Texto.value == null || this.$.resposta_12_Texto.value == "") {
+                    if ((this.$.resposta_11_Sim.checked != null && this.$.resposta_11_Sim.checked == true) &&
+                        (this.$.resposta_12_Texto.value == null || this.$.resposta_12_Texto.value == "")) {
                         this._showErrorMessage('É obrigatório responder à questão 1.2');
                         return;
                     }
-                    if (this.$.resposta_13_Texto.value == null || this.$.resposta_13_Texto.value == "") {
+                    if ((this.$.resposta_11_Sim.checked != null && this.$.resposta_11_Sim.checked == true) &&
+                        (this.$.resposta_13_Texto.value == null || this.$.resposta_13_Texto.value == "")) {
                         this._showErrorMessage('É obrigatório responder à questão 1.3');
                         return;
                     }
@@ -1900,7 +2106,8 @@
                             this._showErrorMessage('É obrigatório responder à questão 2.2');
                             return;
                         }
-                        if (this.$.resposta_23_Texto.value == null || this.$.resposta_23_Texto.value == "") {
+                        if ((this.$.resposta_22_Sim.checked != null && this.$.resposta_22_Sim.checked == true) &&
+                            (this.$.resposta_23_Texto.value == null || this.$.resposta_23_Texto.value == "")) {
                             this._showErrorMessage('É obrigatório responder à questão 2.3');
                             return;
                         }
@@ -1911,7 +2118,8 @@
                             this._showErrorMessage('É obrigatório responder à questão 3.1');
                             return;
                         }
-                        if ((this.$.resposta_32_Texto.value == null || this.$.resposta_32_Texto.value == "") &&
+                        if ((this.$.resposta_31_Sim.checked != null && this.$.resposta_31_Sim.checked == true) &&
+                            (this.$.resposta_32_Texto.value == null || this.$.resposta_32_Texto.value == "") &&
                             (this.$.resposta_32_NA.checked == null || this.$.resposta_32_NA.checked == false)) {
                             this._showErrorMessage('É obrigatório responder à questão 3.2');
                             return;
@@ -1929,7 +2137,8 @@
                             this._showErrorMessage('É obrigatório responder à questão 4.2');
                             return;
                         }
-                        if (this.$.resposta_43_Texto.value == null || this.$.resposta_43_Texto.value == "") {
+                        if ((this.$.resposta_42_Sim.checked != null && this.$.resposta_42_Sim.checked == true) &&
+                            this.$.resposta_43_Texto.value == null || this.$.resposta_43_Texto.value == "") {
                             this._showErrorMessage('É obrigatório responder à questão 4.3');
                             return;
                         }
@@ -2029,12 +2238,19 @@
                             this._showErrorMessage('É obrigatório responder à questão 10.2');
                             return;
                         }
-                        if ((this.$.resposta_103_Sim.checked == null || this.$.resposta_103_Sim.checked == false) &&
-                            (this.$.resposta_103_Nao.checked == null || this.$.resposta_103_Nao.checked == false) &&
-                            (this.$.resposta_103_NA.checked == null || this.$.resposta_103_NA.checked == false)) {
+                        if ((this.$.resposta_102_Sim.checked != null && this.$.resposta_102_Sim.checked == true) &&
+                            (this.$.resposta_103_Texto.value == null || this.$.resposta_103_texto.value == "")) {
                             this._showErrorMessage('É obrigatório responder à questão 10.3');
                             return;
                         }
+                    }
+                    if (!this.$.final_Responsavel.validate() || this.$.final_Responsavel.value == "") {
+                        this._showErrorMessage('O campo Responsável é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.final_Data.validate() || this.$.final_Data.value == "") {
+                        this._showErrorMessage('O campo Data é de preenchimento obrigatório.');
+                        return;
                     }
 
                     this.$.page_VerificarNovoQuestionario_ajax.body = JSON.stringify(this.data);
@@ -2120,8 +2336,7 @@
                 },
 
                 _responseProcessor_Historico: function () {
-                    this._permissions.update = false;
-                    alert(this._permissions.update);
+                    this._ReadOnly();
                 },
 
 
