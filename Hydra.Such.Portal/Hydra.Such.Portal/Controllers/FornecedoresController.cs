@@ -1012,9 +1012,6 @@ namespace Hydra.Such.Portal.Controllers
                     if (data.Resposta_102_Nao != Original.Resposta_102_Nao) data.Nova_Versao = true;
                     if (data.Resposta_102_NA != Original.Resposta_102_NA) data.Nova_Versao = true;
                     if (data.Resposta_102_Texto != Original.Resposta_102_Texto) data.Nova_Versao = true;
-                    if (data.Resposta_103_Sim != Original.Resposta_103_Sim) data.Nova_Versao = true;
-                    if (data.Resposta_103_Nao != Original.Resposta_103_Nao) data.Nova_Versao = true;
-                    if (data.Resposta_103_NA != Original.Resposta_103_NA) data.Nova_Versao = true;
                     if (data.Resposta_103_Texto != Original.Resposta_103_Texto) data.Nova_Versao = true;
                     if (data.Final_Responsavel != Original.Final_Responsavel) data.Nova_Versao = true;
                     if (data.Final_Data_Texto != Original.Final_Data_Texto) data.Nova_Versao = true;

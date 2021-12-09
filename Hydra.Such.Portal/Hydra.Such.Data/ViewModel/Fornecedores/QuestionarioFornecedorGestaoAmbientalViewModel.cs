@@ -159,12 +159,6 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public bool? Resposta_102_NA { get; set; }
         public string Resposta_102_NA_Texto { get; set; }
         public string Resposta_102_Texto { get; set; }
-        public bool? Resposta_103_Sim { get; set; }
-        public string Resposta_103_Sim_Texto { get; set; }
-        public bool? Resposta_103_Nao { get; set; }
-        public string Resposta_103_Nao_Texto { get; set; }
-        public bool? Resposta_103_NA { get; set; }
-        public string Resposta_103_NA_Texto { get; set; }
         public string Resposta_103_Texto { get; set; }
         public string Final_Responsavel { get; set; }
         public DateTime? Final_Data { get; set; }
