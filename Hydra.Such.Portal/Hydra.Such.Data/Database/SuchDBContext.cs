@@ -13091,6 +13091,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("CodEncomenda")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.CodProcedimento)
+                    .HasColumnName("CodProcedimento")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.CodRegiao)
                     .HasColumnName("CodRegiao")
                     .HasMaxLength(20);

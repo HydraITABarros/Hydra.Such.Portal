@@ -790,6 +790,10 @@ namespace Hydra.Such.Portal.Controllers
                             full_filename = codigo + "_" + versao + "_" + filename;
                             var path = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\Questionarios\\tmp", full_filename);
 
+                            if (System.IO.File.Exists(path))
+                            {
+                                System.IO.File.Delete(path);
+                            }
                             using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                             {
                                 file.CopyTo(dd);

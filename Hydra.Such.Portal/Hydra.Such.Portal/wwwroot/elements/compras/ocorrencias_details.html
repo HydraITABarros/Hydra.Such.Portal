@@ -148,7 +148,7 @@
         </style>
 
         <!-- DROPDOWNS POPULATE -->
-        <iron-ajax url="/PopulateDropdowns/GetAllPurchase" last-response="{{ListPurchases}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllPurchase24Months" last-response="{{ListPurchases}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasGrauGravidade" last-response="{{ListGrauGravidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasMotivos" last-response="{{ListMotivos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
@@ -246,8 +246,20 @@
                                 items="[[ListPurchases]]"
                                 text-path="id"
                                 value-path="id"
-                                fields='[{"field":"id", "name":"Cód. Encomenda"}, {"field":"value", "name":"Encomenda"}]'
+                                fields='[{"field":"id", "name":"Cód. Encomenda"}, {"field":"value", "name":"Fornecedor"}]'
                                 on-value-changed="_EncomendaChanged"
+                                required error-message="Campo de preenchimento obrigatório">
+                </such-selectbox>
+            </div>
+
+            <div class="col-md-2">
+                <label id="lblcodProcedimento">Cód. Procedimento</label>
+                <such-selectbox id="codProcedimento" name="codProcedimento" value="{{ data.codProcedimento }}" disabled="{{ !_isEdit }}"
+                                items="[[ListPurchases]]"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Cód. Encomenda"}, {"field":"value", "name":"Encomenda"}]'
+                                on-value-changed="_ProcedimentoChanged"
                                 required error-message="Campo de preenchimento obrigatório">
                 </such-selectbox>
             </div>
@@ -256,7 +268,7 @@
                 <vaadin-text-field id="codFornecedor" name="codFornecedor" value="{{data.codFornecedor}}" label="Cód. Fornecedor" disabled></vaadin-text-field>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <vaadin-text-field id="nomeFornecedor" name="nomeFornecedor" value="{{data.nomeFornecedor}}" label="Fornecedor" disabled></vaadin-text-field>
             </div>
         </div>

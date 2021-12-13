@@ -100,15 +100,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/Fornecedores/UpdateQuestionario"
-                   last-response="{{data}}"
-                   method="post"
-                   handle-as="json"
-                   id="page_UpdateQuestionario_ajax"
-                   on-response="_responseProcessor_UpdateQuestionario"
-                   content-type="application/json">
-        </iron-ajax>
-
         <iron-ajax url="/Fornecedores/GetQuestionarioHistorico"
                    last-response="{{datahistorico}}"
                    method="post"
@@ -130,7 +121,7 @@
             <paper-button class="tablinks" on-tap="_gravar" disabled="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
             <!--<paper-button class="tablinks" on-tap="_downloadAnexo"><i class="fa fa-download" aria-hidden="true"></i> Anexo</paper-button>-->
             <a id="lnk_anexo" href="/Fornecedores/DownloadQuestionarioAnexo/{{data.anexo.codigo}}/{{data.anexo.versao}}/{{data.anexo.urL_Anexo}}" target="_blank"><i class="fa fa-download" aria-hidden="true"></i> Anexo</a>
-            <paper-button class="tablinks" on-tap="_openDlgHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
+            <paper-button id="btn_Historico" class="tablinks" on-tap="_openDlgHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
         </div>
 
         <div class="row break_clear">
@@ -918,7 +909,7 @@
 
                     <vaadin-grid-column width="150px" resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="dataHora_Criacao_Texto">Data de Criasão</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="dataHora_Criacao_Texto">Data de Criação</vaadin-grid-sorter>
                             <vaadin-grid-filter path="dataHora_Criacao_Texto" value="[[filter.dataHora_Criacao_Texto]]" />
                         </template>
                         <template>
@@ -999,10 +990,15 @@
                 _responseProcessor: function () {
                     this._Edit();
 
-                    if (this._permissions.update = false) {
+                    if (this._permissions.update == false) {
                         $(this.$.lnk_anexo).addClass('disabled');
                     }
-
+                    if (this._versao == 0) {
+                        $(this.$.lnk_anexo).addClass('disabled');
+                    }
+                    if (parseInt(this._versao) <= 1) {
+                        $(this.$.btn_Historico).addClass('disabled');
+                    }
                 },
 
                 _goBack: function (e) {
@@ -2137,8 +2133,9 @@
                             this._showErrorMessage('É obrigatório responder à questão 4.2');
                             return;
                         }
+                        debugger;
                         if ((this.$.resposta_42_Sim.checked != null && this.$.resposta_42_Sim.checked == true) &&
-                            this.$.resposta_43_Texto.value == null || this.$.resposta_43_Texto.value == "") {
+                            (this.$.resposta_43_Texto.value == null || this.$.resposta_43_Texto.value == "")) {
                             this._showErrorMessage('É obrigatório responder à questão 4.3');
                             return;
                         }
@@ -2264,8 +2261,7 @@
                     }
 
                     if (this.novoQuestionario.nova_Versao == false) {
-                        this.$.page_UpdateQuestionario_ajax.body = JSON.stringify(this.data);
-                        this.$.page_UpdateQuestionario_ajax.generateRequest();
+                        this._showMessage('Não houve alterações na Avaliação de Desempenho.');
                     }
                 },
 
@@ -2274,6 +2270,10 @@
                         this.$.dlgAnexo.close();
 
                         this._showMessage(this.data.eMessage);
+                        $(this.$.lnk_anexo).removeClass('disabled');
+                        if (parseInt(this._versao) > 1) {
+                            $(this.$.btn_Historico).removeClass('disabled');
+                        }
 
                         this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": this._versao, "ID_Fornecedor": this._id_fornecedor });
                         this.$.page_databound_ajax.generateRequest();
@@ -2301,9 +2301,11 @@
                 },
 
                 _openDlgHistorico: function () {
-                    this.$.page_GetHistorico_ajax.body = JSON.stringify({ "ID_Fornecedor": this._id_fornecedor });
-                    this.$.page_GetHistorico_ajax.generateRequest();
-                    this.$.dlgHistorico.open();
+                    if ((parseInt(this._versao) > 1)) {
+                        this.$.page_GetHistorico_ajax.body = JSON.stringify({ "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_GetHistorico_ajax.generateRequest();
+                        this.$.dlgHistorico.open();
+                    }
                 },
                 _closeDlgHistorico: function () {
                     this.$.dlgHistorico.close();

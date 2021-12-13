@@ -449,6 +449,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllPurchase24Months([FromBody] string respcenter)
+        {
+            List<DDMessageString> result = null;
+
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            string ToDate = "2022-01-01";//DateTime.Now.ToShortDateString();
+            string FromDate = "2019-01-01";//DateTime.Now.AddMonths(-24).ToShortDateString();
+            result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", FromDate, ToDate).Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.PayToName
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetAllPurchaseLines([FromBody] string CodEncomenda)
         {
             List<DDMessageString> result = null;
