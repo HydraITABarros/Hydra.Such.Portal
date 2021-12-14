@@ -63,19 +63,26 @@ namespace Hydra.Such.Data.Logic
 
             if (!string.IsNullOrEmpty(courseId))
             {
-                if (PedidosFormacao != null && PedidosFormacao.Count > 0)
+                try
                 {
-                    try
+                    using (var _ctx = new SuchDBContext())
                     {
-                        requestId = PedidosFormacao.FirstOrDefault(p => p.IdAccaoFormacao == courseId && p.Estado <= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).IdPedido;
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
+                        requestId = _ctx.PedidoParticipacaoFormacao.LastOrDefault(
+                                p => (p.IdEmpregado == No) && 
+                                (p.IdAccaoFormacao == courseId) && 
+                                (p.Estado >= (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                                 p.Estado <= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado)).IdPedido;
 
-                        return false;
-                    }                    
+                        return !string.IsNullOrEmpty(requestId);
+
+                    }
                 }
+                catch (Exception ex)
+                {
+
+                    return false;
+                }
+                
             }
 
             return false;
@@ -977,6 +984,7 @@ namespace Hydra.Such.Data.Logic
                         DataInicio = accao.DataInicio,
                         DataFim = accao.DataFim,
                         NumeroTotalHoras = accao.NumeroTotalHoras,
+                        LocalRealizacao = accao.LocalRealizacao,
                         UtilizadorCriacao = user.IdUtilizador,
                         DataHoraCriacao = DateTime.Now                        
                     };
@@ -1217,7 +1225,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using(var _ctx = new SuchDBContext())
                 {
-                    AccaoFormacao accao = _ctx.AccaoFormacao.Where(a => a.IdAccao == accaoId).LastOrDefault();
+                    AccaoFormacao accao = _ctx.AccaoFormacao.LastOrDefault(a => a.IdAccao == accaoId);
 
                     accao.SessoesFormacao = _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == accaoId)
                         .OrderByDescending(a => a.DataSessao)
@@ -1738,6 +1746,8 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+
 
         public static List<RegistoAlteracoesPedidoFormacao> __GetRegistosAlteracaoPedido(string pedidoId)
         {

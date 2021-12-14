@@ -143,9 +143,10 @@
                 text-decoration: none;
                 text-shadow: 0px 1px 0px #611827;
             }
+
                 .suchdropdown.disabled {
                     cursor: not-allowed;
-                    pointer-events:none;
+                    pointer-events: none;
                 }
 
             .suchdropdown-menu {
@@ -176,7 +177,7 @@
                 /*font-size: 20px;*/
             }
 
-            
+
 
             /*DETALHES.begin*/
             #gridAccoes {
@@ -379,6 +380,16 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- VerificarInscricaoEmAccaoFormacao -->
+        <iron-ajax url="/Academia/VerificarPedidoParaAccaoFormacao"
+                   last-response="{{ idPedidoRegistado }}"
+                   method="post"
+                   handle-as="json"
+                   id="verificacao_existencia_pedido_page_ajax"
+                   on-response="_verificacaoExistenciaPedidoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Academia/RegistaParecerDotacaoOrcamental"
                    last-response="{{parecerRegistado}}"
                    method="post"
@@ -439,9 +450,9 @@
                                                 <such-selectbox id="idEmpregadoCbox"
                                                                 name="idEmpregadoCbox"
                                                                 label="Nº Mecanográfico"
-                                                                on-value-changed="_setEmployeeDetails"                                                                
+                                                                on-value-changed="_setEmployeeDetails"
                                                                 value="{{data.idEmpregado}}"
-                                                                items="[[employeeList]]"                                                                
+                                                                items="[[employeeList]]"
                                                                 text-path="no"
                                                                 value-path="no"
                                                                 fields='[{"field":"no", "name":"No. Mecanográfico"},{"field":"name", "name":"Nome"},{"field":"funcao", "name":"Função"},{"field":"areaNav2017", "name":"Area"},{"field":"crespNav2017", "name":"CResp"},{"field":"regiaoNav2017", "name":"Região"}]'
@@ -803,45 +814,45 @@
                         <div id="comentariosSection" class="panel panel-default">
                             <paper-collapse-item header="VIII - Comentários">
                                 <div class="panel-body">
-                                      <div class="break_clear">
-                                          <div class="row break_clear">
-                                              <div class="col-md-10">
-                                                  <such-textarea id="textoComentario" name="textoComentario" label="Comentário" rows="3" value="{{ txtComentario }}"></such-textarea>
-                                              </div>
-                                              <div class="col-md-2">
-                                                  <br />
-                                                  <paper-button raised id="btnInsereComentario" class="btn--confirm pull-left" on-tap="_criaComentario"><i class="fa fa-level-up" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
-                                              </div>
-                                          </div>
-                                          <div class="row break_clear">
-                                              <vaadin-grid id="gridComentarios" aria-label="gridComentarios" items="[[data.comentariosPedido]]" class="grid" multi-sort="true">
-                                                  <vaadin-grid-column resizable width="10%">
-                                                      <template class="header">
-                                                          <vaadin-grid-sorter path="dataHoraComentario">Data</vaadin-grid-sorter>
-                                                      </template>
-                                                      <template>
-                                                          {{ item.dataHoraComentario}}
-                                                      </template>
-                                                  </vaadin-grid-column>
-                                                  <vaadin-grid-column resizable width="15%">
-                                                      <template class="header">
-                                                          <vaadin-grid-sorter path="utilizadorCriacao">Utilizador</vaadin-grid-sorter>
-                                                      </template>
-                                                      <template>
-                                                          {{ item.utilizadorCriacao }}
-                                                      </template>
-                                                  </vaadin-grid-column>
-                                                  <vaadin-grid-column width="75%">
-                                                      <template class="header">
-                                                          <vaadin-grid-sorter>Comentário</vaadin-grid-sorter>
-                                                      </template>
-                                                      <template>
-                                                          <such-textarea id="textoComentarioGrid" name="textoComentarioGrid" rows="3" value="{{item.textoComentario}}" disabled style="opacity:1"></such-textarea>
-                                                      </template>
-                                                  </vaadin-grid-column>
-                                              </vaadin-grid>
-                                          </div>
-                                      </div>
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-10">
+                                                <such-textarea id="textoComentario" name="textoComentario" label="Comentário" rows="3" value="{{ txtComentario }}"></such-textarea>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <br />
+                                                <paper-button raised id="btnInsereComentario" class="btn--confirm pull-left" on-tap="_criaComentario"><i class="fa fa-level-up" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <vaadin-grid id="gridComentarios" aria-label="gridComentarios" items="[[data.comentariosPedido]]" class="grid" multi-sort="true">
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataHoraComentario">Data</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.dataHoraComentario}}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column resizable width="15%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizadorCriacao">Utilizador</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.utilizadorCriacao }}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="75%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter>Comentário</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        <such-textarea id="textoComentarioGrid" name="textoComentarioGrid" rows="3" value="{{item.textoComentario}}" disabled style="opacity:1"></such-textarea>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
                                 </div>
                             </paper-collapse-item>
                         </div>
@@ -1039,6 +1050,7 @@
                         type: Boolean,
                         value: false
                     },
+
 
                     _msg: {
                         type: String,
@@ -1443,12 +1455,13 @@
 
                     if (this.data != undefined && this.entidadeList != null) {
                         var _id = this.$.idEntidadeFormadora.value;
-                        var _entity = this.entidadeList.find(_e => _e.idEntidade == _id); 
+                        if (_id != null) {
+                            var _entity = this.entidadeList.find(_e => _e.idEntidade == _id);
 
-                        this.data.idEntidadeFormadora = _entity.idEntidade;
-                        this.data.descricaoEntidadeFormadora = _entity.descricaoEntidade;                        
-                    }
-                    
+                            this.data.idEntidadeFormadora = _entity.idEntidade;
+                            this.data.descricaoEntidadeFormadora = _entity.descricaoEntidade;
+                        }                                              
+                    }                          
                 },
 
                 _deleteAttachment: function (e) {
@@ -1534,14 +1547,33 @@
 
                         this.$.page_update_ajax.body = JSON.stringify(this.data);
                         this.$.page_update_ajax.generateRequest();
+                        setTimeout(function () {
 
+                        }, 1000);
+
+                        this.$.verificacao_existencia_pedido_page_ajax.body = JSON.stringify(
+                                    {
+                                        "idAccao": this.data.idAccaoFormacao,
+                                        "idFormando": this.data.idEmpregado
+                                    });
+                        this.$.verificacao_existencia_pedido_page_ajax.generateRequest();
+                    }
+                },
+
+
+                _verificacaoExistenciaPedidoResponse: function (e) {
+                    debugger;;
+                    if (!this.__isNullOrEmptyString(this.idPedidoRegistado)) {                         
+                        this._openToastError("Já existe, em processamento, um Pedido de Participação em Formação para esta Acção: Pedido nº: " + this.idPedidoRegistado);
+                        return;
+                    } else {
                         var checkResult = this._checkBeforeSubmit(this.data);
                         if (checkResult == 0) {
                             var ajax_request = this.$.transicao_estado_page_ajax;
                             if (this._url == "") {
                                 this._url = window.location.href;
                             }
-                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1, "url":this._url });
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1, "url": this._url });
 
                             var str = "Confirma a submissão do pedido " + this.data.idPedido + " para Aprovação pela Chefia?";
                             this._msg = "Pedido " + this.data.idPedido + " Submetido para Aprovação pela Chefia com sucesso.";
@@ -1569,7 +1601,6 @@
                                     break;
                             }
                         }
-
                     }
                 },
 
