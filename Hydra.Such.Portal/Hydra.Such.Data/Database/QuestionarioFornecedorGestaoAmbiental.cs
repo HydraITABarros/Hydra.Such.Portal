@@ -4,7 +4,6 @@ namespace Hydra.Such.Data.Database
 {
     public partial class QuestionarioFornecedorGestaoAmbiental
     {
-        public int ID { get; set; }
         public string Codigo { get; set; }
         public int Versao { get; set; }
         public string ID_Fornecedor { get; set; }
@@ -95,9 +94,6 @@ namespace Hydra.Such.Data.Database
         public bool? Resposta_102_Nao { get; set; }
         public bool? Resposta_102_NA { get; set; }
         public string Resposta_102_Texto { get; set; }
-        public bool? Resposta_103_Sim { get; set; }
-        public bool? Resposta_103_Nao { get; set; }
-        public bool? Resposta_103_NA { get; set; }
         public string Resposta_103_Texto { get; set; }
         public string Final_Responsavel { get; set; }
         public DateTime? Final_Data { get; set; }

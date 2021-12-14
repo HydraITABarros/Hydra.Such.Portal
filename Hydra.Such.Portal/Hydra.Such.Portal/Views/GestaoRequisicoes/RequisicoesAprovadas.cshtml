@@ -338,7 +338,8 @@
                         });
                         window.setGridFilter('gestaorequisicoes-requisicoesaprovadas', filters || {});
 
-                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
+                        var lista = this.$.gridrequest._filter(this.result);
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo + "?Lista=" + lista;
                     }
                 },
                 /*FILTROS*/

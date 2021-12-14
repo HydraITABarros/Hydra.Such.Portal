@@ -124,6 +124,23 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             return result;
         }
 
+        public static TabelaConfRecursosFh GetRecursoByTipoAndCodRecurso(string Tipo, string CodRecurso)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    TabelaConfRecursosFh recurso;
+
+                    return recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(x => x.Tipo == Tipo && x.CodRecurso == CodRecurso);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static decimal GetPrecoUnitarioCusto(string Tipo, string CodRecurso)
         {
             try

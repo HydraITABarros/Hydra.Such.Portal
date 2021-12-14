@@ -7266,10 +7266,25 @@ namespace Hydra.Such.Portal.Controllers
                     List<Projetos> AllProjects = DBProjects.GetAll();
                     List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
                     List<ClientServicesViewModel> AllServicosCliente = DBClientServices.GetAllClientService("", true);
+                    Projetos Project = new Projetos();
 
                     result.ForEach(x =>
                     {
-                        x.ProjectDescription = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().Descrição : "";
+                        Project = null;
+                        Project = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault();
+                        if (Project != null)
+                        {
+                            x.ProjectDescription = !string.IsNullOrEmpty(Project.Descrição) ? Project.Descrição : "";
+                            x.ContractNo = !string.IsNullOrEmpty(Project.NºContrato) ? Project.NºContrato : "";
+                        }
+                        else
+                        {
+                            x.ProjectDescription = "";
+                            x.ContractNo = "";
+                        }
+
+                        //x.ProjectDescription = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().Descrição : "";
+                        //x.ContractNo = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().NºContrato : "";
                         x.MovementTypeText = x.MovementType != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault() != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault().Value : "" : "";
                         x.TypeText = x.Type != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault() != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault().Value : "" : "";
                         x.BillableText = x.Billable.HasValue ? x.Billable == true ? "Sim" : "Não" : "";
@@ -9075,6 +9090,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1;}
                 if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Projeto"); Col = Col + 1; }
                 if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
                 if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
                 if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
                 if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
@@ -9124,6 +9140,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
                         if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectDescription); Col = Col + 1; }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceToClientNo); Col = Col + 1; }
+                        if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractNo); Col = Col + 1; }
                         if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Date); Col = Col + 1; }
                         if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }

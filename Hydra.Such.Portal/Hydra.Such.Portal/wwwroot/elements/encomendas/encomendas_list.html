@@ -447,7 +447,7 @@
                     },
                     _showMessage: {
                         type: String,
-                        value: "Exibir Histórico"
+                        value: "Exibir Arquivo"
                     },
                 },
                 _rowSelected: function (item) {
@@ -459,7 +459,7 @@
                         });
                         window.setGridFilter('encomendas-encomendaslist', filters || {});
 
-                        window.location.href = "Encomendas/DetalhesEncomenda/" + item.no;
+                        window.location.href = "Encomendas/DetalhesEncomenda/" + item.no + "?version=" + item.version;
                     }
                 },
                 /*FILTROS*/
@@ -619,7 +619,7 @@
                     }
                     else {
                         this.historico = "0";
-                        this._showMessage = "Exibir Histórico";
+                        this._showMessage = "Exibir Arquivo";
 
                         this.$.grid_databound_ajax.body = JSON.stringify({ fornecedor: this.forcecedor, year: this.year, month: this.month, requisitionNo: this.requisitionNo, historico: this.historico });
                         this.$.grid_databound_ajax.generateRequest();

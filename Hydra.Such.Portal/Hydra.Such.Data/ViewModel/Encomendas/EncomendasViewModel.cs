@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
     public class EncomendasViewModel
     {
         public string No { get; set; }
+        public int Version { get; set; }
         public string PayToVendorNo { get; set; }
         public string PayToName { get; set; }
         public string YourReference { get; set; }

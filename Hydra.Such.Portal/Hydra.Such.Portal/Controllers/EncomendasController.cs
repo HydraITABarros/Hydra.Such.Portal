@@ -60,7 +60,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpGet]
-        public IActionResult DetalhesEncomenda(string id)
+        public IActionResult DetalhesEncomenda(string id, int version = 0, bool isHistoric = false)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Encomendas);
 
@@ -70,6 +70,9 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.reportServerURL = _config.ReportServerURL;
                 ViewBag.userLogin = User.Identity.Name.ToString();
                 ViewBag.UPermissions = UPerm;
+                ViewBag.IsHistoric = isHistoric.ToString();
+                ViewBag.Version = version;
+
                 return View();
             }
             else
@@ -153,8 +156,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%");
-                var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%");
+                var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%", encomenda.Version);
+                var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, encomenda.No, "C%", encomenda.Version);
                 return Json(new
                 {
                     details,
@@ -1172,6 +1175,7 @@ namespace Hydra.Such.Portal.Controllers
                 int Col = 0;
 
                 var columns = dp.AsJEnumerable().ToList();
+                int colIndex = 0;
                 for (int i = 0; i < columns.Count; i++)
                 {
                     var column = columns[i];
@@ -1186,7 +1190,8 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (!isHidden)
                     {
-                        row.CreateCell(i).SetCellValue(label);
+                        row.CreateCell(colIndex).SetCellValue(label);
+                        colIndex = colIndex + 1;
                     }
                 }
 
@@ -1196,6 +1201,7 @@ namespace Hydra.Such.Portal.Controllers
                     foreach (PedidosPagamentoViewModel item in Lista)
                     {
                         row = excelSheet.CreateRow(count);
+                        colIndex = 0;
                         for (int i = 0; i < columns.Count; i++)
                         {
                             var column = columns[i];
@@ -1212,12 +1218,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                 if ((new[] { "Valor", "ValorEncomenda", "ValorJaPedido" }).Contains(columnPath))
                                 {
-                                    row.CreateCell(i).SetCellValue((double)(value != null ? (decimal)value : 0));
+                                    row.CreateCell(colIndex).SetCellValue((double)(value != null ? (decimal)value : 0));
                                 }
                                 else
                                 {
-                                    row.CreateCell(i).SetCellValue(value?.ToString());
+                                    row.CreateCell(colIndex).SetCellValue(value?.ToString());
                                 }
+                                colIndex = colIndex + 1;
                             }
                         }
                         count++;

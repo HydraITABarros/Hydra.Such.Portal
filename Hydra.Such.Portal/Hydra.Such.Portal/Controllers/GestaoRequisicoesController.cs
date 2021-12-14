@@ -175,8 +175,12 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesReqAprovada(string id)
+        public IActionResult DetalhesReqAprovada(string id, List<RequisitionViewModel> Lista = null)
         {
+            List<RequisitionViewModel> ListaREQ = null;
+            if (Lista != null)
+                ListaREQ = Lista;
+
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -1095,6 +1099,86 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult PreviousRequesition([FromBody] JObject requestParams)
+        {
+            string RequisitionNo = string.Empty;
+            if (requestParams["requisitionNo"] != null)
+                RequisitionNo = requestParams["requisitionNo"].ToString();
+
+            List<RequisitionViewModel> result = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel();
+            int MaxIndex = 0;
+            int Index = 0;
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            if (result != null && result.Count > 0 && !string.IsNullOrEmpty(RequisitionNo))
+            {
+                result = result.OrderByDescending(x => x.RequisitionNo).ToList();
+                MaxIndex = result.Count() - 1;
+
+                Index = result.FindIndex(x => x.RequisitionNo == RequisitionNo);
+                if (Index <= 0)
+                    Index = MaxIndex;
+                else
+                    Index = Index - 1;
+
+                return Json(result[Index].RequisitionNo);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult NextRequesition([FromBody] JObject requestParams)
+        {
+            string RequisitionNo = string.Empty;
+            if (requestParams["requisitionNo"] != null)
+                RequisitionNo = requestParams["requisitionNo"].ToString();
+
+            List<RequisitionViewModel> result = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel();
+            int MaxIndex = 0;
+            int Index = 0;
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            if (result != null && result.Count > 0 && !string.IsNullOrEmpty(RequisitionNo))
+            {
+                result = result.OrderByDescending(x => x.RequisitionNo).ToList();
+                MaxIndex = result.Count() - 1;
+
+                Index = result.FindIndex(x => x.RequisitionNo == RequisitionNo);
+                if (Index >= MaxIndex)
+                    Index = 0;
+                else
+                    Index = Index + 1;
+
+                return Json(result[Index].RequisitionNo);
+            }
+            else
+                return Json(null);
+        }
+
+        [HttpPost]
         public JsonResult GetValidatedRequisitions([FromBody] JObject requestParams)
         {
             DateTime pesquisaData = DateTime.MinValue;
@@ -1175,6 +1259,7 @@ namespace Hydra.Such.Portal.Controllers
             int Historic = 0;
             if (requestParams["Historic"] != null)
                 Historic = int.Parse(requestParams["Historic"].ToString());
+
             List<RequisitionStates> states = new List<RequisitionStates>();
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
@@ -4077,6 +4162,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
                 if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                //if (dp["validationDateText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Validação"); Col = Col + 1; }
                 if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Urgente"); Col = Col + 1; }
                 if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Trabalho já executado"); Col = Col + 1; }
                 if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Requisição Nutrição"); Col = Col + 1; }
@@ -4118,6 +4204,7 @@ namespace Hydra.Such.Portal.Controllers
                             item.State == RequisitionStates.Treated ? "Tratado" : item.State == RequisitionStates.Validated ? "Validado" : item.State == RequisitionStates.Approved ? "Aprovado" :
                             item.State == RequisitionStates.Rejected ? "Rejeitado" : item.State == RequisitionStates.Available ? "Disponibilizado" : item.State == RequisitionStates.Archived ? "Arquivado" : "");
                             Col = Col + 1; }
+                        //if (dp["validationDateText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValidationDateText); Col = Col + 1; }
                         if (dp["urgent"]["hidden"].ToString() == "False") {row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.HasValue ? item.AlreadyPerformed == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.HasValue ? item.RequestNutrition == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }

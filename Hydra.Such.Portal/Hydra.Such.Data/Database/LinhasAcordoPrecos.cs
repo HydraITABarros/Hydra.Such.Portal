@@ -32,5 +32,6 @@ namespace Hydra.Such.Data.Database
         public string GrupoRegistoIvaProduto { get; set; }
         public string CodCategoriaProduto { get; set; }
         public int? Interface { get; set; }
+        public string NoContrato { get; set; }
     }
 }

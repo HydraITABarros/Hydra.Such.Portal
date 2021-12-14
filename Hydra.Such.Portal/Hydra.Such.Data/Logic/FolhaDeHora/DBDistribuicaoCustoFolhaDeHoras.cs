@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.DistribuiçãoCustoFolhaDeHoras.Where(x => x.NºFolhasDeHoras == NoFolhasDeHoras && x.NºLinhaPercursosEAjudasCustoDespesas == NoLinhaPercursosAjudasCustoDespesas && x.NºLinha == NoLinha).FirstOrDefault();
+                    return ctx.DistribuiçãoCustoFolhaDeHoras.FirstOrDefault(x => x.NºFolhasDeHoras == NoFolhasDeHoras && x.NºLinhaPercursosEAjudasCustoDespesas == NoLinhaPercursosAjudasCustoDespesas && x.NºLinha == NoLinha);
                 }
             }
             catch (Exception ex)

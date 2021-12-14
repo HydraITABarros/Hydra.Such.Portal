@@ -146,7 +146,7 @@ namespace Hydra.Such.Data.Logic
                     CMHistoricoToActivo = item.CMHistoricoToActivo,
                     ArquivarREQPendentes = item.ArquivarREQPendentes,
                     CriarMedidasCorretivas = item.CriarMedidasCorretivas,
-                    VerFaturas = item.VerFaturas
+                    VerFaturas = item.VerFaturas,
                 };
             }
             return null;

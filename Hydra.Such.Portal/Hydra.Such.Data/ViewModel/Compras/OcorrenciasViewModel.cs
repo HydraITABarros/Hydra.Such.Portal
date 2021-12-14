@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string CodFornecedor { get; set; }
         public string NomeFornecedor { get; set; }
         public string CodEncomenda { get; set; }
+        public string CodProcedimento { get; set; }
         public string CodRegiao { get; set; }
         public string CodAreaFuncional { get; set; }
         public string CodCentroResponsabilidade { get; set; }

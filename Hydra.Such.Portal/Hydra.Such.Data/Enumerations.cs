@@ -209,6 +209,8 @@ namespace Hydra.Such.Data
             Ocorrencias = 80,
             [Description("Contratos - Requisições Cliente")]
             ContratosRequisicoesCliente = 81,
+            [Description("Fornecedores - Avaliação Desempenho Ambiental")]
+            FornecedoresAvaliacao = 82,
 
 
 

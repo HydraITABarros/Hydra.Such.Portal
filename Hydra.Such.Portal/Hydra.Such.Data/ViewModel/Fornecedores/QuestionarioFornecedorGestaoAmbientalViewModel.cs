@@ -4,9 +4,9 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
 {
     public class QuestionarioFornecedorGestaoAmbientalViewModel : ErrorHandler
     {
-        public int ID { get; set; }
         public string Codigo { get; set; }
         public int Versao { get; set; }
+        public string Versao_Texto { get; set; }
         public string ID_Fornecedor { get; set; }
         public string Fornecedor { get; set; }
         public string Actividade { get; set; }
@@ -159,12 +159,6 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public bool? Resposta_102_NA { get; set; }
         public string Resposta_102_NA_Texto { get; set; }
         public string Resposta_102_Texto { get; set; }
-        public bool? Resposta_103_Sim { get; set; }
-        public string Resposta_103_Sim_Texto { get; set; }
-        public bool? Resposta_103_Nao { get; set; }
-        public string Resposta_103_Nao_Texto { get; set; }
-        public bool? Resposta_103_NA { get; set; }
-        public string Resposta_103_NA_Texto { get; set; }
         public string Resposta_103_Texto { get; set; }
         public string Final_Responsavel { get; set; }
         public DateTime? Final_Data { get; set; }
@@ -177,6 +171,11 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public string DataHora_Modificacao_Texto { get; set; }
         public string Utilizador_Modificacao { get; set; }
         public string Utilizador_Modificacao_Texto { get; set; }
+        public bool? Nova_Versao { get; set; }
+        public string NomeAnexo { get; set; }
+       
+
+        public QuestionarioFornecedorGestaoAmbientalAnexosViewModel Anexo { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

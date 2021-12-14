@@ -31,7 +31,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.PrecoVendaRecursoFh.Where(x => x.Code == Code && x.CodTipoTrabalho == CodTipoTrabalho && x.StartingDate == StartingDate).FirstOrDefault();
+                    return ctx.PrecoVendaRecursoFh.FirstOrDefault(x => x.Code == Code && x.CodTipoTrabalho == CodTipoTrabalho && x.StartingDate == StartingDate);
                 }
             }
             catch (Exception e)

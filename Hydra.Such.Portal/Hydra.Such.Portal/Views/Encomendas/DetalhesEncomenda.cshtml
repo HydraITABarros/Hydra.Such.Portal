@@ -17,5 +17,6 @@
 <x-encomendadetails _no="@ViewBag.No"
                  _reportserverurl='@ViewBag.reportServerURL'
                  _userlogin='@ViewBag.userLogin'
-                 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+                 _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                _version='@ViewBag.Version'>
 </x-encomendadetails>
