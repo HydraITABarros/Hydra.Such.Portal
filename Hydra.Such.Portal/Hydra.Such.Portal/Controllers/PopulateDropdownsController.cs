@@ -454,12 +454,44 @@ namespace Hydra.Such.Portal.Controllers
             List<DDMessageString> result = null;
 
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            string ToDate = "2022-01-01";//DateTime.Now.ToShortDateString();
-            string FromDate = "2019-01-01";//DateTime.Now.AddMonths(-24).ToShortDateString();
+            string ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string FromDate = DateTime.Now.AddMonths(-24).ToString("yyyy-MM-dd");
             result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", FromDate, ToDate).Select(x => new DDMessageString()
             {
                 id = x.No,
                 value = x.PayToName
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentos2Years()
+        {
+            List<DDMessageRelated4> result = null;
+
+            result = DBNAV2009Procedimentos.ListProcedimentos2Years(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageRelated4()
+            {
+                id = x.No,
+                value = x.No,
+                extra1 = x.Local,
+                extra2 = x.Regiao,
+                extra3 = x.Area,
+                extra4 = x.Cresp
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentosFornecedores([FromBody] string ProcedimentoNo)
+        {
+            List<DDMessageString> result = null;
+
+            result = DBNAV2009Procedimentos.ListProcedimentosFornecedores(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, ProcedimentoNo).Select(x => new DDMessageString()
+            {
+                id = x.id,
+                value = x.value
             }).ToList();
 
             return Json(result);
@@ -3625,6 +3657,16 @@ namespace Hydra.Such.Portal.Controllers
         public string value { get; set; }
         public string extra { get; set; }
         public string extra2 { get; set; }
+    }
+
+    public class DDMessageRelated4
+    {
+        public string id { get; set; }
+        public string value { get; set; }
+        public string extra1 { get; set; }
+        public string extra2 { get; set; }
+        public string extra3 { get; set; }
+        public string extra4 { get; set; }
     }
 
     public class DDMessageRelatedInt

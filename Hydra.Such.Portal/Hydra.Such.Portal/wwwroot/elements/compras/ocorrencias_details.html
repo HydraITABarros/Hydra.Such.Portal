@@ -149,11 +149,9 @@
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetAllPurchase24Months" last-response="{{ListPurchases}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllProcedimentos2Years" last-response="{{ListProcedimentos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasGrauGravidade" last-response="{{ListGrauGravidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasMotivos" last-response="{{ListMotivos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
-
 
         <iron-ajax url="/Ocorrencias/GetOcorrenciaDetails"
                    last-response="{{data}}"
@@ -216,6 +214,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetAllProcedimentosFornecedores"
+                   last-response="{{ListFornecedores}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_GetProcedimentosFornecedores"
+                   on-response="_ResponseGetProcedimentosFornecedores"
+                   content-type="application/json">
+        </iron-ajax>
 
 
         <div class="subMenu">
@@ -247,25 +253,32 @@
                                 text-path="id"
                                 value-path="id"
                                 fields='[{"field":"id", "name":"Cód. Encomenda"}, {"field":"value", "name":"Fornecedor"}]'
-                                on-value-changed="_EncomendaChanged"
-                                required error-message="Campo de preenchimento obrigatório">
+                                on-value-changed="_EncomendaChanged">
                 </such-selectbox>
             </div>
 
             <div class="col-md-2">
                 <label id="lblcodProcedimento">Cód. Procedimento</label>
                 <such-selectbox id="codProcedimento" name="codProcedimento" value="{{ data.codProcedimento }}" disabled="{{ !_isEdit }}"
-                                items="[[ListPurchases]]"
+                                items="[[ListProcedimentos]]"
                                 text-path="id"
                                 value-path="id"
-                                fields='[{"field":"id", "name":"Cód. Encomenda"}, {"field":"value", "name":"Encomenda"}]'
-                                on-value-changed="_ProcedimentoChanged"
-                                required error-message="Campo de preenchimento obrigatório">
+                                fields='[{"field":"id", "name":"Cód. Procedimento"}, {"field":"extra1", "name":"Local Entrega"}, {"field":"extra2", "name":"Cód. Região"}, {"field":"extra3", "name":"Cód. Área Funcional"}, {"field":"extra4", "name":"Cód. Centro Responsabilidade"}]'
+                                on-value-changed="_ProcedimentoChanged">
                 </such-selectbox>
             </div>
 
             <div class="col-md-2">
                 <vaadin-text-field id="codFornecedor" name="codFornecedor" value="{{data.codFornecedor}}" label="Cód. Fornecedor" disabled></vaadin-text-field>
+                <such-selectbox id="codFornecedorProcedimento" name="codFornecedorProcedimento" value="{{ data.codFornecedor }}" disabled="{{ !_isEdit }}"
+                                label="Cód. Fornecedor"
+                                items="[[ListFornecedores]]"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Cód. Fornecedor"}, {"field":"value", "name":"Fornecedor"}]'
+                                hidden
+                                on-value-changed="_ProcedimentoFornecedorChanged">
+                </such-selectbox>
             </div>
 
             <div class="col-md-4">
@@ -520,7 +533,7 @@
                 },
 
                 _EncomendaChanged: function (e) {
-                    if (this.$.codEncomenda.__data.value != "") {
+                    if (this.$.codEncomenda.value != undefined && this.$.codEncomenda.value != "") {
                         this.data.codEncomenda = this.$.codEncomenda.__data.value;
                         this.$.page_GetEncomenda_ajax.body = JSON.stringify(this.data);
                         this.$.page_GetEncomenda_ajax.generateRequest();
@@ -529,22 +542,62 @@
                         this.$.descricao.value = "";
                         this.$.unidMedida.value = "";
                         this.$.quantidade.value = "";
-                        this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
-                        this.$.ajax_GetEncomendaLines.generateRequest();
+
+                        this.$.codCentroResponsabilidade.disabled = true;
+                        this.$.localEntrega.disabled = true;
+                        this.$.codProcedimento.value = "";
+                        this.$.codProcedimento.valueText = "";
+                        this.$.codFornecedor.hidden = false;
+                        this.$.codFornecedorProcedimento.hidden = true;
+
+                        this.$.ajax_GetProcedimentosFornecedores.body = JSON.stringify(this.$.codEncomenda.value);
+                        this.$.ajax_GetProcedimentosFornecedores.generateRequest();
                     }
-                    else {
-                        this.$.codFornecedor.value = "";
-                        this.$.nomeFornecedor.value = "";
+                    //else {
+                    //    this.$.codFornecedor.value = "";
+                    //    this.$.nomeFornecedor.value = "";
+                    //    this.$.codRegiao.value = "";
+                    //    this.$.codAreaFuncional.value = "";
+                    //    this.$.codCentroResponsabilidade.value = "";
+                    //    this.$.dataOcorrenciaTexto.value = "";
+                    //    this.$.localEntrega.value = "";
+                    //    this.$.noDocExterno.value = "";
+                    //    this.$.codArtigo._clearSelection();
+                    //    this.$.descricao.value = "";
+                    //    this.$.unidMedida.value = "";
+                    //    this.$.quantidade.value = "";
+                    //}
+                },
+
+                _ProcedimentoChanged: function () {
+                    if (this.$.codProcedimento.value != undefined && this.$.codProcedimento.value != "") {
+                        this.$.localEntrega.value = "";
                         this.$.codRegiao.value = "";
                         this.$.codAreaFuncional.value = "";
                         this.$.codCentroResponsabilidade.value = "";
-                        this.$.dataOcorrenciaTexto.value = "";
-                        this.$.localEntrega.value = "";
-                        this.$.noDocExterno.value = "";
-                        this.$.codArtigo._clearSelection();
-                        this.$.descricao.value = "";
-                        this.$.unidMedida.value = "";
-                        this.$.quantidade.value = "";
+                        this.$.codFornecedor.value = "";
+                        this.$.nomeFornecedor.value = "";
+
+                        if (this.ListProcedimentos.length > 0) {
+                            for (var i = 0; i < this.ListProcedimentos.length; i++) {
+                                if (this.ListProcedimentos[i].value == this.$.codProcedimento.value) {
+                                    this.$.localEntrega.value = this.ListProcedimentos[i].extra1;
+                                    this.$.codRegiao.value = this.ListProcedimentos[i].extra2;
+                                    this.$.codAreaFuncional.value = this.ListProcedimentos[i].extra3;
+                                    this.$.codCentroResponsabilidade.value = this.ListProcedimentos[i].extra4;
+                                };
+                            }
+                        }
+
+                        this.$.codCentroResponsabilidade.disabled = false;
+                        this.$.localEntrega.disabled = false;
+                        this.$.codEncomenda.value = "";
+                        this.$.codEncomenda.valueText = "";
+                        this.$.codFornecedor.hidden = true;
+                        this.$.codFornecedorProcedimento.hidden = false;
+
+                        this.$.ajax_GetProcedimentosFornecedores.body = JSON.stringify(this.$.codProcedimento.value);
+                        this.$.ajax_GetProcedimentosFornecedores.generateRequest();
                     }
                 },
 
@@ -562,24 +615,29 @@
                 },
 
                 _Create: function () {
-                    if (this.$.codEncomenda.validate() && this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
+                    if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
                         if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
-                            if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
-                                if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
-                                    if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
-                                        this.$.page_Create_ajax.body = JSON.stringify(this.data);
-                                        this.$.page_Create_ajax.generateRequest();
+                            if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                                if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                    if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                        if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                            this.$.page_Create_ajax.body = JSON.stringify(this.data);
+                                            this.$.page_Create_ajax.generateRequest();
+                                        }
+                                        else {
+                                            this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                        }
                                     }
                                     else {
-                                        this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                        this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
                                     }
                                 }
                                 else {
-                                    this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                    this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
                                 }
                             }
                             else {
-                                this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
                             }
                         }
                         else {
@@ -587,7 +645,43 @@
                         }
                     }
                     else {
-                        this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                        if (this.$.codProcedimento.value != null && this.$.codProcedimento.value != "") {
+                            if (this.$.codFornecedorProcedimento.value != null && this.$.codFornecedorProcedimento.value != "") {
+                                if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                                    if (this.$.localEntrega.value != null && this.$.localEntrega.value != "" && this.$.localEntrega.value.length >= 4) {
+                                        if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                            if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                                if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                                    this.$.page_Create_ajax.body = JSON.stringify(this.data);
+                                                    this.$.page_Create_ajax.generateRequest();
+                                                }
+                                                else {
+                                                    this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                                }
+                                            }
+                                            else {
+                                                this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                            }
+                                        }
+                                        else {
+                                            this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError("O campo Local deEntrega é de preenchimento obrigatório e com um mínimo de 4 caracteres.");
+                                    }
+                                }
+                                else {
+                                    this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                                }
+                            }
+                            else {
+                                this._openToastError("O campo Cód. Fornecedor é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Cód. Procedimento é de preenchimento obrigatório.");
+                        }
                     }
                 },
 
@@ -716,7 +810,12 @@
                     }
                 },
 
-
+                _ResponseGetProcedimentosFornecedores: function () {
+                    if (this.ListFornecedores != null && this.ListFornecedores.length > 0) {
+                        this.$.codFornecedorProcedimento.value = this.ListFornecedores[0].id;
+                        this.$.nomeFornecedor.value = this.ListFornecedores[0].value;
+                    }
+                }
 
 
 

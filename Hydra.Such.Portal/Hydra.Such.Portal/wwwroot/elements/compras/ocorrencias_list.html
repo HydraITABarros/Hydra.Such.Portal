@@ -256,6 +256,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codProcedimento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codProcedimento">Cód. Procedimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codProcedimento" value="[[filter.codProcedimento]]" />
+                </template>
+                <template>
+                    {{item.codProcedimento}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
@@ -601,7 +611,7 @@
 
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
-                    location.href = '../Ocorrencias/ExportToExcelDownload_Ocorrencias?sFileName=' + FileName;
+                    location.href = '/Ocorrencias/ExportToExcelDownload_Ocorrencias?sFileName=' + FileName;
                 },
 
                 _showHistorico: function (item) {
@@ -632,6 +642,7 @@
                         "codFornecedor": { hidden: false, label: "Cód. Fornecedor" },
                         "nomeFornecedor": { hidden: false, label: "Fornecedor" },
                         "codEncomenda": { hidden: false, label: "Cód. Encomenda" },
+                        "codProcedimento": { hidden: false, label: "Cód. Procedimento" },
                         "codRegiao": { hidden: false, label: "Cód. Região" },
                         "codAreaFuncional": { hidden: false, label: "Cód. Área Funcional" },
                         "codCentroResponsabilidade": { hidden: false, label: "Cód. Centro Responsabilidade" },

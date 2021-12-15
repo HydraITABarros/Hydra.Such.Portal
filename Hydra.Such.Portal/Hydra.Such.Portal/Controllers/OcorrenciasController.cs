@@ -134,6 +134,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Fornecedor"); Col = Col + 1; }
                 if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1; }
                 if (dp["codEncomenda"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Encomenda"); Col = Col + 1; }
+                if (dp["codProcedimento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Procedimento"); Col = Col + 1; }
                 if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade"); Col = Col + 1; }
@@ -172,6 +173,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodFornecedor); Col = Col + 1; }
                         if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeFornecedor); Col = Col + 1; }
                         if (dp["codEncomenda"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodEncomenda); Col = Col + 1; }
+                        if (dp["codProcedimento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodProcedimento); Col = Col + 1; }
                         if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
                         if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
@@ -348,6 +350,46 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         public JsonResult GetEncomendaDetails([FromBody] OcorrenciasViewModel data)
+        {
+            if (data != null)
+            {
+                data.CodFornecedor = "";
+                data.NomeFornecedor = "";
+                data.CodRegiao = "";
+                data.CodAreaFuncional = "";
+                data.CodCentroResponsabilidade = "";
+                data.DataOcorrencia = null;
+                data.DataOcorrenciaTexto = "";
+                data.LocalEntrega = "";
+                data.NoDocExterno = "";
+                data.CodArtigo = "";
+                data.Descricao = "";
+                data.UnidMedida = "";
+                data.Quantidade = null;
+
+                if (!string.IsNullOrEmpty(data.CodEncomenda))
+                {
+                    EncomendasViewModel Encomenda = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "");
+
+                    if (Encomenda != null)
+                    {
+                        data.CodFornecedor = Encomenda.PayToVendorNo;
+                        data.NomeFornecedor = Encomenda.PayToName;
+                        data.CodRegiao = Encomenda.RegionId;
+                        data.CodAreaFuncional = Encomenda.FunctionalAreaId;
+                        data.CodCentroResponsabilidade = Encomenda.RespCenterId;
+                        data.DataOcorrencia = Encomenda.OrderDate;
+                        data.DataOcorrenciaTexto = data.DataOcorrencia.Value.ToString("yyyy-MM-dd");
+                        data.LocalEntrega = Encomenda.ShipToName;
+                        data.NoDocExterno = Encomenda.VendorShipmentNo;
+                    }
+                }
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetProcedimentoDetails([FromBody] OcorrenciasViewModel data)
         {
             if (data != null)
             {
