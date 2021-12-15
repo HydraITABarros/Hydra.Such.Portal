@@ -320,7 +320,6 @@
         <div class="row break_clear">
             <div class="col-md-2">
                 <label id="lblnoDocExterno">No. Documento Externo</label>
-                <!--<vaadin-text-field id="noDocExterno" name="noDocExterno" value="{{data.noDocExterno}}" disabled="{{ !_isEditALL }}"></vaadin-text-field>-->
                 <vaadin-combo-box id="noDocExterno" name="noDocExterno" items="[[ListDocExternos]]" item-value-path="id" item-label-path="id" value="{{data.noDocExterno}}" disabled="{{ !_isEdit }}">
                     <template>
                         <paper-icon-item>
@@ -330,6 +329,7 @@
                         </paper-icon-item>
                     </template>
                 </vaadin-combo-box>
+                <vaadin-text-field id="noDocExternoProcedimento" name="noDocExternoProcedimento" value="{{data.noDocExterno}}" disabled="{{ !_isEditALL }}" hidden></vaadin-text-field>
             </div>
 
             <div class="col-md-2">
@@ -568,8 +568,11 @@
                         this.$.localEntrega.disabled = true;
                         this.$.codProcedimento.value = "";
                         this.$.codProcedimento.valueText = "";
+                        this.$.noDocExternoProcedimento.value = "";
                         this.$.codFornecedor.hidden = false;
                         this.$.codFornecedorProcedimento.hidden = true;
+                        this.$.noDocExterno.hidden = false;
+                        this.$.noDocExternoProcedimento.hidden = true;
 
                         this.$.ajax_GetProcedimentosFornecedores.body = JSON.stringify(this.$.codEncomenda.value);
                         this.$.ajax_GetProcedimentosFornecedores.generateRequest();
@@ -619,9 +622,12 @@
                         this.$.codEncomenda.valueText = "";
                         this.$.noDocExterno.id = "";
                         this.$.noDocExterno.value = "";
+                        this.$.noDocExternoProcedimento.value = "";
                         this.ListDocExternos = null;
                         this.$.codFornecedor.hidden = true;
                         this.$.codFornecedorProcedimento.hidden = false;
+                        this.$.noDocExterno.hidden = true;
+                        this.$.noDocExternoProcedimento.hidden = false;
 
                         this.$.ajax_GetProcedimentosFornecedores.body = JSON.stringify(this.$.codProcedimento.value);
                         this.$.ajax_GetProcedimentosFornecedores.generateRequest();
