@@ -26,7 +26,7 @@ namespace Hydra.Such.Portal.Controllers
         private const string TrainingImagePath = "\\AccaoFormacao\\";
         private const string AttachmentPath = "\\PedidoFormacao\\";
         protected int RequestOrigin { get; set; }
-        protected readonly int TrainingRequestApprovalType = EnumerablesFixed.ApprovalTypes.Where(e => e.Value.Contains("Pedido Formação")).FirstOrDefault().Id;
+        protected readonly int TrainingRequestApprovalType = EnumerablesFixed.ApprovalTypes.FirstOrDefault(e => e.Value.Contains("Pedido Formação")).Id;
 
         public AcademiaController(IOptions<GeneralConfigurations> appSettings, IHostingEnvironment hostingEnvironment)
         {
@@ -480,7 +480,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                 Formando formando = new Formando(userConfig.EmployeeNo);
-                formando.GetAllTrainingRequestsForTrainne();
+                //formando.GetAllTrainingRequestsForTrainne();
 
                 if (formando == null)
                 {
@@ -495,17 +495,18 @@ namespace Hydra.Such.Portal.Controllers
 
                 string idPedido = string.Empty;
 
+                // JPM.
+                //if (formando.AlreadyRegisteredForCourse(accao.IdAccao, ref idPedido))
+                //{
+                //    ErrorHandler alreadyRegistered = new ErrorHandler()
+                //    {
+                //        eReasonCode = -2,
+                //        eMessage = idPedido
+                //    };
 
-                if (formando.AlreadyRegisteredForCourse(accao.IdAccao, ref idPedido))
-                {
-                    ErrorHandler alreadyRegistered = new ErrorHandler()
-                    {
-                        eReasonCode = -2,
-                        eMessage = idPedido
-                    };
+                //    return Json(alreadyRegistered);
+                //}
 
-                    return Json(alreadyRegistered);
-                }
 
                 PedidoParticipacaoFormacao pedido = DBAcademia.__CriarPedidoFormacao(accao.ParseToDb(), formando, userConfig);
                 if (pedido != null)
@@ -542,6 +543,36 @@ namespace Hydra.Such.Portal.Controllers
             };
 
             return Json(blankCourse);
+        }
+
+        [HttpPost]
+        public JsonResult VerificarPedidoParaAccaoFormacao([FromBody] JObject reqParam)
+        {
+            string idAccao = reqParam["idAccao"] == null ? string.Empty : (string)reqParam["idAccao"];
+            string idFormando = reqParam["idFormando"] == null ? string.Empty : (string)reqParam["idFormando"];
+
+            if (string.IsNullOrEmpty(idAccao))
+            {
+                return Json(null);
+            }
+
+            if (string.IsNullOrEmpty(idFormando))
+            {
+                return Json(null);
+            }
+
+            Formando formando = new Formando(idFormando);
+            string idPedido = string.Empty;
+
+            if (formando.AlreadyRegisteredForCourse(idAccao, ref idPedido))
+            {
+                if (!string.IsNullOrEmpty(idPedido))
+                {
+                    return Json(idPedido);
+                }
+            }
+
+            return Json(null);
         }
 
         [HttpPost]

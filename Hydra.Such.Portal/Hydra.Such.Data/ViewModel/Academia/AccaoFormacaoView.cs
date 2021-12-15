@@ -78,6 +78,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
                 UrlImagem = UrlImagem
             };
 
+            if (Entidade != null)
+            {
+                accao.Entidade = Entidade;
+            }
             return accao;
         }
     }
