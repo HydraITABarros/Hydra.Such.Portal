@@ -717,7 +717,7 @@
                                 if (e.model.item.quantidade != null && e.model.item.quantidade != "") {
                                     if (e.model.item.grauGravidade != null && e.model.item.grauGravidade != "") {
                                         if (e.model.item.codMotivo != null && e.model.item.codMotivo != "") {
-                                            if (e.model.item.noDocExterno != null && e.model.item.noDocExterno != "") {
+                                            //if (e.model.item.noDocExterno != null && e.model.item.noDocExterno != "") {
                                                 /*FILTROS*/
                                                 window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
                                                 window.grid = this.$.ocorrenciasGrid;
@@ -753,10 +753,10 @@
                                                         }
                                                     }
                                                 });
-                                            }
-                                            else {
-                                                this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
-                                            }
+                                            //}
+                                            //else {
+                                            //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                                            //}
                                         }
                                         else {
                                             this._openToastError("O campo Motivo é de preenchimento obrigatório.");
@@ -775,7 +775,81 @@
                             }
                         }
                         else {
-                            this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                            if (e.model.item.codProcedimento != null && e.model.item.codProcedimento != "") {
+                                if (e.model.item.codFornecedor != null && e.model.item.codFornecedor != "") {
+                                    if (e.model.item.dataOcorrenciaTexto != null && e.model.item.dataOcorrenciaTexto != "") {
+                                        if (e.model.item.localEntrega != null && e.model.item.localEntrega != "") {
+                                            if (e.model.item.quantidade != null && e.model.item.quantidade != "") {
+                                                if (e.model.item.grauGravidade != null && e.model.item.grauGravidade != "") {
+                                                    if (e.model.item.codMotivo != null && e.model.item.codMotivo != "") {
+                                                        //if (e.model.item.noDocExterno != null && e.model.item.noDocExterno != "") {
+                                                            /*FILTROS*/
+                                                            window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
+                                                            window.grid = this.$.ocorrenciasGrid;
+                                                            window._this = this;
+
+                                                            var TMessage = this.$.ToastMessage;
+                                                            var TMessageError = this.$.ToastError;
+                                                            var ARequest = this.$.ajax_CreateMedidaCorretiva;
+
+                                                            bootbox.prompt({
+                                                                title: "Introduza a Medida Corretiva!",
+                                                                inputType: 'textarea',
+                                                                buttons: {
+                                                                    confirm: {
+                                                                        label: 'Inserir',
+                                                                        className: 'btn-success'
+                                                                    },
+                                                                    cancel: {
+                                                                        label: 'Fechar',
+                                                                        className: 'btn-danger'
+                                                                    }
+                                                                },
+                                                                callback: function (result) {
+                                                                    if (result != null) {
+                                                                        if (result == "") {
+                                                                            TMessageError.text = "É necessário preencher a Medida Corretiva.";
+                                                                            TMessageError.open();
+                                                                            return false;
+                                                                        } else {
+                                                                            ARequest.body = JSON.stringify({ codOcorrencia: e.model.item.codOcorrencia, medidaCorretiva: result });
+                                                                            ARequest.generateRequest();
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                        //}
+                                                        //else {
+                                                        //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                                                        //}
+                                                    }
+                                                    else {
+                                                        this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                                    }
+                                                }
+                                                else {
+                                                    this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                                }
+                                            }
+                                            else {
+                                                this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                            }
+                                        }
+                                        else {
+                                            this._openToastError("O campo Local Entrega é de preenchimento obrigatório.");
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                                    }
+                                }
+                                else {
+                                    this._openToastError("O campo Cód. Fornecedor é de preenchimento obrigatório.");
+                                }
+                            }
+                            else {
+                                this._openToastError("O campo Cód. Procedimento é de preenchimento obrigatório.");
+                            }
                         }
                     }
                 },
@@ -796,7 +870,7 @@
 
 
 
+                });
             });
-        });
     </script>
 </dom-module>
