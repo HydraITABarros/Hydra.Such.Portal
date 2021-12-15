@@ -289,5 +289,36 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<EncomendasViewModel> EncomendasNoDocExterno(string NAVDatabaseName, string NAVCompanyName, string EncomendaNo)
+        {
+            try
+            {
+                List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@EncomendaNo", EncomendaNo )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasNoDocExterno @DBName, @CompanyName, @EncomendaNo", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new EncomendasViewModel()
+                        {
+                            VendorShipmentNo = temp.NoDocExterno.Equals(DBNull.Value) ? "" : (string)temp.NoDocExterno
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

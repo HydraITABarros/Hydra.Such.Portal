@@ -714,10 +714,10 @@
                     if (e != null) {
                         if (e.model.item.codEncomenda != null && e.model.item.codEncomenda != "") {
                             if (e.model.item.dataOcorrenciaTexto != null && e.model.item.dataOcorrenciaTexto != "") {
-                                if (e.model.item.quantidade != null && e.model.item.quantidade != "") {
-                                    if (e.model.item.grauGravidade != null && e.model.item.grauGravidade != "") {
-                                        if (e.model.item.codMotivo != null && e.model.item.codMotivo != "") {
-                                            //if (e.model.item.noDocExterno != null && e.model.item.noDocExterno != "") {
+                                if (e.model.item.noDocExterno != null && e.model.item.noDocExterno != "") {
+                                    if (e.model.item.quantidade != null && e.model.item.quantidade != "") {
+                                        if (e.model.item.grauGravidade != null && e.model.item.grauGravidade != "") {
+                                            if (e.model.item.codMotivo != null && e.model.item.codMotivo != "") {
                                                 /*FILTROS*/
                                                 window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
                                                 window.grid = this.$.ocorrenciasGrid;
@@ -753,21 +753,21 @@
                                                         }
                                                     }
                                                 });
-                                            //}
-                                            //else {
-                                            //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
-                                            //}
+                                            }
+                                            else {
+                                                this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                            }
                                         }
                                         else {
-                                            this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                            this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
                                         }
                                     }
                                     else {
-                                        this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                        this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
                                     }
                                 }
                                 else {
-                                    this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
                                 }
                             }
                             else {

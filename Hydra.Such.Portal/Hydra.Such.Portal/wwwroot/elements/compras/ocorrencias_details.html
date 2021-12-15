@@ -223,6 +223,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetAllDocExternos"
+                   last-response="{{ListDocExternos}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_GetDocExternos"
+                   on-response="_ResponseGetDocExternos"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -312,7 +320,16 @@
         <div class="row break_clear">
             <div class="col-md-2">
                 <label id="lblnoDocExterno">No. Documento Externo</label>
-                <vaadin-text-field id="noDocExterno" name="noDocExterno" value="{{data.noDocExterno}}" disabled="{{ !_isEditALL }}"></vaadin-text-field>
+                <!--<vaadin-text-field id="noDocExterno" name="noDocExterno" value="{{data.noDocExterno}}" disabled="{{ !_isEditALL }}"></vaadin-text-field>-->
+                <vaadin-combo-box id="noDocExterno" name="noDocExterno" items="[[ListDocExternos]]" item-value-path="id" item-label-path="id" value="{{data.noDocExterno}}" disabled="{{ !_isEdit }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.id]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
             </div>
 
             <div class="col-md-2">
@@ -518,6 +535,10 @@
 
                             this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
                             this.$.ajax_GetEncomendaLines.generateRequest();
+
+                            this.$.ajax_GetDocExternos.body = JSON.stringify(this.data.codEncomenda);
+                            this.$.ajax_GetDocExternos.generateRequest();
+
                         }
 
                         else if (data.detail.url.indexOf("Create") !== -1) {
@@ -552,6 +573,9 @@
 
                         this.$.ajax_GetProcedimentosFornecedores.body = JSON.stringify(this.$.codEncomenda.value);
                         this.$.ajax_GetProcedimentosFornecedores.generateRequest();
+
+                        this.$.ajax_GetDocExternos.body = JSON.stringify(this.$.codEncomenda.value);
+                        this.$.ajax_GetDocExternos.generateRequest();
                     }
                     //else {
                     //    this.$.codFornecedor.value = "";
@@ -593,6 +617,9 @@
                         this.$.localEntrega.disabled = false;
                         this.$.codEncomenda.value = "";
                         this.$.codEncomenda.valueText = "";
+                        this.$.noDocExterno.id = "";
+                        this.$.noDocExterno.value = "";
+                        this.ListDocExternos = null;
                         this.$.codFornecedor.hidden = true;
                         this.$.codFornecedorProcedimento.hidden = false;
 
@@ -617,7 +644,7 @@
                 _Create: function () {
                     if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
                         if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
-                            //if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                            if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
                                 if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
                                     if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
                                         if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
@@ -635,10 +662,10 @@
                                 else {
                                     this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
                                 }
-                            //}
-                            //else {
-                            //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
-                            //}
+                            }
+                            else {
+                                this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                            }
                         }
                         else {
                             this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
@@ -698,7 +725,7 @@
                 _Update: function () {
                     if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
                         if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
-                            //if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                            if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
                             if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
                                 if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
                                     if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
@@ -716,10 +743,10 @@
                             else {
                                 this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
                             }
-                            //}
-                            //else {
-                            //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
-                            //}
+                            }
+                            else {
+                                this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                            }
                         }
                         else {
                             this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
@@ -856,8 +883,13 @@
                         this.$.codFornecedorProcedimento.value = this.ListFornecedores[0].id;
                         this.$.nomeFornecedor.value = this.ListFornecedores[0].value;
                     }
-                }
+                },
 
+                _ResponseGetDocExternos: function () {
+                    if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
+                        this.$.noDocExterno.id = this.ListDocExternos[0].id;
+                    }
+                },
 
 
 
