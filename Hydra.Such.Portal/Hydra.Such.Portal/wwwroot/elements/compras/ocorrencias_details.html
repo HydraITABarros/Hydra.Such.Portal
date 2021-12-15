@@ -617,7 +617,7 @@
                 _Create: function () {
                     if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
                         if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
-                            if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                            //if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
                                 if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
                                     if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
                                         if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
@@ -635,10 +635,10 @@
                                 else {
                                     this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
                                 }
-                            }
-                            else {
-                                this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
-                            }
+                            //}
+                            //else {
+                            //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                            //}
                         }
                         else {
                             this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
@@ -697,10 +697,11 @@
 
                 _Update: function () {
                     if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
-                        if (this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
-                            if (this.$.quantidade.value != null && this.$.quantidade.value != "") {
-                                if (this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
-                                    if (this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                        if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                            //if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                            if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                    if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
                                         this.$.page_Update_ajax.body = JSON.stringify(this.data);
                                         this.$.page_Update_ajax.generateRequest();
                                     }
@@ -715,13 +716,53 @@
                             else {
                                 this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
                             }
+                            //}
+                            //else {
+                            //    this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                            //}
                         }
                         else {
                             this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
                         }
                     }
                     else {
-                        this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                        if (this.$.codProcedimento.value != null && this.$.codProcedimento.value != "") {
+                            if (this.$.codFornecedorProcedimento.value != null && this.$.codFornecedorProcedimento.value != "") {
+                                if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                                    if (this.$.localEntrega.value != null && this.$.localEntrega.value != "" && this.$.localEntrega.value.length >= 4) {
+                                        if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                            if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                                if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                                    this.$.page_Update_ajax.body = JSON.stringify(this.data);
+                                                    this.$.page_Update_ajax.generateRequest();
+                                                }
+                                                else {
+                                                    this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                                }
+                                            }
+                                            else {
+                                                this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                            }
+                                        }
+                                        else {
+                                            this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError("O campo Local deEntrega é de preenchimento obrigatório e com um mínimo de 4 caracteres.");
+                                    }
+                                }
+                                else {
+                                    this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                                }
+                            }
+                            else {
+                                this._openToastError("O campo Cód. Fornecedor é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Cód. Procedimento é de preenchimento obrigatório.");
+                        }
                     }
                 },
 
