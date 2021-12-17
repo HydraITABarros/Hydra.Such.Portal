@@ -35,10 +35,10 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@RequisitionNo", requisitionNo),
                         new SqlParameter("@From", from),
                         new SqlParameter("@To", to),
-                        new SqlParameter("@No_FilterExpression", No_FilterExpression )
+                        new SqlParameter("@NoLikeExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @No_FilterExpression", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @NoLikeExpression", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -99,10 +99,10 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@RequisitionNo", requisitionNo),
                         new SqlParameter("@From", from),
                         new SqlParameter("@To", to),
-                        new SqlParameter("@No_FilterExpression", No_FilterExpression )
+                        new SqlParameter("@NoLikeExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList_Archive @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @No_FilterExpression", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList_Archive @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @NoLikeExpression", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -131,6 +131,43 @@ namespace Hydra.Such.Data.Logic
                                 VlrRececionadoSemIVA = temp.VlrRececionadoSemIVA.Equals(DBNull.Value) ? 0 : (decimal)temp.VlrRececionadoSemIVA,
                             });
                         }
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<EncomendasViewModel> AllEncomendasAndArchive(string NAVDatabaseName, string NAVCompanyName, string No_FilterExpression, string from = null, string to = null)
+        {
+            try
+            {
+                List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@From", from),
+                        new SqlParameter("@To", to),
+                        new SqlParameter("@NoLikeExpression", No_FilterExpression )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasListOcorrencias @DBName, @CompanyName, @From, @To, @NoLikeExpression", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new EncomendasViewModel()
+                        {
+                            No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                            PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
+                            PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
+                        });
                     }
                 }
 

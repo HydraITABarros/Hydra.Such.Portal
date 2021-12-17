@@ -453,10 +453,10 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = null;
 
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            string ToDate = DateTime.Now.ToString("yyyy-MM-dd");
             string FromDate = DateTime.Now.AddMonths(-24).ToString("yyyy-MM-dd");
-            result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", FromDate, ToDate).Select(x => new DDMessageString()
+            string ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            result = DBNAV2017Encomendas.AllEncomendasAndArchive(_config.NAVDatabaseName, _config.NAVCompanyName, "C%", FromDate, ToDate).Select(x => new DDMessageString()
             {
                 id = x.No,
                 value = x.PayToName

@@ -56,5 +56,6 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string VATBusinessPostingGroup { get; set; }
         public string VATProductPostingGroup { get; set; }
         public decimal? DiscountPercentage { get; set; }
+        public string NoContrato { get; set; }
     }
 }
