@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using Hydra.Such.Data.Database;
-using System.Linq;
 using Hydra.Such.Data.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 using static Hydra.Such.Data.Enumerations;
+using static Hydra.Such.Data.Logic.DBNAV2009Procedimentos;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -249,6 +251,41 @@ namespace Hydra.Such.Data.Logic
             catch (Exception ex)
             {
 
+                return null;
+            }
+        }
+
+        public static List<NAV2009FornecedoresContratos> AcordoPrecoGetContratos(string NAVServerName, string NAVDatabaseName, string NAVCompanyName, string FornecedorNo = null)
+        {
+            try
+            {
+                List<NAV2009FornecedoresContratos> result = new List<NAV2009FornecedoresContratos>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@ServerName", NAVServerName),
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@FornecedorNo", FornecedorNo )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2009AcordoPrecoGetContratos @ServerName, @DBName, @CompanyName, @FornecedorNo", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAV2009FornecedoresContratos()
+                        {
+                            ContratoNo = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                            FornecedorNo = temp.FornecedorNo.Equals(DBNull.Value) ? "" : (string)temp.FornecedorNo,
+                            Descricao = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
                 return null;
             }
         }

@@ -1,50 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Office.Interop.Excel;
-using Hydra.Such.Data.ViewModel;
-using Hydra.Such.Data.Logic;
+﻿
+using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.Logic.ComprasML;
+using Hydra.Such.Data.Logic.Contracts;
+using Hydra.Such.Data.Logic.FolhaDeHora;
+using Hydra.Such.Data.Logic.Nutrition;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.NAV;
+using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.ViewModel.Approvals;
+using Hydra.Such.Data.ViewModel.CCP;
+using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.ViewModel.Contracts;
+using Hydra.Such.Data.ViewModel.FH;
+using Hydra.Such.Data.ViewModel.Nutrition;
+using Hydra.Such.Data.ViewModel.PBIGestiControl;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectView;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Hydra.Such.Data.ViewModel.Viaturas;
-using Hydra.Such.Data.Logic.Viatura;
-using Hydra.Such.Data.ViewModel.FH;
-using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Portal.Configurations;
-using Hydra.Such.Data.NAV;
-using Hydra.Such.Data.ViewModel.Compras;
-using Hydra.Such.Data.Logic.ComprasML;
-using Hydra.Such.Data.Logic.Approvals;
-using Hydra.Such.Data.ViewModel.Approvals;
-using Microsoft.Extensions.Options;
-using Hydra.Such.Data;
-using System.IO;
-using OfficeOpenXml;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.Drawing;
-using System.Globalization;
-using Hydra.Such.Data.Logic.Nutrition;
-using Hydra.Such.Data.ViewModel.Nutrition;
-using Hydra.Such.Data.ViewModel.Contracts;
-using Hydra.Such.Data.Logic.Contracts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using Microsoft.AspNetCore.Hosting;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text;
-using NPOI.HSSF.UserModel;
-using Hydra.Such.Data.Logic.Request;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Hydra.Such.Data.ViewModel.CCP;
-using Hydra.Such.Data.ViewModel.PBIGestiControl;
+using System.Threading.Tasks;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3075,8 +3071,9 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(21).SetCellValue("Tipo Preço");
                 row.CreateCell(22).SetCellValue("Grupo Registo IVA Produto");
                 row.CreateCell(23).SetCellValue("Cód. Categoria Produto");
-                row.CreateCell(24).SetCellValue("Criado Por");
-                row.CreateCell(25).SetCellValue("Data-Hora Criação");
+                row.CreateCell(24).SetCellValue("Nº Contrato");
+                row.CreateCell(25).SetCellValue("Criado Por");
+                row.CreateCell(26).SetCellValue("Data-Hora Criação");
 
                 if (dp.LinhasAcordoPrecos != null)
                 {
@@ -3109,8 +3106,9 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(21).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
                         row.CreateCell(22).SetCellValue(item.GrupoRegistoIvaProduto?.ToString());
                         row.CreateCell(23).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
-                        row.CreateCell(24).SetCellValue(item.UserId.ToString());
-                        row.CreateCell(25).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
+                        row.CreateCell(24).SetCellValue(item.NoContrato == null ? string.Empty : item.NoContrato.ToString());
+                        row.CreateCell(25).SetCellValue(item.UserId.ToString());
+                        row.CreateCell(26).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
 
                         count++;
                     }
@@ -3202,8 +3200,9 @@ namespace Hydra.Such.Portal.Controllers
                                 nrow.TipoPrecoTexto = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
                                 nrow.GrupoRegistoIvaProdutoTexto = row.GetCell(22) != null ? row.GetCell(22).ToString() : "";
                                 nrow.CodCategoriaProduto = row.GetCell(23) != null ? row.GetCell(23).ToString() : "";
-                                nrow.UserId = row.GetCell(24) != null ? row.GetCell(24).ToString() : "";
-                                nrow.DataCriacaoTexto = row.GetCell(25) != null ? row.GetCell(25).ToString() : "";
+                                nrow.NoContrato = row.GetCell(24) != null ? row.GetCell(24).ToString() : "";
+                                nrow.UserId = row.GetCell(25) != null ? row.GetCell(25).ToString() : "";
+                                nrow.DataCriacaoTexto = row.GetCell(26) != null ? row.GetCell(26).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
@@ -3299,7 +3298,8 @@ namespace Hydra.Such.Portal.Controllers
                         u.DescricaoProdFornecedor == x.DescricaoProdFornecedor &&
                         u.FormaEntrega == x.FormaEntrega &&
                         u.TipoPreco == x.TipoPreco &&
-                        u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto
+                        u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto &&
+                        u.NoContrato == x.NoContrato
                 ));
 
                 List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
@@ -3371,6 +3371,7 @@ namespace Hydra.Such.Portal.Controllers
                                     toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
                                 else
                                     toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
+                                toCreate.NoContrato = x.NoContrato;
                                 toCreate.Interface = x.Interface;
 
                                 toCreate.UserId = User.Identity.Name;
@@ -3425,6 +3426,7 @@ namespace Hydra.Such.Portal.Controllers
                                     toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
                                 else
                                     toUpdate.CodCategoriaProduto = null;
+                                toUpdate.NoContrato = x.NoContrato;
                                 toUpdate.Interface = x.Interface;
 
                                 toUpdate.UserId = x.UserId;
@@ -6022,6 +6024,7 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                     CodCategoriaProduto = x.CodCategoriaProduto,
+                    NoContrato = x.NoContrato,
 
                     UserId = x.UserId,
                     DataCriacao = x.DataCriacao,
@@ -6116,6 +6119,7 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                     CodCategoriaProduto = x.CodCategoriaProduto,
+                    NoContrato = x.NoContrato
                 }).ToList();
             }
             else
@@ -6157,6 +6161,7 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                     CodCategoriaProduto = x.CodCategoriaProduto,
+                    NoContrato = x.NoContrato
                 }).ToList();
             }
 
@@ -6272,6 +6277,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult AcordoPrecoGetContratos([FromBody] string FornecedorNo)
+        {
+            List<DDMessageString> result = null;
+
+            result = DBLinhasAcordoPrecos.AcordoPrecoGetContratos(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, FornecedorNo).Select(x => new DDMessageString()
+            {
+                id = x.ContratoNo,
+                value = x.Descricao
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult DeleteLinha([FromBody] LinhasAcordoPrecosViewModel data)
         {
             int result = 0;
@@ -6368,6 +6387,7 @@ namespace Hydra.Such.Portal.Controllers
                 GrupoRegistoIvaProduto = data.GrupoRegistoIvaProduto,
                 CodCategoriaProduto = data.CodCategoriaProduto,
                 Interface = data.Interface,
+                NoContrato = data.NoContrato,
 
                 UserId = User.Identity.Name,
                 DataCriacao = DateTime.Now,
@@ -6472,7 +6492,8 @@ namespace Hydra.Such.Portal.Controllers
                                     (currentWorksheet.Cells[1, 14].Value.ToString() == "PesoUnitario") &&
                                     (currentWorksheet.Cells[1, 15].Value.ToString() == "CodProdutoFornecedor") &&
                                     (currentWorksheet.Cells[1, 16].Value.ToString() == "FormaEntrega") &&
-                                    (currentWorksheet.Cells[1, 17].Value.ToString() == "TipoPreco"))
+                                    (currentWorksheet.Cells[1, 17].Value.ToString() == "TipoPreco") &&
+                                    (currentWorksheet.Cells[1, 18].Value.ToString() == "NoContrato"))
                                 {
                                     List<AcordoPrecosModelView> Lista_AcordoPrecos = DBAcordoPrecos.GetAll();
                                     List<NAVVendorViewModel> Lista_Vendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
@@ -6483,6 +6504,7 @@ namespace Hydra.Such.Portal.Controllers
                                     List<AcessosLocalizacoes> Lista_AcessosLocalizacoes = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
                                     List<EnumData> Lista_FormaEntrega = EnumerablesFixed.AP_FormaEntrega;
                                     List<EnumData> Lista_TipoPreco = EnumerablesFixed.AP_TipoPreco;
+                                    List<NAV2009FornecedoresContratos> Lista_Contratos = DBLinhasAcordoPrecos.AcordoPrecoGetContratos(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, "");
                                     int Linha_ORIGINAL = 2;
                                     int Linha_SUCESSO = 2;
                                     int Linha_ERRO = 2;
@@ -6509,6 +6531,7 @@ namespace Hydra.Such.Portal.Controllers
                                     string CodProdutoFornecedor = "";
                                     string FormaEntrega = "";
                                     string TipoPreco = "";
+                                    string NoContrato = "";
 
                                     //VALIDAÇÃO DE TODOS OS CAMPOS
                                     for (int rowNumber = 2; rowNumber <= currentWorksheet.Dimension.End.Row; rowNumber++)
@@ -6530,10 +6553,11 @@ namespace Hydra.Such.Portal.Controllers
                                         CodProdutoFornecedor = currentWorksheet.Cells[rowNumber, 15].Value == null ? "" : currentWorksheet.Cells[rowNumber, 15].Value.ToString();
                                         FormaEntrega = currentWorksheet.Cells[rowNumber, 16].Value == null ? "" : currentWorksheet.Cells[rowNumber, 16].Value.ToString();
                                         TipoPreco = currentWorksheet.Cells[rowNumber, 17].Value == null ? "" : currentWorksheet.Cells[rowNumber, 17].Value.ToString();
+                                        NoContrato = currentWorksheet.Cells[rowNumber, 18].Value == null ? "" : currentWorksheet.Cells[rowNumber, 18].Value.ToString();
 
                                         result_list = Validar_LinhaExcel(FormularioNoProcedimento, NoProcedimento, NoFornecedor, NoSubFornecedor, CodProduto, DtValidadeInicio, DtValidadeFim, Regiao, Area, Cresp,
-                                            Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, result_list, Lista_AcordoPrecos, Lista_Vendor, Lista_Products,
-                                            Lista_Regioes, Lista_Areas, Lista_Cresp, Lista_AcessosLocalizacoes, Lista_FormaEntrega, Lista_TipoPreco);
+                                            Localizacao, CustoUnitario, QtdPorUM, PesoUnitario, FormaEntrega, TipoPreco, NoContrato, result_list, Lista_AcordoPrecos, Lista_Vendor, Lista_Products,
+                                            Lista_Regioes, Lista_Areas, Lista_Cresp, Lista_AcessosLocalizacoes, Lista_FormaEntrega, Lista_TipoPreco, Lista_Contratos);
 
                                         currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 1].Value = NoProcedimento;
                                         currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 2].Value = NoFornecedor;
@@ -6552,6 +6576,7 @@ namespace Hydra.Such.Portal.Controllers
                                         currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 15].Value = CodProdutoFornecedor;
                                         currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 16].Value = FormaEntrega;
                                         currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 17].Value = TipoPreco;
+                                        currentWorksheet_ORIGINAL.Cells[Linha_ORIGINAL, 18].Value = NoContrato;
 
                                         Linha_ORIGINAL = Linha_ORIGINAL + 1;
 
@@ -6574,6 +6599,7 @@ namespace Hydra.Such.Portal.Controllers
                                             currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 15].Value = CodProdutoFornecedor;
                                             currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 16].Value = FormaEntrega;
                                             currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 17].Value = TipoPreco;
+                                            currentWorksheet_SUCESSO.Cells[Linha_SUCESSO, 18].Value = NoContrato;
 
                                             if (result_list[15] == true)
                                             {
@@ -6655,6 +6681,10 @@ namespace Hydra.Such.Portal.Controllers
                                             if (result_list[15] == true)
                                                 currentWorksheet_ERRO.Cells[Linha_ERRO, 17].Style.Font.Color.SetColor(Color.Red);
 
+                                            currentWorksheet_ERRO.Cells[Linha_ERRO, 18].Value = NoContrato;
+                                            if (result_list[16] == true)
+                                                currentWorksheet_ERRO.Cells[Linha_ERRO, 18].Style.Font.Color.SetColor(Color.Red);
+
                                             Linha_ERRO = Linha_ERRO + 1;
                                         }
 
@@ -6684,13 +6714,15 @@ namespace Hydra.Such.Portal.Controllers
                                                 FormaEntrega = FormaEntrega == "" ? (int?)null : Convert.ToInt32(FormaEntrega),
                                                 UserId = User.Identity.Name,
                                                 DataCriacao = DateTime.Now,
-                                                TipoPreco = TipoPreco == "" ? (int?)null : Convert.ToInt32(TipoPreco)
+                                                TipoPreco = TipoPreco == "" ? (int?)null : Convert.ToInt32(TipoPreco),
+                                                NoContrato = NoContrato == "" ? (string)null : NoContrato,
                                             });
                                         }
 
                                         if (result_list[1] == false && result_list[2] == false && result_list[3] == false && result_list[4] == false && result_list[5] == false &&
                                             result_list[6] == false && result_list[7] == false && result_list[8] == false && result_list[9] == false && result_list[10] == false &&
-                                            result_list[11] == false && result_list[12] == false && result_list[13] == false && result_list[14] == false && result_list[15] == true)
+                                            result_list[11] == false && result_list[12] == false && result_list[13] == false && result_list[14] == false && result_list[15] == true &&
+                                            result_list[16] == true)
                                         {
                                             LinhasAcordoPrecos toUpdate = DBLinhasAcordoPrecos.Update(new LinhasAcordoPrecos()
                                             {
@@ -6716,7 +6748,8 @@ namespace Hydra.Such.Portal.Controllers
                                                 UserId = User.Identity.Name,
                                                 DataCriacao = DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
                                                     x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).FirstOrDefault().DataCriacao,
-                                                TipoPreco = TipoPreco == "" ? (int?)null : Convert.ToInt32(TipoPreco)
+                                                TipoPreco = TipoPreco == "" ? (int?)null : Convert.ToInt32(TipoPreco),
+                                                NoContrato = NoContrato == "" ? (string)null : NoContrato
                                             });
                                         }
                                     }
@@ -6759,15 +6792,15 @@ namespace Hydra.Such.Portal.Controllers
 
         public List<bool> Validar_LinhaExcel(string FormularioNoProcedimento, string NoProcedimento, string NoFornecedor, string NoSubFornecedor, string CodProduto, string DtValidadeInicio,
             string DtValidadeFim, string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario, string FormaEntrega, string TipoPreco,
-            List<bool> result_list, List<AcordoPrecosModelView> Lista_AcordoPrecos, List<NAVVendorViewModel> Lista_Vendor, List<NAVProductsViewModel> Lista_Products,
+            string NoContrato, List<bool> result_list, List<AcordoPrecosModelView> Lista_AcordoPrecos, List<NAVVendorViewModel> Lista_Vendor, List<NAVProductsViewModel> Lista_Products,
             List<NAVDimValueViewModel> Lista_Regioes, List<NAVDimValueViewModel> Lista_Areas, List<NAVDimValueViewModel> Lista_Cresp, List<AcessosLocalizacoes> Lista_AcessosLocalizacoes,
-            List<EnumData> Lista_FormaEntrega, List<EnumData> Lista_TipoPreco)
+            List<EnumData> Lista_FormaEntrega, List<EnumData> Lista_TipoPreco, List<NAV2009FornecedoresContratos> Lista_Contratos)
         {
             DateTime currectDate;
             decimal currectDecimal;
             int currectInt;
 
-            for (int i = 1; i <= 16; i++)
+            for (int i = 1; i <= 17; i++)
             {
                 result_list[i] = false;
             }
@@ -6839,9 +6872,13 @@ namespace Hydra.Such.Portal.Controllers
                     result_list[15] = true;
             }
 
+            if (NoContrato != "")
+                if (Lista_Contratos.Where(x => x.FornecedorNo == NoFornecedor && x.ContratoNo == NoContrato).Count() == 0)
+                    result_list[16] = true;
+
             if (DBLinhasAcordoPrecos.GetAll().Where(x => x.NoProcedimento == NoProcedimento && x.NoFornecedor == NoFornecedor && x.CodProduto == CodProduto &&
                     x.DtValidadeInicio == Convert.ToDateTime(DtValidadeInicio) && x.Cresp == Cresp && x.Localizacao == Localizacao).Count() > 0)
-                result_list[16] = true;
+                result_list[17] = true;
 
 
             return result_list;
@@ -6869,6 +6906,7 @@ namespace Hydra.Such.Portal.Controllers
             currentWorksheet.Cells[1, 15].Value = "CodProdutoFornecedor";
             currentWorksheet.Cells[1, 16].Value = "FormaEntrega";
             currentWorksheet.Cells[1, 17].Value = "TipoPreco";
+            currentWorksheet.Cells[1, 18].Value = "NoContrato";
 
             return workBook;
         }
@@ -6968,6 +7006,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área Funcional"); Col = Col + 1; }
                 if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Resp."); Col = Col + 1; }
                 if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Registo IVA Produto"); Col = Col + 1; }
+                if (dp["noContrato"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -7000,6 +7039,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area.ToString()); Col = Col + 1; }
                         if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cresp.ToString()); Col = Col + 1; }
                         if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? item.GrupoRegistoIvaProduto : ""); Col = Col + 1; }
+                        if (dp["noContrato"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : ""); Col = Col + 1; }
 
                         count++;
                     }

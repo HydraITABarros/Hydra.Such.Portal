@@ -295,7 +295,8 @@ namespace Hydra.Such.Data.Logic.Request
                     DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
                     QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : 0,
                     SemEfeito = item.SemEfeito == null ? false : item.SemEfeito,
-                    CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor
+                    CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor,
+                    NoContrato = item.NoContrato
                 };
             }
             return null;
@@ -382,7 +383,8 @@ namespace Hydra.Such.Data.Logic.Request
                     PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
                     QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : (decimal?)null,
                     SemEfeito = item.SemEfeito == null ? false : item.SemEfeito,
-                    CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor
+                    CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor,
+                    NoContrato = item.NoContrato
                 };
             }
             return null;
@@ -471,7 +473,8 @@ namespace Hydra.Such.Data.Logic.Request
                     Urgent = item.Urgente,
                     VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
                     VATProductPostingGroup = item.GrupoRegistoIvaproduto,
-                    DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0
+                    DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
+                    NoContrato = item.NoContrato
                 };
             }
             return null;
@@ -551,7 +554,8 @@ namespace Hydra.Such.Data.Logic.Request
                     GrupoRegistoIvanegocio = item.VATBusinessPostingGroup,
                     GrupoRegistoIvaproduto = item.VATProductPostingGroup,
                     PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
-                    Urgente = item.Urgent
+                    Urgente = item.Urgent,
+                    NoContrato = item.NoContrato
                 };
             }
             return null;

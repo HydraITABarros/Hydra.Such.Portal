@@ -47,6 +47,7 @@ namespace Hydra.Such.Data.ViewModel
         public string GrupoRegistoIvaProdutoTexto { get; set; }
         public string CodCategoriaProduto { get; set; }
         public decimal? TaxaIVA { get; set; }
+        public string NoContrato { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

@@ -278,6 +278,7 @@
                                         {"field":"custoUnitario", "name":"Custo Unitário"},
                                         {"field":"noFornecedor", "name":"Nº Fornecedor"},
                                         {"field":"noSubFornecedor", "name":"Nº SubFornecedor"}]'>
+                                        @*,{"field":"noContrato", "name":"Nº Contrato"}]'>*@
                 </such-selectbox>
             </div>
 
@@ -382,6 +383,9 @@
                 <vaadin-text-field id="interfaceId" name="interfaceId" label="Interface" value="{{interface}}" disabled hidden></vaadin-text-field>
             </div>
 
+            <div class="col-md-2">
+                <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" disabled hidden></vaadin-text-field>
+            </div>
         </div>
         @* Grid *@
 
@@ -696,6 +700,16 @@
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.grupoRegistoIvaProduto}}
                     </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noContrato" />
+                </template>
+                <template>
+                    {{item.noContrato}}
                 </template>
             </vaadin-grid-column>
 
@@ -1099,6 +1113,7 @@
                             this.$.grupoRegistoIvaProduto.value = linhaAcordo.grupoRegistoIvaProduto != null ? linhaAcordo.grupoRegistoIvaProduto.toString() : linhaAcordo.grupoRegistoIvaProduto;
                             this.$.interfaceId.value = linhaAcordo.interface;
                             this.$.unitCostSubSupplierId.value = linhaAcordo.custoUnitarioSubFornecedor;
+                            this.$.noContrato.value = linhaAcordo.noContrato;
 
                             this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
                             //this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
@@ -1123,6 +1138,7 @@
                         this.$.grupoRegistoIvaProduto.value = "";
                         this.$.interfaceId.value = "";
                         this.$.unitCostSubSupplierId.value = "";
+                        this.$.noContrato.value = "";
 
                         this.$.mOpenOrderLinesId.value = "";
                         this.$.qtyDisponivel.value = "";
@@ -1191,6 +1207,7 @@
                     this.$.grupoRegistoIvaProduto.value = "";
                     this.$.interfaceId.value = "";
                     this.$.unitCostSubSupplierId.value = "";
+                    this.$.noContrato.value = "";
 
                     this.$.mOpenOrderLinesId.value = "";
                 },
@@ -1370,6 +1387,7 @@
                                     grupoRegistoIvaProduto: this.$.grupoRegistoIvaProduto.value,
                                     interface: this.$.interfaceId.value,
                                     directUnitCostSubSupplier: this.$.unitCostSubSupplierId.value,
+                                    noContrato: this.$.noContrato.value,
 
 
                                     localCode: this.$.codStockUnitId.value,
@@ -1434,6 +1452,7 @@
                                     subsupplierName: this.$.subSupplierNameId.value,
                                     interface: this.$.interfaceId.value,
                                     directUnitCostSubSupplier: this.$.unitCostSubSupplierId.value,
+                                    noContrato: this.$.noContrato.value,
 
                                     tipo: this.type
                                 };
@@ -1535,6 +1554,7 @@
                             this.$.unitofMeasureCodeId._clearSelection();
                             this.$.interfaceId.value = "";
                             this.$.unitCostSubSupplierId.value = "";
+                            this.$.noContrato.value = "";
 
                         } else {
                             this._openToastError(this.updatedata.eMessage);

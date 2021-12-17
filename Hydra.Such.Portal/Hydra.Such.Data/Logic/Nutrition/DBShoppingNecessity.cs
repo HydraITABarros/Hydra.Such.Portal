@@ -275,7 +275,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto,
                     Tipo = item.Tipo,
                     Interface = item.Interface,
-                    DirectUnitCostSubSupplier = item.CustoUnitarioSubFornecedor
+                    DirectUnitCostSubSupplier = item.CustoUnitarioSubFornecedor,
+                    NoContrato = item.NoContrato
                 };
             }
             return null;
@@ -332,6 +333,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.Tipo = item.Tipo;
                 x.Interface = item.Interface;
                 x.CustoUnitarioSubFornecedor = item.DirectUnitCostSubSupplier;
+                x.NoContrato = item.NoContrato;
             return x;
                 //return new DiárioRequisiçãoUnidProdutiva()
                 //{
