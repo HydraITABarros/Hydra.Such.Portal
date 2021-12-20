@@ -63,7 +63,7 @@ namespace Hydra.Such.Data.NAV
                     Blanket_Order_No = string.IsNullOrEmpty(purchLine.OpenOrderNo) ? string.Empty : purchLine.OpenOrderNo,
                     Blanket_Order_Line_No = purchLine.OpenOrderLineNo.HasValue ? purchLine.OpenOrderLineNo.Value : 0,
                     Blanket_Order_Line_NoSpecified = purchLine.OpenOrderLineNo.HasValue,
-                    No_Contrato = purchLine.NoContrato
+                    No_Contrato = !string.IsNullOrEmpty(purchLine.NoContrato) ? purchLine.NoContrato : ""
                 })
                 .ToArray();
 
@@ -107,7 +107,7 @@ namespace Hydra.Such.Data.NAV
                     Requisition_No = purchFromSupplier.RequisitionId,
                     Requisition_Line_No = purchLine.LineId.HasValue ? purchLine.LineId.Value : 0,
                     Requisition_Line_NoSpecified = true,
-                    No_Contrato = purchLine.NoContrato
+                    No_Contrato = !string.IsNullOrEmpty(purchLine.NoContrato) ? purchLine.NoContrato : ""
 
                     ////NR20181113 - Adicionei, mas julgo que é melhor retirar, pois os campos são atualizados na chamada do método UpdateMultipleAsync
                     //,Direct_Unit_Cost = purchLine.UnitCost.HasValue ? purchLine.UnitCost.Value : 0,
@@ -195,7 +195,7 @@ namespace Hydra.Such.Data.NAV
                 purchInvLine.Blanket_Order_No = string.IsNullOrEmpty(item.OpenOrderNo) ? string.Empty : item.OpenOrderNo;
                 purchInvLine.Blanket_Order_Line_No = item.OpenOrderLineNo.HasValue ? item.OpenOrderLineNo.Value : 0;
                 purchInvLine.Blanket_Order_Line_NoSpecified = item.OpenOrderLineNo.HasValue;
-                purchInvLine.No_Contrato = item.NoContrato;
+                purchInvLine.No_Contrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : "";
             });
 
             WSPurchaseInvLine.UpdateMultiple navUpdate = new WSPurchaseInvLine.UpdateMultiple();

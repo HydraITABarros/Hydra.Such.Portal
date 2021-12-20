@@ -553,7 +553,7 @@ namespace Hydra.Such.Portal.Controllers
                     dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));
                     _item.descricao2Produto = AllProducts.Where(x => x.Code == r.CodProduto).FirstOrDefault() != null ? AllProducts.Where(x => x.Code == r.CodProduto).FirstOrDefault().Name2 : "";
                     _item.produtoFornecedor = r.CodProduto.ToString() + r.NoFornecedor.ToString();
-                    _item.noContrato = r.NoContrato.ToString();
+                    _item.noContrato = !string.IsNullOrEmpty(r.NoContrato) ? r.NoContrato.ToString() : "";
                     retval.Add(_item);
                 });
 

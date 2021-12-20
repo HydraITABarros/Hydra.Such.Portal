@@ -276,7 +276,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     Tipo = item.Tipo,
                     Interface = item.Interface,
                     DirectUnitCostSubSupplier = item.CustoUnitarioSubFornecedor,
-                    NoContrato = item.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : ""
                 };
             }
             return null;
@@ -333,7 +333,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.Tipo = item.Tipo;
                 x.Interface = item.Interface;
                 x.CustoUnitarioSubFornecedor = item.DirectUnitCostSubSupplier;
-                x.NoContrato = item.NoContrato;
+                x.NoContrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : "";
             return x;
                 //return new DiárioRequisiçãoUnidProdutiva()
                 //{

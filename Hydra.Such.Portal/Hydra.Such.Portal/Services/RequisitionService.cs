@@ -352,7 +352,7 @@ namespace Hydra.Such.Portal.Services
                                 VATBusinessPostingGroup = line.VATBusinessPostingGroup,
                                 VATProductPostingGroup = line.VATProductPostingGroup,
                                 DiscountPercentage = line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
-                                NoContrato = line.NoContrato
+                                NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                             })
                             .ToList()
                         })

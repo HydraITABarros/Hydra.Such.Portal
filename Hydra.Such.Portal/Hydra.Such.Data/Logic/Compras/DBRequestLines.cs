@@ -296,7 +296,7 @@ namespace Hydra.Such.Data.Logic.Request
                     QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : 0,
                     SemEfeito = item.SemEfeito == null ? false : item.SemEfeito,
                     CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor,
-                    NoContrato = item.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : ""
                 };
             }
             return null;
@@ -384,7 +384,7 @@ namespace Hydra.Such.Data.Logic.Request
                     QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : (decimal?)null,
                     SemEfeito = item.SemEfeito == null ? false : item.SemEfeito,
                     CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor,
-                    NoContrato = item.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : ""
                 };
             }
             return null;
@@ -474,7 +474,7 @@ namespace Hydra.Such.Data.Logic.Request
                     VATBusinessPostingGroup = item.GrupoRegistoIvanegocio,
                     VATProductPostingGroup = item.GrupoRegistoIvaproduto,
                     DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
-                    NoContrato = item.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : ""
                 };
             }
             return null;
@@ -555,7 +555,7 @@ namespace Hydra.Such.Data.Logic.Request
                     GrupoRegistoIvaproduto = item.VATProductPostingGroup,
                     PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
                     Urgente = item.Urgent,
-                    NoContrato = item.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato: ""
                 };
             }
             return null;

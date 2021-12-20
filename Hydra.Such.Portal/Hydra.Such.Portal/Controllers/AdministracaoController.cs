@@ -3371,7 +3371,7 @@ namespace Hydra.Such.Portal.Controllers
                                     toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
                                 else
                                     toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
-                                toCreate.NoContrato = x.NoContrato;
+                                toCreate.NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : "";
                                 toCreate.Interface = x.Interface;
 
                                 toCreate.UserId = User.Identity.Name;
@@ -3426,7 +3426,7 @@ namespace Hydra.Such.Portal.Controllers
                                     toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
                                 else
                                     toUpdate.CodCategoriaProduto = null;
-                                toUpdate.NoContrato = x.NoContrato;
+                                toUpdate.NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : "";
                                 toUpdate.Interface = x.Interface;
 
                                 toUpdate.UserId = x.UserId;
@@ -6024,7 +6024,7 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                     CodCategoriaProduto = x.CodCategoriaProduto,
-                    NoContrato = x.NoContrato,
+                    NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : "",
 
                     UserId = x.UserId,
                     DataCriacao = x.DataCriacao,
@@ -6119,7 +6119,7 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                     CodCategoriaProduto = x.CodCategoriaProduto,
-                    NoContrato = x.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : ""
                 }).ToList();
             }
             else
@@ -6161,7 +6161,7 @@ namespace Hydra.Such.Portal.Controllers
                     TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                     GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                     CodCategoriaProduto = x.CodCategoriaProduto,
-                    NoContrato = x.NoContrato
+                    NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato: ""
                 }).ToList();
             }
 
@@ -6387,7 +6387,7 @@ namespace Hydra.Such.Portal.Controllers
                 GrupoRegistoIvaProduto = data.GrupoRegistoIvaProduto,
                 CodCategoriaProduto = data.CodCategoriaProduto,
                 Interface = data.Interface,
-                NoContrato = data.NoContrato,
+                NoContrato = !string.IsNullOrEmpty(data.NoContrato) ? data.NoContrato : "",
 
                 UserId = User.Identity.Name,
                 DataCriacao = DateTime.Now,

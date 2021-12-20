@@ -3526,6 +3526,14 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
+                    else
+                    {
+                        item.eReasonCode = 2;
+                        if (item.eMessages != null && item.eMessages.Count > 0)
+                            item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + item.eMessages[0].Message + ")";
+                        else
+                            item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + item.eMessage + ")";
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -3607,6 +3615,14 @@ namespace Hydra.Such.Portal.Controllers
                                         result.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
                                     }
                                 }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                if (result.eMessages != null && result.eMessages.Count > 0)
+                                    result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + result.eMessages[0].Message + ")";
+                                else
+                                    result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + result.eMessage + ")";
                             }
                         }
                     });

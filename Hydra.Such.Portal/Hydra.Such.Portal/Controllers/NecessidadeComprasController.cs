@@ -223,7 +223,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Tipo = x.Tipo;
                             newdp.Interface = x.Interface;
                             newdp.CustoUnitarioSubFornecedor = x.DirectUnitCostSubSupplier;
-                            newdp.NoContrato = x.NoContrato;
+                            newdp.NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : "";
 
                             newdp = DBShoppingNecessity.Update(newdp);
                             if (newdp == null)
@@ -280,7 +280,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Tipo = x.Tipo,
                                 Interface = x.Interface,
                                 CustoUnitarioSubFornecedor = x.DirectUnitCostSubSupplier,
-                                NoContrato = x.NoContrato
+                                NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : ""
                             };
                             newdp.UtilizadorCriação = User.Identity.Name;
 
@@ -573,7 +573,7 @@ namespace Hydra.Such.Portal.Controllers
                                 newdp.GrupoRegistoIvaProduto = linhaAcordo.GrupoRegistoIvaProduto;
                                 newdp.Interface = linhaAcordo.Interface;
                                 newdp.CustoUnitarioSubFornecedor = linhaAcordo.CustoUnitarioSubFornecedor;
-                                newdp.NoContrato = linhaAcordo.NoContrato;
+                                newdp.NoContrato = !string.IsNullOrEmpty(linhaAcordo.NoContrato) ? linhaAcordo.NoContrato : "";
                             }
                             else
                             {
@@ -894,7 +894,7 @@ namespace Hydra.Such.Portal.Controllers
                                     CriarNotaEncomenda = true,
                                     CustoUnitarioSubFornecedor = line.DirectUnitCostSubSupplier,
                                     NoLinhaDiarioRequisicaoUnidProdutiva = line.LineNo,
-                                    NoContrato = line.NoContrato
+                                    NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                                 }).ToList()
                             }).ToList();
                         }
@@ -964,7 +964,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     CriarNotaEncomenda = true,
                                                     CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
                                                     NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva,
-                                                    NoContrato = line.NoContrato
+                                                    NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                                                 }).ToList()
                                             }).ToList();
                                         }
@@ -1067,7 +1067,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     CriarNotaEncomenda = true,
                                                     CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
                                                     NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva,
-                                                    NoContrato = line.NoContrato
+                                                    NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                                                 }).ToList()
                                             }).ToList();
                                         }
