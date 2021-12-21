@@ -500,13 +500,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllDocExternos([FromBody] string EncomendaNo)
         {
-            List<DDMessageString> result = null;
+            List<DDMessageRelated> result = null;
 
-            result = DBNAV2017Encomendas.EncomendasNoDocExterno(_config.NAVDatabaseName, _config.NAVCompanyName, EncomendaNo).Select(x => new DDMessageString()
+            result = DBNAV2017Encomendas.EncomendasNoDocExterno(_config.NAVDatabaseName, _config.NAVCompanyName, EncomendaNo).Select(x => new DDMessageRelated()
             {
                 id = x.VendorShipmentNo,
-                value = x.VendorShipmentNo
-            }).ToList();
+                value = x.VendorShipmentNo,
+                extra = x.OrderDate.ToString("yyyy-MM-dd")
+        }).ToList();
 
             return Json(result);
         }

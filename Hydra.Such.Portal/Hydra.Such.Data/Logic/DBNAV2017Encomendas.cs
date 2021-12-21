@@ -345,7 +345,8 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.Add(new EncomendasViewModel()
                         {
-                            VendorShipmentNo = temp.NoDocExterno.Equals(DBNull.Value) ? "" : (string)temp.NoDocExterno
+                            VendorShipmentNo = temp.NoDocExterno.Equals(DBNull.Value) ? "" : (string)temp.NoDocExterno,
+                            OrderDate = (DateTime)temp.DataRegisto
                         });
                     }
                 }

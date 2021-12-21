@@ -358,8 +358,8 @@ namespace Hydra.Such.Portal.Controllers
                 data.CodRegiao = "";
                 data.CodAreaFuncional = "";
                 data.CodCentroResponsabilidade = "";
-                data.DataOcorrencia = null;
-                data.DataOcorrenciaTexto = "";
+                //data.DataOcorrencia = null;
+                //data.DataOcorrenciaTexto = "";
                 data.LocalEntrega = "";
                 data.NoDocExterno = "";
                 data.CodArtigo = "";
@@ -369,7 +369,10 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!string.IsNullOrEmpty(data.CodEncomenda))
                 {
-                    EncomendasViewModel Encomenda = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "");
+                    EncomendasViewModel Encomenda = new EncomendasViewModel();
+                    Encomenda = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "");
+                    if (Encomenda == null)
+                        Encomenda = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "", 1);
 
                     if (Encomenda != null)
                     {
@@ -378,8 +381,8 @@ namespace Hydra.Such.Portal.Controllers
                         data.CodRegiao = Encomenda.RegionId;
                         data.CodAreaFuncional = Encomenda.FunctionalAreaId;
                         data.CodCentroResponsabilidade = Encomenda.RespCenterId;
-                        data.DataOcorrencia = Encomenda.OrderDate;
-                        data.DataOcorrenciaTexto = data.DataOcorrencia.Value.ToString("yyyy-MM-dd");
+                        //data.DataOcorrencia = Encomenda.OrderDate;
+                        //data.DataOcorrenciaTexto = data.DataOcorrencia.Value.ToString("yyyy-MM-dd");
                         data.LocalEntrega = Encomenda.ShipToName;
                         data.NoDocExterno = Encomenda.VendorShipmentNo;
                     }
@@ -398,8 +401,8 @@ namespace Hydra.Such.Portal.Controllers
                 data.CodRegiao = "";
                 data.CodAreaFuncional = "";
                 data.CodCentroResponsabilidade = "";
-                data.DataOcorrencia = null;
-                data.DataOcorrenciaTexto = "";
+                //data.DataOcorrencia = null;
+                //data.DataOcorrenciaTexto = "";
                 data.LocalEntrega = "";
                 data.NoDocExterno = "";
                 data.CodArtigo = "";

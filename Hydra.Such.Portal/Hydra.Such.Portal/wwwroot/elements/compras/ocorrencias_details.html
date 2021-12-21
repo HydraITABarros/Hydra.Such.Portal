@@ -320,7 +320,7 @@
         <div class="row break_clear">
             <div class="col-md-2">
                 <label id="lblnoDocExterno">No. Documento Externo</label>
-                <vaadin-combo-box id="noDocExterno" name="noDocExterno" items="[[ListDocExternos]]" item-value-path="id" item-label-path="id" value="{{data.noDocExterno}}" disabled="{{ !_isEdit }}">
+                <vaadin-combo-box id="noDocExterno" name="noDocExterno" items="[[ListDocExternos]]" item-value-path="id" item-label-path="id" value="{{data.noDocExterno}}" disabled="{{ !_isEdit }}" on-value-changed="_noDocExternoChanged">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -536,9 +536,10 @@
                             this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
                             this.$.ajax_GetEncomendaLines.generateRequest();
 
-                            this.$.ajax_GetDocExternos.body = JSON.stringify(this.data.codEncomenda);
-                            this.$.ajax_GetDocExternos.generateRequest();
-
+                            if (this.data.codOcorrencia != null && this.data.codOcorrencia != "") {
+                                this.$.ajax_GetDocExternos.body = JSON.stringify(this.data.codEncomenda);
+                                this.$.ajax_GetDocExternos.generateRequest();
+                            }
                         }
 
                         else if (data.detail.url.indexOf("Create") !== -1) {
@@ -580,20 +581,20 @@
                         this.$.ajax_GetDocExternos.body = JSON.stringify(this.$.codEncomenda.value);
                         this.$.ajax_GetDocExternos.generateRequest();
                     }
-                    //else {
-                    //    this.$.codFornecedor.value = "";
-                    //    this.$.nomeFornecedor.value = "";
-                    //    this.$.codRegiao.value = "";
-                    //    this.$.codAreaFuncional.value = "";
-                    //    this.$.codCentroResponsabilidade.value = "";
-                    //    this.$.dataOcorrenciaTexto.value = "";
-                    //    this.$.localEntrega.value = "";
-                    //    this.$.noDocExterno.value = "";
-                    //    this.$.codArtigo._clearSelection();
-                    //    this.$.descricao.value = "";
-                    //    this.$.unidMedida.value = "";
-                    //    this.$.quantidade.value = "";
-                    //}
+                    else {
+                        this.$.codFornecedor.value = "";
+                        this.$.nomeFornecedor.value = "";
+                        this.$.codRegiao.value = "";
+                        this.$.codAreaFuncional.value = "";
+                        this.$.codCentroResponsabilidade.value = "";
+                        this.$.localEntrega.value = "";
+                        this.$.noDocExterno.value = "";
+                        this.$.codArtigo._clearSelection();
+                        this.$.descricao.value = "";
+                        this.$.unidMedida.value = "";
+                        this.$.quantidade.value = "";
+                        this.ListDocExternos = null;
+                    }
                 },
 
                 _ProcedimentoChanged: function () {
@@ -631,6 +632,16 @@
 
                         this.$.ajax_GetProcedimentosFornecedores.body = JSON.stringify(this.$.codProcedimento.value);
                         this.$.ajax_GetProcedimentosFornecedores.generateRequest();
+                    }
+                    else {
+                        this.$.codFornecedorProcedimento._clearSelection();
+                        this.$.nomeFornecedor.value = "";
+                        this.ListFornecedores = null;
+                        this.$.codRegiao.value = "";
+                        this.$.codAreaFuncional.value = "";
+                        this.$.codCentroResponsabilidade.value = "";
+                        this.$.localEntrega.value = "";
+                        this.ListDocExternos = null;
                     }
                 },
 
@@ -867,7 +878,72 @@
                         }
                     }
                     else {
-                        this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                        if (this.$.codProcedimento.value != null && this.$.codProcedimento.value != "") {
+                            if (this.$.codFornecedorProcedimento.value != null && this.$.codFornecedorProcedimento.value != "") {
+                                if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                                    if (this.$.localEntrega.value != null && this.$.localEntrega.value != "" && this.$.localEntrega.value.length >= 4) {
+                                        if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                            if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                                if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                                    var TMessage = this.$.ToastMessage;
+                                                    var TMessageError = this.$.ToastError;
+                                                    var ARequest = this.$.ajax_CreateMedidaCorretiva;
+                                                    var Ocorrencia = this._ocorrencia;
+
+                                                    bootbox.prompt({
+                                                        title: "Introduza a Medida Corretiva!",
+                                                        inputType: 'textarea',
+                                                        buttons: {
+                                                            confirm: {
+                                                                label: 'Inserir',
+                                                                className: 'btn-success'
+                                                            },
+                                                            cancel: {
+                                                                label: 'Fechar',
+                                                                className: 'btn-danger'
+                                                            }
+                                                        },
+                                                        callback: function (result) {
+                                                            if (result != null) {
+                                                                if (result == "") {
+                                                                    TMessageError.text = "É necessário preencher a Medida Corretiva.";
+                                                                    TMessageError.open();
+                                                                    return false;
+                                                                } else {
+                                                                    ARequest.body = JSON.stringify({ codOcorrencia: Ocorrencia, medidaCorretiva: result });
+                                                                    ARequest.generateRequest();
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                                else {
+                                                    this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                                }
+                                            }
+                                            else {
+                                                this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                            }
+                                        }
+                                        else {
+                                            this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError("O campo Local deEntrega é de preenchimento obrigatório e com um mínimo de 4 caracteres.");
+                                    }
+                                }
+                                else {
+                                    this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                                }
+                            }
+                            else {
+                                this._openToastError("O campo Cód. Fornecedor é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Cód. Procedimento é de preenchimento obrigatório.");
+                        }
                     }
                 },
 
@@ -894,10 +970,48 @@
                 _ResponseGetDocExternos: function () {
                     if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
                         this.$.noDocExterno.id = this.ListDocExternos[0].id;
+                        this.$.dataOcorrenciaTexto.value = this.ListDocExternos[0].extra;
+                    }
+                    this._noDocExternoChanged();
+                },
+
+                _ProcedimentoFornecedorChanged: function () {
+                    this.$.nomeFornecedor.value = "";
+
+                    if (this.$.codProcedimento.value != null && this.$.codProcedimento.value != "") {
+                        if (this.$.codFornecedorProcedimento.value != null && this.$.codFornecedorProcedimento.value != "") {
+                            if (this.ListFornecedores != null && this.ListFornecedores.length > 0) {
+                                for (i = 0; i < this.ListFornecedores.length; i++) {
+                                    if (this.ListFornecedores[i].id == this.$.codFornecedorProcedimento.value) {
+                                        this.$.nomeFornecedor.value = this.ListFornecedores[i].value;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
 
+                _noDocExternoChanged: function () {
+                    if (this.$.noDocExterno.value == "") {
+                        this.$.dataOcorrenciaTexto.value = "";
+                    }
+                    else {
+                        if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
+                            if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                                if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
+                                    for (i = 0; i < this.ListDocExternos.length; i++) {
+                                        if (this.ListDocExternos[i].id == this.$.noDocExterno.value) {
+                                            this.$.dataOcorrenciaTexto.value = this.ListDocExternos[i].extra;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
+                    }
+                },
 
 
 
