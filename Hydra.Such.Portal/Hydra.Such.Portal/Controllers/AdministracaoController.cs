@@ -7006,7 +7006,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área Funcional"); Col = Col + 1; }
                 if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Resp."); Col = Col + 1; }
                 if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Registo IVA Produto"); Col = Col + 1; }
-                if (dp["noContrato"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -7039,7 +7038,6 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area.ToString()); Col = Col + 1; }
                         if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cresp.ToString()); Col = Col + 1; }
                         if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? item.GrupoRegistoIvaProduto : ""); Col = Col + 1; }
-                        if (dp["noContrato"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.NoContrato) ? item.NoContrato : ""); Col = Col + 1; }
 
                         count++;
                     }
