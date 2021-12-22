@@ -516,14 +516,28 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllPurchaseLines([FromBody] string CodEncomenda)
         {
             List<DDMessageString> result = null;
+            List<EncomendasLinhasViewModel> AllEncomendas = new List<EncomendasLinhasViewModel>();
 
-            result = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "").Select(x => new DDMessageString()
+            AllEncomendas = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "", 0);
+            if (AllEncomendas == null || AllEncomendas.Count == 0)
             {
-                id = x.No,
-                value = x.Description
-            }).ToList();
+                AllEncomendas = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "", 1);
+            }
 
-            return Json(result);
+            if (AllEncomendas != null && AllEncomendas.Count > 0)
+            {
+                result = AllEncomendas.Select(x => new DDMessageString()
+                {
+                    id = x.No,
+                    value = x.Description
+                }).ToList();
+
+                return Json(result);
+            }
+            else
+            {
+                return Json(null);
+            }
         }
 
         [HttpPost]

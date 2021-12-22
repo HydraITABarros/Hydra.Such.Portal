@@ -203,6 +203,7 @@
                    method="post"
                    handle-as="json"
                    id="ajax_GetEncomendaLines"
+                   on-response="_ResponseGetEncomendaLines"
                    content-type="application/json">
         </iron-ajax>
 
@@ -533,10 +534,10 @@
                                 this._isEditALL = true;
                             }
 
-                            this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
-                            this.$.ajax_GetEncomendaLines.generateRequest();
-
                             if (this.data.codOcorrencia != null && this.data.codOcorrencia != "") {
+                                this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
+                                this.$.ajax_GetEncomendaLines.generateRequest();
+
                                 this.$.ajax_GetDocExternos.body = JSON.stringify(this.data.codEncomenda);
                                 this.$.ajax_GetDocExternos.generateRequest();
                             }
@@ -580,6 +581,9 @@
 
                         this.$.ajax_GetDocExternos.body = JSON.stringify(this.$.codEncomenda.value);
                         this.$.ajax_GetDocExternos.generateRequest();
+
+                        this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.$.codEncomenda.value);
+                        this.$.ajax_GetEncomendaLines.generateRequest();
                     }
                     else {
                         this.$.codFornecedor.value = "";
@@ -971,6 +975,13 @@
                     if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
                         this.$.noDocExterno.id = this.ListDocExternos[0].id;
                         this.$.dataOcorrenciaTexto.value = this.ListDocExternos[0].extra;
+                    }
+                    this._noDocExternoChanged();
+                },
+
+                _ResponseGetEncomendaLines: function () {
+                    if (this.ListPurchaseLines != null && this.ListPurchaseLines.length > 0) {
+                        this.$.codArtigo.value = this.ListPurchaseLines[0].id;
                     }
                     this._noDocExternoChanged();
                 },

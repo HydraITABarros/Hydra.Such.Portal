@@ -439,16 +439,28 @@ namespace Hydra.Such.Portal.Controllers
                 data.Descricao = "";
                 data.UnidMedida = "";
                 data.Quantidade = null;
+                List<EncomendasLinhasViewModel> AllLinhas = new List<EncomendasLinhasViewModel>();
+                EncomendasLinhasViewModel Linha = new EncomendasLinhasViewModel();
 
                 if (!string.IsNullOrEmpty(data.CodEncomenda))
                 {
-                    EncomendasLinhasViewModel Linha = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "").Where(x => x.No == data.CodArtigo).FirstOrDefault();
+                    AllLinhas = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "", 0);
 
-                    if (Linha != null)
+                    if (AllLinhas == null || AllLinhas.Count == 0)
                     {
-                        data.Descricao = Linha.Description;
-                        data.UnidMedida = Linha.UnitOfMeasure;
-                        data.Quantidade = Linha.Quantity;
+                        AllLinhas = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.CodEncomenda, "", 1);
+                    }
+
+                    if (AllLinhas != null && AllLinhas.Count > 0)
+                    {
+                        Linha = AllLinhas.FirstOrDefault(x => x.No == data.CodArtigo);
+
+                        if (Linha != null)
+                        {
+                            data.Descricao = Linha.Description;
+                            data.UnidMedida = Linha.UnitOfMeasure;
+                            data.Quantidade = Linha.Quantity;
+                        }
                     }
                 }
             }
