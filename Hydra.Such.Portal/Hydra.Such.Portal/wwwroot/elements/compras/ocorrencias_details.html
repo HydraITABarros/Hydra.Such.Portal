@@ -972,7 +972,8 @@
                 },
 
                 _ResponseGetDocExternos: function () {
-                    if (this.$.codEncomenda.value != "" && this.ListDocExternos != null && this.ListDocExternos.length > 0) {
+                    if ((this.$.codEncomenda.value != "" || this.$.codProcedimento.value != "") && this.ListDocExternos[0].id != "" &&
+                        this.ListDocExternos != null && this.ListDocExternos.length > 0) {
                         this.$.noDocExterno.id = this.ListDocExternos[0].id;
                         this.$.dataOcorrenciaTexto.value = this.ListDocExternos[0].extra;
                     }
@@ -1004,23 +1005,17 @@
                 },
 
                 _noDocExternoChanged: function () {
-                    if (this.$.codEncomenda.value != "" && this.$.noDocExterno.value == "") {
-                            this.$.dataOcorrenciaTexto.value = "";
-                    }
-                    else {
-                        if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
-                            if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
-                                if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
-                                    for (i = 0; i < this.ListDocExternos.length; i++) {
-                                        if (this.ListDocExternos[i].id == this.$.noDocExterno.value) {
-                                            this.$.dataOcorrenciaTexto.value = this.ListDocExternos[i].extra;
-                                            return;
-                                        }
+                    if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
+                        if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                            if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
+                                for (i = 0; i < this.ListDocExternos.length; i++) {
+                                    if (this.ListDocExternos[i].id == this.$.noDocExterno.value) {
+                                        this.$.dataOcorrenciaTexto.value = this.ListDocExternos[i].extra;
+                                        return;
                                     }
                                 }
                             }
                         }
-
                     }
                 },
 
