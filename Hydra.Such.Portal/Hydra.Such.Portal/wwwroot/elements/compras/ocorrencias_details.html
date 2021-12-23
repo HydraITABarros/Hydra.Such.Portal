@@ -972,7 +972,7 @@
                 },
 
                 _ResponseGetDocExternos: function () {
-                    if (this.ListDocExternos != null && this.ListDocExternos.length > 0) {
+                    if (this.$.codEncomenda.value != "" && this.ListDocExternos != null && this.ListDocExternos.length > 0) {
                         this.$.noDocExterno.id = this.ListDocExternos[0].id;
                         this.$.dataOcorrenciaTexto.value = this.ListDocExternos[0].extra;
                     }
@@ -1004,8 +1004,8 @@
                 },
 
                 _noDocExternoChanged: function () {
-                    if (this.$.noDocExterno.value == "") {
-                        this.$.dataOcorrenciaTexto.value = "";
+                    if (this.$.codEncomenda.value != "" && this.$.noDocExterno.value == "") {
+                            this.$.dataOcorrenciaTexto.value = "";
                     }
                     else {
                         if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
