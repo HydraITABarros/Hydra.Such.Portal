@@ -171,6 +171,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.ArquivarREQPendentes = userConfig.ArquivarREQPendentes.HasValue ? userConfig.ArquivarREQPendentes : false;
                 result.CriarMedidasCorretivas = userConfig.CriarMedidasCorretivas.HasValue ? userConfig.CriarMedidasCorretivas : false;
                 result.VerFaturas = userConfig.VerFaturas.HasValue ? userConfig.VerFaturas : false;
+                result.EditarPrecoUnitario = userConfig.EditarPrecoUnitario.HasValue ? userConfig.EditarPrecoUnitario : false;
 
                 #region SGPPF
                 result.TipoUtilizadorFormacao = userConfig.TipoUtilizadorFormacao;
@@ -267,6 +268,7 @@ namespace Hydra.Such.Portal.Controllers
                 ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false,
                 CriarMedidasCorretivas = data.CriarMedidasCorretivas.HasValue ? data.CriarMedidasCorretivas : false,
                 VerFaturas = data.VerFaturas.HasValue ? data.VerFaturas : false,
+                EditarPrecoUnitario = data.EditarPrecoUnitario.HasValue ? data.EditarPrecoUnitario : false,
 
                 #region SGPPF
                 TipoUtilizadorFormacao = data.TipoUtilizadorFormacao
@@ -356,6 +358,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false;
                 userConfig.CriarMedidasCorretivas = data.CriarMedidasCorretivas.HasValue ? data.CriarMedidasCorretivas : false;
                 userConfig.VerFaturas = data.VerFaturas.HasValue ? data.VerFaturas : false;
+                userConfig.EditarPrecoUnitario = data.EditarPrecoUnitario.HasValue ? data.EditarPrecoUnitario : false;
 
                 #region SGPPF
                 userConfig.TipoUtilizadorFormacao = data.TipoUtilizadorFormacao;

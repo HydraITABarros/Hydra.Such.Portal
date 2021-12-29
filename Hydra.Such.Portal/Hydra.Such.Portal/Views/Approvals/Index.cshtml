@@ -183,7 +183,7 @@
                     <vaadin-grid-filter path="requisicaoAcordosPrecos" value="[[filter.requisicaoAcordosPrecos]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoAcordosPrecos}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoAcordosPrecos}}
                 </template>
             </vaadin-grid-column>
 
@@ -193,7 +193,7 @@
                     <vaadin-grid-filter path="requisicaoUrgente" value="[[filter.requisicaoUrgente]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoUrgente}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoUrgente}}
                 </template>
             </vaadin-grid-column>
 
@@ -203,7 +203,7 @@
                     <vaadin-grid-filter path="requisicaoOrcamentoEmAnexo" value="[[filter.requisicaoOrcamentoEmAnexo]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoOrcamentoEmAnexo}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoOrcamentoEmAnexo}}
                 </template>
             </vaadin-grid-column>
 
@@ -213,7 +213,7 @@
                     <vaadin-grid-filter path="requisicaoImobilizado" value="[[filter.requisicaoImobilizado]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoImobilizado}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoImobilizado}}
                 </template>
             </vaadin-grid-column>
 
@@ -223,7 +223,7 @@
                     <vaadin-grid-filter path="requisicaoExclusivo" value="[[filter.requisicaoExclusivo]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoExclusivo}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoExclusivo}}
                 </template>
             </vaadin-grid-column>
 
@@ -233,7 +233,7 @@
                     <vaadin-grid-filter path="requisicaoJaExecutado" value="[[filter.requisicaoJaExecutado]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoJaExecutado}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoJaExecutado}}
                 </template>
             </vaadin-grid-column>
 
@@ -243,7 +243,7 @@
                     <vaadin-grid-filter path="requisicaoAmostra" value="[[filter.requisicaoAmostra]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoAmostra}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoAmostra}}
                 </template>
             </vaadin-grid-column>
 
@@ -253,7 +253,7 @@
                     <vaadin-grid-filter path="requisicaoEquipamento" value="[[filter.requisicaoEquipamento]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoEquipamento}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoEquipamento}}
                 </template>
             </vaadin-grid-column>
 
@@ -263,7 +263,7 @@
                     <vaadin-grid-filter path="requisicaoReposicaoDeStock" value="[[filter.requisicaoReposicaoDeStock]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoReposicaoDeStock}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoReposicaoDeStock}}
                 </template>
             </vaadin-grid-column>
 
@@ -273,7 +273,7 @@
                     <vaadin-grid-filter path="requisicaoPrecoIvaIncluido" value="[[filter.requisicaoPrecoIvaIncluido]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoPrecoIvaIncluido}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoPrecoIvaIncluido}}
                 </template>
             </vaadin-grid-column>
 
@@ -283,7 +283,7 @@
                     <vaadin-grid-filter path="requisicaoAdiantamento" value="[[filter.requisicaoAdiantamento]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoAdiantamento}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoAdiantamento}}
                 </template>
             </vaadin-grid-column>
 
@@ -293,7 +293,17 @@
                     <vaadin-grid-filter path="requisicaoPedirOrcamento" value="[[filter.requisicaoPedirOrcamento]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoPedirOrcamento}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoPedirOrcamento}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoRoupaManutencao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoRoupaManutencao">Req Roupa Manutenção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoRoupaManutencao" value="[[filter.requisicaoRoupaManutencao]]" />
+                </template>
+                <template>
+                    {{item.requisicaoRoupaManutencao}}
                 </template>
             </vaadin-grid-column>
 
@@ -544,6 +554,7 @@
                         "requisicaoPrecoIvaIncluido": { hidden: false, label: "Req Preço IVA Incluído" },
                         "requisicaoAdiantamento": { hidden: false, label: "Req Adiantamento" },
                         "requisicaoPedirOrcamento": { hidden: false, label: "Req Pedir Orçamento" },
+                        "requisicaoRoupaManutencao": { hidden: false, label: "Req Roupa Manutenção" },
                         "requestUser": { hidden: false, label: "Solicitado Por" },
                         "value": { hidden: false, label: "Valor" },
                         "statusText": { hidden: false, label: "Estado" },

@@ -124,7 +124,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
-        public Object Lista { get; set; }
+        public List<RequisitionViewModel> Lista { get; set; }
 
 
         public List<RequisitionLineViewModel> Lines { get; set; }

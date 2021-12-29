@@ -37,6 +37,7 @@ using Hydra.Such.Data.ViewModel.ProjectView;
 using System.ServiceModel;
 using Hydra.Such.Data.ViewModel.Contracts;
 using Hydra.Such.Data.ViewModel.Encomendas;
+using System.Threading;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3430,10 +3431,12 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult AutorizacaoFaturacao(String id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AutorizaçãoFaturação);
+            ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.projectNo = id;
                 ViewBag.UPermissions = UPerm;
+                ViewBag.EditarPrecoUnitario = Utilizador.EditarPrecoUnitario.HasValue ? Utilizador.EditarPrecoUnitario.Value : false;
                 return View();
             }
             else

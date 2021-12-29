@@ -40,8 +40,54 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult OcorrenciasList()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Ocorrencias);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UserAccessesViewModel UPermOcorrencias = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Ocorrencias);
+            UserAccessesViewModel UPermPreRequisicoes = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PréRequisições);
+            UserAccessesViewModel UPermPreRequisicoesComprasDinheiro = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PréRequisiçõesComprasDinheiro);
+            UserAccessesViewModel UPermNecessidadeCompras = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.NecessidadeCompras);
             ConfigUtilizadores user = DBUserConfigurations.GetById(User.Identity.Name);
+
+            UPerm.Read = false;
+            UPerm.Create = false;
+            UPerm.Delete = false;
+            UPerm.Update = false;
+            if (UPermOcorrencias != null)
+            {
+                UPerm.Read = UPermOcorrencias.Read;
+                UPerm.Create = UPermOcorrencias.Create;
+                UPerm.Delete = UPermOcorrencias.Delete;
+                UPerm.Update = UPermOcorrencias.Update;
+            }
+            else
+            {
+                if (UPermPreRequisicoes != null)
+                {
+                    UPerm.Read = UPermPreRequisicoes.Read;
+                    UPerm.Create = UPermPreRequisicoes.Create;
+                    UPerm.Delete = UPermPreRequisicoes.Delete;
+                    UPerm.Update = UPermPreRequisicoes.Update;
+                }
+                else
+                {
+                    if (UPermPreRequisicoesComprasDinheiro != null)
+                    {
+                        UPerm.Read = UPermPreRequisicoesComprasDinheiro.Read;
+                        UPerm.Create = UPermPreRequisicoesComprasDinheiro.Create;
+                        UPerm.Delete = UPermPreRequisicoesComprasDinheiro.Delete;
+                        UPerm.Update = UPermPreRequisicoesComprasDinheiro.Update;
+                    }
+                    else
+                    {
+                        if (UPermNecessidadeCompras != null)
+                        {
+                            UPerm.Read = UPermNecessidadeCompras.Read;
+                            UPerm.Create = UPermNecessidadeCompras.Create;
+                            UPerm.Delete = UPermNecessidadeCompras.Delete;
+                            UPerm.Update = UPermNecessidadeCompras.Update;
+                        }
+                    }
+                }
+            }
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -60,8 +106,54 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult OcorrenciasDetails(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Ocorrencias);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UserAccessesViewModel UPermOcorrencias = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Ocorrencias);
+            UserAccessesViewModel UPermPreRequisicoes = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PréRequisições);
+            UserAccessesViewModel UPermPreRequisicoesComprasDinheiro = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PréRequisiçõesComprasDinheiro);
+            UserAccessesViewModel UPermNecessidadeCompras = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.NecessidadeCompras);
             ConfigUtilizadores user = DBUserConfigurations.GetById(User.Identity.Name);
+
+            UPerm.Read = false;
+            UPerm.Create = false;
+            UPerm.Delete = false;
+            UPerm.Update = false;
+            if (UPermOcorrencias != null)
+            {
+                UPerm.Read = UPermOcorrencias.Read;
+                UPerm.Create = UPermOcorrencias.Create;
+                UPerm.Delete = UPermOcorrencias.Delete;
+                UPerm.Update = UPermOcorrencias.Update;
+            }
+            else
+            {
+                if (UPermPreRequisicoes != null)
+                {
+                    UPerm.Read = UPermPreRequisicoes.Read;
+                    UPerm.Create = UPermPreRequisicoes.Create;
+                    UPerm.Delete = UPermPreRequisicoes.Delete;
+                    UPerm.Update = UPermPreRequisicoes.Update;
+                }
+                else
+                {
+                    if (UPermPreRequisicoesComprasDinheiro != null)
+                    {
+                        UPerm.Read = UPermPreRequisicoesComprasDinheiro.Read;
+                        UPerm.Create = UPermPreRequisicoesComprasDinheiro.Create;
+                        UPerm.Delete = UPermPreRequisicoesComprasDinheiro.Delete;
+                        UPerm.Update = UPermPreRequisicoesComprasDinheiro.Update;
+                    }
+                    else
+                    {
+                        if (UPermNecessidadeCompras != null)
+                        {
+                            UPerm.Read = UPermNecessidadeCompras.Read;
+                            UPerm.Create = UPermNecessidadeCompras.Create;
+                            UPerm.Delete = UPermNecessidadeCompras.Delete;
+                            UPerm.Update = UPermNecessidadeCompras.Update;
+                        }
+                    }
+                }
+            }
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -301,7 +393,12 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data != null && string.IsNullOrEmpty(data.CodOcorrencia))
             {
-                int MaxID = DBOcorrencias.GetAll().Max(x => x.Ind) + 1;
+                List<Ocorrencias> AllOcorrencias = DBOcorrencias.GetAll();
+                int MaxID = 1;
+                if (AllOcorrencias != null && AllOcorrencias.Count > 0)
+                {
+                    MaxID = AllOcorrencias.Max(x => x.Ind) + 1;
+                }
                 string CodOcorrencia = DateTime.Now.Year + "-" + MaxID.ToString().PadLeft(6, '0');
 
                 data.CodOcorrencia = CodOcorrencia;

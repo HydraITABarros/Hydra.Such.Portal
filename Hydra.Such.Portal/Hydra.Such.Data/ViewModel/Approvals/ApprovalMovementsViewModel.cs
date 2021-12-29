@@ -23,18 +23,19 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public string RequisicaoProjectNo { get; set; }
         public string RequisicaoClientNo { get; set; }
         public string RequisicaoClientName { get; set; }
-        public bool? RequisicaoAcordosPrecos { get; set; }
-        public bool? RequisicaoUrgente { get; set; }
-        public bool? RequisicaoOrcamentoEmAnexo { get; set; }
-        public bool? RequisicaoImobilizado { get; set; }
-        public bool? RequisicaoExclusivo { get; set; }
-        public bool? RequisicaoJaExecutado { get; set; }
-        public bool? RequisicaoAmostra { get; set; }
-        public bool? RequisicaoEquipamento { get; set; }
-        public bool? RequisicaoReposicaoDeStock { get; set; }
-        public bool? RequisicaoPrecoIvaIncluido { get; set; }
-        public bool? RequisicaoAdiantamento { get; set; }
-        public bool? RequisicaoPedirOrcamento { get; set; }
+        public string RequisicaoAcordosPrecos { get; set; }
+        public string RequisicaoUrgente { get; set; }
+        public string RequisicaoOrcamentoEmAnexo { get; set; }
+        public string RequisicaoImobilizado { get; set; }
+        public string RequisicaoExclusivo { get; set; }
+        public string RequisicaoJaExecutado { get; set; }
+        public string RequisicaoAmostra { get; set; }
+        public string RequisicaoEquipamento { get; set; }
+        public string RequisicaoReposicaoDeStock { get; set; }
+        public string RequisicaoPrecoIvaIncluido { get; set; }
+        public string RequisicaoAdiantamento { get; set; }
+        public string RequisicaoPedirOrcamento { get; set; }
+        public string RequisicaoRoupaManutencao { get; set; }
         public string RequestUser { get; set; }
         public decimal? Value { get; set; }
         public DateTime? DateTimeApprove { get; set; }

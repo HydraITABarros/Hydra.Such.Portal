@@ -54,6 +54,7 @@ namespace Hydra.Such.Data.Database
         public bool? RegistoDataDiarioCafetaria { get; set; }
         public bool? CriarMedidasCorretivas { get; set; }
         public bool? VerFaturas { get; set; }
+        public bool? EditarPrecoUnitario { get; set; }
 
         #region SGPPF
         public int? TipoUtilizadorFormacao { get; set; }

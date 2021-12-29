@@ -338,8 +338,11 @@
                         });
                         window.setGridFilter('gestaorequisicoes-requisicoesaprovadas', filters || {});
 
-                        var lista = this.$.gridrequest._filter(this.result);
-                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo + "?Lista=" + lista;
+                        var listafiltro = this.$.gridrequest._filter(this.result);
+                        item.lista = listafiltro;
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/?id=" + item.requisitionNo + "&lista=" + lista;
+
+                        @*window.location.href = '@Url.Action("DetalhesReqAprovada", "GestaoRequisicoes", new { id = item.requisitionNo, lista = listafiltro })';*@
                     }
                 },
                 /*FILTROS*/

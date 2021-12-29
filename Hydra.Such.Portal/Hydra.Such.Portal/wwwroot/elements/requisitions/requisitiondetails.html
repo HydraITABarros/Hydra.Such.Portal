@@ -1921,6 +1921,9 @@
                     _permissions: {
                         type: Array
                     },
+                    _listareq: {
+                        type: Array
+                    },
                     _requisitionid: {
                         type: String,
                         notify: true,
@@ -2142,6 +2145,9 @@
                         this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
                         this.$.page_update_ajax.generateRequest();
                     }
+
+                    alert('ola');
+                    alert(this._listareq.length);
                 },
                 isReadOnly: function () {
                     //return false;//this._requisitionstatus == this._requisitionstatesenum.Approved ? true : !this._permissions.update;
