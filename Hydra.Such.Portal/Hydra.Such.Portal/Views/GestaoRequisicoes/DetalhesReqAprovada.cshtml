@@ -10,6 +10,17 @@
                       _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
                       _reportserverurl="@ViewBag.ReportServerURL"
                       _validacao="1"
-                      _listareq='@Html.Raw(Json.Serialize(ViewBag.ListaREQ))'>
+                      _requisitionno="@ViewBag.requisitionNo"
+                      _state="@ViewBag.state"
+                      _projectno="@ViewBag.projectNo"
+                      _clientcode="@ViewBag.clientCode"
+                      _clientname="@ViewBag.clientName"
+                      _regioncode="@ViewBag.regionCode"
+                      _functionalareacode="@ViewBag.functionalAreaCode"
+                      _centerresponsibilitycode="@ViewBag.centerResponsibilityCode"
+                      _localcode="@ViewBag.localCode"
+                      _comments="@ViewBag.comments"
+                      _requisitiondate="@ViewBag.requisitionDate"
+                      _estimatedvalue="@ViewBag.estimatedValue">
 </x-requisitiondetails>
 
