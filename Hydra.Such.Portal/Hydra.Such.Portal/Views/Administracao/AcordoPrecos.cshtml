@@ -1369,7 +1369,6 @@
                     },
 
                     _addExcel: function () {
-                        debugger;
                         var urlFile = "/Administracao/OnPostImport_AcordoPrecos";
                         var toastSuccess = this.$.ToastMessageSuccess;
                         var toastError = this.$.ToastMessageError;
@@ -1377,6 +1376,7 @@
                         var uploadFile = this.$.UploadRequest.files;
                         var ajaxImport = this.$.ajax_updateCreate;
                         var vaadinGrid = this.$.tabLinhas;
+                        var noProcedimentoValor = this.data.noProcedimento;
                         for (var i = 0; i < uploadFile.length; i++) {
                             data.append(uploadFile[i].name, uploadFile[i]);
                         }
@@ -1386,12 +1386,16 @@
                             contentType: false,
                             processData: false,
                             data: data,
-                            success: function (ListToCreate) {
-                                ajaxImport.body = JSON.stringify(ListToCreate);
-                                ajaxImport.generateRequest();
-                                vaadinGrid.clearCache();
-                                toastSuccess.text = "Tabela atualizada com sucesso, faça atualizar para mostrar os novos dados.";
-                                toastSuccess.open();
+                            success: function (listtocreate) {
+                                if (listtocreate.length > 0) {
+                                    listtocreate[0].eMessage = noProcedimentoValor;
+
+                                    ajaxImport.body = JSON.stringify(listtocreate);
+                                    ajaxImport.generateRequest();
+                                    vaadinGrid.clearCache();
+                                    //toastSuccess.text = "Tabela atualizada com sucesso, faça atualizar para mostrar os novos dados.";
+                                    //toastSuccess.open();
+                                }
                             },
                             error: function () {
                                 toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
@@ -1406,12 +1410,12 @@
                     },
 
                     _updateCreateResponse: function (e) {
-                        var self = this;
-                        if (e.detail.status === 200) {
+                        if (this.result.eReasonCode == 1) {
+                            this._showMessage(this.result.eMessage);
                             this.$.ajax_GetAll.generateRequest();
                         }
                         else {
-                            this._showErrorMessage("Occorreu um erro ao atualizar a Tabela.");
+                            this._showErrorMessage(this.result.eMessage);
                         }
                     },
 
