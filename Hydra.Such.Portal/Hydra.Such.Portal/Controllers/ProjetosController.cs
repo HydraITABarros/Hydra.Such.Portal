@@ -5209,7 +5209,6 @@ namespace Hydra.Such.Portal.Controllers
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
-
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
                                     {
                                         execDetails += " Linhas criadas com sucesso.";
@@ -5259,7 +5258,7 @@ namespace Hydra.Such.Portal.Controllers
                                     //assume-se que o mesmo foi executado com sucesso.
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
-                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()) || errorMessage.ToLower().Contains("request channel timed out".ToLower()))
                                     {
                                         errorMessage = "";
 
