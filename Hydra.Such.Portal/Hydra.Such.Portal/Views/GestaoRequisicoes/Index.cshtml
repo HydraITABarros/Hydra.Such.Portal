@@ -518,6 +518,30 @@
                         value: {},
                     },
                 },
+                ready: function () {
+                    this.$.pesquisaData.value = this.pesquisadate;
+
+                    if (!this.Flag) {
+                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
+                        this.$.ajax_getgrid.generateRequest();
+                    }
+                    this.Flag = true;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-index');
+                    window.grid = this.$.gridrequest;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
                 ],

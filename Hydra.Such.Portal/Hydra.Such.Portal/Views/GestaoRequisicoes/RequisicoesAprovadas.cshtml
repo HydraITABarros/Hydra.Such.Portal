@@ -287,6 +287,27 @@
                         value: {},
                     },
                 },
+                ready: function () {
+                    if (!this.Flag) {
+                        this.$.ajax_getgrid.generateRequest();
+                    }
+                    this.Flag = true;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-requisicoesaprovadas');
+                    window.grid = this.$.gridrequest;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocationsData)'
                 ],
