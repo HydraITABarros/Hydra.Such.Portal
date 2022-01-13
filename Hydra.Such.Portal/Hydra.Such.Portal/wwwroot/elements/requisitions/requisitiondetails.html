@@ -2539,7 +2539,6 @@
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
-                        //window.history.back();
 
                         var Lista = this.RequisitionList;
                         var Index = -1;
@@ -2566,7 +2565,8 @@
                             this.$.grdRequisitionLines.clearCache();
                         }
                         else {
-                            window.history.back();
+                            //window.history.back();
+                            window.location.href = document.referrer;
                         }
                     }
                     else {
@@ -3142,7 +3142,6 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
-                    //window.history.back();
 
                     var Lista = this.RequisitionList;
                     var Index = -1;
@@ -3169,7 +3168,8 @@
                         this.$.grdRequisitionLines.clearCache();
                     }
                     else {
-                        window.history.back();
+                        //window.history.back();
+                        window.location.href = document.referrer;
                     }
                 },
                 _createTransferShipment: function () {
@@ -3270,8 +3270,8 @@
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
                         if (this.regist.eMessage == "Requisição foi fechada") {
-                            window.history.back();
-                            //window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            //window.history.back();
+                            window.location.href = document.referrer;
                         }
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
@@ -3309,7 +3309,8 @@
                     //window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 },
                 _goBack: function (e) {
-                    window.history.back();
+                    //window.history.back();
+                    window.location.href = document.referrer;
                 },
                 _showChangeLog: function () {
                     this.$.dlgChangeLog.open();;
@@ -3433,7 +3434,8 @@
                     if (this.actionResult.eReasonCode == 100) {
                         this._openToast(this.actionResult.eMessage);
 
-                        window.history.back();
+                        //window.history.back();
+                        window.location.href = document.referrer;
                     } else {
                         this._openDlgMessageError(this.actionResult.eMessage);
                     }
@@ -3724,7 +3726,8 @@
                         this.$.grdRequisitionLines.clearCache();
                     }
                     else {
-                        window.history.back();
+                        //window.history.back();
+                        window.location.href = document.referrer;
                     }
                 },
 

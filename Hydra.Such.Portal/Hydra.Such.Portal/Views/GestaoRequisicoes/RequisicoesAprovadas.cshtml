@@ -290,6 +290,7 @@
                 ready: function () {
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
                     }
                     this.Flag = true;
 
@@ -314,6 +315,7 @@
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocationsData) {
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
                     }
                     this.Flag = true;
 
