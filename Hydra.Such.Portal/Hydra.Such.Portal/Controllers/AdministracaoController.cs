@@ -3493,8 +3493,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null && data.Count > 0)
                 {
                     List<NAVVendorViewModel> AllFornecedores = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
-                    List<NAV2009FornecedoresContratos> AllContracts = DBLinhasAcordoPrecos.AcordoPrecoGetContratos(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
-                    List<NAV2009FornecedoresContratos> UserAllContracts = new List<NAV2009FornecedoresContratos>();
+                    List<NAV2017FornecedoresContratos> AllContracts = DBLinhasAcordoPrecos.AcordoPrecoGetContratos(_config.NAVDatabaseName, _config.NAVCompanyName);
+                    NAV2017FornecedoresContratos UserContract = new NAV2017FornecedoresContratos();
+                    List<NAV2017FornecedoresContratos> UserAllContracts = new List<NAV2017FornecedoresContratos>();
                     List <NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
                     List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
                     List<NAVDimValueViewModel> AllCenters = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name);
@@ -3532,12 +3533,22 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (!string.IsNullOrEmpty(line.NoContrato))
                         {
-                            UserAllContracts = AllContracts.Where(x => x.FornecedorNo == line.NoFornecedor).ToList();
-                            if (UserAllContracts.Where(x => x.ContratoNo == line.NoContrato).Count() == 0)
+                            UserContract = AllContracts.FirstOrDefault(x => x.ContratoNo == line.NoContrato);
+                            if (UserContract == null)
                             {
                                 result.eReasonCode = 4;
                                 result.eMessage = "O Nº Contrato na linha " + Index.ToString() + " não é válido.";
                                 break;
+                            }
+
+                            if (UserContract.Excecao == false)
+                            {
+                                if (UserContract.FornecedorNo != line.NoFornecedor)
+                                {
+                                    result.eReasonCode = 4;
+                                    result.eMessage = "O Nº Contrato na linha " + Index.ToString() + " não está associado ao Fornecedor.";
+                                    break;
+                                }
                             }
                         }
 
@@ -6416,7 +6427,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<DDMessageString> result = null;
 
-            result = DBLinhasAcordoPrecos.AcordoPrecoGetContratos(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, FornecedorNo).Select(x => new DDMessageString()
+            result = DBLinhasAcordoPrecos.NAV2017AcordoPrecoGetContratosByFornecedor(_config.NAVDatabaseName, _config.NAVCompanyName, FornecedorNo).Select(x => new DDMessageString()
             {
                 id = x.ContratoNo,
                 value = x.Descricao
@@ -6639,7 +6650,7 @@ namespace Hydra.Such.Portal.Controllers
                                     List<AcessosLocalizacoes> Lista_AcessosLocalizacoes = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
                                     List<EnumData> Lista_FormaEntrega = EnumerablesFixed.AP_FormaEntrega;
                                     List<EnumData> Lista_TipoPreco = EnumerablesFixed.AP_TipoPreco;
-                                    List<NAV2009FornecedoresContratos> Lista_Contratos = DBLinhasAcordoPrecos.AcordoPrecoGetContratos(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, "");
+                                    List<NAV2017FornecedoresContratos> Lista_Contratos = DBLinhasAcordoPrecos.NAV2017AcordoPrecoGetContratosByFornecedor(_config.NAVDatabaseName, _config.NAVCompanyName, "");
                                     int Linha_ORIGINAL = 2;
                                     int Linha_SUCESSO = 2;
                                     int Linha_ERRO = 2;
@@ -6929,7 +6940,7 @@ namespace Hydra.Such.Portal.Controllers
             string DtValidadeFim, string Regiao, string Area, string Cresp, string Localizacao, string CustoUnitario, string QtdPorUM, string PesoUnitario, string FormaEntrega, string TipoPreco,
             string NoContrato, List<bool> result_list, List<AcordoPrecosModelView> Lista_AcordoPrecos, List<NAVVendorViewModel> Lista_Vendor, List<NAVProductsViewModel> Lista_Products,
             List<NAVDimValueViewModel> Lista_Regioes, List<NAVDimValueViewModel> Lista_Areas, List<NAVDimValueViewModel> Lista_Cresp, List<AcessosLocalizacoes> Lista_AcessosLocalizacoes,
-            List<EnumData> Lista_FormaEntrega, List<EnumData> Lista_TipoPreco, List<NAV2009FornecedoresContratos> Lista_Contratos)
+            List<EnumData> Lista_FormaEntrega, List<EnumData> Lista_TipoPreco, List<NAV2017FornecedoresContratos> Lista_Contratos)
         {
             DateTime currectDate;
             decimal currectDecimal;

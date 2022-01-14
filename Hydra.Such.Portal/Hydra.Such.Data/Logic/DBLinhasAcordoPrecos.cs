@@ -255,29 +255,63 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<NAV2009FornecedoresContratos> AcordoPrecoGetContratos(string NAVServerName, string NAVDatabaseName, string NAVCompanyName, string FornecedorNo = null)
+        public static List<NAV2017FornecedoresContratos> AcordoPrecoGetContratos(string NAVDatabaseName, string NAVCompanyName)
         {
             try
             {
-                List<NAV2009FornecedoresContratos> result = new List<NAV2009FornecedoresContratos>();
+                List<NAV2017FornecedoresContratos> result = new List<NAV2017FornecedoresContratos>();
                 using (var ctx = new SuchDBContextExtention())
                 {
                     var parameters = new[]{
-                        new SqlParameter("@ServerName", NAVServerName),
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017AcordoPrecoGetContratos @DBName, @CompanyName", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAV2017FornecedoresContratos()
+                        {
+                            ContratoNo = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                            FornecedorNo = temp.FornecedorNo.Equals(DBNull.Value) ? "" : (string)temp.FornecedorNo,
+                            Descricao = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao,
+                            Excecao = temp.Excecao.Equals(DBNull.Value) ? false : Convert.ToBoolean(temp.Excecao)
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<NAV2017FornecedoresContratos> NAV2017AcordoPrecoGetContratosByFornecedor(string NAVDatabaseName, string NAVCompanyName, string FornecedorNo = null)
+        {
+            try
+            {
+                List<NAV2017FornecedoresContratos> result = new List<NAV2017FornecedoresContratos>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@FornecedorNo", FornecedorNo )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2009AcordoPrecoGetContratos @ServerName, @DBName, @CompanyName, @FornecedorNo", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017AcordoPrecoGetContratosByFornecedor @DBName, @CompanyName, @FornecedorNo", parameters);
 
                     foreach (dynamic temp in data)
                     {
-                        result.Add(new NAV2009FornecedoresContratos()
+                        result.Add(new NAV2017FornecedoresContratos()
                         {
                             ContratoNo = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
                             FornecedorNo = temp.FornecedorNo.Equals(DBNull.Value) ? "" : (string)temp.FornecedorNo,
-                            Descricao = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao
+                            Descricao = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao,
+                            Excecao = temp.Excecao.Equals(DBNull.Value) ? false : Convert.ToBoolean(temp.Excecao)
                         });
                     }
                 }
