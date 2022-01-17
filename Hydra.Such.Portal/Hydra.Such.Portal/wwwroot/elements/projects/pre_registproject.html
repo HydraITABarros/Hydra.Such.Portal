@@ -157,6 +157,8 @@
         <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{AllRecursosCode}}" id="ajax_AllRecursos_code" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{AllProdutosCode}}" id="ajax_AllProdutos_code" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractDiaryLineCodes" last-response="{{CBContractLineCodesGrid}}" id="contractlinecodesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectListDiaryDlg" last-response="{{responseDlg}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -234,7 +236,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piDescription" label="Descrição" value="{{description}}" disabled></vaadin-text-field>
+                    <vaadin-text-field id="piDescription" name="piDescription" label="Descrição" value="{{description}}" maxlength="50" on-value-changed="_descriptionChange" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
             </div>
             <div class="row">
@@ -392,7 +394,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -407,7 +409,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
@@ -430,7 +432,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -453,7 +455,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -477,23 +479,22 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <!--<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field id="description" disabled="{{ !_permissions.update }}" value="{{item.description}}"></vaadin-text-field>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="description" disabled="{{ !_permissions.update }}" maxlength="50" value="{{item.description}}" on-value-changed="_lineDescriptionChange"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.description}}
-                    </template>-->
-                        {{item.description}}
+                    </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="projectContabGroup">Grupo Contab.</vaadin-grid-sorter>
@@ -517,7 +518,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
@@ -534,7 +535,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
@@ -558,7 +559,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
@@ -582,7 +583,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
@@ -606,7 +607,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
@@ -630,7 +631,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
@@ -654,7 +655,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
@@ -671,7 +672,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
@@ -683,7 +684,7 @@
                     </div>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
@@ -700,7 +701,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
@@ -711,7 +712,7 @@
                         [[formatCurrency(item.totalPrice)]]
                     </div>
                 </template>
-                
+
             </vaadin-grid-column>
 
             <vaadin-grid-column width="7%" resizable hidden>
@@ -730,7 +731,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <p class="alignCenter">Faturável</p>
@@ -741,7 +742,7 @@
                     </div>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="MealType">Tipo Refeição</vaadin-grid-sorter>
@@ -766,7 +767,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header" hidden>
                     <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
@@ -790,7 +791,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="residueGuideNo">Nº Guia Resíduo</vaadin-grid-sorter>
@@ -805,7 +806,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="externalGuideNo">Nº Guia Externa</vaadin-grid-sorter>
@@ -820,7 +821,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
@@ -836,7 +837,7 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="7%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="serviceClientCode">Cód. Serviço Cliente</vaadin-grid-sorter>
@@ -860,13 +861,13 @@
                     </template>
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column hidden>
                 <template>
                     <vaadin-text-field id="invoiceToClientNo" value="{{item.invoiceToClientNo}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            
+
             <template is="dom-if" if="{{ _permissions.delete }}">
                 <vaadin-grid-column width="5%" resizable>
                     <template class="header">
@@ -947,7 +948,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -957,7 +958,7 @@
                         {{item.code}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
@@ -967,7 +968,7 @@
                         {{item.description}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header" width="200px" resizable>
                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
@@ -997,7 +998,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
@@ -1015,7 +1016,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
@@ -1025,7 +1026,7 @@
                         {{item.serviceObject}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
@@ -1044,7 +1045,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
@@ -1063,7 +1064,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
@@ -1082,7 +1083,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
@@ -1092,7 +1093,7 @@
                         {{item.user}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
@@ -1104,7 +1105,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
@@ -1116,7 +1117,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
@@ -1128,7 +1129,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
@@ -1140,7 +1141,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" hidden>
                     <template class="header">
                         <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
@@ -1150,7 +1151,7 @@
                         [[ _parseDateFormat(item.consumptionDate) ]]
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
@@ -1162,7 +1163,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="15%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="mealType">Tipo Refeição</vaadin-grid-sorter>
@@ -1615,6 +1616,11 @@
                         notify: true,
                         value: false
                     },
+                    productOriginalDescriptionCAB: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
 
                 },
 
@@ -1678,6 +1684,10 @@
                     this.$.ajax_SServiceClient.params = { "allProjs": true };
                     this.$.ajax_SServiceClient.generateRequest();
 
+                    this.$.ajax_AllRecursos_code.url = "/PopulateDropdowns/GetResourcesCode";
+                    this.$.ajax_AllRecursos_code.generateRequest();
+                    this.$.ajax_AllProdutos_code.url = "/PopulateDropdowns/GetProductsCodeDiarioProjeto";
+                    this.$.ajax_AllProdutos_code.generateRequest();
                 },
                 _responseProcessor: function () {
                     if (this.projdata.status >= 4) {
@@ -1721,71 +1731,76 @@
                     this.$.ToastMessageError.open();
                 },
                 _add() {
-                    if (this.quantity != 0) {
-                        if (this.date != "") {
-                            if (this.projectMovementNumber != "") {
-                                if (this.projectTypeNumber != "") {
-                                    if (this.codeNumber != "") {
-                                        if (true)
-                                        //Validações
-                                        {
-                                            this.result.items.unshift({
-                                                projectNo: this.projectNumber,
-                                                date: this.date,
-                                                movementType: this.projectMovementNumber,
-                                                type: this.projectTypeNumber,
-                                                code: this.codeNumber,
-                                                description: this.description,
-                                                quantity: this.quantity,
-                                                measurementUnitCode: this.codeMeasurementUnit,
-                                                locationCode: this.codeLocation,
-                                                projectContabGroup: this.codeProjectContabGroup,
-                                                regionCode: this.codeRegion,
-                                                functionalAreaCode: this.codeFuncArea,
-                                                responsabilityCenterCode: this.codeResponsabilityCenter,
-                                                user: "", //set logged user
-                                                unitCost: this.unitCost,
-                                                totalCost: this.totalCost,
-                                                unitPrice: this.unitPrice,
-                                                totalPrice: this.totalPrice,
-                                                unitValueToInvoice: this.unitValueToInvoice,
-                                                billable: this.billable,
-                                                invoiceToClientNo: this.invoiceClientNo,
-                                                mealType: this.ddMealTypes,
-                                                serviceGroupCode: this.ddServiceGroupCode,
-                                                residueGuideNo: this.residueguide,
-                                                externalGuideNo: this.externalguide,
-                                                consumptionDate: this.consumptionDate,
-                                                serviceClientCode: this.ddServiceClientCode
-                                            });
+                    if (this.description.startsWith(this.productOriginalDescriptionCAB) == true) {
+                        if (this.quantity != 0) {
+                            if (this.date != "") {
+                                if (this.projectMovementNumber != "") {
+                                    if (this.projectTypeNumber != "") {
+                                        if (this.codeNumber != "") {
+                                            if (true)
+                                            //Validações
+                                            {
+                                                this.result.items.unshift({
+                                                    projectNo: this.projectNumber,
+                                                    date: this.date,
+                                                    movementType: this.projectMovementNumber,
+                                                    type: this.projectTypeNumber,
+                                                    code: this.codeNumber,
+                                                    description: this.description,
+                                                    quantity: this.quantity,
+                                                    measurementUnitCode: this.codeMeasurementUnit,
+                                                    locationCode: this.codeLocation,
+                                                    projectContabGroup: this.codeProjectContabGroup,
+                                                    regionCode: this.codeRegion,
+                                                    functionalAreaCode: this.codeFuncArea,
+                                                    responsabilityCenterCode: this.codeResponsabilityCenter,
+                                                    user: "", //set logged user
+                                                    unitCost: this.unitCost,
+                                                    totalCost: this.totalCost,
+                                                    unitPrice: this.unitPrice,
+                                                    totalPrice: this.totalPrice,
+                                                    unitValueToInvoice: this.unitValueToInvoice,
+                                                    billable: this.billable,
+                                                    invoiceToClientNo: this.invoiceClientNo,
+                                                    mealType: this.ddMealTypes,
+                                                    serviceGroupCode: this.ddServiceGroupCode,
+                                                    residueGuideNo: this.residueguide,
+                                                    externalGuideNo: this.externalguide,
+                                                    consumptionDate: this.consumptionDate,
+                                                    serviceClientCode: this.ddServiceClientCode
+                                                });
 
-                                            // Save to DB
-                                            this.$.ajax_update.body = JSON.stringify(this.result.items);
-                                            this.$.ajax_update.generateRequest();
-                                            this.$.projectDiaryProject.clearCache();
+                                                // Save to DB
+                                                this.$.ajax_update.body = JSON.stringify(this.result.items);
+                                                this.$.ajax_update.generateRequest();
+                                                this.$.projectDiaryProject.clearCache();
+                                            }
+                                            else {
+                                                alert("Tem de preencher todos os campos.");
+                                            }
                                         }
                                         else {
-                                            alert("Tem de preencher todos os campos.");
+                                            this.openToastError("O campo Código é de preenchimento obrigatório.");
                                         }
                                     }
                                     else {
-                                        this.openToastError("O campo Código é de preenchimento obrigatório.");
+                                        this.openToastError("O campo Tipo é de preenchimento obrigatório.");
                                     }
                                 }
                                 else {
-                                    this.openToastError("O campo Tipo é de preenchimento obrigatório.");
+                                    this.openToastError("O campo Tipo Movimento é de preenchimento obrigatório.");
                                 }
                             }
                             else {
-                                this.openToastError("O campo Tipo Movimento é de preenchimento obrigatório.");
+                                this.openToastError("O campo Data é de preenchimento obrigatório.");
                             }
                         }
                         else {
-                            this.openToastError("O campo Data é de preenchimento obrigatório.");
+                            this.openToastError("A valor do campo Quantidades não pode ser zero.");
                         }
                     }
                     else {
-                        this.openToastError("A valor do campo Quantidades não pode ser zero.");
+                        this.openToastError("É obrigatório o campo Descrição iniciar com a Descrição Original do Produto.");
                     }
                 },
 
@@ -1895,7 +1910,6 @@
                     }
                 },
                 _DiaryPSClientResponse: function (e) {
-                    debugger;
                     if (e.detail.status === 200) {
                         if (this.newDiaryPSClient.eReasonCode === 1) {
                             if (this.newDiaryPSClient.items.length > 0) {
@@ -2139,6 +2153,30 @@
 
                 _registerPreRegist: function () {
                     for (i = 0; i < this.result.items.length; i++) {
+                        var originalDescriptionLINE = "";
+                        var tipo = this.result.items[i].type;
+                        var codigo = this.result.items[i].code;
+                        var descricao = this.result.items[i].description;
+
+                        if (tipo == 1) {
+                            for (j = 0; j < this.AllProdutosCode.length; j++) {
+                                if (this.AllProdutosCode[j].id === codigo) {
+                                    originalDescriptionLINE = this.AllProdutosCode[j].value;
+                                }
+                            }
+                        }
+                        if (tipo == 2) {
+                            for (j = 0; j < this.AllRecursosCode.length; j++) {
+                                if (this.AllRecursosCode[j].id === codigo) {
+                                    originalDescriptionLINE = this.AllRecursosCode[j].value;
+                                }
+                            }
+                        }
+                        if (descricao.startsWith(originalDescriptionLINE) == false) {
+                            this.openToastError("Não é possivel Registar as Linhas de Diário, por existirem Linhas em que a Descrição não inicia com a Descrição Original.");
+                            return;
+                        }
+
                         if ((this.result.items[i].unitCost != null && this.result.items[i].unitCost < 0) ||
                             (this.result.items[i].unitPrice != null && this.result.items[i].unitPrice < 0)) {
 
@@ -2307,6 +2345,8 @@
                         this.code = this.codeOptions[index].id;
                         this.description = this.codeOptions[index].value;
                         this.codeMeasurementUnit = this.codeOptions[index].extra;
+
+                        this.productOriginalDescriptionCAB = this.codeOptions[index].value;
                     }
                 },
 
@@ -2537,7 +2577,43 @@
                 _InverterSinalCheck: function () {
                     this.invertersinal = !this.invertersinal;
                     this._projectChange();
-                }
+                },
+
+                _descriptionChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var descricao = e.detail.value;
+                        if (descricao.startsWith(this.productOriginalDescriptionCAB) == false) {
+                            this.openToastError("É obrigatório o campo Descrição iniciar com a Descrição Original do Produto.");
+                        }
+                    }
+                },
+
+                _lineDescriptionChange: function (e) {
+                    if (e.detail.value != null && e.detail.value != "") {
+                        var originalDescriptionLINE = "";
+                        var tipo = this.result.items.find(x => x == this._SelectedLine).type;
+                        var codigo = this.result.items.find(x => x == this._SelectedLine).code;
+                        var descricao = e.detail.value;
+
+                        if (tipo == 1) {
+                            for (j = 0; j < this.AllProdutosCode.length; j++) {
+                                if (this.AllProdutosCode[j].id === codigo) {
+                                    originalDescriptionLINE = this.AllProdutosCode[j].value;
+                                }
+                            }
+                        }
+                        if (tipo == 2) {
+                            for (j = 0; j < this.AllRecursosCode.length; j++) {
+                                if (this.AllRecursosCode[j].id === codigo) {
+                                    originalDescriptionLINE = this.AllRecursosCode[j].value;
+                                }
+                            }
+                        }
+                        if (descricao.startsWith(originalDescriptionLINE) == false) {
+                            this.openToastError("É obrigatório o campo Descrição iniciar com a Descrição Original do Produto.");
+                        }
+                    }
+                },
 
 
 
