@@ -3499,19 +3499,7 @@ namespace Hydra.Such.Portal.Controllers
                     List <NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
                     List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
                     List<NAVDimValueViewModel> AllCenters = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name);
-
-                    List<AcessosLocalizacoes> UserLocations = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
                     List<NAVLocationsViewModel> AllLocations = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
-                    List<NAVLocationsViewModel> UserAllLocations = new List<NAVLocationsViewModel>();
-                    if (UserLocations == null || UserLocations.Count == 0)
-                    {
-                        UserAllLocations = AllLocations;
-                    }
-                    else
-                    {
-                        List<string> userLocationsIds = UserLocations.Select(x => x.Localizacao).Distinct().ToList();
-                        UserAllLocations = AllLocations.Where(x => userLocationsIds.Contains(x.Code)).ToList();
-                    }
 
                     int Index = 1;
                     foreach (LinhasAcordoPrecosViewModel line in data)
@@ -3573,7 +3561,7 @@ namespace Hydra.Such.Portal.Controllers
                             break;
                         }
 
-                        if (string.IsNullOrEmpty(line.Localizacao) || UserAllLocations.Where(x => x.Code == line.Localizacao).Count() == 0)
+                        if (string.IsNullOrEmpty(line.Localizacao) || AllLocations.Where(x => x.Code == line.Localizacao).Count() == 0)
                         {
                             result.eReasonCode = 8;
                             result.eMessage = "O Cód. Localização na linha " + Index.ToString() + " não é válido.";
