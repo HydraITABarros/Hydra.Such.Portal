@@ -2125,8 +2125,10 @@
                                 }
                             }
                         }
-                        if (descricao.startsWith(originalDescriptionLINE) == false) {
-                            this.openToastError("Não é possivel Registar as Linhas de Diário, por existirem Linhas em que a Descrição não inicia com a Descrição Original.");
+                        debugger;
+                        if (descricao.toLowerCase().startsWith(originalDescriptionLINE.toLowerCase()) == false) {
+                            debugger;
+                            this.openToastError("Não é possivel Registar as Linhas de Diário, por a descrição na linha '" + descricao + "' não ser igual á descrição original '" + originalDescriptionLINE + "'.");
                             return;
                         }
 
@@ -2138,6 +2140,7 @@
                         }
                     }
 
+                    debugger;
                     $(this.$.btn_registarDiario).addClass('disabled');
 
                     //Antes de Registar as Linhas Guarda as mesmas
