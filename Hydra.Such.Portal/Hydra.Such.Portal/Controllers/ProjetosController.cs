@@ -3916,7 +3916,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (serviceDateValue != null)
                     DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
 
-                DateTime serviceDateFim;
+                DateTime serviceDateFim = DateTime.MinValue;
                 JValue serviceDateFimValue = requestParams["serviceDateFim"] as JValue;
                 if (serviceDateFimValue != null)
                     DateTime.TryParse((string)serviceDateFimValue.Value, out serviceDateFim);
@@ -4086,15 +4086,29 @@ namespace Hydra.Such.Portal.Controllers
                     if (contract != null)
                     {
                         //Validar se o contrato indicado no projeto está vigente
-                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue && 
+                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue &&
                             (DateTime.Now < contract.DataInicial.Value || DateTime.Now > contract.DataFimContrato.Value))
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Contrato não está vigente."));
                         }
                         //Validar se o compromisso é o que está no contrato                
+                        //contract.NºCompromisso = !string.IsNullOrEmpty(contract.NºCompromisso) ? contract.NºCompromisso : "";
+                        //if (commitmentNumber != contract.NºCompromisso)
                         commitmentNumber = !string.IsNullOrEmpty(commitmentNumber) ? commitmentNumber : "";
-                        contract.NºCompromisso = !string.IsNullOrEmpty(contract.NºCompromisso) ? contract.NºCompromisso : "";
-                        if (commitmentNumber != contract.NºCompromisso)
+                        List<RequisiçõesClienteContrato> AllRequisicoes = new List<RequisiçõesClienteContrato>();
+                        RequisiçõesClienteContrato Requisicao = new RequisiçõesClienteContrato();
+                        string REQCompromisso = string.Empty;
+                        AllRequisicoes = DBContractClientRequisition.GetByContract(project.NºContrato);
+                        if (AllRequisicoes != null && AllRequisicoes.Count > 0)
+                        {
+                            Requisicao = AllRequisicoes.FirstOrDefault(x => (x.DataInícioCompromisso <= serviceDateFim && x.DataFimCompromisso >= serviceDateFim) && x.NºProjeto == project.NºProjeto);
+                            if (Requisicao == null)
+                            {
+                                Requisicao = AllRequisicoes.FirstOrDefault(x => (x.DataInícioCompromisso <= serviceDateFim && x.DataFimCompromisso >= serviceDateFim) && string.IsNullOrEmpty(x.NºProjeto));
+                            }
+                            REQCompromisso = Requisicao != null && !string.IsNullOrEmpty(Requisicao.NºCompromisso) ? Requisicao.NºCompromisso : "";
+                        }
+                        if (commitmentNumber != REQCompromisso)
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
                         }
