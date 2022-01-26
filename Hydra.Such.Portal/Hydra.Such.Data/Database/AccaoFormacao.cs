@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.Database
         public decimal? NumeroTotalHoras { get; set; }
         public string UrlImagem { get; set; }
         public string LocalRealizacao { get; set; }
+        public decimal? CustoInscricao { get; set; }
 
 
         [Newtonsoft.Json.JsonIgnore]
