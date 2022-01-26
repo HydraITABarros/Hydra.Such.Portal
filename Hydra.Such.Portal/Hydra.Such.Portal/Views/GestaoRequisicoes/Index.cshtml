@@ -518,6 +518,32 @@
                         value: {},
                     },
                 },
+                ready: function () {
+                    this.$.pesquisaData.value = this.pesquisadate;
+
+                    if (!this.Flag) {
+                        this.result = null;
+                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
+                    }
+                    this.Flag = true;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-index');
+                    window.grid = this.$.gridrequest;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
                 ],
@@ -525,8 +551,10 @@
                     this.$.pesquisaData.value = this.pesquisadate;
 
                     if (!this.Flag) {
+                        this.result = null;
                         this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
                         this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
                     }
                     this.Flag = true;
 
@@ -638,8 +666,10 @@
                 },
 
                 _search: function () {
+                    this.result = null;
                     this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
                     this.$.ajax_getgrid.generateRequest();
+                    this.$.gridrequest.clearCache();
                 },
 
                 _getgridResponse: function () {
@@ -647,7 +677,6 @@
                 },
 
                 _exportEXCEL: function() {
-                    debugger;
                     var result = this.$.gridrequest._filter(this.result);
                     if (result != null && result.length > 0) {
                         if (result.length <= 7500) {
@@ -757,8 +786,11 @@
                     }
                     else {
                         this.openToastSuccess(this.closeRequisitionResult.eMessage);
+
+                        this.result = null;
                         this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
                         this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
                     }
                 },
 

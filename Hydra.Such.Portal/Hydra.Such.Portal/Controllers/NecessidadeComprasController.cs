@@ -223,6 +223,8 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Tipo = x.Tipo;
                             newdp.Interface = x.Interface;
                             newdp.CustoUnitarioSubFornecedor = x.DirectUnitCostSubSupplier;
+                            newdp.NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : "";
+
                             newdp = DBShoppingNecessity.Update(newdp);
                             if (newdp == null)
                             {
@@ -278,6 +280,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Tipo = x.Tipo,
                                 Interface = x.Interface,
                                 CustoUnitarioSubFornecedor = x.DirectUnitCostSubSupplier,
+                                NoContrato = !string.IsNullOrEmpty(x.NoContrato) ? x.NoContrato : ""
                             };
                             newdp.UtilizadorCriação = User.Identity.Name;
 
@@ -570,6 +573,7 @@ namespace Hydra.Such.Portal.Controllers
                                 newdp.GrupoRegistoIvaProduto = linhaAcordo.GrupoRegistoIvaProduto;
                                 newdp.Interface = linhaAcordo.Interface;
                                 newdp.CustoUnitarioSubFornecedor = linhaAcordo.CustoUnitarioSubFornecedor;
+                                newdp.NoContrato = !string.IsNullOrEmpty(linhaAcordo.NoContrato) ? linhaAcordo.NoContrato : "";
                             }
                             else
                             {
@@ -889,7 +893,8 @@ namespace Hydra.Such.Portal.Controllers
                                     VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
                                     CriarNotaEncomenda = true,
                                     CustoUnitarioSubFornecedor = line.DirectUnitCostSubSupplier,
-                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.LineNo
+                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.LineNo,
+                                    NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                                 }).ToList()
                             }).ToList();
                         }
@@ -958,7 +963,8 @@ namespace Hydra.Such.Portal.Controllers
                                                     VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
                                                     CriarNotaEncomenda = true,
                                                     CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
-                                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva
+                                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva,
+                                                    NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                                                 }).ToList()
                                             }).ToList();
                                         }
@@ -1060,7 +1066,8 @@ namespace Hydra.Such.Portal.Controllers
                                                     VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
                                                     CriarNotaEncomenda = true,
                                                     CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
-                                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva
+                                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva,
+                                                    NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                                                 }).ToList()
                                             }).ToList();
                                         }

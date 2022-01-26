@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Globalization;
 using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1393,6 +1394,48 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (ContratoDB != null)
                         {
+
+                            if (data.ChangeStatus == 1 && ContratoDB.EstadoAlteração == 2) //1 = Aberto - 2 = Bloqueado
+                            {
+                                
+                                data.SomatorioLinhas = (decimal)DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo).Sum(x => x.PreçoUnitário == null ? 0 : x.PreçoUnitário);
+                            }
+
+                            if (data.ChangeStatus == 2 && ContratoDB.EstadoAlteração == 1) //1 = Aberto - 2 = Bloqueado
+                            {
+                                if (data.CodeFunctionalArea != null && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+                                {
+                                    decimal SomatorioLinhasOriginal = ContratoDB.SomatorioLinhas == null ? 0 : (decimal)ContratoDB.SomatorioLinhas;
+                                    decimal SomatorioLinhasAtual = (decimal)DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo).Sum(x => x.PreçoUnitário == null ? 0 : x.PreçoUnitário);
+
+                                    if (SomatorioLinhasOriginal != SomatorioLinhasAtual)
+                                    {
+                                        //ENVIAR EMAIL
+                                        ConfiguracaoParametros EmailTo = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailTo");
+                                        ConfiguracaoParametros EmailCC1 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC1");
+                                        ConfiguracaoParametros EmailCC2 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC2");
+                                        ConfiguracaoParametros EmailCC3 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC3");
+
+                                        SendEmailApprovals Email = new SendEmailApprovals();
+
+                                        Email.Subject = "eSUCH - O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.";
+                                        Email.From = User.Identity.Name;
+                                        if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
+                                            Email.To.Add(EmailTo.Valor);
+                                        if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
+                                            Email.CC.Add(EmailCC1.Valor);
+                                        if (EmailCC2 != null && !string.IsNullOrEmpty(EmailCC2.Valor))
+                                            Email.CC.Add(EmailCC2.Valor);
+                                        if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
+                                            Email.CC.Add(EmailCC3.Valor);
+                                        Email.Body = MakeEmailBodyContent("O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.");
+                                        Email.IsBodyHtml = true;
+
+                                        Email.SendEmail_Simple();
+                                    }
+                                }
+                            }
+
                             ContratoDB = DBContracts.ParseToDB(data);
                             ContratoDB.UtilizadorModificação = User.Identity.Name;
                             ContratoDB = DBContracts.Update(ContratoDB);
@@ -7639,6 +7682,50 @@ namespace Hydra.Such.Portal.Controllers
             }
             else
                 return null;
+        }
+
+        public static string MakeEmailBodyContent(string BodyText)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
         }
     }
 }

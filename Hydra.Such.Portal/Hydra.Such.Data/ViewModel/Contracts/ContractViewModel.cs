@@ -126,7 +126,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string NoVEP { get; set; }
         public string TextoFatura { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
-        public decimal SomatorioLinhas { get; set; }
+        public decimal? SomatorioLinhas { get; set; }
 
 
         //EXPORTAR PARA EXCEL

@@ -256,6 +256,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/AcordoPrecoGetContratos"
+                   last-response="{{ListContratos}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_AcordoPrecosGetContratos_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_export" disabled="{{ _permissions.update }}" title="Exportar Linhas"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
@@ -291,11 +299,11 @@
                         </div>
 
                         @if (ViewBag.NoProcedimento == "0")
-                    {
-                        <div class="col-sm-2">
-                            <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
-                        </div>
-                }
+                        {
+                            <div class="col-sm-2">
+                                <paper-button id="btnAddNew" class="btnSave" on-tap="_createAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                            </div>
+                        }
                     </div>
                 </div>
 
@@ -316,7 +324,8 @@
                                                         value-path="no_"
                                                         fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
                                                         disabled="{{ _permissionsCreate }}"
-                                                        required error-message="Este campo é obrigatório">
+                                                        required error-message="Este campo é obrigatório"
+                                                        on-value-changed="_FornecedorChanged">
                                         </such-selectbox>
                                     </div>
 
@@ -461,10 +470,19 @@
                                 </div>
 
                                 <div class="col-sm-2">
+                                    <such-selectbox id="linhasNoContrato" name="linhasNoContrato" disabled="{{ _permissionsCreate }}"
+                                                    label="Nº Contrato"
+                                                    items="[[ListContratos]]"
+                                                    text-path="id"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Nº Contrato"}, {"field":"value", "name":"Descrição Procedimento"}]'>
+                                    </such-selectbox>
+                                </div>
+
+                                <div class="col-sm-2">
                                     <paper-button id="btnAddNew" class="btnSave" on-tap="_createLinhaAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                                 </div>
                             </div>
-
 
                             <div class="row break_clear">
                                 <div class="col-sm-10">
@@ -735,6 +753,16 @@
                                 </template>
                                 <template>
                                     {{item.codCategoriaProduto}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="noContrato" style="text-align:center;">Nº Contrato</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="noContrato" />
+                                </template>
+                                <template>
+                                    {{item.noContrato}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -1018,31 +1046,60 @@
                     },
 
                     _createLinhaAcordoPrecos: function () {
-                        if (this._validateData("linhaAcordoPrecosCreate") & this.$.linhasNoFornecedor.value != "" & this.$.linhasCodProduto.value != "") {
-                            this.$.ajax_linhaAcordoPrecos_create.body = JSON.stringify({
-                                noProcedimento: this.$.linhasNoProcedimento.value,
-                                noFornecedor: this.$.linhasNoFornecedor.value,
-                                noSubFornecedor: this.$.linhasNoSubFornecedor.value,
-                                codProduto: this.$.linhasCodProduto.value,
-                                dtValidadeInicio: this.$.linhasDtValidadeInicio.value,
-                                dtValidadeFim: this.$.linhasdtValidadeFim.value,
-                                cresp: this.$.linhasCresp.value,
-                                area: this.$.linhasArea.value,
-                                regiao: this.$.linhasRegiao.value,
-                                localizacao: this.$.linhasLocalizacao.value,
-                                custoUnitario: this.$.linhasCustoUnitario.value,
-                                custoUnitarioSubFornecedor: this.$.linhasCustoUnitarioSubFornecedor.value,
-                                uM: this.$.linhasUM.value,
-                                qtdPorUM: this.$.linhasQuantidadeUM.value,
-                                pesoUnitario: this.$.linhasPesoUnitario.value,
-                                codProdutoFornecedor: this.$.linhasCodProdutoFornecedor.value,
-                                descricaoProdFornecedor: this.$.linhasDescricaoProdutoFornecedor.value,
-                                formaEntrega: this.$.linhasFormaEntrega.value,
-                                tipoPreco: this.$.linhasTipoPreco.value,
-                                grupoRegistoIvaProduto: this.$.linhasGrupoRegistoIvaProduto.value,
-                                codCategoriaProduto: this.$.linhasCodCategoriaProduto.value
-                            });
-                            this.$.ajax_linhaAcordoPrecos_create.generateRequest();
+                        if (this.$.linhasNoProcedimento.value != "") {
+                            if (this.$.linhasNoFornecedor.value != "") {
+                                if (this.$.linhasCodProduto.value != "") {
+                                    if (this.$.linhasDtValidadeInicio.value != "") {
+                                        if (this.$.linhasCresp.value != "") {
+                                            if (this.$.linhasLocalizacao.value != "") {
+                                                this.$.ajax_linhaAcordoPrecos_create.body = JSON.stringify({
+                                                    noProcedimento: this.$.linhasNoProcedimento.value,
+                                                    noFornecedor: this.$.linhasNoFornecedor.value,
+                                                    noSubFornecedor: this.$.linhasNoSubFornecedor.value,
+                                                    codProduto: this.$.linhasCodProduto.value,
+                                                    dtValidadeInicio: this.$.linhasDtValidadeInicio.value,
+                                                    dtValidadeFim: this.$.linhasdtValidadeFim.value,
+                                                    regiao: this.$.linhasRegiao.value,
+                                                    area: this.$.linhasArea.value,
+                                                    cresp: this.$.linhasCresp.value,
+                                                    localizacao: this.$.linhasLocalizacao.value,
+                                                    custoUnitario: this.$.linhasCustoUnitario.value,
+                                                    custoUnitarioSubFornecedor: this.$.linhasCustoUnitarioSubFornecedor.value,
+                                                    uM: this.$.linhasUM.value,
+                                                    qtdPorUM: this.$.linhasQuantidadeUM.value,
+                                                    pesoUnitario: this.$.linhasPesoUnitario.value,
+                                                    codProdutoFornecedor: this.$.linhasCodProdutoFornecedor.value,
+                                                    descricaoProdFornecedor: this.$.linhasDescricaoProdutoFornecedor.value,
+                                                    formaEntrega: this.$.linhasFormaEntrega.value,
+                                                    tipoPreco: this.$.linhasTipoPreco.value,
+                                                    grupoRegistoIvaProduto: this.$.linhasGrupoRegistoIvaProduto.value,
+                                                    codCategoriaProduto: this.$.linhasCodCategoriaProduto.value,
+                                                    noContrato: this.$.linhasNoContrato.value
+                                                });
+                                                this.$.ajax_linhaAcordoPrecos_create.generateRequest();
+                                            }
+                                            else {
+                                                this._showErrorMessage('O campo Cód. Localização é de preenchimento obrigatório.');
+                                            }
+                                        }
+                                        else {
+                                            this._showErrorMessage('O campo Cresp é de preenchimento obrigatório.');
+                                        }
+                                    }
+                                    else {
+                                        this._showErrorMessage('O campo Data Validade Início é de preenchimento obrigatório.');
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('O campo Cód. Produto é de preenchimento obrigatório.');
+                                }
+                            }
+                            else {
+                                this._showErrorMessage('O campo Nº Fornecedor é de preenchimento obrigatório.');
+                            }
+                        }
+                        else {
+                            this._showErrorMessage('O campo Nº Procedimento é de preenchimento obrigatório.');
                         }
                     },
 
@@ -1067,6 +1124,7 @@
                             this.$.linhasFormaEntrega.value = "";
                             this.$.linhasTipoPreco.value = "";
                             this.$.linhasGrupoRegistoIvaProduto.value = "";
+                            this.$.linhasNoContrato._clearSelection();
 
                             this._showMessage('Linha do Acordo de Preços criada com sucesso.');
 
@@ -1311,7 +1369,6 @@
                     },
 
                     _addExcel: function () {
-                        debugger;
                         var urlFile = "/Administracao/OnPostImport_AcordoPrecos";
                         var toastSuccess = this.$.ToastMessageSuccess;
                         var toastError = this.$.ToastMessageError;
@@ -1319,6 +1376,7 @@
                         var uploadFile = this.$.UploadRequest.files;
                         var ajaxImport = this.$.ajax_updateCreate;
                         var vaadinGrid = this.$.tabLinhas;
+                        var noProcedimentoValor = this.data.noProcedimento;
                         for (var i = 0; i < uploadFile.length; i++) {
                             data.append(uploadFile[i].name, uploadFile[i]);
                         }
@@ -1328,12 +1386,16 @@
                             contentType: false,
                             processData: false,
                             data: data,
-                            success: function (ListToCreate) {
-                                ajaxImport.body = JSON.stringify(ListToCreate);
-                                ajaxImport.generateRequest();
-                                vaadinGrid.clearCache();
-                                toastSuccess.text = "Tabela atualizada com sucesso, faça atualizar para mostrar os novos dados.";
-                                toastSuccess.open();
+                            success: function (listtocreate) {
+                                if (listtocreate.length > 0) {
+                                    listtocreate[0].eMessage = noProcedimentoValor;
+
+                                    ajaxImport.body = JSON.stringify(listtocreate);
+                                    ajaxImport.generateRequest();
+                                    vaadinGrid.clearCache();
+                                    //toastSuccess.text = "Tabela atualizada com sucesso, faça atualizar para mostrar os novos dados.";
+                                    //toastSuccess.open();
+                                }
                             },
                             error: function () {
                                 toastError.text = "Ocorreu um problema ao fazer o upload do(s) Ficheiro(s).";
@@ -1348,12 +1410,12 @@
                     },
 
                     _updateCreateResponse: function (e) {
-                        var self = this;
-                        if (e.detail.status === 200) {
+                        if (this.result.eReasonCode == 1) {
+                            this._showMessage(this.result.eMessage);
                             this.$.ajax_GetAll.generateRequest();
                         }
                         else {
-                            this._showErrorMessage("Occorreu um erro ao atualizar a Tabela.");
+                            this._showErrorMessage(this.result.eMessage);
                         }
                     },
 
@@ -1382,6 +1444,15 @@
                         }
                     },
 
+                    _FornecedorChanged: function () {
+                        if (this.$.linhasNoFornecedor.value != undefined && this.$.linhasNoFornecedor.value != "") {
+                            this.$.page_AcordoPrecosGetContratos_ajax.body = JSON.stringify(this.$.linhasNoFornecedor.value);
+                            this.$.page_AcordoPrecosGetContratos_ajax.generateRequest();
+                        }
+                        else {
+                            this.ListContratos = null;
+                        }
+                    },
                 });
             });
     </script>

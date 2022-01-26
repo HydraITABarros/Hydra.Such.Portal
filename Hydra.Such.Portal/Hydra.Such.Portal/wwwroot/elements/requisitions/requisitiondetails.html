@@ -178,6 +178,11 @@
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/GetRequisition_Lista"
+                   id="requisition_datasource_lista"
+                   last-response="{{RequisitionList}}"
+                   method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
@@ -389,7 +394,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/GestaoRequisicoes/PreviousRequesition"
+        <!--<iron-ajax url="/GestaoRequisicoes/PreviousRequesition"
                    last-response="{{responsePreviousRequesition}}"
                    id="ajax_PreviousRequesition"
                    method="post"
@@ -405,7 +410,7 @@
                    handle-as="json"
                    on-response="_responseNextRequesition"
                    content-type="application/json">
-        </iron-ajax>
+        </iron-ajax>-->
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -433,8 +438,8 @@
 
             <paper-button id="btnExport_LinhasNutricao" class="tablinks" on-tap="_exportEXCEL_LinhasNutricao" title="Exportar Linhas para Excel" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
 
-            <!--<paper-button class="tablinks" on-tap="_goPrevious" id="goPrevious" title="Anterior"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</paper-button>
-            <paper-button class="tablinks" on-tap="_goNext" id="goNext" title="Seguinte"><i class="fa fa-arrow-right" aria-hidden="true"></i> Seguinte</paper-button>-->
+            <paper-button class="tablinks" on-tap="_goPrevious" id="goPrevious" title="Anterior"><i class="fa fa-arrow-left" aria-hidden="true"></i> Anterior</paper-button>
+            <paper-button class="tablinks" on-tap="_goNext" id="goNext" title="Seguinte"><i class="fa fa-arrow-right" aria-hidden="true"></i> Seguinte</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -1989,12 +1994,71 @@
                         type: Array,
                         value: [{ value: 1, description: "Imprimir A4" }, { value: 2, description: "Imprimir A5" }, { value: 3, description: "Validar e Imprimir A4" }, { value: 4, description: "Validar e Imprimir A5" }],
                     },
+                    _requisitionno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _state: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _projectno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _clientcode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _clientname: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _regioncode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _functionalareacode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _centerresponsibilitycode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _localcode: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _comments: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _requisitiondate: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _estimatedvalue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(Projects,LProjectResponsabilityCenterCodes,LProjectRegionCodes,LProjectFunctionalAreaCodes,Locations,Products,UnitsOfMmeasure,Suppliers)'
                 ],
                 _registerMenuItemSelected: function (e) {
-                    debugger;
                     if (e.detail.value == 0)
                         return;
                     var item = e.detail.value;
@@ -2107,7 +2171,6 @@
                         $(_self.$.btnAnularAprovacao).addClass('hidden');
                         $(_self.$.menuRegister).removeClass('hidden');
                         $(_self.$.menuFunctios).removeClass('hidden');
-
                         //$(_self.$.divLocalMarketRegions).removeClass('hidden');
                     }
                     if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
@@ -2116,8 +2179,14 @@
                         $(_self.$.btnAnularAprovacao).removeClass('hidden');
                         $(_self.$.menuRegister).addClass('hidden');
                         $(_self.$.menuFunctios).addClass('hidden');
-
                         //$(_self.$.divLocalMarketRegions).addClass('hidden');
+
+                        this.$.requisition_datasource_lista.body = JSON.stringify({
+                            "requisitionNo": this._requisitionno, "state": this._state, "projectNo": this._projectno, "clientCode": this._clientcode, "clientName": this._clientname,
+                            "regionCode": this._regioncode, "functionalAreaCode": this._functionalareacode, "centerResponsibilityCode": this._centerresponsibilitycode, "localCode": this._localcode,
+                            "comments": this._comments, "requisitionDate": this._requisitiondate, "estimatedValue": this._estimatedvalue
+                        });
+                        this.$.requisition_datasource_lista.generateRequest();
                     }
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
@@ -2172,6 +2241,13 @@
                             this._isArchived = true;
                         }
                         this.$.requisition_datasource.generateRequest();
+
+                        //this.$.requisition_datasource_lista.body = JSON.stringify({
+                        //    "requisitionNo": this._requisitionno, "state": this._state, "projectNo": this._projectno, "clientCode": this._clientcode, "clientName": this._clientname,
+                        //    "regionCode": this._regioncode, "functionalAreaCode": this._functionalareacode, "centerResponsibilityCode": this._centerresponsibilitycode, "localCode": this._localcode,
+                        //    "comments": this._comments, "requisitionDate": this._requisitiondate, "estimatedValue": this._estimatedvalue
+                        //});
+                        //this.$.requisition_datasource_lista.generateRequest();
                     }
                     this.Flag = true;
                 },
@@ -2463,8 +2539,35 @@
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
                         this._openToast(this.Requisition.eMessage);
-                        window.history.back();
-                        //this._goNext();
+
+                        var Lista = this.RequisitionList;
+                        var Index = -1;
+                        var IndexActual = -1;
+                        if (Lista != null && Lista.length > 1) {
+                            for (var i = 0; i <= Lista.length - 1; i++) {
+                                if (Lista[i].requisitionNo == this._requisitionid) {
+                                    IndexActual = i;
+
+                                    if (i == Lista.length - 1)
+                                        Index = 0;
+                                    else
+                                        Index = i + 1;
+
+                                    break;
+                                }
+                            }
+                        }
+                        if (Index >= 0 && Index <= (Lista.length - 1)) {
+                            this._requisitionid = Lista[Index].requisitionNo;
+                            this.RequisitionList.splice(IndexActual, 1);
+                            this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                            this.$.requisition_datasource.generateRequest();
+                            this.$.grdRequisitionLines.clearCache();
+                        }
+                        else {
+                            //window.history.back();
+                            window.location.href = document.referrer;
+                        }
                     }
                     else {
                         this._openDlgMessageError(this.Requisition.eMessage);
@@ -3039,8 +3142,35 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
-                    window.history.back();
-                    //this._goNext();
+
+                    var Lista = this.RequisitionList;
+                    var Index = -1;
+                    var IndexActual = -1;
+                    if (Lista != null && Lista.length > 1) {
+                        for (var i = 0; i <= Lista.length - 1; i++) {
+                            if (Lista[i].requisitionNo == this._requisitionid) {
+                                IndexActual = i;
+
+                                if (i == Lista.length - 1)
+                                    Index = 0;
+                                else
+                                    Index = i + 1;
+
+                                break;
+                            }
+                        }
+                    }
+                    if (Index >= 0 && Index <= (Lista.length - 1)) {
+                        this._requisitionid = Lista[Index].requisitionNo;
+                        this.RequisitionList.splice(IndexActual, 1);
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
+                    else {
+                        //window.history.back();
+                        window.location.href = document.referrer;
+                    }
                 },
                 _createTransferShipment: function () {
                     //window.open("/GestaoRequisicoes/CreateTransferShipment/" + this.Requisition.requisitionNo, "_blank");
@@ -3140,8 +3270,8 @@
                         this._openToast(this.regist.eMessage);
                         this.Requisition = this.regist;
                         if (this.regist.eMessage == "Requisição foi fechada") {
-                            window.history.back();
-                            //window.location.href = "/GestaoRequisicoes/";///HistóricoCabeçalhoRequisicao/" + this._requisitionid;
+                            //window.history.back();
+                            window.location.href = document.referrer;
                         }
                         else {
                             this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
@@ -3179,7 +3309,8 @@
                     //window.location.href = "/GestaoRequisicoes/PontoSituacaoRequisicao/" + this._requisitionid;
                 },
                 _goBack: function (e) {
-                    window.history.back();
+                    //window.history.back();
+                    window.location.href = document.referrer;
                 },
                 _showChangeLog: function () {
                     this.$.dlgChangeLog.open();;
@@ -3303,7 +3434,8 @@
                     if (this.actionResult.eReasonCode == 100) {
                         this._openToast(this.actionResult.eMessage);
 
-                        window.history.back();
+                        //window.history.back();
+                        window.location.href = document.referrer;
                     } else {
                         this._openDlgMessageError(this.actionResult.eMessage);
                     }
@@ -3550,13 +3682,53 @@
                 },
 
                 _goPrevious: function () {
-                    this.$.ajax_PreviousRequesition.body = JSON.stringify({ "requisitionNo": this._requisitionid });
-                    this.$.ajax_PreviousRequesition.generateRequest();
+                    var Lista = this.RequisitionList;
+                    var Index = -1;
+                    if (Lista != null && Lista.length > 1) {
+                        for (var i = 0; i <= Lista.length - 1; i++) {
+                            if (Lista[i].requisitionNo == this._requisitionid) {
+                                if (i == 0)
+                                    Index = Lista.length - 1;
+                                else
+                                    Index = i - 1;
+
+                                break;
+                            }
+                        }
+                    }
+                    if (Index >= 0 && Index <= (Lista.length - 1)) {
+                        this._requisitionid = Lista[Index].requisitionNo;
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
                 },
 
                 _goNext: function () {
-                    this.$.ajax_NextRequesition.body = JSON.stringify({ "requisitionNo": this._requisitionid });
-                    this.$.ajax_NextRequesition.generateRequest();
+                    var Lista = this.RequisitionList;
+                    var Index = -1;
+                    if (Lista != null && Lista.length > 1) {
+                        for (var i = 0; i <= Lista.length - 1; i++) {
+                            if (Lista[i].requisitionNo == this._requisitionid) {
+                                if (i == Lista.length - 1)
+                                    Index = 0;
+                                else
+                                    Index = i + 1;
+
+                                break;
+                            }
+                        }
+                    }
+                    if (Index >= 0 && Index <= (Lista.length - 1)) {
+                        this._requisitionid = Lista[Index].requisitionNo;
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
+                    else {
+                        //window.history.back();
+                        window.location.href = document.referrer;
+                    }
                 },
 
                 _responsePreviousRequesition: function () {

@@ -131,6 +131,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? CustoUnitarioSubFornecedor { get; set; }
         public int NoLinhaDiarioRequisicaoUnidProdutiva { get; set; }
         public decimal? TaxaIVA { get; set; }
+        public string NoContrato { get; set; }
 
         public bool Selected { get; set; }
     }

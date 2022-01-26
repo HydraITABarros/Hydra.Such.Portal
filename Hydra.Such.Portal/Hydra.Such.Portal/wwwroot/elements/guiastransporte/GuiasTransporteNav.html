@@ -299,8 +299,6 @@
                 },
 
                 ready: function () {
-                    debugger;;
-
                     this._hideColumn = !this._historico;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico, "filtroData": this.__formatDate(this._filtrodata, 1) });
                     this.$.grid_databound_ajax.generateRequest();
@@ -370,7 +368,6 @@
                 },
 
                 _filtrarDataGuias: function (e) {
-                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico, "filtroData": this.__formatDate(this._filtrodata, 1) });
                     this.$.grid_databound_ajax.generateRequest();
                 },
@@ -421,7 +418,6 @@
 
                 },
                 __formatDate: function (_date, _dtFormat) {
-                    debugger;
                     var d = new Date(_date),
                         month = '' + (d.getMonth() + 1),
                         day = '' + d.getDate(),

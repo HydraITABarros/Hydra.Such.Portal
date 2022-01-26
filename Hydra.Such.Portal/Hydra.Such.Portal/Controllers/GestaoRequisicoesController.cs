@@ -175,12 +175,10 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult DetalhesReqAprovada(string id, List<RequisitionViewModel> Lista = null)
+        public IActionResult DetalhesReqAprovada(string id, string requisitionNo = "", string state = "", string projectNo = "", string clientCode = "", string clientName = "",
+             string regionCode = "", string functionalAreaCode = "", string centerResponsibilityCode = "", string localCode = "", string comments = "", string requisitionDate = "",
+             string estimatedValue = "")
         {
-            List<RequisitionViewModel> ListaREQ = null;
-            if (Lista != null)
-                ListaREQ = Lista;
-
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
 
             if (userPermissions != null && userPermissions.Read.Value)
@@ -190,6 +188,19 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.ApprovedRequisitionEnumValue = (int)RequisitionStates.Approved;
                 ViewBag.RequisitionStatesEnumString = EnumHelper.GetItemsAsDictionary(typeof(RequisitionStates));
                 ViewBag.ReportServerURL = config.ReportServerURL;
+                ViewBag.requisitionNo = requisitionNo ?? "";
+                ViewBag.state = state ?? "";
+                ViewBag.projectNo = projectNo ?? "";
+                ViewBag.clientCode = clientCode ?? "";
+                ViewBag.clientName = clientName ?? "";
+                ViewBag.regionCode = regionCode ?? "";
+                ViewBag.functionalAreaCode = functionalAreaCode ?? "";
+                ViewBag.centerResponsibilityCode = centerResponsibilityCode ?? "";
+                ViewBag.localCode = localCode ?? "";
+                ViewBag.comments = comments ?? "";
+                ViewBag.requisitionDate = requisitionDate ?? "";
+                ViewBag.estimatedValue = estimatedValue ?? "";
+
                 return View();
             }
             else
@@ -1479,8 +1490,8 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
-        [HttpPost]
 
+        [HttpPost]
         public JsonResult GetRequisition([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
         {
             string requisitionId = string.Empty;
@@ -1575,6 +1586,136 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult GetRequisition_Lista([FromBody] Newtonsoft.Json.Linq.JObject requestParams)
+        {
+            string requisitionNo = string.Empty;
+            string state = string.Empty;
+            string projectNo = string.Empty;
+            string clientCode = string.Empty;
+            string clientName = string.Empty;
+            string regionCode = string.Empty;
+            string functionalAreaCode = string.Empty;
+            string centerResponsibilityCode = string.Empty;
+            string localCode = string.Empty;
+            string comments = string.Empty;
+            string requisitionDate = string.Empty;
+            string estimatedValue = string.Empty;
+            //string seguinte = string.Empty;
+            //string atualReq = string.Empty;
+
+            if (requestParams != null)
+            {
+                requisitionNo = requestParams["requisitionNo"].ToString();
+                state = requestParams["state"].ToString();
+                projectNo = requestParams["projectNo"].ToString();
+                clientCode = requestParams["clientCode"].ToString();
+                clientName = requestParams["clientName"].ToString();
+                regionCode = requestParams["regionCode"].ToString();
+                functionalAreaCode = requestParams["functionalAreaCode"].ToString();
+                centerResponsibilityCode = requestParams["centerResponsibilityCode"].ToString();
+                localCode = requestParams["localCode"].ToString();
+                comments = requestParams["comments"].ToString();
+                requisitionDate = requestParams["requisitionDate"].ToString();
+                estimatedValue = requestParams["estimatedValue"].ToString();
+                //seguinte = requestParams["seguinte"].ToString();
+                //atualReq = requestParams["atualReq"].ToString();
+            }
+
+            List<RequisitionViewModel> AllReqs = DBRequest.GetByState(0, RequisitionStates.Approved).ParseToViewModel().OrderByDescending(x => x.RequisitionNo).ToList();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                AllReqs.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                AllReqs.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                AllReqs.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            if (!string.IsNullOrEmpty(requisitionNo))
+                AllReqs.RemoveAll(x => !x.RequisitionNo.Contains(requisitionNo));
+            if (!string.IsNullOrEmpty(state))
+                AllReqs.RemoveAll(x => !x.StateText.Contains(state));
+            if (!string.IsNullOrEmpty(projectNo))
+                AllReqs.RemoveAll(x => !x.ProjectNo.Contains(projectNo));
+            if (!string.IsNullOrEmpty(clientCode))
+                AllReqs.RemoveAll(x => !x.ClientCode.Contains(clientCode));
+            if (!string.IsNullOrEmpty(clientName))
+                AllReqs.RemoveAll(x => !x.ClientName.Contains(clientName));
+            if (!string.IsNullOrEmpty(regionCode))
+                AllReqs.RemoveAll(x => !x.RegionCode.Contains(regionCode));
+            if (!string.IsNullOrEmpty(functionalAreaCode))
+                AllReqs.RemoveAll(x => !x.FunctionalAreaCode.Contains(functionalAreaCode));
+            if (!string.IsNullOrEmpty(centerResponsibilityCode))
+                AllReqs.RemoveAll(x => !x.CenterResponsibilityCode.Contains(centerResponsibilityCode));
+            if (!string.IsNullOrEmpty(localCode))
+                AllReqs.RemoveAll(x => !x.LocalCode.Contains(localCode));
+            if (!string.IsNullOrEmpty(comments))
+                AllReqs.RemoveAll(x => !x.Comments.Contains(comments));
+            if (!string.IsNullOrEmpty(requisitionDate))
+                AllReqs.RemoveAll(x => !x.RequisitionDate.Contains(requisitionDate));
+            if (!string.IsNullOrEmpty(estimatedValue))
+                AllReqs.RemoveAll(x => !x.EstimatedValue.ToString().Contains(estimatedValue));
+
+            //int Index = -1;
+            //if (!string.IsNullOrEmpty(seguinte) && seguinte == "1")
+            //{
+            //    if (AllReqs != null && AllReqs.Count > 0)
+            //    {
+            //        for (int i = 0; i <= (AllReqs.Count - 1); i++)
+            //        {
+            //            if (AllReqs[i].RequisitionNo == atualReq)
+            //            {
+            //                if (i == (AllReqs.Count - 1))
+            //                {
+            //                    Index = 0;
+            //                    break;
+            //                }
+            //                else
+            //                {
+            //                    Index = i + 1;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (!string.IsNullOrEmpty(seguinte) && seguinte == "0")
+            //{
+            //    if (AllReqs != null && AllReqs.Count > 0)
+            //    {
+            //        for (int i = 0; i <= (AllReqs.Count - 1); i++)
+            //        {
+            //            if (AllReqs[i].RequisitionNo == atualReq)
+            //            {
+            //                if (i == 0)
+            //                {
+            //                    Index = (AllReqs.Count - 1);
+            //                    break;
+            //                }
+            //                else
+            //                {
+            //                    Index = i - 1;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (Index != -1)
+            //    return Json(AllReqs[Index].RequisitionNo);
+            //else
+            //    return Json(string.Empty);
+
+            return Json(AllReqs);
         }
 
         [HttpPost]
@@ -3526,6 +3667,14 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
+                    else
+                    {
+                        item.eReasonCode = 2;
+                        if (item.eMessages != null && item.eMessages.Count > 0)
+                            item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + item.eMessages[0].Message + ")";
+                        else
+                            item.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + item.eMessage + ")";
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -3607,6 +3756,14 @@ namespace Hydra.Such.Portal.Controllers
                                         result.eMessage = "Ocorreu um erro na passagem da Requisição para Histórico.";
                                     }
                                 }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                if (result.eMessages != null && result.eMessages.Count > 0)
+                                    result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + result.eMessages[0].Message + ")";
+                                else
+                                    result.eMessage = "Ocorreu um erro ao criar encomenda de compra (" + result.eMessage + ")";
                             }
                         }
                     });

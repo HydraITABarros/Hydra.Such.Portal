@@ -240,7 +240,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-4">
-                    <vaadin-text-field id="piDescription" label="Descrição" maxlength="50" value="{{description}}" on-value-changed="_descriptionChange" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                    <vaadin-text-field id="piDescription" name="piDescription" label="Descrição" maxlength="50" value="{{description}}" on-value-changed="_descriptionChange" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
             </div>
             <div class="row">
@@ -1787,6 +1787,11 @@
                         return false;
                     }
 
+                    if (this.description.startsWith(this.productOriginalDescriptionCAB) == false) {
+                        this.openToastError("É obrigatório o campo Descrição iniciar com a Descrição Original do Produto.");
+                        return false;
+                    }
+
                     if (!this.$.dpDate.validate() || this.$.dpDate.value == "") {
                         this.openToastError("O campo Data é de preenchimento obrigatório.");
                         return false;
@@ -2101,6 +2106,30 @@
 
                 _registerDiary: function () {
                     for (i = 0; i < this.result.items.length; i++) {
+                        var originalDescriptionLINE = "";
+                        var tipo = this.result.items[i].type;
+                        var codigo = this.result.items[i].code;
+                        var descricao = this.result.items[i].description;
+
+                        if (tipo == 1) {
+                            for (j = 0; j < this.AllProdutosCode.length; j++) {
+                                if (this.AllProdutosCode[j].id === codigo) {
+                                    originalDescriptionLINE = this.AllProdutosCode[j].value;
+                                }
+                            }
+                        }
+                        if (tipo == 2) {
+                            for (j = 0; j < this.AllRecursosCode.length; j++) {
+                                if (this.AllRecursosCode[j].id === codigo) {
+                                    originalDescriptionLINE = this.AllRecursosCode[j].value;
+                                }
+                            }
+                        }
+                        if (descricao.toLowerCase().startsWith(originalDescriptionLINE.toLowerCase()) == false) {
+                            this.openToastError("Não é possivel Registar as Linhas de Diário, por a descrição na linha '" + descricao + "' não ser igual á descrição original '" + originalDescriptionLINE + "'.");
+                            return;
+                        }
+
                         if ((this.result.items[i].unitCost != null && this.result.items[i].unitCost < 0) ||
                             (this.result.items[i].unitPrice != null && this.result.items[i].unitPrice < 0)) {
 
@@ -2270,8 +2299,8 @@
                                 }
                             }
                         }
-                        if (descricao.includes(originalDescriptionLINE) == false) {
-                            this.openToastError("É recomendado o campo Descrição na Linha ter a Descrição Original do Produto.");
+                        if (descricao.startsWith(originalDescriptionLINE) == false) {
+                            this.openToastError("É obrigatório o campo Descrição iniciar com a Descrição Original do Produto.");
                         }
                     }
                 },
@@ -2293,8 +2322,8 @@
                 _descriptionChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var descricao = e.detail.value;
-                        if (descricao.includes(this.productOriginalDescriptionCAB) == false) {
-                            this.openToastError("É recomendado o campo Descrição ter a Descrição Original do Produto.");
+                        if (descricao.startsWith(this.productOriginalDescriptionCAB) == false) {
+                            this.openToastError("É obrigatório o campo Descrição iniciar com a Descrição Original do Produto.");
                         }
                     }
                 },
