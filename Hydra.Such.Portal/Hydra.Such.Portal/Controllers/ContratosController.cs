@@ -1408,15 +1408,23 @@ namespace Hydra.Such.Portal.Controllers
                                     decimal SomatorioLinhasOriginal = ContratoDB.SomatorioLinhas == null ? 0 : (decimal)ContratoDB.SomatorioLinhas;
                                     decimal SomatorioLinhasAtual = (decimal)DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo).Sum(x => x.PreçoUnitário == null ? 0 : x.PreçoUnitário);
 
+                                    DateTime InicioVersaoOriginal = ContratoDB.DataInicial.HasValue ? (DateTime)ContratoDB.DataInicial : DateTime.MinValue;
+                                    DateTime InicioVersaoAtual = !string.IsNullOrEmpty(data.StartData) ? Convert.ToDateTime(data.StartData) : DateTime.MinValue;
+
+                                    DateTime FimVersaoOriginal = ContratoDB.DataExpiração.HasValue ? (DateTime)ContratoDB.DataExpiração : DateTime.MinValue;
+                                    DateTime FimVersaoAtual = !string.IsNullOrEmpty(data.DueDate) ? Convert.ToDateTime(data.DueDate) : DateTime.MinValue;
+
+                                    //ENVIAR EMAIL
+                                    ConfiguracaoParametros EmailTo = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailTo");
+                                    ConfiguracaoParametros EmailCC1 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC1");
+                                    ConfiguracaoParametros EmailCC2 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC2");
+                                    ConfiguracaoParametros EmailCC3 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC3");
+                                    string EmailBCC = "Marcelo@such.pt";
+
+                                    SendEmailApprovals Email = new SendEmailApprovals();
+
                                     if (SomatorioLinhasOriginal != SomatorioLinhasAtual)
                                     {
-                                        //ENVIAR EMAIL
-                                        ConfiguracaoParametros EmailTo = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailTo");
-                                        ConfiguracaoParametros EmailCC1 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC1");
-                                        ConfiguracaoParametros EmailCC2 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC2");
-                                        ConfiguracaoParametros EmailCC3 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC3");
-
-                                        SendEmailApprovals Email = new SendEmailApprovals();
 
                                         Email.Subject = "eSUCH - O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.";
                                         Email.From = User.Identity.Name;
@@ -1428,7 +1436,30 @@ namespace Hydra.Such.Portal.Controllers
                                             Email.CC.Add(EmailCC2.Valor);
                                         if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
                                             Email.CC.Add(EmailCC3.Valor);
+                                        Email.BCC.Add(EmailBCC);
+
                                         Email.Body = MakeEmailBodyContent("O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.");
+                                        Email.IsBodyHtml = true;
+
+                                        Email.SendEmail_Simple();
+                                    }
+
+                                    if ((InicioVersaoOriginal != InicioVersaoAtual) || (FimVersaoOriginal != FimVersaoAtual))
+                                    {
+
+                                        Email.Subject = "eSUCH - A Data de Início ou Fim da Versão do Contrato Nº " + data.ContractNo.ToString() + " foi atualizada.";
+                                        Email.From = User.Identity.Name;
+                                        if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
+                                            Email.To.Add(EmailTo.Valor);
+                                        if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
+                                            Email.CC.Add(EmailCC1.Valor);
+                                        if (EmailCC2 != null && !string.IsNullOrEmpty(EmailCC2.Valor))
+                                            Email.CC.Add(EmailCC2.Valor);
+                                        if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
+                                            Email.CC.Add(EmailCC3.Valor);
+                                        Email.BCC.Add(EmailBCC);
+
+                                        Email.Body = MakeEmailBodyContent("A Data de Início ou Fim da Versão do Contrato Nº " + data.ContractNo.ToString() + " foi atualizada.");
                                         Email.IsBodyHtml = true;
 
                                         Email.SendEmail_Simple();
