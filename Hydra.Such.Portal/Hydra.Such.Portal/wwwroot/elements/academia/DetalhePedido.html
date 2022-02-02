@@ -996,6 +996,11 @@
                         value: false
                     },
 
+                    _iscoordenador: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     _isdirector: {
                         type: Boolean,
                         value: false
@@ -1175,7 +1180,12 @@
                             this.$.idEmpregadoCbox.valueText = this.data.idEmpregado;
 
                             if (this.data.estado == 0) {
-                                this.$.employees_page_ajax.body = JSON.stringify({ "isChief": this._ischief, "isDirector": this._isdirector });
+                                this.$.employees_page_ajax.body = JSON.stringify(
+                                    {
+                                        "isChief": this._ischief,
+                                        "isDirector": this._isdirector,
+                                        "isCoordenador": this._iscoordenador
+                                    });
                                 this.$.employees_page_ajax.generateRequest(); 
                             }                                  
 
@@ -1721,7 +1731,7 @@
                             var str = "Confirma o parecer de dotação orçamental do pedido " + _data.idPedido + "?";                          
 
                             var ajax_request = this.$.regista_parecerdotacao_page_ajax;
-                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "idAlteracao": 6 });
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "idAlteracao": 8 });
 
                             this._confirmAndExecuteActionToast(str, ajax_request);                                                             
                         }

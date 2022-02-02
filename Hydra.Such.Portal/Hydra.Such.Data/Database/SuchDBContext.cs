@@ -13409,6 +13409,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("UrlImagem")
                     .HasMaxLength(250);
 
+                entity.Property(e => e.CustoInscricao)
+                    .HasColumnName("CustoInscricao")
+                    .HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(a => a.Tema)
                     .WithMany(t => t.AccoesTema)
                     .HasForeignKey(a => a.IdTema)

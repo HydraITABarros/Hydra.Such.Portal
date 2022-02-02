@@ -32,9 +32,12 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
+<!--<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">-->
+<!--<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />-->
+
+<link rel="import" href="/lib/paper-spinner/paper-spinner.html" />
+
 
 <dom-module id="x-gestaocatalogo">
     <template>
@@ -43,6 +46,15 @@
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
+                .break_clear {
+                    margin-top: 5px;
+                    margin-right: 0px !important;
+                    margin-left: 0px !important;
+                }
+
+                .break_frm {
+                    margin-top: 15px;
+                }
                 input[readonly] {
                     border: 2px solid transparent;
                 }
@@ -100,6 +112,27 @@
                 paper-input {
                     max-width: 200px !important;
                 }
+
+                paper-spinner.multi {
+                    display: flex;
+                    --paper-spinner-layer-1-color: var(--paper-purple-500);
+                    --paper-spinner-layer-2-color: var(--paper-cyan-500);
+                    --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+                    --paper-spinner-layer-4-color: var(--paper-amber-500);
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    z-index: 1;
+                    width: 150px;
+                    height: 150px;
+                    margin: -75px 0 0 -75px;
+                    border: 16px solid #f3f3f3;
+                    border-radius: 50%;
+                    background-color: #E0E0E0;
+                    /*border-top: 16px solid #3498db;*/
+                    /*width: 120px;
+                height: 120px;*/
+                }
             </style>
         </custom-style>
 
@@ -109,48 +142,68 @@
                    handle-as="json"
                    id="grid_databound_ajax"
                    on-response="_responseProcessor"
-                   content-type="application/json">
+                   content-type="application/json"
+                   loading="{{loading}}">
         </iron-ajax>
 
-        <vaadin-grid aria-label="temasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoInterno" />
-                </template>
-                <template>
-                    {{ item.codigoInterno }}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricaoTema" />
-                </template>
-                <template>
-                    {{ item.descricaoTema }}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column>
-                <template class="header">
-                    <vaadin-grid-sorter path="urlImagem">Url Imagem</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="urlImagem" />
-                </template>
-                <template>
-                    {{ item.urlImagem }}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="activo">Activo?</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="activo" />
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.temaActivo}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>
+        <iron-ajax url="/Academia/UpdateCatalogo"
+                   last-response="{{ catalogoUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="update_catalogo_ajax"
+                   on-response="_updateCatalogoResponse"
+                   content-type="application/json"
+                   loading="{{loading}}"
+        ></iron-ajax>
 
+        <div class="subMenu">
+            <paper-button class="tablinks" id="updateCatalogo" on-tap="_updateCatalogo"><i class="fa fa-download" aria-hidden="true"></i>&nbsp;Actualizar Catalogo</paper-button>
+        </div>
+        <div class="row break_clear">
+            <div>
+                <template is="dom-if" if="{{loading}}">
+                    <paper-spinner class="multi" alt="Aguarde..." active></paper-spinner>
+                </template>
+            </div>
+            <vaadin-grid aria-label="temasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="codigoInterno" />
+                    </template>
+                    <template>
+                        {{ item.codigoInterno }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="descricaoTema" />
+                    </template>
+                    <template>
+                        {{ item.descricaoTema }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column>
+                    <template class="header">
+                        <vaadin-grid-sorter path="urlImagem">Url Imagem</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="urlImagem" />
+                    </template>
+                    <template>
+                        {{ item.urlImagem }}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="activo">Activo?</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="activo" />
+                    </template>
+                    <template>
+                        <vaadin-checkbox checked="{{item.temaActivo}}" disabled></vaadin-checkbox>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -179,13 +232,13 @@
                 },
 
                 _showMessage: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
                 },
 
                 _showErrorMessage: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
                 },
                 ready: function () {
                     debugger;;
@@ -235,6 +288,21 @@
                         window.location.href = "/Academia/DetalhesTema/" + item.idTema + "?codInterno=" + item.codigoInterno + "&fromCatalogo=" + false;
                     }
                 },
+
+                _updateCatalogo: function (e) {
+                    debugger;;
+                    
+                    this.$.update_catalogo_ajax.generateRequest();                      
+                },
+                _updateCatalogoResponse: function (e) {
+                    debugger;;
+                    if(this.catalogoUpdated) {
+                        this._showMessage("O Catálogo foi actualizado com sucesso");
+                    } else {
+                        this._showErrorMessage("Não foi possível actualizar o catálogo!");
+                    }
+
+                }
             });
         });
     </script>

@@ -25,9 +25,13 @@ namespace Hydra.Such.Data.ViewModel.Academia
         public string UtilizadorAprovacaoChefia { get; set; }
         public string DataAprovacaoChefiaTxt { get; set; }
 
+        public string UtilizadorAprovacaoCoordenacao { get; set; }
+        public string DataAprovacaoCoordenacaoTxt { get; set; }
+
         public string UtilizadorAprovacaoDireccao { get; set; }
         public string DataAprovacaoDireccaoTxt { get; set; }
 
+       
         public string UtilizadorParecerAcademia { get; set; }
         public string DataParecerAcademiaTxt { get; set; }
 
@@ -97,46 +101,90 @@ namespace Hydra.Such.Data.ViewModel.Academia
             RegistosAlteracoes = Pedido.RegistosAlteracoes;
             if (RegistosAlteracoes != null && RegistosAlteracoes.Count > 0)
             {
+                // 1. Registo da submissão
                 RegistoAlteracoesPedidoFormacao registo = RegistosAlteracoes
                         .OrderBy(r => r.DataHoraAlteracao)
-                        .Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoChefia)
-                        .LastOrDefault();
+                        .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoChefia);
 
                 if (registo != null)
                 {
                     DataSubmissaoTxt = DateToText(registo.DataHoraAlteracao);
                     UtilizadorSubmissao = registo.UtilizadorAlteracao;
                 }                
-
+                
+                // 2. Registo da Aprovação pela Chefia
                 registo = null;
 
+                
                 registo = RegistosAlteracoes
                         .OrderBy(r => r.DataHoraAlteracao)
-                        .Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoChefia)
-                        .LastOrDefault();
+                        .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoChefia);
 
-                if (registo == null)
+                if (registo != null)
                 {
-                    registo = RegistosAlteracoes
-                            .OrderBy(r => r.DataHoraAlteracao)
-                            .Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao)
-                            .LastOrDefault();
-
-                    if (registo != null)
-                    {
-                        DataAprovacaoDireccaoTxt = DateToText(registo.DataHoraAlteracao);
-                        UtilizadorAprovacaoDireccao = registo.UtilizadorAlteracao;
-
-                        DataAprovacaoChefiaTxt = DataAprovacaoDireccaoTxt;
-                        UtilizadorAprovacaoChefia = UtilizadorAprovacaoDireccao;
-                    }                   
+                    UtilizadorAprovacaoChefia = registo.UtilizadorAlteracao;
+                    DataAprovacaoChefiaTxt = DateToText(registo.DataHoraAlteracao);
                 }
                 else
                 {
-                    DataAprovacaoChefiaTxt = DateToText(registo.DataHoraAlteracao); 
-                    UtilizadorAprovacaoChefia = registo.UtilizadorAlteracao;
+                    registo = RegistosAlteracoes
+                            .OrderBy(r => r.DataHoraAlteracao)
+                            .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoCoordenacao);
+                    if (registo != null)
+                    {
+                        UtilizadorAprovacaoChefia = registo.UtilizadorAlteracao;
+                        DataAprovacaoChefiaTxt = DateToText(registo.DataHoraAlteracao);
+
+                        UtilizadorAprovacaoCoordenacao = UtilizadorAprovacaoChefia;
+                        DataAprovacaoCoordenacaoTxt = DataAprovacaoChefiaTxt;
+                    }
+                    else
+                    {
+                        registo = RegistosAlteracoes
+                            .OrderBy(r => r.DataHoraAlteracao)
+                            .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao);
+                        if (registo != null)
+                        {
+                            UtilizadorAprovacaoChefia = registo.UtilizadorAlteracao;
+                            DataAprovacaoChefiaTxt = DateToText(registo.DataHoraAlteracao);
+
+                            UtilizadorAprovacaoCoordenacao = UtilizadorAprovacaoChefia;
+                            DataAprovacaoCoordenacaoTxt = DataAprovacaoChefiaTxt;
+
+                            UtilizadorAprovacaoDireccao = UtilizadorAprovacaoChefia;
+                            DataAprovacaoDireccaoTxt = DataAprovacaoChefiaTxt;
+
+                        }
+                    }
                 }
 
+                // 3. Registo de Aprovação pelo Coordenador
+                registo = null;
+                registo = RegistosAlteracoes
+                        .OrderBy(r => r.DataHoraAlteracao)
+                        .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoCoordenacao);
+                if (registo != null)
+                {
+                    UtilizadorAprovacaoCoordenacao = registo.UtilizadorAlteracao;
+                    DataAprovacaoCoordenacaoTxt = DateToText(registo.DataHoraAlteracao);
+                }
+                else
+                {
+                    registo = RegistosAlteracoes
+                           .OrderBy(r => r.DataHoraAlteracao)
+                           .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao);
+                    if (registo != null)
+                    {
+                        UtilizadorAprovacaoCoordenacao = UtilizadorAprovacaoChefia;
+                        DataAprovacaoCoordenacaoTxt = DataAprovacaoChefiaTxt;
+
+                        UtilizadorAprovacaoDireccao = UtilizadorAprovacaoChefia;
+                        DataAprovacaoDireccaoTxt = DataAprovacaoChefiaTxt;
+
+                    }
+                }
+
+                // 4. Registo de Aprovação pelo Director
                 registo = null;
 
                 registo = RegistosAlteracoes
@@ -150,12 +198,12 @@ namespace Hydra.Such.Data.ViewModel.Academia
                     UtilizadorAprovacaoDireccao = registo.UtilizadorAlteracao;
                 }
 
+                // 5. Parecer da Academia
                 registo = null;
 
                 registo = RegistosAlteracoes
                         .OrderBy(r => r.DataHoraAlteracao)
-                        .Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia)
-                        .LastOrDefault();
+                        .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia);
 
                 if (registo != null)
                 {
@@ -163,12 +211,12 @@ namespace Hydra.Such.Data.ViewModel.Academia
                     UtilizadorParecerAcademia = registo.UtilizadorAlteracao;
                 }
 
+                // 6. Submissão CA
                 registo = null;
 
                 registo = RegistosAlteracoes
                         .OrderBy(r => r.DataHoraAlteracao)
-                        .Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoConsAdmin)
-                        .LastOrDefault();
+                        .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoConsAdmin);
 
                 if (registo != null)
                 {
@@ -176,12 +224,12 @@ namespace Hydra.Such.Data.ViewModel.Academia
                     UtilizadorAnaliseAcademia = registo.UtilizadorAlteracao;
                 }
 
+                // 7. Aprovação CA
                 registo = null;
 
                 registo = RegistosAlteracoes
                         .OrderBy(r => r.DataHoraAlteracao)
-                        .Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AutorizacaoConsAdmin)
-                        .LastOrDefault();
+                        .LastOrDefault(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AutorizacaoConsAdmin);
 
                 if (registo != null)
                 {
@@ -189,7 +237,7 @@ namespace Hydra.Such.Data.ViewModel.Academia
                     UtilizadorAutorizacaoAdmin = registo.UtilizadorAlteracao;
 
                 }
-               
+
             }
 
             DataHoraCriacaoTxt = DateToText(Pedido.DataHoraCriacao);

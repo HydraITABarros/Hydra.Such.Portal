@@ -13,6 +13,8 @@ namespace Hydra.Such.Data.ViewModel.Academia
         public int NoSessoes { get; set; }
         public bool AccaoActiva { get; set; }
         public Boolean TemSessoes { get; set; }
+        public int NoPedidosParaAprovacao { get; set; }
+        public int NoPedidosAprovados { get; set; }
         public ICollection<AttachmentsViewModel> ImagensAccao { get; set; }
 
         public AccaoFormacaoView()
@@ -26,15 +28,16 @@ namespace Hydra.Such.Data.ViewModel.Academia
             CodigoInterno = accao.CodigoInterno;
             DesignacaoAccao = accao.DesignacaoAccao;
             IdTema = accao.IdTema;
-            Activa = accao.Activa == null ? 0 : accao.Activa.Value;
+            Activa = accao.Activa.HasValue ? accao.Activa.Value : 0;
             AccaoActiva = Activa == 1;
             DataInicio = accao.DataInicio;
             //Activa = DataInicio != null && DataInicio.Value.Date < DateTime.Now.Date ? 0 : Activa.Value;
             DataFim = accao.DataFim;
             IdEntidadeFormadora = accao.IdEntidadeFormadora;
-            NumeroTotalHoras = accao.NumeroTotalHoras == null ? 0 : accao.NumeroTotalHoras.Value;
+            NumeroTotalHoras = accao.NumeroTotalHoras ?? 0;
             LocalRealizacao = accao.LocalRealizacao;
             UrlImagem = accao.UrlImagem;
+            CustoInscricao = accao.CustoInscricao ?? 0;
 
         }
 
@@ -61,6 +64,15 @@ namespace Hydra.Such.Data.ViewModel.Academia
             Entidade = DBAcademia.__GetDetailsEntidade(IdEntidadeFormadora);
         }
 
+       public void CarregaPedidos(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
+        {
+            PedidosParticipacao = DBAcademia.__GetAllPedidosFormacao(IdAccao, cfgUser, origin, onlyCompleted);
+        }
+
+        public void ContaPedidos(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin)
+        {
+            
+        }
         public AccaoFormacao ParseToDb()
         {
             AccaoFormacao accao = new AccaoFormacao()
@@ -75,7 +87,8 @@ namespace Hydra.Such.Data.ViewModel.Academia
                 IdEntidadeFormadora = IdEntidadeFormadora,
                 NumeroTotalHoras = NumeroTotalHoras,
                 LocalRealizacao = LocalRealizacao,
-                UrlImagem = UrlImagem
+                UrlImagem = UrlImagem,
+                CustoInscricao = CustoInscricao
             };
 
             if (Entidade != null)

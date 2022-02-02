@@ -189,28 +189,30 @@ namespace Hydra.Such.Portal.Controllers
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoChefia;
                     break;
                 case 3:
+                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoCoordenacao;
+                    break;
+                case 4:
                     {
-                        if (currStatus == 1 || currStatus == 2)
+                        if (currStatus == 1 || currStatus == 2 || currStatus == 3)
                             result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao;
 
-                        if (currStatus == 4)
+                        if (currStatus == 5)
                             result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.ReconfirmacaoDireccao;
                     }
                     break;
-                case 4:
-                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoAcademia;
-                    break;
-                case 5:
-                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoConsAdmin;
+                case 5: result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoAcademia;
                     break;
                 case 6:
-                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AutorizacaoConsAdmin;
+                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoConsAdmin;
                     break;
                 case 7:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoConsAdmin;
                     break;
                 case 8:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AutorizacaoConsAdmin;
+                    break;
+                case 9:
+                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.PedidoEncerrado;
                     break;
                 case 99:
                     {
@@ -219,8 +221,10 @@ namespace Hydra.Such.Portal.Controllers
                             case 1:
                                 result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoChefia;
                                 break;
-                            case 2:
-                            case 4:
+                            case 2:                            
+                                result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoCoordenacao;
+                                break;
+                            case 3:
                                 result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoDireccao;
                                 break;
                             default:
@@ -248,195 +252,199 @@ namespace Hydra.Such.Portal.Controllers
                 if (f != null && !string.IsNullOrEmpty(f.No))
                 {
                     f.GetTraineeManagers(TrainingRequestApprovalType);
-                    switch (newStatus)
-                    {
-                        case 1:
-                            {
-                                EmailAcademia e = new EmailAcademia {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(EmployeeToChiefEmail, 
-                                            pedido.NomeEmpregado, 
-                                            pedido.IdEmpregado,
-                                            f.CrespNav2017,
-                                            f.DescCrespNav2017,
-                                            pedido.DesignacaoAccao,
-                                            pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
-                                    SubjectText = "Pedido de Participação em Formação Externa para validar",
-                                    SenderAddress = AcademiaEmailAddress,
-                                    SenderName = AcademiaName,
-                                    IsHtml = true,
-                                    ToAddresses = f.GetManagersEmailAddresses(1)
-                                };
+                    //switch (newStatus)
+                    //{
+                    //    //case 1:
+                    //    //    {
+                    //    //        EmailAcademia e = new EmailAcademia
+                    //    //        {
+                    //    //            IdPedido = pedido.IdPedido,
+                    //    //            BodyText = string.Format(EmployeeToChiefEmail,
+                    //    //                    pedido.NomeEmpregado,
+                    //    //                    pedido.IdEmpregado,
+                    //    //                    f.CrespNav2017,
+                    //    //                    f.DescCrespNav2017,
+                    //    //                    pedido.DesignacaoAccao,
+                    //    //                    pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                    //    //            SubjectText = "Pedido de Participação em Formação Externa para validar",
+                    //    //            SenderAddress = AcademiaEmailAddress,
+                    //    //            SenderName = AcademiaName,
+                    //    //            IsHtml = true,
+                    //    //            ToAddresses = f.GetManagersEmailAddresses(1)
+                    //    //        };
 
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToChiefForApproval(f, pedido, url);
+                    //    //        SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //        email.MakeEmailToChiefForApproval(f, pedido, url);
 
-                                email.SendEmail();
-                            }
-                            break;
-                        case 2:
-                            {
-                                EmailAcademia e = new EmailAcademia
-                                {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(ChiefToDirectorEmail,
-                                            pedido.NomeEmpregado,
-                                            pedido.IdEmpregado,
-                                            f.CrespNav2017,
-                                            f.DescCrespNav2017,
-                                            pedido.DesignacaoAccao,
-                                            pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
-                                    SubjectText = "Pedido de Participação em Formação Externa para aprovar",
-                                    SenderAddress = AcademiaEmailAddress,
-                                    SenderName = AcademiaName,
-                                    IsHtml = true,
-                                    ToAddresses = f.GetManagersEmailAddresses(1)
-                                };
+                    //    //        email.SendEmail();
+                    //    //    }
+                    //    //    break;
+                    //    //case 2:
+                    //    //    {
+                    //    //        EmailAcademia e = new EmailAcademia
+                    //    //        {
+                    //    //            IdPedido = pedido.IdPedido,
+                    //    //            BodyText = string.Format(ChiefToDirectorEmail,
+                    //    //                    pedido.NomeEmpregado,
+                    //    //                    pedido.IdEmpregado,
+                    //    //                    f.CrespNav2017,
+                    //    //                    f.DescCrespNav2017,
+                    //    //                    pedido.DesignacaoAccao,
+                    //    //                    pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                    //    //            SubjectText = "Pedido de Participação em Formação Externa para aprovar",
+                    //    //            SenderAddress = AcademiaEmailAddress,
+                    //    //            SenderName = AcademiaName,
+                    //    //            IsHtml = true,
+                    //    //            ToAddresses = f.GetManagersEmailAddresses(1)
+                    //    //        };
 
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToDirectorForApproval(f, pedido, url);
+                    //    //        SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //        email.MakeEmailToDirectorForApproval(f, pedido, url);
 
-                                email.SendEmail();
-                            }
-                            break;
-                        case 3:
-                            {
-                                if (currStatus == 1 || currStatus == 2)
-                                {
-                                    EmailAcademia e = new EmailAcademia {
-                                        IdPedido = pedido.IdPedido,
-                                        BodyText = DirectorApprovedRequest,
-                                        SubjectText = "Pedido de Participação em Formação Externa Aprovado pela Direcção",
-                                        SenderAddress = "esuch@such.pt",
-                                        SenderName = "e-SUCH",
-                                        IsHtml = true,
-                                        ToAddresses = new List<string> { "academia@such.pt"}
-                                    };
+                    //    //        email.SendEmail();
+                    //    //    }
+                    //    //    break;
+                    //    //case 3:
+                    //    //    {
+                    //    //        if (currStatus == 1 || currStatus == 2)
+                    //    //        {
+                    //    //            EmailAcademia e = new EmailAcademia
+                    //    //            {
+                    //    //                IdPedido = pedido.IdPedido,
+                    //    //                BodyText = DirectorApprovedRequest,
+                    //    //                SubjectText = "Pedido de Participação em Formação Externa Aprovado pela Direcção",
+                    //    //                SenderAddress = "esuch@such.pt",
+                    //    //                SenderName = "e-SUCH",
+                    //    //                IsHtml = true,
+                    //    //                ToAddresses = new List<string> { "academia@such.pt" }
+                    //    //            };
 
-                                    SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                    email.MakeEmailToAcademy(pedido, url);
+                    //    //            SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //            email.MakeEmailToAcademy(pedido, url);
 
-                                    email.SendEmail();
-                                }
+                    //    //            email.SendEmail();
+                    //    //        }
 
-                                if (currStatus == 4)
-                                {
-                                    EmailAcademia e = new EmailAcademia
-                                    {
-                                        IdPedido = pedido.IdPedido,
-                                        BodyText = DirectorReapprovedRequest,
-                                        SubjectText = "Pedido de Participação em Formação Externa Re-aprovado pela Direcção",
-                                        SenderAddress = "esuch@such.pt",
-                                        SenderName = "e-SUCH",
-                                        IsHtml = true,
-                                        ToAddresses = new List<string> { "academia@such.pt" }
-                                    };
+                    //    //        if (currStatus == 4)
+                    //    //        {
+                    //    //            EmailAcademia e = new EmailAcademia
+                    //    //            {
+                    //    //                IdPedido = pedido.IdPedido,
+                    //    //                BodyText = DirectorReapprovedRequest,
+                    //    //                SubjectText = "Pedido de Participação em Formação Externa Re-aprovado pela Direcção",
+                    //    //                SenderAddress = "esuch@such.pt",
+                    //    //                SenderName = "e-SUCH",
+                    //    //                IsHtml = true,
+                    //    //                ToAddresses = new List<string> { "academia@such.pt" }
+                    //    //            };
 
-                                    SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                    email.MakeEmailToAcademy(pedido, url);
+                    //    //            SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //            email.MakeEmailToAcademy(pedido, url);
 
-                                    email.SendEmail();
-                                }
-                            }
-                            break;
-                        case 4:
-                            {
-                                EmailAcademia e = new EmailAcademia {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(AcademyRejectionToDirector,
-                                        pedido.IdPedido,
-                                        pedido.NomeEmpregado,
-                                        pedido.IdEmpregado,
-                                        f.CrespNav2017,
-                                        f.DescCrespNav2017,
-                                        pedido.DesignacaoAccao,
-                                        pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy"),
-                                        pedido.ParecerDotacaoAcademia
-                                    ),
-                                    SubjectText = "Pedido de Participação em Formação Externa Rejeitado pela Academia",
-                                    SenderAddress = AcademiaEmailAddress,
-                                    SenderName = AcademiaName,
-                                    IsHtml = true,
-                                    ToAddresses = f.GetManagersEmailAddresses(1)
-                                };
+                    //    //            email.SendEmail();
+                    //    //        }
+                    //    //    }
+                    //    //    break;
+                    //    //case 4:
+                    //    //    {
+                    //    //        EmailAcademia e = new EmailAcademia
+                    //    //        {
+                    //    //            IdPedido = pedido.IdPedido,
+                    //    //            BodyText = string.Format(AcademyRejectionToDirector,
+                    //    //                pedido.IdPedido,
+                    //    //                pedido.NomeEmpregado,
+                    //    //                pedido.IdEmpregado,
+                    //    //                f.CrespNav2017,
+                    //    //                f.DescCrespNav2017,
+                    //    //                pedido.DesignacaoAccao,
+                    //    //                pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy"),
+                    //    //                pedido.ParecerDotacaoAcademia
+                    //    //            ),
+                    //    //            SubjectText = "Pedido de Participação em Formação Externa Rejeitado pela Academia",
+                    //    //            SenderAddress = AcademiaEmailAddress,
+                    //    //            SenderName = AcademiaName,
+                    //    //            IsHtml = true,
+                    //    //            ToAddresses = f.GetManagersEmailAddresses(1)
+                    //    //        };
 
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToDirectorRequestDenial(f, pedido, url);
+                    //    //        SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //        email.MakeEmailToDirectorRequestDenial(f, pedido, url);
 
-                                email.SendEmail();
-                            }
-                            break;
-                        case 5:
-                            {
-                                EmailAcademia e = new EmailAcademia {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(AcademyToBoardForApproval,
-                                        pedido.NomeEmpregado,
-                                        pedido.IdEmpregado,
-                                        f.CrespNav2017,
-                                        f.DescCrespNav2017,
-                                        url
-                                    ),
-                                    SubjectText = "Pedido de Participação em Formação Externa para Autorizar",
-                                    SenderAddress = AcademiaEmailAddress,
-                                    SenderName = AcademiaName,
-                                    IsHtml = true,
-                                    ToAddresses = f.GetManagersEmailAddresses(3)
-                                };
+                    //    //        email.SendEmail();
+                    //    //    }
+                    //    //    break;
+                    //    //case 5:
+                    //    //    {
+                    //    //        EmailAcademia e = new EmailAcademia
+                    //    //        {
+                    //    //            IdPedido = pedido.IdPedido,
+                    //    //            BodyText = string.Format(AcademyToBoardForApproval,
+                    //    //                pedido.NomeEmpregado,
+                    //    //                pedido.IdEmpregado,
+                    //    //                f.CrespNav2017,
+                    //    //                f.DescCrespNav2017,
+                    //    //                url
+                    //    //            ),
+                    //    //            SubjectText = "Pedido de Participação em Formação Externa para Autorizar",
+                    //    //            SenderAddress = AcademiaEmailAddress,
+                    //    //            SenderName = AcademiaName,
+                    //    //            IsHtml = true,
+                    //    //            ToAddresses = f.GetManagersEmailAddresses(3)
+                    //    //        };
 
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToBoardForApproval(f, pedido, url);
+                    //    //        SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //        email.MakeEmailToBoardForApproval(f, pedido, url);
 
-                                email.SendEmail();
-                            }
-                            break;
-                        case 6:
-                            {
-                                PedidoParticipacaoFormacaoView p = new PedidoParticipacaoFormacaoView(pedido);
+                    //    //        email.SendEmail();
+                    //    //    }
+                    //    //    break;
+                    //    //case 6:
+                    //    //    {
+                    //    //        PedidoParticipacaoFormacaoView p = new PedidoParticipacaoFormacaoView(pedido);
 
-                                EmailAcademia e = new EmailAcademia
-                                {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = BoardApproval,
-                                    SubjectText = "Pedido de Participação em Formação Externa Autorizado pelo CA",
-                                    SenderAddress = "esuch@such.pt",
-                                    SenderName = "e-SUCH",
-                                    IsHtml = true,
-                                    ToAddresses = new List<string> { AcademiaEmailAddress },
-                                    // CC aos envolvidos no processo
-                                    CcAddresses = new List<string> { p.UtilizadorAprovacaoChefia, p.UtilizadorAprovacaoDireccao, p.UtilizadorSubmissao}
-                                    
-                                    
-                                };
+                    //    //        EmailAcademia e = new EmailAcademia
+                    //    //        {
+                    //    //            IdPedido = pedido.IdPedido,
+                    //    //            BodyText = BoardApproval,
+                    //    //            SubjectText = "Pedido de Participação em Formação Externa Autorizado pelo CA",
+                    //    //            SenderAddress = "esuch@such.pt",
+                    //    //            SenderName = "e-SUCH",
+                    //    //            IsHtml = true,
+                    //    //            ToAddresses = new List<string> { AcademiaEmailAddress },
+                    //    //            // CC aos envolvidos no processo
+                    //    //            CcAddresses = new List<string> { p.UtilizadorAprovacaoChefia, p.UtilizadorAprovacaoDireccao, p.UtilizadorSubmissao }
 
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToAcademy(pedido, url);
 
-                                email.SendEmail();
-                            }
-                            break;
-                        case 7:
-                            {
-                                EmailAcademia e = new EmailAcademia
-                                {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = BoardRejection,
-                                    SubjectText = "Pedido de Participação em Formação Externa Rejeitado pelo CA",
-                                    SenderAddress = "esuch@such.pt",
-                                    SenderName = "e-SUCH",
-                                    IsHtml = true,
-                                    ToAddresses = new List<string> { AcademiaEmailAddress }
-                                };
+                    //    //        };
 
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToAcademy(pedido, url);
+                    //    //        SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //        email.MakeEmailToAcademy(pedido, url);
 
-                                email.SendEmail();
-                            }
-                            break;
-                        default:
-                            break;
-                    }
+                    //    //        email.SendEmail();
+                    //    //    }
+                    //    //    break;
+                    //    //case 7:
+                    //    //    {
+                    //    //        EmailAcademia e = new EmailAcademia
+                    //    //        {
+                    //    //            IdPedido = pedido.IdPedido,
+                    //    //            BodyText = BoardRejection,
+                    //    //            SubjectText = "Pedido de Participação em Formação Externa Rejeitado pelo CA",
+                    //    //            SenderAddress = "esuch@such.pt",
+                    //    //            SenderName = "e-SUCH",
+                    //    //            IsHtml = true,
+                    //    //            ToAddresses = new List<string> { AcademiaEmailAddress }
+                    //    //        };
+
+                    //    //        SendEmailsAcademia email = new SendEmailsAcademia(e);
+                    //    //        email.MakeEmailToAcademy(pedido, url);
+
+                    //    //        email.SendEmail();
+                    //    //    }
+                    //    //    break;
+                    //    //default:
+                    //    //    break;
+                    //}
 
                 }
             }
@@ -606,7 +614,7 @@ namespace Hydra.Such.Portal.Controllers
                 int estado = reqParam["estado"] == null ? -1 : (int)reqParam["estado"];
                 string url = reqParam["url"] == null ? string.Empty : (string)reqParam["url"];
 
-                var newEstado = EnumerablesFixed.EstadoPedidoFormacao.Where(e => e.Id == estado).FirstOrDefault();
+                var newEstado = EnumerablesFixed.EstadoPedidoFormacao.FirstOrDefault(e => e.Id == estado);
 
                 if (!string.IsNullOrEmpty(idPedido) && newEstado != null && estado > 0)
                 {
@@ -667,7 +675,7 @@ namespace Hydra.Such.Portal.Controllers
                 string idPedido = reqParam["idPedido"] == null ? string.Empty : (string)reqParam["idPedido"];
                 int idAlteracao = reqParam["idAlteracao"] == null ? -1 : (int)reqParam["idAlteracao"];
 
-                if (!string.IsNullOrEmpty(idPedido) &&  idAlteracao == 6)
+                if (!string.IsNullOrEmpty(idPedido) &&  idAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.ValidacaoDotacao)
                 {
                     PedidoParticipacaoFormacao pedido = DBAcademia.__GetDetailsPedidoFormacao(idPedido);
                     if (pedido != null)
@@ -680,16 +688,16 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             bool registoCriado = DBAcademia.__CriarRegistoAlteracaoPedidoFormacao(
                                 pedido,
-                                (int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia,
-                                TypeOfChangeToText((int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia),
+                                (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao,
+                                TypeOfChangeToText((int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao),
                                 User.Identity.Name);
 
                             if (!registoCriado)
                             {
                                 DBAcademia.__CriarRegistoAlteracaoPedidoFormacao(
                                     pedido,
-                                    (int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia,
-                                    TypeOfChangeToText((int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia),
+                                    (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao,
+                                    TypeOfChangeToText((int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao),
                                     User.Identity.Name);
                             }
 
@@ -761,11 +769,14 @@ namespace Hydra.Such.Portal.Controllers
 
             switch (RequestOrigin)
             {
+                // Acesso da Academia
                 case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao:
                     if (UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
                     {
                         // TO DO 01-02-2021: avalia necessidade do ciclo switch e de diferentes métodos....
-                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 3, false);
+                        List<PedidoParticipacaoFormacao> meusPedidos = 
+                                DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao, false);
+
                         if (meusPedidos != null && meusPedidos.Count > 0)
                         {
                             foreach (var p in meusPedidos)
@@ -788,10 +799,25 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
                     break;
-                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector:
+                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao:
+                    if (UPerm != null && UPerm.Read.Value && cfgUser.IsCoordenador())
+                    {
+                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao, apenasCompletos);
+                        if (meusPedidos != null && meusPedidos.Count > 0)
+                        {
+                            foreach (var p in meusPedidos)
+                            {
+                                meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                            }
+
+                            return Json(meusPedidosView);
+                        }
+                    }
+                    break;
+                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao:
                     if (UPerm != null && UPerm.Read.Value && cfgUser.IsDirector())
                     {
-                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector, apenasCompletos);
+                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao, apenasCompletos);
                         if (meusPedidos != null && meusPedidos.Count > 0)
                         {
                             foreach (var p in meusPedidos)
@@ -804,17 +830,19 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     break;
                 case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA:
-                    if (UPerm != null && UPerm.Read.Value && cfgUser.IsDirector())
                     {
-                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA, apenasCompletos);
-                        if (meusPedidos != null && meusPedidos.Count > 0)
+                        if (UPerm != null && UPerm.Read.Value && cfgUser.IsBoardMember())
                         {
-                            foreach (var p in meusPedidos)
+                            List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA, apenasCompletos);
+                            if (meusPedidos != null && meusPedidos.Count > 0)
                             {
-                                meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
-                            }
+                                foreach (var p in meusPedidos)
+                                {
+                                    meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                                }
 
-                            return Json(meusPedidosView);
+                                return Json(meusPedidosView);
+                            }
                         }
                     }
                     break;
@@ -890,7 +918,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetCatalogo([FromBody] JObject requestParams)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
-            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            //ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
             bool apenasActivos = requestParams["apenasActivos"] == null ? true : (bool)requestParams["apenasActivos"];
 
 
@@ -914,7 +942,11 @@ namespace Hydra.Such.Portal.Controllers
         {
             string idTema = requestParams["idTema"] == null ? null : (string)requestParams["idTema"];
             bool fromCatalogo = requestParams["fromCatalogo"] == null ? false : (bool)requestParams["fromCatalogo"];
-            string filtroData = requestParams["filtroData"] == null ? DateTime.Today.AddMonths(DBAcademia.NoMesesMostrarAccoesPorDefeito * -1).ToShortDateString() : (string)requestParams["filtroData"];
+            string filtroData = 
+                requestParams["filtroData"] == null ? 
+                DateTime.Today.AddMonths(DBAcademia.NoMesesMostrarAccoesPorDefeito * -1).ToShortDateString() : 
+                (string)requestParams["filtroData"];
+
             DateTime filtro;
             try
             {
@@ -1006,12 +1038,20 @@ namespace Hydra.Such.Portal.Controllers
             {
                 bool isChief = obj["isChief"] == null ? false : (bool)obj["isChief"];
                 bool isDirector = obj["isDirector"] == null ? false : (bool)obj["isDirector"];
+                bool isCoordenador = obj["isCoordenador"] == null ? false : (bool)obj["isCoordenador"];
+
                 ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                 ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
 
                 if (isDirector)
                 {
-                    List<Formando> formandos = DBAcademia.__GetAllFormandos(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector);
+                    List<Formando> formandos = DBAcademia.__GetAllFormandos(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao);
+                    return Json(formandos);
+                }
+
+                if (isCoordenador)
+                {
+                    List<Formando> formandos = DBAcademia.__GetAllFormandos(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao);
                     return Json(formandos);
                 }
 
@@ -1456,6 +1496,12 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult UpdateCatalogo()
+        {
+            bool ret = DBAcademia.__UpdateCatalogo();
+            return Json(ret);
+        }
 
         #region SGPPF actions
         public ActionResult Catalogo()
@@ -1515,6 +1561,24 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public ActionResult AprovacaoCoordenacao()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
+
+            if (UPerm != null && UPerm.Read.Value && cfgUser.IsCoordenador())
+            {
+                ViewBag.OnlyCompleted = false;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public ActionResult AprovacaoDireccao()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
@@ -1527,7 +1591,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value && isDirector)
             {
                 ViewBag.OnlyCompleted = false;
-                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao;
                 return View();
             }
             else
@@ -1672,6 +1736,7 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.idPedido = id;
                 ViewBag.employeeNo = userConfig.EmployeeNo;
                 ViewBag.isChief = cfgUser.IsChief();
+                ViewBag.isCoordenador = cfgUser.IsCoordenador();
                 ViewBag.isDirector = cfgUser.IsDirector();
                 ViewBag.isBoardMember = cfgUser.IsBoardMember();
                 ViewBag.isTrainingManager = userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao;
@@ -1682,12 +1747,6 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
 
-        }
-
-        // Test Action
-        public ActionResult TestCatalog()
-        {
-            return View();
         }
         #endregion
 
