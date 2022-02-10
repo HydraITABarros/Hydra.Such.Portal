@@ -68,7 +68,7 @@
                 "jest-cli": "^23.6.0",
                 "jquery": "^3.2.1",
                 "node-pre-gyp": "^0.12.0",
-                "node-sass": "^4.11.0",
+                "node-sass": "^7.0.0",
                 "opn-cli": "^4.0.0",
                 "popper.js": "^1.12.6",
                 "raw-loader": "^2.0.0",
