@@ -1395,13 +1395,62 @@ namespace Hydra.Such.Portal.Controllers
                         if (ContratoDB != null)
                         {
 
-                            if (data.ChangeStatus == 1 && ContratoDB.EstadoAlteração == 2) //1 = Aberto - 2 = Bloqueado
+                            if (data.ChangeStatus == 1 && ContratoDB.EstadoAlteração == 2) //2 = Bloqueado » 1 = Aberto
                             {
                                 
                                 data.SomatorioLinhas = (decimal)DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo).Sum(x => x.PreçoUnitário == null ? 0 : x.PreçoUnitário);
+
+                                //Elimina todos os registos de Estado Alteração para o contrato
+                                ContratosEstadoAlteracao ContractEstadoAlteracao = DBContractsEstadoAlteracao.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                                if (ContractEstadoAlteracao != null)
+                                {
+                                    List<RequisiçõesClienteContratoEstadoAlteracao> ContratClientRequisitionEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(data.ContractNo);
+                                    if (ContratClientRequisitionEA != null && ContratClientRequisitionEA.Count > 0)
+                                    {
+                                        ContratClientRequisitionEA.ForEach(ClientRequisitionEA =>
+                                        {
+                                            DBContractClientRequisitionEstadoAlteracao.Delete(ClientRequisitionEA);
+                                        });
+                                    }
+
+                                    List<LinhasContratosEstadoAlteracao> ContratLinesEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                                    if (ContratLinesEA != null && ContratLinesEA.Count > 0)
+                                    {
+                                        ContratLinesEA.ForEach(ContratLineEA =>
+                                        {
+                                            DBContractLinesEstadoAlteracao.Delete(ContratLineEA);
+                                        });
+                                    }
+
+                                    DBContractsEstadoAlteracao.DeleteByContractNo(data.ContractNo);
+                                }
+
+                                //Cria novos registos de Estado de Alteração para o contrato
+                                ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(data);
+                                DBContractsEstadoAlteracao.Create(ContratoEA);
+
+                                List<LinhasContratos> ContratLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                                if (ContratLines != null && ContratLines.Count > 0)
+                                {
+                                    ContratLines.ForEach(line =>
+                                    {
+                                        LinhasContratosEstadoAlteracao LinhaEA = DBContractLinesEstadoAlteracao.ParseToDB(line);
+                                        DBContractLinesEstadoAlteracao.Create(LinhaEA);
+                                    });
+                                }
+
+                                List<RequisiçõesClienteContrato> ContratClientRequisition = DBContractClientRequisition.GetByContract(data.ContractNo);
+                                if (ContratClientRequisition != null && ContratClientRequisition.Count > 0)
+                                {
+                                    ContratClientRequisition.ForEach(clientRequisition =>
+                                    {
+                                        RequisiçõesClienteContratoEstadoAlteracao clientRequisitionEA = DBContractClientRequisitionEstadoAlteracao.ParseToDB(clientRequisition);
+                                        DBContractClientRequisitionEstadoAlteracao.Create(clientRequisitionEA);
+                                    });
+                                }
                             }
 
-                            if (data.ChangeStatus == 2 && ContratoDB.EstadoAlteração == 1) //1 = Aberto - 2 = Bloqueado
+                            if (data.ChangeStatus == 2 && ContratoDB.EstadoAlteração == 1) //1 = Aberto » 
                             {
                                 if (data.CodeFunctionalArea != null && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
                                 {
@@ -1565,8 +1614,6 @@ namespace Hydra.Such.Portal.Controllers
                             //Delete Contract Invoice Texts
                             CITToDelete.ForEach(x => DBContractInvoiceText.Delete(x));
                         }
-                        //data.eReasonCode = 1;
-                        //data.eMessage = "Contrato atualizado com sucesso.";
                     }
                 }
             }
