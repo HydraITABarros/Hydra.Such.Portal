@@ -1054,6 +1054,7 @@ namespace Hydra.Such.Portal.Controllers
                             Aprovacoes.ForEach(Aprovacao =>
                             {
                                 Aprovacao.Estado = 3;
+                                Aprovacao.MotivoDeRecusa = "FH Histórico - " + User.Identity.Name + " - " + DateTime.Now.ToString();
 
                                 DBApprovalMovements.Update(Aprovacao);
                             });

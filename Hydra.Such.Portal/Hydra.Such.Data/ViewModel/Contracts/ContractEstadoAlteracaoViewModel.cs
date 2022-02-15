@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.Contracts
 {
-    public class ContractViewModel : ErrorHandler
+    public class ContractEstadoAlteracaoViewModel
     {
         public int ContractType { get; set; }
         public string ContractNo { get; set; }
@@ -130,49 +130,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public bool? FaturaPrecosIvaIncluido { get; set; }
         public decimal? SomatorioLinhas { get; set; }
 
-
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
-
-        public List<ContractClientRequisitionViewModel> ClientRequisitions { get; set; }
-        public List<ContractInvoiceTextViewModel> InvoiceTexts { get; set; }
-        public List<ContractLineViewModel> Lines { get; set; }
-
-        public ContractViewModel()
-        {
-            Lines = new List<ContractLineViewModel>();
-        }
-    }
-
-    public class UpdateContractRequest
-    {
-        public ContractViewModel Contract;
-        public bool PartialUpdateOnly;
-    }
-
-    public enum ContractType
-    {
-        Oportunity = 1,
-        Proposal = 2,
-        Contract = 3
-    }
-
-    public class UpdateContractPricesRequest
-    {
-        public int ContractType { get; set; }
-        public string ContractNo { get; set; }
-        public int VersionNo { get; set; }
-        
-        public string NextInvoiceDate { get; set; }
-        public string StartDate { get; set; }
-        public string DueDate { get; set; }
-        public string ClientRequisitionNo { get; set; }
-        public string RequisitionReceiveDate { get; set; }
-        public decimal percentageToApllyInLines { get; set; }
-
-        //public UpdateContractPricesRequest()
-        //{
-        //    Lines = new List<ContractLineViewModel>();
-        //}
     }
 }
