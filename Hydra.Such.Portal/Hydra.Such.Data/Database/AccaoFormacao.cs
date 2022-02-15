@@ -28,7 +28,7 @@ namespace Hydra.Such.Data.Database
         public string UrlImagem { get; set; }
         public string LocalRealizacao { get; set; }
         public decimal? CustoInscricao { get; set; }
-
+        public DateTime? DataHoraActualizacao { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public TemaFormacao Tema { get; set; }

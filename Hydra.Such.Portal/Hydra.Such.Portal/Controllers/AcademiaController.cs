@@ -1714,7 +1714,15 @@ namespace Hydra.Such.Portal.Controllers
 
                 ViewBag.idAccao = id;
                 ViewBag.codInterno = codInterno;
-                ViewBag.designacaoAccao = accao.DesignacaoAccao;
+                if (accao.DesignacaoAccao.Length > 80)
+                {
+                    ViewBag.designacaoAccao = accao.DesignacaoAccao.Substring(1, 80) + "(...)";
+                }
+                else
+                {
+                    ViewBag.designacaoAccao = accao.DesignacaoAccao;
+                }
+                
                 ViewBag.isAcademiaUser = userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao;
                 ViewBag.fromTema = fromTema;
                 return View();
