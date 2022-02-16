@@ -1473,9 +1473,8 @@ namespace Hydra.Such.Portal.Controllers
 
                                     if (SomatorioLinhasOriginal != SomatorioLinhasAtual)
                                     {
-
-                                        Email.Subject = "eSUCH - O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.";
-                                        Email.From = "eSUCH - Contratos esuch@such.pt";
+                                        Email.DisplayName = "e-SUCH - Contrato";
+                                        Email.From = "esuch@such.pt";
                                         if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
                                             Email.To.Add(EmailTo.Valor);
                                         if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
@@ -1485,6 +1484,7 @@ namespace Hydra.Such.Portal.Controllers
                                         if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
                                             Email.CC.Add(EmailCC3.Valor);
                                         Email.BCC.Add(EmailBCC);
+                                        Email.Subject = "eSUCH - O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.";
 
                                         Email.Body = MakeEmailBodyContent("O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.");
                                         Email.IsBodyHtml = true;
@@ -1495,8 +1495,8 @@ namespace Hydra.Such.Portal.Controllers
                                     if ((InicioVersaoOriginal != InicioVersaoAtual) || (FimVersaoOriginal != FimVersaoAtual))
                                     {
 
-                                        Email.Subject = "eSUCH - A Data de Início ou Fim da Versão do Contrato Nº " + data.ContractNo.ToString() + " foi atualizada.";
-                                        Email.From = "eSUCH - Contratos esuch@such.pt";
+                                        Email.DisplayName = "e-SUCH - Contrato";
+                                        Email.From = "esuch@such.pt";
                                         if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
                                             Email.To.Add(EmailTo.Valor);
                                         if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
@@ -1506,6 +1506,7 @@ namespace Hydra.Such.Portal.Controllers
                                         if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
                                             Email.CC.Add(EmailCC3.Valor);
                                         Email.BCC.Add(EmailBCC);
+                                        Email.Subject = "eSUCH - A Data de Início ou Fim da Versão do Contrato Nº " + data.ContractNo.ToString() + " foi atualizada.";
 
                                         Email.Body = MakeEmailBodyContent("A Data de Início ou Fim da Versão do Contrato Nº " + data.ContractNo.ToString() + " foi atualizada.");
                                         Email.IsBodyHtml = true;
