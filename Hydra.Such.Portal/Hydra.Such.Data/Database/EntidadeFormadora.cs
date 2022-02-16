@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.Database
         public string IdEntidade { get; set; }
         public string Referencia { get; set; }
         public string DescricaoEntidade { get; set; }
+        public DateTime? DataHoraActualizacao { get; set; }
 
         public ICollection<AccaoFormacao> AccoesEntidade { get; set; }
     }

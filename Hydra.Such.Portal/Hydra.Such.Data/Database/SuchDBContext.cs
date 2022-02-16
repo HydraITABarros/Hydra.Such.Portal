@@ -13888,6 +13888,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("CustoInscricao")
                     .HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.DataHoraActualizacao)
+                    .HasColumnName("DataHoraActualizacao")
+                    .HasColumnType("datetime");
+
                 entity.HasOne(a => a.Tema)
                     .WithMany(t => t.AccoesTema)
                     .HasForeignKey(a => a.IdTema)
@@ -13914,6 +13918,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DescricaoEntidade)
                     .HasColumnName("DescricaoEntidade")
                     .HasMaxLength(250);
+
+                entity.Property(e => e.DataHoraActualizacao)
+                    .HasColumnName("DataHoraActualizacao")
+                    .HasColumnType("datetime");
 
             });
 
@@ -14138,6 +14146,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DuracaoSessao)
                     .HasColumnName("DuracaoSessao")
                     .HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.DataHoraActualizacao)
+                    .HasColumnName("DataHoraActualizacao")
+                    .HasColumnType("datetime");
 
                 entity.HasOne(s => s.AccaoNavigation)
                     .WithMany(a => a.SessoesFormacao)
