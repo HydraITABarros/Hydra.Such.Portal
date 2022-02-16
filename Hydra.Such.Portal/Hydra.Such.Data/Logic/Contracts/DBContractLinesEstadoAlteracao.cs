@@ -93,21 +93,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    //ObjectToCreate.CódServiçoCliente = ObjectToCreate.CódServiçoCliente == "" || ObjectToCreate.CódServiçoCliente == "0" ? null : ObjectToCreate.CódServiçoCliente;
-                    //ObjectToCreate.DataHoraCriação = DateTime.Now;
-                    //ObjectToCreate.NºLinha = 0;
-                    
-                    ctx.SaveChanges();
-
-                    LinhasContratosEstadoAlteracao l = new LinhasContratosEstadoAlteracao();
-
-                    l.NºContrato = "TESTE";
-                    l.NºVersão = 1;
-                    l.NºLinha = 1;
-                    l.TipoContrato = 1;
-                    ctx.LinhasContratosEstadoAlteracao.Add(l);
-
-                    //ctx.LinhasContratosEstadoAlteracao.Add(ObjectToCreate);
+                    ctx.LinhasContratosEstadoAlteracao.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -128,9 +114,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 {
                     items.ForEach(item =>
                     {
-                        item.CódServiçoCliente = item.CódServiçoCliente == "" || item.CódServiçoCliente == "0" ? null : item.CódServiçoCliente;
-                        item.DataHoraCriação = DateTime.Now;
-                        item.NºLinha = 0;
                         ctx.LinhasContratosEstadoAlteracao.Add(item);
                     });
                     ctx.SaveChanges();
@@ -165,8 +148,6 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ObjectToUpdate.CódServiçoCliente = ObjectToUpdate.CódServiçoCliente == "" || ObjectToUpdate.CódServiçoCliente == "0" ? null : ObjectToUpdate.CódServiçoCliente;
-                    ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.LinhasContratosEstadoAlteracao.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }

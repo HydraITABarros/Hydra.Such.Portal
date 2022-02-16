@@ -1397,57 +1397,56 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (data.ChangeStatus == 1 && ContratoDB.EstadoAlteração == 2) //2 = Bloqueado » 1 = Aberto
                             {
-                                
                                 data.SomatorioLinhas = (decimal)DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo).Sum(x => x.PreçoUnitário == null ? 0 : x.PreçoUnitário);
 
                                 //Elimina todos os registos de Estado Alteração para o contrato
-                                ContratosEstadoAlteracao ContractEstadoAlteracao = DBContractsEstadoAlteracao.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-                                if (ContractEstadoAlteracao != null)
-                                {
-                                    List<RequisiçõesClienteContratoEstadoAlteracao> ContratClientRequisitionEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(data.ContractNo);
-                                    if (ContratClientRequisitionEA != null && ContratClientRequisitionEA.Count > 0)
-                                    {
-                                        ContratClientRequisitionEA.ForEach(ClientRequisitionEA =>
-                                        {
-                                            DBContractClientRequisitionEstadoAlteracao.Delete(ClientRequisitionEA);
-                                        });
-                                    }
+                                //ContratosEstadoAlteracao ContractEstadoAlteracao = DBContractsEstadoAlteracao.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                                //if (ContractEstadoAlteracao != null)
+                                //{
+                                //    List<RequisiçõesClienteContratoEstadoAlteracao> ContratClientRequisitionEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(data.ContractNo);
+                                //    if (ContratClientRequisitionEA != null && ContratClientRequisitionEA.Count > 0)
+                                //    {
+                                //        ContratClientRequisitionEA.ForEach(ClientRequisitionEA =>
+                                //        {
+                                //            DBContractClientRequisitionEstadoAlteracao.Delete(ClientRequisitionEA);
+                                //        });
+                                //    }
 
-                                    List<LinhasContratosEstadoAlteracao> ContratLinesEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(data.ContractNo, data.VersionNo);
-                                    if (ContratLinesEA != null && ContratLinesEA.Count > 0)
-                                    {
-                                        ContratLinesEA.ForEach(ContratLineEA =>
-                                        {
-                                            DBContractLinesEstadoAlteracao.Delete(ContratLineEA);
-                                        });
-                                    }
+                                //    List<LinhasContratosEstadoAlteracao> ContratLinesEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                                //    if (ContratLinesEA != null && ContratLinesEA.Count > 0)
+                                //    {
+                                //        ContratLinesEA.ForEach(ContratLineEA =>
+                                //        {
+                                //            DBContractLinesEstadoAlteracao.Delete(ContratLineEA);
+                                //        });
+                                //    }
 
-                                    DBContractsEstadoAlteracao.DeleteByContractNo(data.ContractNo);
-                                }
+                                //    DBContractsEstadoAlteracao.DeleteByContractNo(data.ContractNo);
+                                //}
 
                                 //Cria novos registos de Estado de Alteração para o contrato
-                                ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(data);
-                                DBContractsEstadoAlteracao.Create(ContratoEA);
+                                //ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(data);
+                                //DBContractsEstadoAlteracao.Create(ContratoEA);
 
-                                List<LinhasContratos> ContratLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
-                                if (ContratLines != null && ContratLines.Count > 0)
-                                {
-                                    ContratLines.ForEach(line =>
-                                    {
-                                        LinhasContratosEstadoAlteracao LinhaEA = DBContractLinesEstadoAlteracao.ParseToDB(line);
-                                        DBContractLinesEstadoAlteracao.Create(LinhaEA);
-                                    });
-                                }
+                                //List<LinhasContratos> ContratLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                                //if (ContratLines != null && ContratLines.Count > 0)
+                                //{
+                                //    ContratLines.ForEach(line =>
+                                //    {
+                                //        LinhasContratosEstadoAlteracao LinhaEA = DBContractLinesEstadoAlteracao.ParseToDB(line);
+                                //        DBContractLinesEstadoAlteracao.Create(LinhaEA);
+                                //    });
+                                //}
 
-                                List<RequisiçõesClienteContrato> ContratClientRequisition = DBContractClientRequisition.GetByContract(data.ContractNo);
-                                if (ContratClientRequisition != null && ContratClientRequisition.Count > 0)
-                                {
-                                    ContratClientRequisition.ForEach(clientRequisition =>
-                                    {
-                                        RequisiçõesClienteContratoEstadoAlteracao clientRequisitionEA = DBContractClientRequisitionEstadoAlteracao.ParseToDB(clientRequisition);
-                                        DBContractClientRequisitionEstadoAlteracao.Create(clientRequisitionEA);
-                                    });
-                                }
+                                //List<RequisiçõesClienteContrato> ContratClientRequisition = DBContractClientRequisition.GetByContract(data.ContractNo);
+                                //if (ContratClientRequisition != null && ContratClientRequisition.Count > 0)
+                                //{
+                                //    ContratClientRequisition.ForEach(clientRequisition =>
+                                //    {
+                                //        RequisiçõesClienteContratoEstadoAlteracao clientRequisitionEA = DBContractClientRequisitionEstadoAlteracao.ParseToDB(clientRequisition);
+                                //        DBContractClientRequisitionEstadoAlteracao.Create(clientRequisitionEA);
+                                //    });
+                                //}
                             }
 
                             if (data.ChangeStatus == 2 && ContratoDB.EstadoAlteração == 1) //1 = Aberto » 
@@ -1468,7 +1467,7 @@ namespace Hydra.Such.Portal.Controllers
                                     ConfiguracaoParametros EmailCC1 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC1");
                                     ConfiguracaoParametros EmailCC2 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC2");
                                     ConfiguracaoParametros EmailCC3 = DBConfiguracaoParametros.GetByParametro("ContratosRoupaEmailCC3");
-                                    string EmailBCC = "Marcelo@such.pt";
+                                    string EmailBCC = "MMarcelo@such.pt";
 
                                     SendEmailApprovals Email = new SendEmailApprovals();
 
@@ -1476,7 +1475,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
 
                                         Email.Subject = "eSUCH - O valor do Contrato Nº " + data.ContractNo.ToString() + " foi atualizado.";
-                                        Email.From = User.Identity.Name;
+                                        Email.From = "eSUCH - Contratos esuch@such.pt";
                                         if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
                                             Email.To.Add(EmailTo.Valor);
                                         if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
@@ -1497,7 +1496,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
 
                                         Email.Subject = "eSUCH - A Data de Início ou Fim da Versão do Contrato Nº " + data.ContractNo.ToString() + " foi atualizada.";
-                                        Email.From = User.Identity.Name;
+                                        Email.From = "eSUCH - Contratos esuch@such.pt";
                                         if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
                                             Email.To.Add(EmailTo.Valor);
                                         if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
