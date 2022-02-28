@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Database
     {
         public ContratosEstadoAlteracao()
         {
-            LinhasContratosEstadoAlteracao = new HashSet<LinhasContratosEstadoAlteracao>();
+            //LinhasContratosEstadoAlteracao = new HashSet<LinhasContratosEstadoAlteracao>();
         }
 
         public int TipoContrato { get; set; }
@@ -102,6 +102,6 @@ namespace Hydra.Such.Data.Database
         public bool? FaturaPrecosIvaIncluido { get; set; }
         public decimal? SomatorioLinhas { get; set; }
 
-        public ICollection<LinhasContratosEstadoAlteracao> LinhasContratosEstadoAlteracao { get; set; }
+       // public ICollection<LinhasContratosEstadoAlteracao> LinhasContratosEstadoAlteracao { get; set; }
     }
 }
