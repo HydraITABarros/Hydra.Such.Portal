@@ -360,5 +360,17 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UtilizadorModificação = x.UpdateUser
             };
         }
+
+        public static List<LinhasContratos> ParseToDB(List<ContractLineViewModel> items)
+        {
+            List<LinhasContratos> parsedItems = new List<LinhasContratos>();
+            if (items != null && items.Count > 0)
+            {
+                items.ForEach(x =>
+                    parsedItems.Add(ParseToDB(x))
+                );
+            }
+            return parsedItems;
+        }
     }
 }
