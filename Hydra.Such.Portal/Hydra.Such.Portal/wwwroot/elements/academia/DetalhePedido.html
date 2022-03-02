@@ -591,7 +591,7 @@
                                                 <vaadin-text-field id="dataSubmissaoTxt" name="dataSubmissaoTxt" label="Data Submissão" value="{{ data.dataSubmissaoTxt }}" disabled></vaadin-text-field>
                                             </div>
                                             <div class="col-md-7">
-                                                <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O(A) Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
                                     </div>
@@ -621,7 +621,7 @@
                                             <div class="panel panel-default" style="border:0">
                                                 <div class="panel-body">
                                                     <div class="row break_clear">
-                                                        <div class="col-xs-6" style="padding:3px">
+                                                        <div class="col-xs-4" style="padding:3px">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading" style="font-weight:bold">Aprovação Chefia</div>
                                                                 <div class="panel-body">
@@ -629,12 +629,25 @@
                                                                         <vaadin-text-field id="dataAprovacaoChefiaTxt" name="dataAprovacaoChefiaTxt" label="Data Aprovação" value="{{ data.dataAprovacaoChefiaTxt }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                     <div class="col-xs-8">
-                                                                        <vaadin-text-field id="utilizadorAprovacaoChefia" name="utilizadorAprovacaoChefia" label="O Responsável" value="{{ data.utilizadorAprovacaoChefia }}" disabled></vaadin-text-field>
+                                                                        <vaadin-text-field id="utilizadorAprovacaoChefia" name="utilizadorAprovacaoChefia" label="O(A) Responsável" value="{{ data.utilizadorAprovacaoChefia }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-6" style="padding:3px">
+                                                        <div class="col-xs-4" style="padding:3px">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" style="font-weight:bold">Aprovação Coordenação</div>
+                                                                <div class="panel-body">
+                                                                    <div class="col-xs-4">
+                                                                        <vaadin-text-field id="dataAprovacaoCoordenacaoTxt" name="dataAprovacaoCoordenacaoTxt" label="Data Aprovação" value="{{ data.dataAprovacaoCoordenacaoTxt }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                    <div class="col-xs-8">
+                                                                        <vaadin-text-field id="utilizadorAprovacaoCoordenacao" name="utilizadorAprovacaoCoordenacao" label="O(A) Coordenador(a)" value="{{ data.utilizadorAprovacaoCoordenacao }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="padding:3px">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading" style="font-weight:bold">Aprovação Direcção</div>
                                                                 <div class="panel-body">
@@ -642,7 +655,7 @@
                                                                         <vaadin-text-field id="dataAprovacaoDireccaoTxt" name="dataAprovacaoDireccaoTxt" label="Data Aprovação" value="{{ data.dataAprovacaoDireccaoTxt }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                     <div class="col-xs-8">
-                                                                        <vaadin-text-field id="utilizadorAprovacaoDireccao" name="utilizadorAprovacaoDireccao" label="O Director da UP/AAS" value="{{ data.utilizadorAprovacaoDireccao }}" disabled></vaadin-text-field>
+                                                                        <vaadin-text-field id="utilizadorAprovacaoDireccao" name="utilizadorAprovacaoDireccao" label="A Direcção da UP/AAS" value="{{ data.utilizadorAprovacaoDireccao }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                 </div>
                                                             </div>
