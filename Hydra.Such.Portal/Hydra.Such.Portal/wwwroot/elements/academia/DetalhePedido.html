@@ -823,7 +823,7 @@
                             </paper-collapse-item>
                         </div>
 
-                        <!-- VIII Comentários /!\ Apenas deverá estar visivel para a Academia e quando o estado >= 3-->
+                        <!-- VIII Comentários /!\ Apenas deverá estar visivel para a Academia e quando o estado >= 4-->
                         <div id="comentariosSection" class="panel panel-default">
                             <paper-collapse-item header="VIII - Comentários">
                                 <div class="panel-body">
@@ -1211,7 +1211,7 @@
                         this.txtComentario = "";
                         $(self.$.comentariosSection).addClass('hidden');
 
-                        if (this._istrainingmanager && this.data.estado >= 3) {
+                        if (this._istrainingmanager && this.data.estado >= 4) {
                             $(self.$.comentariosSection).removeClass('hidden');
                         }
                         
@@ -1657,6 +1657,9 @@
                                 this.$.page_update_ajax.body = JSON.stringify(this.data);
                                 this.$.page_update_ajax.generateRequest();
 
+
+                                // JPM.TODO 02032022. Inserir o Coordenador neste ciclo de validação
+                                // tendo em atenção que o a Chefia também pode ser Coordenador
                                 if (this._ischief && !this._isdirector) {
                                     var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Direcção da UP/AAS?";
                                     this._msg = "Pedido " + _data.idPedido + " submetido à Direcção da UP/AAS com sucesso.";
