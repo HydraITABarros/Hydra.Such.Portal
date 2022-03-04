@@ -277,11 +277,6 @@ namespace Hydra.Such.Data.ViewModel.Academia
             Accao = DBAcademia.__GetDetailsAccaoFormacao(IdAccaoFormacao);
         }
 
-        public void GetTrackingHistory()
-        {
-
-        }
-
         public void GetComments()
         {
             ComentariosPedido = DBAcademia.__GetCometariosPedido(IdPedido);
