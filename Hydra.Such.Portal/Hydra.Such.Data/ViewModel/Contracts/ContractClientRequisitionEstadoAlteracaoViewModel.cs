@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
 {
     public class ContractClientRequisitionEstadoAlteracaoViewModel
     {
+        public int NoLinha { get; set; }
         public string ContractNo { get; set; }
         public int InvoiceGroup { get; set; }
         public string ProjectNo { get; set; }

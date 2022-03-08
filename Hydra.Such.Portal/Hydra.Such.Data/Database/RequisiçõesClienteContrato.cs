@@ -5,6 +5,7 @@ namespace Hydra.Such.Data.Database
 {
     public partial class RequisiçõesClienteContrato
     {
+        public int NoLinha { get; set; }
         public string NºContrato { get; set; }
         public int GrupoFatura { get; set; }
         public string NºProjeto { get; set; }

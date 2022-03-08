@@ -9508,9 +9508,14 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<RequisiçõesClienteContrato>(entity =>
             {
-                entity.HasKey(e => new { e.NºContrato, e.GrupoFatura, e.NºProjeto, e.DataInícioCompromisso });
+                entity.HasKey(e => new { e.NoLinha, e.NºContrato, e.GrupoFatura, e.NºProjeto, e.DataInícioCompromisso });
 
                 entity.ToTable("Requisições Cliente Contrato");
+
+                entity.Property(e => e.NoLinha)
+                    .HasColumnName("Nolinha")
+                    .UseSqlServerIdentityColumn()
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.NºContrato)
                     .HasColumnName("Nº Contrato")
