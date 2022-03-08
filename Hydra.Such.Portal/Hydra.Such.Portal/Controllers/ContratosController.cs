@@ -1495,7 +1495,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (data.ChangeStatus == 1 && ContratoDB_EstadoAlteração == 2) //2 = Bloqueado » 1 = Aberto
                             {
-                                if (1 != 2)//AMARO (data.CodeFunctionalArea != null && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+                                if (data.CodeFunctionalArea != null && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
                                 {
                                     data.SomatorioLinhas = (decimal)DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo).Sum(x => x.PreçoUnitário == null ? 0 : x.PreçoUnitário);
 
@@ -1556,7 +1556,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (data.ChangeStatus == 2 && ContratoDB_EstadoAlteração == 1) //1 = Aberto » 2 = Bloqueado
                             {
-                                if (1 != 2)//AMARO (data.CodeFunctionalArea != null && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+                                if (data.CodeFunctionalArea != null && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
                                 {
                                     Contratos ContratoAtual = new Contratos();
                                     if (data != null)
@@ -1850,17 +1850,16 @@ namespace Hydra.Such.Portal.Controllers
 
                                         Email.DisplayName = "e-SUCH - Contrato";
                                         Email.From = "esuch@such.pt";
-                                        //if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
-                                        //    Email.To.Add(EmailTo.Valor);
-                                        //if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
-                                        //    Email.CC.Add(EmailCC1.Valor);
-                                        //if (EmailCC2 != null && !string.IsNullOrEmpty(EmailCC2.Valor))
-                                        //    Email.CC.Add(EmailCC2.Valor);
-                                        //if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
-                                        //    Email.CC.Add(EmailCC3.Valor);
-                                        //Email.BCC.Add(EmailBCC);
+                                        if (EmailTo != null && !string.IsNullOrEmpty(EmailTo.Valor))
+                                            Email.To.Add(EmailTo.Valor);
+                                        if (EmailCC1 != null && !string.IsNullOrEmpty(EmailCC1.Valor))
+                                            Email.CC.Add(EmailCC1.Valor);
+                                        if (EmailCC2 != null && !string.IsNullOrEmpty(EmailCC2.Valor))
+                                            Email.CC.Add(EmailCC2.Valor);
+                                        if (EmailCC3 != null && !string.IsNullOrEmpty(EmailCC3.Valor))
+                                            Email.CC.Add(EmailCC3.Valor);
+                                        Email.BCC.Add(EmailBCC);
 
-                                        Email.To.Add("ARomao@such.pt");
                                         Email.Subject = EmailAssunto;
 
                                         Email.Body = MakeEmailBodyContent(EmailCorpo);
