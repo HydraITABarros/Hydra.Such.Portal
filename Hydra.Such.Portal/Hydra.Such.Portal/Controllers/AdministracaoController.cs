@@ -4656,6 +4656,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 OrigemDestinoFH.Código = data.Codigo;
                 OrigemDestinoFH.Descrição = data.Descricao;
+                OrigemDestinoFH.RegiaoAutonoma = data.RegiaoAutonoma;
                 OrigemDestinoFH.CriadoPor = User.Identity.Name;
                 OrigemDestinoFH.DataHoraCriação = DateTime.Now;
 
@@ -4697,6 +4698,7 @@ namespace Hydra.Such.Portal.Controllers
                 u =>
                     u.Codigo == x.Codigo &&
                     u.Descricao == x.Descricao &&
+                    u.RegiaoAutonoma == x.RegiaoAutonoma &&
                     u.CriadoPor == x.CriadoPor &&
                     u.DataHoraCriacao == x.DataHoraCriacao
             ));

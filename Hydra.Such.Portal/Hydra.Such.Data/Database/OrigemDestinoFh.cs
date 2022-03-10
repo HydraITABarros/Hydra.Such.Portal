@@ -7,6 +7,7 @@ namespace Hydra.Such.Data.Database
     {
         public string Código { get; set; }
         public string Descrição { get; set; }
+        public bool? RegiaoAutonoma { get; set; }
         public string CriadoPor { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public string AlteradoPor { get; set; }

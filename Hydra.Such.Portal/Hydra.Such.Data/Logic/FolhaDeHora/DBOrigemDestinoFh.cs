@@ -129,6 +129,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 {
                     Código = x.Codigo,
                     Descrição = x.Descricao,
+                    RegiaoAutonoma = x.RegiaoAutonoma.HasValue ? x.RegiaoAutonoma : false,
                     CriadoPor = x.CriadoPor,
                     DataHoraCriação = x.DataHoraCriacao,
                     AlteradoPor = x.AlteradoPor,
@@ -148,6 +149,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 Codigo = x.Código,
                 Descricao = x.Descrição,
+                RegiaoAutonoma = x.RegiaoAutonoma.HasValue ? x.RegiaoAutonoma : false,
                 CriadoPor = x.CriadoPor,
                 DataHoraCriacao = x.DataHoraCriação,
                 AlteradoPor = x.AlteradoPor,

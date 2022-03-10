@@ -1624,9 +1624,10 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     EmailCorpo = EmailCorpo + "</table>";
 
-                                    EmailCorpo = EmailCorpo + "<br>" + "<br>";
-                                    EmailCorpo = EmailCorpo + "<b>" + "<u>" + "Linhas:" + "</u>" + "</b>" + "<br>";
-                                    EmailCorpo = EmailCorpo + "<table>";
+                                    bool Linhas_Titulo = true;
+                                    string Linhas_Titulo_Corpo = "<br>" + "<br>";
+                                    Linhas_Titulo_Corpo = Linhas_Titulo_Corpo + "<b>" + "<u>" + "Linhas:" + "</u>" + "</b>" + "<br>";
+                                    Linhas_Titulo_Corpo = Linhas_Titulo_Corpo + "<table>";
 
                                     //LINHAS ALTERADAS
                                     if (LinhasAtuais != null && LinhasAtuais.Count > 0 && LinhasEA != null && LinhasEA.Count > 0)
@@ -1642,6 +1643,11 @@ namespace Hydra.Such.Portal.Controllers
                                                     linhaAtual.NºProjeto != linhaEA.NºProjeto)
                                                 {
                                                     EnviarEmail = true;
+                                                    if (Linhas_Titulo == true)
+                                                    {
+                                                        EmailCorpo = EmailCorpo + Linhas_Titulo_Corpo;
+                                                        Linhas_Titulo = false;
+                                                    }
                                                     EmailCorpo = EmailCorpo + "<tr>";
 
                                                     EmailCorpo = EmailCorpo + "<td>" + linhaAtual.NºLinha.ToString() + "</td>";
@@ -1682,6 +1688,11 @@ namespace Hydra.Such.Portal.Controllers
                                             if (linhaEA == null)
                                             {
                                                 EnviarEmail = true;
+                                                if (Linhas_Titulo == true)
+                                                {
+                                                    EmailCorpo = EmailCorpo + Linhas_Titulo_Corpo;
+                                                    Linhas_Titulo = false;
+                                                }
                                                 EmailCorpo = EmailCorpo + "<tr>";
 
                                                 EmailCorpo = EmailCorpo + "<td>" + linhaAtual.NºLinha.ToString() + "</td>";
@@ -1705,6 +1716,11 @@ namespace Hydra.Such.Portal.Controllers
                                             if (linhaAtual == null)
                                             {
                                                 EnviarEmail = true;
+                                                if (Linhas_Titulo == true)
+                                                {
+                                                    EmailCorpo = EmailCorpo + Linhas_Titulo_Corpo;
+                                                    Linhas_Titulo = false;
+                                                }
                                                 EmailCorpo = EmailCorpo + "<tr>";
 
                                                 EmailCorpo = EmailCorpo + "<td>" + linhaEA.NºLinha.ToString() + "</td>";
@@ -1718,11 +1734,13 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                         });
                                     }
-                                    EmailCorpo = EmailCorpo + "</table>";
+                                    if (EmailCorpo.Contains("Linhas:"))
+                                        EmailCorpo = EmailCorpo + "</table>";
 
-                                    EmailCorpo = EmailCorpo + "<br>" + "<br>";
-                                    EmailCorpo = EmailCorpo + "<b>" + "<u>" + "Compromissos:" + "</u>" + "</b>" + "<br>";
-                                    EmailCorpo = EmailCorpo + "<table>";
+                                    bool Requisicoes_Titulo = true;
+                                    string Requisicoes_Titulo_Corpo = "<br>" + "<br>";
+                                    Requisicoes_Titulo_Corpo = Requisicoes_Titulo_Corpo + "<b>" + "<u>" + "Compromissos:" + "</u>" + "</b>" + "<br>";
+                                    Requisicoes_Titulo_Corpo = Requisicoes_Titulo_Corpo + "<table>";
 
                                     //REQUISIÇÕES CLIENTES ALTERADOS
                                     if (RequisicoesClientesAtuais != null && RequisicoesClientesAtuais.Count > 0)
@@ -1740,6 +1758,11 @@ namespace Hydra.Such.Portal.Controllers
                                                     requisicaoAtual.NºProjeto != requisicaoEA.NºProjeto)
                                                 {
                                                     EnviarEmail = true;
+                                                    if (Requisicoes_Titulo == true)
+                                                    {
+                                                        EmailCorpo = EmailCorpo + Requisicoes_Titulo_Corpo;
+                                                        Requisicoes_Titulo = false;
+                                                    }
 
                                                     EmailCorpo = EmailCorpo + "<tr>" + "<td>" + "Data de Inicio e de Fim:" + "</td>";
                                                     if (requisicaoAtual.DataInícioCompromisso != requisicaoEA.DataInícioCompromisso)
@@ -1795,6 +1818,11 @@ namespace Hydra.Such.Portal.Controllers
                                             if (requisicaoEA == null)
                                             {
                                                 EnviarEmail = true;
+                                                if (Requisicoes_Titulo == true)
+                                                {
+                                                    EmailCorpo = EmailCorpo + Requisicoes_Titulo_Corpo;
+                                                    Requisicoes_Titulo = false;
+                                                }
 
                                                 EmailCorpo = EmailCorpo + "<tr>" + "<td>" + "<font color=\"green\">" + "Nova" + "</font>" + "</td>" + "<td>" + "</td>" + "</tr>";
                                                 EmailCorpo = EmailCorpo + "<tr>" + "<td>" + "Data de Inicio e de Fim:" + "</td>" + "<td>" + requisicaoAtual.DataInícioCompromisso.ToShortDateString() + " a " + Convert.ToDateTime(requisicaoAtual.DataFimCompromisso).ToShortDateString() + "</td>" + "</tr>";
@@ -1820,6 +1848,11 @@ namespace Hydra.Such.Portal.Controllers
                                             if (requisicaAtual == null)
                                             {
                                                 EnviarEmail = true;
+                                                if (Requisicoes_Titulo == true)
+                                                {
+                                                    EmailCorpo = EmailCorpo + Requisicoes_Titulo_Corpo;
+                                                    Requisicoes_Titulo = false;
+                                                }
 
                                                 EmailCorpo = EmailCorpo + "<tr>" + "<td>" + "<font color=\"red\">" + "Eliminada" + "</font>" + "</td>" + "<td>" + "</td>" + "</tr>";
                                                 EmailCorpo = EmailCorpo + "<tr>" + "<td>" + "Data de Inicio e de Fim:" + "</td>" + "<td>" + requisicaoEA.DataInícioCompromisso.ToShortDateString() + " a " + Convert.ToDateTime(requisicaoEA.DataFimCompromisso).ToShortDateString() + "</td>" + "</tr>";
@@ -1835,7 +1868,8 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                         });
                                     }
-                                    EmailCorpo = EmailCorpo + "</table>";
+                                    if (EmailCorpo.Contains("Compromissos:"))
+                                        EmailCorpo = EmailCorpo + "</table>";
 
                                     if (EnviarEmail == true)
                                     {
@@ -1860,6 +1894,8 @@ namespace Hydra.Such.Portal.Controllers
                                             Email.CC.Add(EmailCC3.Valor);
                                         Email.BCC.Add(EmailBCC);
 
+                                        //Email.To.Add("MMarcelo@such.pt");
+                                        //Email.To.Add("ARomao@such.pt");
                                         Email.Subject = EmailAssunto;
 
                                         Email.Body = MakeEmailBodyContent(EmailCorpo);

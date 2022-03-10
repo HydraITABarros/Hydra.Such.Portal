@@ -6942,6 +6942,9 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .ValueGeneratedNever();
 
+                entity.Property(e => e.RegiaoAutonoma)
+                    .HasColumnName("RegiaoAutonoma");
+
                 entity.Property(e => e.AlteradoPor)
                     .HasColumnName("Alterado Por")
                     .HasMaxLength(50);
