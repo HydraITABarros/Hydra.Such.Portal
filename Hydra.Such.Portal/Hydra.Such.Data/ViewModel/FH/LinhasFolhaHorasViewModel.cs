@@ -25,6 +25,7 @@ namespace Hydra.Such.Data.ViewModel.FH
         public string DescricaoDestino { get; set; }
         public decimal? Distancia { get; set; }
         public decimal? DistanciaPrevista { get; set; }
+        public bool? RegiaoAutonoma { get; set; }
         public string RubricaSalarial { get; set; }
         public bool? RegistarSubsidiosPremios { get; set; }
         public string Observacao { get; set; }

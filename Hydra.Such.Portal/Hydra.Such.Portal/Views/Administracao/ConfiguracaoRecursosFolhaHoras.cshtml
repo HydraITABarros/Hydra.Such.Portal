@@ -83,7 +83,6 @@
         <iron-ajax url="/Administracao/GetConfiguracaoRecursosFolhaHoras"
                    last-response="{{result}}"
                    method="post"
-                   auto
                    on-response="_getAllResponse"
                    handle-as="json"
                    id="ajax_GetAll"
@@ -160,18 +159,16 @@
                         <div class="col-lg-3"><vaadin-text-field id="descricao" value="{{descricao}}" label="Descrição" maxlength="200" disabled></vaadin-text-field></div>
                         <div class="col-lg-3"><vaadin-text-field id="unidMedida" value="{{unidMedida}}" label="Unidade de Medida" maxlength="20" disabled></vaadin-text-field></div>
 
-                        <div class="col-lg-3"><vaadin-text-field id="precoUnitarioCusto" value="{{precoUnitarioCusto}}" label="Preço Unitário Custo" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
-                        <div class="col-lg-3"><vaadin-text-field id="precoUnitarioVenda" value="{{precoUnitarioVenda}}" label="Preço Unitário Venda" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-2"><vaadin-text-field id="precoUnitarioCusto" value="{{precoUnitarioCusto}}" label="Preço Unitário Custo" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-2"><vaadin-text-field id="precoUnitarioVenda" value="{{precoUnitarioVenda}}" label="Preço Unitário Venda" type="number" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
 
                         <div class="col-lg-3"><vaadin-text-field id="rubricaSalarial" value="{{rubricaSalarial}}" label="Rúbrica Salarial" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
                         <div class="col-lg-2 alignPoga">
                             <vaadin-checkbox id="chkcalculoAutomatico" checked="{{calculoAutomatico}}" disabled="{{ _permissionsCreate }}">Cálculo Automático</vaadin-checkbox>
                         </div>
-                        
-                        
-                        
-
-                        <div class="col-lg-2 alignPoga"><paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button></div>
+                        <div class="col-lg-2 alignPoga">
+                            <paper-button id="btnAddNew" class="btnSave" on-tap="_create" disabled="{{ _permissionsCreate }}">Criar</paper-button>
+                        </div>
                     </div>
                 </div>
             </paper-collapse-item>

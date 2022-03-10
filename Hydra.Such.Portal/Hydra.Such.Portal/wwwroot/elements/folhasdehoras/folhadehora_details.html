@@ -151,7 +151,8 @@
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraTypeDeslocation" last-response="{{LFolhaDeHoraTypeDeslocation}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraCodeTypeKms" last-response="{{LFolhaDeHoraCodeTypeKms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{LFolhaDeHoraProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" id="ajax_GetProjectNAV" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllProjectNavList_FH" last-response="{{LFolhaDeHoraNavProjectNo}}" id="ajax_GetAllProjectNAV" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetTipoTrabalhoFHList" last-response="{{LFolhaDeHoraTipoTrabalhoNo}}" id="page_GetTipoTrabalhoFH_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFolhaDeHoraDisplacementOutsideCity" last-response="{{LFolhaDeHoraDisplacementOutsideCity}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -2668,39 +2669,40 @@
                 //},
 
                 _updateLinhaPercurso: function (e) {
-                    if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
-                        this.$.page_databound_ajax.generateRequest();
-                    }
-                    else {
-                        var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
-
-                        if (e.model.item.codOrigem != null && e.model.item.codOrigem == "OUTROS DESTINOS" && e.model.item.observacao == "") {
-                            this._showErrorMessage("É obrigatório o campo Justificação estar preenchido para a Origem OUTROS DESTINOS.");
-                            this.$.page_databound_ajax.generateRequest();
-                            return;
-                        }
-                        if (e.model.item.codDestino != null && e.model.item.codDestino == "OUTROS DESTINOS" && e.model.item.observacao == "") {
-                            this._showErrorMessage("É obrigatório o campo Justificação estar preenchido para o Destino OUTROS DESTINOS.");
-                            this.$.page_databound_ajax.generateRequest();
-                            return;
-                        }
-                        if (e.model.item.codOrigem != null && e.model.item.codOrigem == "OUTROS DESTINOS" && e.model.item.observacao.length < 3) {
-                            this._showErrorMessage("O campo Justificação têm que ter no mínimo 3 carateres.");
-                            this.$.page_databound_ajax.generateRequest();
-                            return;
-                        }
-                        if (e.model.item.codDestino != null && e.model.item.codDestino == "OUTROS DESTINOS" && e.model.item.observacao.length < 3) {
-                            this._showErrorMessage("O campo Justificação têm que ter no mínimo 3 carateres.");
-                            this.$.page_databound_ajax.generateRequest();
-                            return;
-                        }
-
-                        if (e.model.item.noProjeto == null || e.model.item.noProjeto == "") {
-                            this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/Projecto.');
+                    if (e != null && e != undefined) {
+                        if (this.data.mostrarBotoes == false && (this.data.terminada == true || this.data.estado == 1 || this.data.estado == 2)) {
                             this.$.page_databound_ajax.generateRequest();
                         }
                         else {
-                            //if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                            var index = this.data.folhaDeHorasPercurso.indexOf(e.model.item);
+
+                            if (e.model.item.codOrigem != null && e.model.item.codOrigem == "OUTROS DESTINOS" && e.model.item.observacao == "") {
+                                this._showErrorMessage("É obrigatório o campo Justificação estar preenchido para a Origem OUTROS DESTINOS.");
+                                this.$.page_databound_ajax.generateRequest();
+                                return;
+                            }
+                            if (e.model.item.codDestino != null && e.model.item.codDestino == "OUTROS DESTINOS" && e.model.item.observacao == "") {
+                                this._showErrorMessage("É obrigatório o campo Justificação estar preenchido para o Destino OUTROS DESTINOS.");
+                                this.$.page_databound_ajax.generateRequest();
+                                return;
+                            }
+                            if (e.model.item.codOrigem != null && e.model.item.codOrigem == "OUTROS DESTINOS" && e.model.item.observacao.length < 3) {
+                                this._showErrorMessage("O campo Justificação têm que ter no mínimo 3 carateres.");
+                                this.$.page_databound_ajax.generateRequest();
+                                return;
+                            }
+                            if (e.model.item.codDestino != null && e.model.item.codDestino == "OUTROS DESTINOS" && e.model.item.observacao.length < 3) {
+                                this._showErrorMessage("O campo Justificação têm que ter no mínimo 3 carateres.");
+                                this.$.page_databound_ajax.generateRequest();
+                                return;
+                            }
+
+                            if (e.model.item.noProjeto == null || e.model.item.noProjeto == "") {
+                                this._showErrorMessage('É obrigatório preencher o campo Nº Ordem/Projecto.');
+                                this.$.page_databound_ajax.generateRequest();
+                            }
+                            else {
+                                //if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
                                 if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                                     if (e.model.item.dataDespesaTexto == null || e.model.item.dataDespesaTexto == "") {
                                         this._showErrorMessage('É obrigatório preencher o campo Data Viagem.');
@@ -2715,6 +2717,7 @@
                                             dataDespesa: e.model.item.dataDespesaTexto,
                                             observacao: e.model.item.observacao,
                                             distancia: e.model.item.distancia,
+                                            regiaoAutonoma: e.model.item.regiaoAutonoma,
                                             custoUnitario: e.model.item.custoUnitario,
                                             noProjeto: e.model.item.noProjeto,
 
@@ -2732,10 +2735,11 @@
                                 else {
                                     this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
                                 }
-                            //}
-                            //else {
-                            //    this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
-                            //}
+                                //}
+                                //else {
+                                //    this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
+                                //}
+                            }
                         }
                     }
                 },
@@ -3710,6 +3714,13 @@
 
                             this.$.page_GetRecursoFH_ajax.body = JSON.stringify(self.data);
                             this.$.page_GetRecursoFH_ajax.generateRequest();
+
+                            if (this.data.estado == 0) {
+                                this.$.ajax_GetProjectNAV.generateRequest();
+                            }
+                            else {
+                                this.$.ajax_GetAllProjectNAV.generateRequest();
+                            }
 
                             //this.$.page_GetTipoTrabalhoFH_ajax.body = JSON.stringify(self.data);
                             //this.$.page_GetTipoTrabalhoFH_ajax.generateRequest();

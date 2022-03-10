@@ -127,6 +127,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         x.FHDatePartida = FH.DataHoraPartida.HasValue ? Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString() : "";
                         x.FHDateChegada = FH.DataHoraChegada.HasValue ? Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString() : "";
+                        x.RequisicaoProjectNo = !string.IsNullOrEmpty(FH.NºProjeto) ? FH.NºProjeto : "";
                     }
 
                     switch (x.Level)
@@ -1649,7 +1650,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (dp["requisicaoProjectNo"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Req Projeto Nº");
+                    row.CreateCell(Col).SetCellValue("Nº Ordem/Projeto");
                     Col = Col + 1;
                 }
                 if (dp["requisicaoClientNo"]["hidden"].ToString() == "False")

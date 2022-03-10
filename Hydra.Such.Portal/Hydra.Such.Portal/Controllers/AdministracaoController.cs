@@ -2499,9 +2499,11 @@ namespace Hydra.Such.Portal.Controllers
 
             if (result != null)
             {
+                List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
                 result.ForEach(x =>
                 {
-                    x.CodigoTipoCustoTexto = x.CodigoTipoCusto.Trim() + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoTipoCusto.Trim(), "", 0, "").FirstOrDefault().Name;
+                    x.CodigoTipoCustoTexto = x.CodigoTipoCusto.Trim() + " - " + AllResources.FirstOrDefault(y => y.Code == x.CodigoTipoCusto.Trim()).Name;
                 });
             }
 
@@ -4828,14 +4830,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<TabelaConfRecursosFHViewModel> result = DBTabelaConfRecursosFh.ParseListToViewModel(DBTabelaConfRecursosFh.GetAll());
 
-            if (result != null)
-            {
-                result.ForEach(x =>
-                {
-                    x.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
-                    x.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
-                });
-            }
+            //if (result != null)
+            //{
+            //    result.ForEach(x =>
+            //    {
+            //        x.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
+            //        x.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
+            //    });
+            //}
 
             return Json(result);
         }
@@ -4893,8 +4895,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 TabelaConfRecursosFh toUpdate = DBTabelaConfRecursosFh.ParseToDB(x);
                 //toUpdate.UtilizadorModificacao = User.Identity.Name;
-                toUpdate.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
-                toUpdate.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
+                //toUpdate.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
+                //toUpdate.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
                 DBTabelaConfRecursosFh.Update(toUpdate);
             });
             return Json(data);
