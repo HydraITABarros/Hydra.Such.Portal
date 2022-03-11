@@ -150,49 +150,43 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
-        public static decimal GetCustoTotalKMByFolhaHoraNo(string FolhaHoraNo, int TipoDeslocacao, bool ForaConcelho, decimal DistanciaMinima)
+        public static decimal GetCustoTotalKMByFolhaHoraNo(string FolhaHoraNo)
         {
-            decimal CustoTotalKM = 0;
             try
             {
+                decimal CustoTotalKM = 0;
                 using (var ctx = new SuchDBContext())
                 {
-                    List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1 && x.RegiaoAutonoma == false).ToList();
-                    if (TipoDeslocacao == 2 && ForaConcelho == true) //Viatura Própria"
+                    List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
+                    if (result != null && result.Count > 0)
                     {
-                        if (result != null && result.Count > 0)
+                        result.ForEach(x =>
                         {
-                            result.ForEach(x =>
-                            {
-                                decimal DistanciaEfetuada = x.Distancia.HasValue ? (decimal)x.Distancia : 0;
-                                decimal DistanciaPrevista = x.DistanciaPrevista.HasValue ? (decimal)x.DistanciaPrevista : 0;
-                                decimal CustoUnitario = x.CustoUnitario.HasValue ? (decimal)x.CustoUnitario : 0;
+                            decimal DistanciaEfetuada = x.Distancia.HasValue ? (decimal)x.Distancia : 0;
+                            decimal DistanciaPrevista = x.DistanciaPrevista.HasValue ? (decimal)x.DistanciaPrevista : 0;
+                            decimal CustoUnitario = x.CustoUnitario.HasValue ? (decimal)x.CustoUnitario : 0;
 
-                                if (DistanciaEfetuada >= DistanciaMinima)
-                                {
-                                    CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
-                                }
-                                else
-                                {
-                                    if (DistanciaEfetuada == 0 && DistanciaPrevista >= DistanciaMinima)
-                                        CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
-                                }
-                                //if (DistanciaEfetuada == 0)
-                                //{
-                                //    CustoTotalKM = CustoTotalKM + 0;
-                                //}
-                                //else
-                                //{
-                                //    if (DistanciaPrevista == 0)
-                                //        CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
-                                //    else
-                                //        CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
-                                //}
-                            });
-                        }
+                            if (DistanciaEfetuada != 0)
+                            {
+                                CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
+                            }
+                            else
+                            {
+                                CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
+                            }
+                            //if (DistanciaEfetuada == 0)
+                            //{
+                            //    CustoTotalKM = CustoTotalKM + 0;
+                            //}
+                            //else
+                            //{
+                            //    if (DistanciaPrevista == 0)
+                            //        CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
+                            //    else
+                            //        CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
+                            //}
+                        });
                     }
-                    else
-                        CustoTotalKM = 0;
 
                     return CustoTotalKM;
                 }

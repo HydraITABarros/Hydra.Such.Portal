@@ -114,9 +114,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 CustoTotalAjudaCusto = DBLinhasFolhaHoras.GetCustoTotalAjudaCustoByFolhaHoraNo(NoFolhaHoras);
                 CustoTotalHoras = DBMaoDeObraFolhaDeHoras.GetCustoTotalHorasByFolhaHoraNo(NoFolhaHoras);
                 NumTotalKm = DBLinhasFolhaHoras.GetNoTotalKmByFolhaHoraNo(NoFolhaHoras);
-                bool DeslocacaoForaConcelho = FolhaDeHora.DeslocaçãoForaConcelho.HasValue ? (bool)FolhaDeHora.DeslocaçãoForaConcelho : false;
-                decimal DistanciaMinima = (decimal)DBConfiguracaoAjudaCusto.GetByCodigoTipoCusto("AJC0003").DistanciaMinima;
-                CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras, TipoDeslocacao, DeslocacaoForaConcelho, DistanciaMinima);
+                if (TipoDeslocacao == 2) // //2 = Viatura Própria
+                    CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
 
                 using (var ctx = new SuchDBContext())
                 {
