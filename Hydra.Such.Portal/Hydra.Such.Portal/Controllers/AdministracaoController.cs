@@ -11,6 +11,7 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.Logic.VisitasDB;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
@@ -23,6 +24,7 @@ using Hydra.Such.Data.ViewModel.PBIGestiControl;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.ViewModel.VisitasVM;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -9157,5 +9159,120 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region VisitasEstados
+
+        public IActionResult VisitasEstados(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminVisitas);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult VisitasEstadosGetAll()
+        {
+            List<VisitasEstadosViewModel> result = DBVisitasEstados.ParseListToViewModel(DBVisitasEstados.GetAll());
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult VisitasEstadosUpdate([FromBody] List<VisitasEstadosViewModel> data)
+        {
+            List<VisitasEstados> results = DBVisitasEstados.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.ForEach(x => DBVisitasEstados.Delete(x));
+            data.ForEach(x =>
+            {
+                VisitasEstados OS = new VisitasEstados()
+                {
+                    CodEstado = x.CodEstado,
+                    Estado = x.Estado,
+                };
+                if (x.ID > 0)
+                {
+                    OS.ID = x.ID;
+                    OS.UtilizadorModificacao = User.Identity.Name;
+                    OS.DataHoraModificacao = DateTime.Now;
+                    DBVisitasEstados.Update(OS);
+                }
+                else
+                {
+                    OS.UtilizadorCriacao = User.Identity.Name;
+                    OS.DataHoraCriacao = DateTime.Now;
+                    DBVisitasEstados.Create(OS);
+                }
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region VisitasTarefasTarefas
+
+        public IActionResult VisitasTarefas(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminVisitas);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult VisitasTarefasGetAll()
+        {
+            List<VisitasTarefasTarefasViewModel> result = DBVisitasTarefasTarefas.ParseListToViewModel(DBVisitasTarefasTarefas.GetAll());
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult VisitasTarefasUpdate([FromBody] List<VisitasTarefasTarefasViewModel> data)
+        {
+            List<VisitasTarefasTarefas> results = DBVisitasTarefasTarefas.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.ForEach(x => DBVisitasTarefasTarefas.Delete(x));
+            data.ForEach(x =>
+            {
+                VisitasTarefasTarefas OS = new VisitasTarefasTarefas()
+                {
+                    CodTarefa = x.CodTarefa,
+                    Tarefa = x.Tarefa,
+                };
+                if (x.ID > 0)
+                {
+                    OS.ID = x.ID;
+                    OS.UtilizadorModificacao = User.Identity.Name;
+                    OS.DataHoraModificacao = DateTime.Now;
+                    DBVisitasTarefasTarefas.Update(OS);
+                }
+                else
+                {
+                    OS.UtilizadorCriacao = User.Identity.Name;
+                    OS.DataHoraCriacao = DateTime.Now;
+                    DBVisitasTarefasTarefas.Create(OS);
+                }
+            });
+            return Json(data);
+        }
+
+        #endregion
     }
 }

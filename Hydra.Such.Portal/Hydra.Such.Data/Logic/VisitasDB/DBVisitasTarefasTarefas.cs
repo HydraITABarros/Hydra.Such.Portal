@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic.VisitasDB
 {
     public class DBVisitasTarefasTarefas
     {
-        public static List<VisitasTarefasTarefas> GetAllToList()
+        public static List<VisitasTarefasTarefas> GetAll()
         {
             try
             {
