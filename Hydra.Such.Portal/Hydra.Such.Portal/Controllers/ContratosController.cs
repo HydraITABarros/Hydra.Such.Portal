@@ -1391,7 +1391,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         //Contratos cContract = DBContracts.ParseToDB(data);
                         Contratos ContratoDB = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-                        int ContratoDB_EstadoAlteração = (int)ContratoDB.EstadoAlteração;
+                        int ContratoDB_EstadoAlteração = ContratoDB.EstadoAlteração.HasValue ? (int)ContratoDB.EstadoAlteração : 0;
 
                         if (ContratoDB != null)
                         {
