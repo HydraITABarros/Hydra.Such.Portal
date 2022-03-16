@@ -54,8 +54,8 @@
                     display: block;
                     justify-content: space-around;
                     align-items: center;
-                    box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.14);
-                    font-size: 20px;
+                    box-shadow: 0 10px 50px 0 gba(0, 0, 0, 0.14);
+                    font-size: 20px;                     
                 }
 
                 input[readonly] {
@@ -111,6 +111,7 @@
                 paper-input {
                     max-width: 200px !important;
                 }
+                
             </style>
         </custom-style>
         <iron-ajax url="/Academia/GetCatalogo"
@@ -126,7 +127,6 @@
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
-                    <!--<vaadin-grid-filter path="descricaoTema" />-->
                 </template>
                 <template>
                     {{ item.descricaoTema }}
@@ -139,7 +139,7 @@
                     <iron-image src="/Academia/DownloadImage/TemaFormacao/{{item.idTema}}/{{item.urlImagem}}"
                                 sizing="contain"
                                 id="sizing-contain">
-                    </iron-image>
+                    </iron-image>   
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>

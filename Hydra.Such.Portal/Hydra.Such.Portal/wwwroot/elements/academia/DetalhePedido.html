@@ -1277,14 +1277,18 @@
                     if (this.data != null) {
                         var obj = this.data;
 
-                        this.textValidacao = "Opções Validação";
-
-                        if (obj.estado == 1) {
-                            this.textValidacao = "Opções Chefia";
-                        }
-
-                        if (obj.estado == 2) {
-                            this.textValidacao = "Opções Direcção";
+                        switch (obj.estado) {
+                            case 1: this.textValidacao = "Opções Chefia";
+                                break;
+                            case 2: this.textValidacao = "Opções Coordenação";
+                                break;
+                            case 3:
+                            case 5:
+                                this.textValidacao = "Opções Direcção";
+                                break;
+                            case 6: this.textValidacao = "Opções CA";
+                                break;
+                            default: this.textValidacao = "Opções Validação";
                         }
                     }
 
@@ -1637,7 +1641,9 @@
                             return;
                         }
 
+                        // Aprovar
                         if (_option.value == 1) {
+                            // O pedido está no estado Submetido
                             if (_data.estado == 1) {
                                 var _execute = false;
                                 if (this._url == "") {
@@ -1657,33 +1663,46 @@
                                 this.$.page_update_ajax.body = JSON.stringify(this.data);
                                 this.$.page_update_ajax.generateRequest();
 
+                                var estadoSeguinte = 0;
 
-                                // JPM.TODO 02032022. Inserir o Coordenador neste ciclo de validação
-                                // tendo em atenção que o a Chefia também pode ser Coordenador
-                                if (this._ischief && !this._isdirector) {
-                                    var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Direcção da UP/AAS?";
-                                    this._msg = "Pedido " + _data.idPedido + " submetido à Direcção da UP/AAS com sucesso.";
-
-                                    ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 2, "url": this._url });
-
+                                if (this._isdirector) {
+                                    estadoSeguinte = 4; // Aprovado Direcção
                                     _execute = true;
-                                }
-
-                                if (this._ischief && this._isdirector) {
                                     var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Academia?";
                                     this._msg = "Pedido " + _data.idPedido + " submetido à Academia com sucesso.";
-
-                                    ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 3, "url": this._url });
-
-                                    _execute = true;
+                                } else {
+                                    if (this._iscoordenador) {
+                                        estadoSeguinte = 3; // Aprovado Coordenação
+                                        _execute = true;
+                                        var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Direcção do SP/SAG?";
+                                        this._msg = "Pedido " + _data.idPedido + " submetido à Direcção do SP/SAG com sucesso.";
+                                    } else {
+                                        if (this._ischief) {
+                                            estadoSeguinte = 2; // Aprovado Chefia
+                                            _execute = true;
+                                            var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Coordenação?";
+                                            this._msg = "Pedido " + _data.idPedido + " submetido à Coordenação com sucesso.";
+                                        }
+                                    }
                                 }
 
-                                if (_execute) {
-                                    this._confirmAndExecuteActionToast(str, ajax_request);
+                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": estadoSeguinte, "url": this._url });
+
+                                if (estadoSeguinte >= 2 && estadoSeguinte <= 4) {
+                                    if (_execute) {
+                                        this._confirmAndExecuteActionToast(str, ajax_request);
+                                    }
                                 }
+                               
 
                             } 
-                            if (_data.estado == 4) {
+
+                            //  O Pedido está no estado Devolvido Direcção
+                            if (_data.estado == 5) {
+                                if (!this._isdirector) {
+                                    this._openToastError("Não tem permissões para efectuar esta operação: deverá ter perfil de Direcção");
+                                    return;
+                                }
                                 var ajax_request = this.$.transicao_estado_page_ajax;
                                 this.doNotShowMsg = true;
 
@@ -1693,11 +1712,12 @@
                                 var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Academia?";
                                 this._msg = "Pedido " + _data.idPedido + " submetido à Academia com sucesso.";
 
-                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 3, "url": this._url });
+                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 4, "url": this._url });
                                 this._confirmAndExecuteActionToast(str, ajax_request);
                             }
                         }
 
+                        // Rejeitar
                         if (_option.value == 2) {
                             var ajax_request = this.$.transicao_estado_page_ajax;
                             var str = "Confirma o cancelamento do pedido " + _data.idPedido + "?";
@@ -1924,8 +1944,8 @@
                         var self = this;
 
                         this._openI = true;
-                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2 || data.estado == 4);
-                        this._openIV = this._istrainingmanager && (data.estado == 3 || data.estado == 7);
+                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2 || data.estado == 5);
+                        this._openIV = this._istrainingmanager && (data.estado == 4 || data.estado == 7);
 
                         $(self.$.menuConsAdmin).addClass('hidden');  
 
@@ -1937,7 +1957,7 @@
 
                         $(self.$.idEmpregadoCbox).addClass('hidden');
                         $(self.$.btnSubmitPedido).addClass('disabled');
-
+                        debugger;;
                         if (data.idEmpregado == this._employeeno) {                            
                             $(self.$.menuValidacao).addClass('disabled'); 
                         }
@@ -1965,7 +1985,7 @@
                                 self.$.custoDeslocacoes.disabled = true;
                                 self.$.custoEstadia.disabled = true;
                             } else {
-                                if (data.estado > 3 && data.estado != 7) {
+                                if (data.estado > 4 && data.estado != 7) {
                                     self.$.designacaoAccao.disabled = true;
                                     self.$.horario.disabled = true;
                                     self.$.idEntidadeFormadora.disabled = true;
@@ -1985,7 +2005,9 @@
                             $(self.$.btnSubmitPedido).addClass('disabled');    
                         }
 
-                        if (this.data.estado > 1 && this.data.estado != 4) {
+                        debugger;;
+                        if (this.data.estado == 0 || (this.data.estado > 1 && this.data.estado > 5)) {
+                            debugger;;
                             self.$.fundamentacaoChefia.disabled = true;
                             $(self.$.menuValidacao).addClass('disabled');
                         }
@@ -1994,7 +2016,7 @@
                             $(self.$.btnSubmitPedido).removeClass('disabled');
                         }
 
-                        if (this.data.estado != 3 || !this._istrainingmanager) {
+                        if (this.data.estado != 4 || !this._istrainingmanager) {
                             $(self.$.menuParecerAcademia).addClass('disabled');
                             $(self.$.btnSubmeteCA).addClass('disabled');
                             self.$.temDotacaoOrcamental.disabled = true;

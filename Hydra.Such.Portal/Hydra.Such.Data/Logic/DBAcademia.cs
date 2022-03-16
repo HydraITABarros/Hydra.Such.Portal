@@ -1319,6 +1319,29 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+        public static string GetDesignacaoAccaoFormacao(string accaoId)
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    string designacao =
+                        _ctx.AccaoFormacao
+                        .Where(a => a.IdAccao == accaoId)
+                        .Select(a => a.DesignacaoAccao).FirstOrDefault();
+                    return designacao;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex != null)
+                {
+
+                }
+                return string.Empty;
+            }
+            
+        }
 
         public static List<TemaFormacao> __GetCatalogo(bool onlyActives = false)
         {
@@ -1603,6 +1626,7 @@ namespace Hydra.Such.Data.Logic
         ///     Coordenador, // 15-12-2021
         ///     Director 
         ///     CA
+        /// /!\ NOTA: os pedidos cujo custo de inscrição == 0, passam directamente da Chefia para a Academia
         /// </summary>
         /// <param name="cfgUser">Detalhes da configuração de aprovação do utilizador, relativamente à Formação</param>
         /// <param name="origin">A origem do pedido do utilizador</param>
@@ -1623,68 +1647,68 @@ namespace Hydra.Such.Data.Logic
 
                 using (var _ctx = new SuchDBContext())
                 {
-                    if (cfgUser.IsChief() && cfgUser.IsDirector() && cfgUser.IsCoordenador())
-                    {
-                        if (onlyCompleted)
-                        {
-                            List<PedidoParticipacaoFormacao> pedidosAprovadosDirector =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                areasDireccao.Contains(p.IdAreaFuncional) &&
-                                                                crespsDirige.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                    //if (cfgUser.IsChief() && cfgUser.IsDirector() && cfgUser.IsCoordenador())
+                    //{
+                    //    if (onlyCompleted)
+                    //    {
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovadosDirector =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                    //                                            areasDireccao.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsDirige.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovadosCoordenador =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                areasCoordena.Contains(p.IdAreaFuncional) &&
-                                                                crespsCoordena.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovadosCoordenador =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                    //                                            areasCoordena.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsCoordena.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
                                     
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovadosChefia =                                
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                areasChefia.Contains(p.IdAreaFuncional) &&
-                                                                crespsChefia.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovadosChefia =                                
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                    //                                            areasChefia.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsChefia.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
 
-                            return pedidosAprovadosDirector.Union(pedidosAprovadosCoordenador.Union(pedidosAprovadosChefia)).ToList(); 
-                        }
-                        else
-                        {
-                            List<PedidoParticipacaoFormacao> pedidosAprovarDirector =
-                                _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                areasDireccao.Contains(p.IdAreaFuncional) &&
-                                                                crespsDirige.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                    //        return pedidosAprovadosDirector.Union(pedidosAprovadosCoordenador.Union(pedidosAprovadosChefia)).ToList(); 
+                    //    }
+                    //    else
+                    //    {
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovarDirector =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(
+                    //                                            p => p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao &&
+                    //                                            areasDireccao.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsDirige.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovarCoordenador =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                areasCoordena.Contains(p.IdAreaFuncional) &&
-                                                                crespsCoordena.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovarCoordenador =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                    //                                            areasCoordena.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsCoordena.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovarChefia =
-                                _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                areasChefia.Contains(p.IdAreaFuncional) &&
-                                                                crespsChefia.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovarChefia =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(
+                    //                                            p => p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                    //                                            areasChefia.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsChefia.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
 
-                            return pedidosAprovarDirector.Union(pedidosAprovarCoordenador.Union(pedidosAprovarChefia)).ToList();
-                        }
-                    }
-                    else
-                    {
+                    //        return pedidosAprovarDirector.Union(pedidosAprovarCoordenador.Union(pedidosAprovarChefia)).ToList();
+                    //    }
+                    //}
+                    //else
+                    //{
                         if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia && cfgUser.IsChief())
                         {
                             if (onlyCompleted)
@@ -1728,6 +1752,7 @@ namespace Hydra.Such.Data.Logic
                                 return _ctx.PedidoParticipacaoFormacao.Where(p =>
                                                                     p.IdEmpregado != cfgUser.EmployeeNo &&
                                                                     p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                                                                    p.CustoInscricao.Value > 0 &&   
                                                                     areasCoordena.Contains(p.IdAreaFuncional) &&
                                                                     crespsCoordena.Contains(p.IdCentroResponsabilidade)
                                                                 ).ToList();
@@ -1757,7 +1782,7 @@ namespace Hydra.Such.Data.Logic
                             }
 
                         }
-                    }
+                 //   }
 
                     
 
@@ -1789,329 +1814,242 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        #region Fluxo de aprovação por acção
+        /// /!\ NOTA: os pedidos cujo custo de inscrição == 0, passam directamente da Chefia para a Academia
 
         /// <summary>
-        /// /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\ A UTILIZAR QUANDO O FLUXO DE APROVAÇÃO É POR ACÇÃO /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
-        /// Este método deverá ser utilizado nos Fluxos de Aprovação: 
-        ///     Chefia, 
-        ///     Coordenador, // 15-12-2021
-        ///     Director 
-        ///     CA
+        /// Cria uma lista com as Acções de Formação com pedidos para aprovar pelo utilizador
         /// </summary>
-        /// <param name="idAccao">Todos os pedidos para a acção</param>
-        /// <param name="cfgUser">Detalhes da configuração de aprovação do utilizador, relativamente à Formação</param>
-        /// <param name="origin">A origem do pedido do utilizador</param>
-        /// <param name="onlyCompleted">Pedidos terminados ou em curso</param>
+        /// <param name="cfgUser"></param>
+        /// <param name="origin"></param>
+        /// <param name="onlyCompleted"></param>
         /// <returns></returns>
-        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string idAccao, ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
+        private static List<string> CodigosAccoesComPedidosParaAprovar(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
         {
-            if (string.IsNullOrEmpty(idAccao))
+            if (cfgUser.IsChief() || cfgUser.IsCoordenador() || cfgUser.IsDirector() || cfgUser.IsBoardMember())
             {
-                return null;
-            }
-            string areasDireccao = string.Join(",", cfgUser.AreasDirige);
-            string crespsDirige = string.Join(",", cfgUser.CrespDirige);
+                string areasDireccao = string.Join(",", cfgUser.AreasDirige);
+                string crespsDirige = string.Join(",", cfgUser.CrespDirige);
 
-            string areasChefia = string.Join(",", cfgUser.AreasChefia);
-            string crespsChefia = string.Join(",", cfgUser.CRespChefia);
+                string areasChefia = string.Join(",", cfgUser.AreasChefia);
+                string crespsChefia = string.Join(",", cfgUser.CRespChefia);
 
-            string areasCoordena = string.Join(",", cfgUser.AreasCoordena);
-            string crespsCoordena = string.Join(",", cfgUser.CrespCoordena);
+                string areasCoordena = string.Join(",", cfgUser.AreasCoordena);
+                string crespsCoordena = string.Join(",", cfgUser.CrespCoordena);
 
-            try
-            {
-                using (var _ctx = new SuchDBContext())
+                try
                 {
-                    if (cfgUser.IsChief() && cfgUser.IsDirector() && cfgUser.IsCoordenador())
+                    using (var _ctx = new SuchDBContext())
                     {
-                        if (onlyCompleted)
-                        {
-                            List<PedidoParticipacaoFormacao> pedidosAprovadosDirector =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.IdAccaoFormacao == idAccao &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                areasDireccao.Contains(p.IdAreaFuncional) &&
-                                                                crespsDirige.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                        //if (cfgUser.IsChief() && cfgUser.IsDirector() && cfgUser.IsCoordenador())
+                        //{
+                        //    if (onlyCompleted)
+                        //    {
+                        //        List<string> accoesParaAprovarDirector = _ctx.PedidoParticipacaoFormacao
+                        //            .Where(p =>
+                        //                p.IdEmpregado != cfgUser.EmployeeNo &&
+                        //                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                        //                areasDireccao.Contains(p.IdAreaFuncional) &&
+                        //                crespsDirige.Contains(p.IdCentroResponsabilidade))
+                        //            .Select(p => p.IdAccaoFormacao)
+                        //            .Distinct()
+                        //            .ToList();
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovadosCoordenador =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.IdAccaoFormacao == idAccao &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                areasCoordena.Contains(p.IdAreaFuncional) &&
-                                                                crespsCoordena.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                        //        List<string> accoesParaAprovarCoordenador = _ctx.PedidoParticipacaoFormacao
+                        //            .Where(p =>
+                        //                p.IdEmpregado != cfgUser.EmployeeNo &&
+                        //                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                        //                areasCoordena.Contains(p.IdAreaFuncional) &&
+                        //                crespsCoordena.Contains(p.IdCentroResponsabilidade))
+                        //            .Select(p => p.IdAccaoFormacao)
+                        //            .Distinct()
+                        //            .ToList();
+
+                        //        List<string> accoesParaAprovarChefia =_ctx.PedidoParticipacaoFormacao.Where(p =>
+                        //                    p.IdEmpregado != cfgUser.EmployeeNo &&                                                                
+                        //                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                        //                    areasChefia.Contains(p.IdAreaFuncional) &&
+                        //                    crespsChefia.Contains(p.IdCentroResponsabilidade))
+                        //                .Select(p => p.IdAccaoFormacao)
+                        //                .Distinct()
+                        //                .ToList();
+
+                                
+                        //        return accoesParaAprovarDirector.Union(accoesParaAprovarCoordenador.Union(accoesParaAprovarChefia)).ToList();
+
+                        //    }
+                        //    else
+                        //    {
+                        //        List<string> accoesParaAprovarDirector = _ctx.PedidoParticipacaoFormacao
+                        //            .Where(p =>
+                        //                p.IdEmpregado != cfgUser.EmployeeNo &&
+                        //                (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao ||
+                        //                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia) &&
+                        //                areasDireccao.Contains(p.IdAreaFuncional) &&
+                        //                crespsDirige.Contains(p.IdCentroResponsabilidade))
+                        //            .Select(p => p.IdAccaoFormacao)
+                        //            .Distinct()
+                        //            .ToList();
+
+                        //        List<string> accoesParaAprovarCoordenador = _ctx.PedidoParticipacaoFormacao
+                        //            .Where(p =>
+                        //                p.IdEmpregado != cfgUser.EmployeeNo &&
+                        //                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                        //                areasCoordena.Contains(p.IdAreaFuncional) &&
+                        //                crespsCoordena.Contains(p.IdCentroResponsabilidade))
+                        //            .Select(p => p.IdAccaoFormacao)
+                        //            .Distinct()
+                        //            .ToList();
+
+                        //        List<string> accoesParaAprovarChefia = _ctx.PedidoParticipacaoFormacao.Where(p =>
+                        //                     p.IdEmpregado != cfgUser.EmployeeNo &&
+                        //                     p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                        //                     areasChefia.Contains(p.IdAreaFuncional) &&
+                        //                     crespsChefia.Contains(p.IdCentroResponsabilidade))
+                        //                .Select(p => p.IdAccaoFormacao)
+                        //                .Distinct()
+                        //                .ToList();
 
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovadosChefia =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.IdAccaoFormacao == idAccao &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                areasChefia.Contains(p.IdAreaFuncional) &&
-                                                                crespsChefia.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                        //        return accoesParaAprovarDirector.Union(accoesParaAprovarCoordenador.Union(accoesParaAprovarChefia)).ToList();
+                        //    }
+                        //}
+                        //else
+                        //{
+                            if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia && cfgUser.IsChief())
+                            {
+                                if (onlyCompleted)
+                                {
+                                    List<string> accoesParaAprovarChefia = _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                             p.IdEmpregado != cfgUser.EmployeeNo &&
+                                             p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                             areasChefia.Contains(p.IdAreaFuncional) &&
+                                             crespsChefia.Contains(p.IdCentroResponsabilidade))
+                                        .Select(p => p.IdAccaoFormacao)
+                                        .Distinct()
+                                        .ToList();
 
-                            return pedidosAprovadosDirector.Union(pedidosAprovadosCoordenador.Union(pedidosAprovadosChefia)).ToList();
-                        }
-                        else
-                        {
-                            List<PedidoParticipacaoFormacao> pedidosAprovarDirector =
-                                _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.IdAccaoFormacao == idAccao &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                areasDireccao.Contains(p.IdAreaFuncional) &&
-                                                                crespsDirige.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                                    return accoesParaAprovarChefia;
+                                }
+                                else
+                                {
+                                    List<string> accoesParaAprovarChefia = _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                             p.IdEmpregado != cfgUser.EmployeeNo &&
+                                             p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                                             areasChefia.Contains(p.IdAreaFuncional) &&
+                                             crespsChefia.Contains(p.IdCentroResponsabilidade))
+                                        .Select(p => p.IdAccaoFormacao)
+                                        .Distinct()
+                                        .ToList();
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovarCoordenador =
-                                _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.IdAccaoFormacao == idAccao &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                areasCoordena.Contains(p.IdAreaFuncional) &&
-                                                                crespsCoordena.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                                    return accoesParaAprovarChefia;
+                                }
+                            }
 
-                            List<PedidoParticipacaoFormacao> pedidosAprovarChefia =
-                                _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                p.IdAccaoFormacao == idAccao &&
-                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                areasChefia.Contains(p.IdAreaFuncional) &&
-                                                                crespsChefia.Contains(p.IdCentroResponsabilidade)
-                                                            ).ToList();
+                            if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao && cfgUser.IsCoordenador())
+                            {
+                                if (onlyCompleted)
+                                {
+                                    List<string> accoesParaAprovarCoordenador = _ctx.PedidoParticipacaoFormacao
+                                    .Where(p =>
+                                        p.IdEmpregado != cfgUser.EmployeeNo &&
+                                        p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                        areasCoordena.Contains(p.IdAreaFuncional) &&
+                                        crespsCoordena.Contains(p.IdCentroResponsabilidade))
+                                    .Select(p => p.IdAccaoFormacao)
+                                    .Distinct()
+                                    .ToList();
 
-                            return pedidosAprovarDirector.Union(pedidosAprovarCoordenador.Union(pedidosAprovarChefia)).ToList();
-                        }
-                    }
-                    else
-                    {
-                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia && cfgUser.IsChief())
+                                    return accoesParaAprovarCoordenador;
+                                }
+                                else
+                                {
+                                    List<string> accoesParaAprovarCoordenador = _ctx.PedidoParticipacaoFormacao
+                                    .Where(p =>
+                                        p.IdEmpregado != cfgUser.EmployeeNo &&
+                                        p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                                        p.CustoInscricao.Value > 0 &&
+                                        areasCoordena.Contains(p.IdAreaFuncional) &&
+                                        crespsCoordena.Contains(p.IdCentroResponsabilidade))
+                                    .Select(p => p.IdAccaoFormacao)
+                                    .Distinct()
+                                    .ToList();
+
+                                    return accoesParaAprovarCoordenador;
+                                }
+                            }
+
+                            if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao && cfgUser.IsDirector())
+                            {
+                                if (onlyCompleted)
+                                {
+                                    List<string> accoesParaAprovarDirector = _ctx.PedidoParticipacaoFormacao
+                                    .Where(p =>
+                                        p.IdEmpregado != cfgUser.EmployeeNo &&
+                                        p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                        areasDireccao.Contains(p.IdAreaFuncional) &&
+                                        crespsDirige.Contains(p.IdCentroResponsabilidade))
+                                    .Select(p => p.IdAccaoFormacao)
+                                    .Distinct()
+                                    .ToList();
+                                }
+                                else
+                                {
+                                    List<string> accoesParaAprovarDirector = _ctx.PedidoParticipacaoFormacao
+                                    .Where(p =>
+                                        p.IdEmpregado != cfgUser.EmployeeNo &&
+                                        p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao &&
+                                        areasDireccao.Contains(p.IdAreaFuncional) &&
+                                        crespsDirige.Contains(p.IdCentroResponsabilidade))
+                                    .Select(p => p.IdAccaoFormacao)
+                                    .Distinct()
+                                    .ToList();
+
+                                    return accoesParaAprovarDirector;
+                                }
+                            }
+
+                        //}
+
+                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA && cfgUser.IsBoardMember())
                         {
                             if (onlyCompleted)
                             {
-                                // pedidos Finalizados
-                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                    p.IdAccaoFormacao == idAccao &&
-                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                    areasChefia.Contains(p.IdAreaFuncional) &&
-                                                                    crespsChefia.Contains(p.IdCentroResponsabilidade)
-                                                                ).ToList();
+                                List<string> accoes = _ctx.PedidoParticipacaoFormacao
+                                    .Where(p =>                                        
+                                        p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado)
+                                    .Select(p => p.IdAccaoFormacao)
+                                    .Distinct()
+                                    .ToList();
+
+                                return accoes;
                             }
                             else
                             {
-                                // pedidos submetidos
-                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                    p.IdAccaoFormacao == idAccao &&
-                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
-                                                                    areasChefia.Contains(p.IdAreaFuncional) &&
-                                                                    crespsChefia.Contains(p.IdCentroResponsabilidade)
-                                                                ).ToList();
+                                List<string> accoes = _ctx.PedidoParticipacaoFormacao
+                                    .Where(p =>
+                                        p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAnalisadoAcademia)
+                                    .Select(p => p.IdAccaoFormacao)
+                                    .Distinct()
+                                    .ToList();
+
+                                return accoes;
                             }
-
-                        }
-
-                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao && cfgUser.IsCoordenador())
-                        {
-                            if (onlyCompleted)
-                            {
-                                // pedidos Finalizados
-                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                    p.IdAccaoFormacao == idAccao &&
-                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                    areasCoordena.Contains(p.IdAreaFuncional) &&
-                                                                    crespsCoordena.Contains(p.IdCentroResponsabilidade)
-                                                                ).ToList();
-                            }
-                            else
-                            {
-                                // pedidos submetidos
-                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
-                                                                    p.IdAccaoFormacao == idAccao &&
-                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
-                                                                    areasCoordena.Contains(p.IdAreaFuncional) &&
-                                                                    crespsCoordena.Contains(p.IdCentroResponsabilidade)
-                                                                ).ToList();
-                            }
-                        }
-
-                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao && cfgUser.IsDirector())
-                        {
-                            if (onlyCompleted)
-                            {
-                                // pedidos Finalizados
-                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                    p.IdAccaoFormacao == idAccao &&
-                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
-                                                                    areasDireccao.Contains(p.IdAreaFuncional) &&
-                                                                    crespsDirige.Contains(p.IdCentroResponsabilidade)
-                                                                ).ToList();
-                            }
-                            else
-                            {
-                                // pedidos submetidos ou devolvidos pela Academia para completar
-                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                                    p.IdAccaoFormacao == idAccao &&
-                                                                    (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao ||
-                                                                     p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia) &&
-                                                                    areasDireccao.Contains(p.IdAreaFuncional) &&
-                                                                    crespsDirige.Contains(p.IdCentroResponsabilidade)
-                                                                ).ToList();
-                            }
-
-                        }
-                    }
-
-
-
-                    if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA && cfgUser.TipoUtilizadorGlobal == Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao)
-                    {
-                        if (onlyCompleted)
-                        {
-                            // pedidos Finalizados
-                            return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                                p.IdAccaoFormacao == idAccao &&
-                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
-                        }
-                        else
-                        {
-                            // pedidos Analisados
-                            return _ctx.PedidoParticipacaoFormacao.Where(p =>
-                                            p.IdAccaoFormacao == idAccao &&
-                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAnalisadoAcademia).ToList();
                         }
                     }
                 }
-
-            }
-            catch (Exception ex)
-            {
-                if (ex != null)
+                catch (Exception ex)
                 {
+                    if (ex != null)
+                    {
 
+                    }
+
+                    return null;
                 }
-                return null;
             }
+
             return null;
-        }
-
-
-
-        /// <summary>
-        /// Este método deverá ser utilizado para obter os Pedidos que estão no Fluxo de tratamento pela Academia: 
-        ///     Aprovado Direcção, 
-        ///     Devolvido Direcção, 
-        ///     Analisado,
-        ///     Autorizado,
-        ///     Rejeitado CA
-        /// </summary>
-        /// <param name="origin">A origem do pedido do utilizador</param>
-        /// <param name="state">O estado dos pedidos que se pretendem obter</param>
-        /// <param name="onlyCompleted">Apenas Pedidos terminados</param>
-        /// <returns></returns>
-        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade origin, int state, bool onlyCompleted)
-        {
-            if (origin != Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao)
-                return null;
-
-            try
-            {
-                using(var _ctx = new SuchDBContext())
-                {
-                    if (onlyCompleted)
-                    {
-                        // pedidos Finalizados
-                        return _ctx.PedidoParticipacaoFormacao.Where(p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
-                    }
-                    else
-                    {
-                        // Os pedidos finalizados são tratados no ciclo if acima
-                        if (state < (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && state > (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA)
-                            return null;
-
-                        return _ctx.PedidoParticipacaoFormacao.Where(
-                            p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && 
-                            p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
-
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (ex != null)
-                {
-                    // bypass compiler warning
-                }
-                return null;
-            }
-        }
-
-        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade origin, int state)
-        {
-            if (origin != Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao)
-                return null;
-
-            try
-            {
-                using (var _ctx = new SuchDBContext())
-                {
-                    //if (onlyCompleted)
-                    //{
-                    //    // pedidos Finalizados
-                    //    return _ctx.PedidoParticipacaoFormacao.Where(p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
-                    //}
-                    //else
-                    //{
-                        // Os pedidos finalizados são tratados no ciclo if acima
-                        if (state < (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && state > (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA)
-                            return null;
-
-                        return _ctx.PedidoParticipacaoFormacao.Where(
-                            p => p.Estado.Value == state).ToList();
-
-
-                    //}
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-        }
-
-        public static PedidoParticipacaoFormacao __GetDetailsPedidoFormacao(string pedidoId)
-        {
-            try
-            {
-                using(var _ctx = new SuchDBContext())
-                {
-                    PedidoParticipacaoFormacao pedido = _ctx.PedidoParticipacaoFormacao.LastOrDefault(p => p.IdPedido == pedidoId);
-
-                    pedido.RegistosAlteracoes = _ctx.RegistoAlteracoesPedidoFormacao.Where(r => r.IdPedidoFormacao == pedidoId).ToList();
-
-                    if (!string.IsNullOrEmpty(pedido.IdAccaoFormacao))
-                    {
-                        pedido.Accao = _ctx.AccaoFormacao.FirstOrDefault(a => a.IdAccao == pedido.IdAccaoFormacao);
-                    }
-                    
-                    return pedido;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
         }
 
         /// <summary>
@@ -2132,7 +2070,7 @@ namespace Hydra.Such.Data.Logic
         ///         index 1: Já aprovados pelo tipo de utilizador
         /// </returns>
         public static int[] ContaNoPedidosPorAccao(string idAccao, ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
-        {
+        {            
             int[] NoPedidosArr = new int[2] { 0, 0 };
 
             if (string.IsNullOrEmpty(idAccao))
@@ -2177,6 +2115,7 @@ namespace Hydra.Such.Data.Logic
                                 NoPedidosArr[0] = _ctx.PedidoParticipacaoFormacao.Count(p =>
                                             p.IdEmpregado != cfgUser.EmployeeNo &&
                                             p.IdAccaoFormacao == idAccao &&
+                                            p.CustoInscricao.Value > 0 &&
                                             p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
                                             areasChefia.Contains(p.IdAreaFuncional) &&
                                             crespsChefia.Contains(p.IdCentroResponsabilidade)
@@ -2185,6 +2124,7 @@ namespace Hydra.Such.Data.Logic
                                 NoPedidosArr[1] = _ctx.PedidoParticipacaoFormacao.Count(p =>
                                             p.IdEmpregado != cfgUser.EmployeeNo &&
                                             p.IdAccaoFormacao == idAccao &&
+                                            p.CustoInscricao.Value > 0 &&
                                             p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao &&
                                             areasChefia.Contains(p.IdAreaFuncional) &&
                                             crespsChefia.Contains(p.IdCentroResponsabilidade)
@@ -2238,6 +2178,400 @@ namespace Hydra.Such.Data.Logic
                 return NoPedidosArr;
             }
             return NoPedidosArr;
+        }
+
+        public static List<AccaoFormacao> __GetAccoesParaAprovacao(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
+        {
+            try
+            {
+                if (cfgUser.IsChief() || cfgUser.IsCoordenador() || cfgUser.IsDirector() || cfgUser.IsBoardMember())
+                {
+                    string accoesParaAprovar = string.Join(";", CodigosAccoesComPedidosParaAprovar(cfgUser, origin, onlyCompleted));
+
+                    if (string.IsNullOrEmpty(accoesParaAprovar))
+                    {
+                        return null;
+                    }
+
+                    using (var _ctx = new SuchDBContext())
+                    {
+                        return _ctx.AccaoFormacao.Where(a => accoesParaAprovar.Contains(a.IdAccao)).ToList();
+                    }
+                }
+
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                if (ex != null)
+                {
+
+                }
+                return null;
+            }
+           
+        }
+        /// <summary>
+        /// /// /!\ NOTA: os pedidos cujo custo de inscrição == 0, passam directamente da Chefia para a Academia
+        /// 
+        /// /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\ A UTILIZAR QUANDO O FLUXO DE APROVAÇÃO É POR ACÇÃO /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+        /// Este método deverá ser utilizado nos Fluxos de Aprovação: 
+        ///     Chefia, 
+        ///     Coordenador, // 15-12-2021
+        ///     Director 
+        ///     CA
+        /// </summary>
+        /// <param name="idAccao">Todos os pedidos para a acção</param>
+        /// <param name="cfgUser">Detalhes da configuração de aprovação do utilizador, relativamente à Formação</param>
+        /// <param name="origin">A origem do pedido do utilizador</param>
+        /// <param name="onlyCompleted">Pedidos terminados ou em curso</param>
+        /// <returns></returns>
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string idAccao, ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
+        {
+            if (string.IsNullOrEmpty(idAccao))
+            {
+                return null;
+            }
+            string areasDireccao = string.Join(",", cfgUser.AreasDirige);
+            string crespsDirige = string.Join(",", cfgUser.CrespDirige);
+
+            string areasChefia = string.Join(",", cfgUser.AreasChefia);
+            string crespsChefia = string.Join(",", cfgUser.CRespChefia);
+
+            string areasCoordena = string.Join(",", cfgUser.AreasCoordena);
+            string crespsCoordena = string.Join(",", cfgUser.CrespCoordena);
+
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    //if (cfgUser.IsChief() && cfgUser.IsDirector() && cfgUser.IsCoordenador())
+                    //{
+                    //    if (onlyCompleted)
+                    //    {
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovadosDirector =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.IdAccaoFormacao == idAccao &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                    //                                            areasDireccao.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsDirige.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
+
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovadosCoordenador =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.IdAccaoFormacao == idAccao &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                    //                                            areasCoordena.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsCoordena.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
+
+
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovadosChefia =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.IdAccaoFormacao == idAccao &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                    //                                            areasChefia.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsChefia.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
+
+                    //        return pedidosAprovadosDirector.Union(pedidosAprovadosCoordenador.Union(pedidosAprovadosChefia)).ToList();
+                    //    }
+                    //    else
+                    //    {
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovarDirector =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(
+                    //                                            p => p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.IdAccaoFormacao == idAccao &&
+                    //                                            (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao || 
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia) &&
+                    //                                            areasDireccao.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsDirige.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
+
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovarCoordenador =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(p =>
+                    //                                            p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.IdAccaoFormacao == idAccao &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                    //                                            areasCoordena.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsCoordena.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
+
+                    //        List<PedidoParticipacaoFormacao> pedidosAprovarChefia =
+                    //            _ctx.PedidoParticipacaoFormacao.Where(
+                    //                                            p => p.IdEmpregado != cfgUser.EmployeeNo &&
+                    //                                            p.IdAccaoFormacao == idAccao &&
+                    //                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                    //                                            areasChefia.Contains(p.IdAreaFuncional) &&
+                    //                                            crespsChefia.Contains(p.IdCentroResponsabilidade)
+                    //                                        ).ToList();
+
+                    //        return pedidosAprovarDirector.Union(pedidosAprovarCoordenador.Union(pedidosAprovarChefia)).ToList();
+                    //    }
+                    //}
+                    //else
+                    //{
+                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia && cfgUser.IsChief())
+                        {
+                            if (onlyCompleted)
+                            {
+                                // pedidos Finalizados
+                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
+                                                                    p.IdAccaoFormacao == idAccao &&
+                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                                                    areasChefia.Contains(p.IdAreaFuncional) &&
+                                                                    crespsChefia.Contains(p.IdCentroResponsabilidade)
+                                                                ).ToList();
+                            }
+                            else
+                            {
+                                // pedidos submetidos
+                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
+                                                                    p.IdAccaoFormacao == idAccao &&
+                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                                                                    areasChefia.Contains(p.IdAreaFuncional) &&
+                                                                    crespsChefia.Contains(p.IdCentroResponsabilidade)
+                                                                ).ToList();
+                            }
+
+                        }
+
+                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCoodenacao && cfgUser.IsCoordenador())
+                        {
+                            if (onlyCompleted)
+                            {
+                                // pedidos Finalizados
+                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
+                                                                    p.IdAccaoFormacao == idAccao &&
+                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                                                    areasCoordena.Contains(p.IdAreaFuncional) &&
+                                                                    crespsCoordena.Contains(p.IdCentroResponsabilidade)
+                                                                ).ToList();
+                            }
+                            else
+                            {
+                                // pedidos submetidos
+                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                                    p.IdEmpregado != cfgUser.EmployeeNo &&
+                                                                    p.IdAccaoFormacao == idAccao &&
+                                                                    p.CustoInscricao.Value > 0 &&
+                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                                                                    areasCoordena.Contains(p.IdAreaFuncional) &&
+                                                                    crespsCoordena.Contains(p.IdCentroResponsabilidade)
+                                                                ).ToList();
+                            }
+                        }
+
+                        if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDireccao && cfgUser.IsDirector())
+                        {
+                            if (onlyCompleted)
+                            {
+                                // pedidos Finalizados
+                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                                    p.IdAccaoFormacao == idAccao &&
+                                                                    p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                                                    areasDireccao.Contains(p.IdAreaFuncional) &&
+                                                                    crespsDirige.Contains(p.IdCentroResponsabilidade)
+                                                                ).ToList();
+                            }
+                            else
+                            {
+                                // pedidos submetidos ou devolvidos pela Academia para completar
+                                return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                                    p.IdAccaoFormacao == idAccao &&
+                                                                    (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao ||
+                                                                     p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia) &&
+                                                                    areasDireccao.Contains(p.IdAreaFuncional) &&
+                                                                    crespsDirige.Contains(p.IdCentroResponsabilidade)
+                                                                ).ToList();
+                            }
+
+                        }
+                    //}
+
+
+
+                    if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA && cfgUser.IsBoardMember())
+                    {
+                        if (onlyCompleted)
+                        {
+                            // pedidos Finalizados
+                            return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                                p.IdAccaoFormacao == idAccao &&
+                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                        }
+                        else
+                        {
+                            // pedidos Analisados
+                            return _ctx.PedidoParticipacaoFormacao.Where(p =>
+                                            p.IdAccaoFormacao == idAccao &&
+                                            p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAnalisadoAcademia).ToList();
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (ex != null)
+                {
+
+                }
+                return null;
+            }
+            return null;
+        }
+
+        public static int _ContaNoSessoesAccao(string idAccao)
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    return _ctx.SessaoAccaoFormacao                        
+                        .Where(s => s.IdAccao == idAccao)
+                        .GroupBy(s => s.IdAccao)
+                        .Count();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex != null)
+                {
+
+                }
+                return 0;
+            }
+            return 0;
+        }
+        #endregion
+        /// <summary>
+        /// Este método deverá ser utilizado para obter os Pedidos que estão no Fluxo de tratamento pela Academia: 
+        ///     Aprovado Direcção, 
+        ///     Devolvido Direcção, 
+        ///     Analisado,
+        ///     Autorizado,
+        ///     Rejeitado CA
+        /// </summary>
+        /// <param name="origin">A origem do pedido do utilizador</param>
+        /// <param name="state">O estado dos pedidos que se pretendem obter</param>
+        /// <param name="onlyCompleted">Apenas Pedidos terminados</param>
+        /// <returns></returns>
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade origin, int state, bool onlyCompleted)
+        {
+            if (origin != Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao)
+                return null;
+
+            try
+            {
+                using(var _ctx = new SuchDBContext())
+                {
+                    if (onlyCompleted)
+                    {
+                        // pedidos Finalizados
+                        return _ctx.PedidoParticipacaoFormacao.Where(p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                    }
+                    else
+                    {
+                        // Os pedidos finalizados são tratados no ciclo if acima
+                        if (state < (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && state > (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA)
+                            return null;
+
+                        return _ctx.PedidoParticipacaoFormacao.Where(p => 
+                                (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && 
+                                 p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado) ||
+                                 (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia && (p.CustoInscricao.Value == 0 || !p.CustoInscricao.HasValue))
+                            ).ToList();
+
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex != null)
+                {
+                    // bypass compiler warning
+                }
+                return null;
+            }
+        }
+
+
+        /// /!\ NOTA: os pedidos cujo custo de inscrição == 0, passam directamente da Chefia para a Academia
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade origin, int state)
+        {
+            if (origin != Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao)
+                return null;
+
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    //if (onlyCompleted)
+                    //{
+                    //    // pedidos Finalizados
+                    //    return _ctx.PedidoParticipacaoFormacao.Where(p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                    //}
+                    //else
+                    //{
+                    // Os pedidos finalizados são tratados no ciclo if acima
+
+                    /// /!\ NOTA: os pedidos cujo custo de inscrição == 0, passam directamente da Chefia para a Academia
+                    if (state == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia)
+                    {
+
+                    }
+
+                    if (state < (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao && state > (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA)
+                    {
+                        return null;
+                    }
+
+                        return _ctx.PedidoParticipacaoFormacao.Where(
+                            p => p.Estado.Value == state).ToList();
+
+
+                    //}
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static PedidoParticipacaoFormacao __GetDetailsPedidoFormacao(string pedidoId)
+        {
+            try
+            {
+                using(var _ctx = new SuchDBContext())
+                {
+                    PedidoParticipacaoFormacao pedido = _ctx.PedidoParticipacaoFormacao.LastOrDefault(p => p.IdPedido == pedidoId);
+
+                    pedido.RegistosAlteracoes = _ctx.RegistoAlteracoesPedidoFormacao.Where(r => r.IdPedidoFormacao == pedidoId).ToList();
+
+                    if (!string.IsNullOrEmpty(pedido.IdAccaoFormacao))
+                    {
+                        pedido.Accao = _ctx.AccaoFormacao.FirstOrDefault(a => a.IdAccao == pedido.IdAccaoFormacao);
+                    }
+                    
+                    return pedido;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
         }
 
         public static List<RegistoAlteracoesPedidoFormacao> __GetRegistosAlteracaoPedido(string pedidoId)

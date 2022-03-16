@@ -1,0 +1,760 @@
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="../../lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<dom-module id="x-detalheaccaoautorizar">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            paper-button {
+                margin-top: 10px;
+            }
+
+                paper-button.disabled {
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                    font-weight: bold;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
+
+            .suchdropdown {
+                box-shadow: inset 0px -3px 7px 0px #AD4526;
+                background-color: #FF8E2B !important;
+                padding: 0px !important;
+                min-width: 100px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+                text-decoration: none;
+                text-shadow: 0px 1px 0px #611827;
+            }
+
+                .suchdropdown.disabled {
+                    cursor: not-allowed;
+                    pointer-events: none;
+                }
+
+            .suchdropdown-menu {
+                background-color: #BAC2EC !important;
+                padding: 0px !important;
+                min-width: 100px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+                font-weight: bold;
+                text-decoration: none;
+            }
+
+
+            paper-tooltip {
+                padding: 11px;
+                right: 5px;
+                opacity: 1;
+                box-sizing: border-box;
+                pointer-events: none;
+                max-width: 500px;
+                left: 2px !important;
+                right: none;
+                white-space: initial;
+                --paper-tooltip: {
+                                  font-size: 13px;
+                                  background: #f5f5f5;
+                                  background: white;
+                                  color: #2A2A2A;
+                                  padding: 10px;
+                                  line-height: 1.3em;
+                                  -webkit-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  -moz-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                             }
+            }
+
+            #menutooltip {
+                font-weight: bold;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            .grid {
+                font-size: 13px;
+                --vaadin-grid-header-cell: {
+                       /* background: rgba(235, 238, 246, 0.9); */
+                        background-color: rgba(235,238,246,0.9);
+                        border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+                        border-top: 1px solid rgba(248, 250, 252, 0.9);
+                        min-height: 35px;
+
+                        background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+                        background-size: 1px 100%;
+                        background-position: 100% 0%;
+                        background-repeat: no-repeat;
+                    };
+                --vaadin-grid-body-row-selected-cell: {
+                        background-color: rgb(131, 183, 236);
+                        color: #fff;
+                        border-bottom-color: rgb(108, 160, 218);
+                    };
+                --vaadin-grid-body-row-odd-cell: {
+                        background-color: rgb(251, 252, 254);
+                    };
+                --vaadin-grid-body-row-hover-cell: {
+                        background-color: rgb(235, 238, 246);
+                    };
+                --vaadin-grid-body-row-details-cell: {
+                        text-align: center;
+                    };
+                --vaadin-grid-column-resize-handle: {
+                        opacity: 0;
+                    };
+            }
+
+                .grid input {
+                    border: none;
+                    padding-left: 5px;
+                }
+
+            }
+            /*vaadin-checkbox {
+                text-align: center;
+                display: flex;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+            }
+            */
+        </style>
+        <iron-ajax url="/Academia/GetDetalhesAccaoParaAprovar"
+                   last-response="{{ data }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/TransitarPedidoDeEstado"
+                   last-response="{{ transitou }}"
+                   method="post"
+                   handle-as="json"
+                   id="transicao_estado_page_ajax"
+                   on-response="_transicaoEstadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/UpdatePedido"
+                   last-response="{{ pedidoUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   on-response="_updatePedidoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <!--
+        <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Guardar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            -->
+        </div>
+
+        <div class="row break_frm">
+            <div class="row break_clear">
+                <div class="col-md-1">
+                    <vaadin-text-field id="codigoInterno" name="codigoInterno" label="Código" value="{{ data.codigoInterno }}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-md-8">
+                    <!--<vaadin-text-field id="designacaoAccao" name="designacaoAccao" label="Designação Acção" value="{{data.designacaoAccao}}" disabled="true"></vaadin-text-field>-->
+                    <such-textarea id="designacaoAccao" name="designacaoAccao" label="Designação Acção" rows="3" value="{{ data.designacaoAccao}}" disabled></such-textarea>
+                </div>
+                <div class="col-md-1">
+                    <vaadin-text-field id="dataInicio" name="dataInicio" label="Data Inicio" value="{{data.dataInicio}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-md-1">
+                    <vaadin-text-field id="dataFim" name="dataFim" label="Data Fim" value="{{data.dataFim}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-md-1">
+                    <vaadin-text-field id="numeroTotalHoras" name="numeroTotalHoras" label="Nº Horas" value="{{data.numeroTotalHoras}}" disabled="true"></vaadin-text-field>
+                </div>
+            </div>
+
+            <div class="row break_clear">
+                <div class="col-md-3">
+                    <vaadin-text-field id="descricaoEntidade" name="descricaoEntidade" label="Entidade" value="{{ data.entidade.descricaoEntidade}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-md-1">
+                    <vaadin-text-field id="noSessoes" name="noSessoes" label="Nº Sessoes" value="{{ data.noSessoes }}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-md-4">
+                    <vaadin-text-field id="localRealizacao" name="localRealizacao" label="Local Realização" value="{{ data.localRealizacao }}" disabled="true"></vaadin-text-field>
+                </div>
+            </div>
+            <div id="seccaoFundamentacao" class="row break_clear">
+                <div class="col-md-8">
+                    <paper-tooltip for="fundamentacao" position="top" offset="-1" animation-delay="1">
+                        A Chefia deverá fundamentar a pertinência da acção para o desempenho do trabalhador
+                    </paper-tooltip>
+                    <such-textarea id="fundamentacao" name="fundamentacao" label="Fundamentação Chefia" rows="3" value="{{ fundamentacaoChefia }}" error-message="Obrigatório preencher a Fundamentação da pertinência da acção" required> </such-textarea>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <div class="col-md-3">
+                    <paper-tooltip id="menutooltip" for="menuValidacao" position="top" offset="-1" animation-delay="1">
+                        A opção escolhida será aplicada a todos os pedidos seleccionados
+                    </paper-tooltip>
+                    <such-dropdown-menu id="menuValidacao" class="suchdropdown" on-value-changed="_getOpcaoValidacao" title="{{textValidacao}}" items="[[itemsValidacao]]"></such-dropdown-menu>
+                </div>
+            </div>
+        </div>
+        <div class="row break_clear">
+            <paper-collapse-item header="Pedidos para autorizar:" opened="true">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <vaadin-grid aria-label="pedidosGrid" id="grid" items="[[data.pedidosParticipacao]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                            <vaadin-grid-selection-column auto-select>
+                            </vaadin-grid-selection-column>
+                            <vaadin-grid-column width="7.5%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="idPedido" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="7.5%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="idEmpregado">Nº Mecanográfico</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="idEmpregado" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="15%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="nomeEmpregado">Nome</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="nomeEmpregado" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="15%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="crespEmpregado">CResp</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="crespEmpregado" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.centroResponsabilidadeEmpregado}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="15%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="projectoEmpregado">Projecto</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="projectoEmpregado" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.projectoEmpregado}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="15%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="funcaoEmpregado">Função</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="funcaoEmpregado" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.funcaoEmpregado}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="15%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="estabelecimento">Estabelecimento</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="estabelecimento" />
+                                </template>
+                                <template>
+                                    <vaadin-text-field value="{{item.descricaoEstabelecimento}}" disabled></vaadin-text-field>
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-detalheaccaoautorizar',
+                properties: {
+                    _idaccao: {
+                        type: String
+
+                    },
+                    _ischief: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _iscoordenador: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _isdirector: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _istrainingmanager: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _isboardmember: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _escondefundamentacao: {
+                        type: Boolean,
+                        value: false
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isPageLoad: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _onlycompleted: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _requestorigin: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    fundamentacaoChefia:{
+                        type: String,
+                        notify: true,
+                        value: ""                        
+                    },
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    textValidacao: {
+                        type: String,
+                        value: ""
+                    },
+                    itemsValidacao: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Aprovar" },
+                            { value: 2, description: "Rejeitar" }
+                        ]
+                    },
+                    doNotShowMsg: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _msg: {
+                        type: String,
+                        value: ""
+                    },
+                    _url: {
+                        type: String,
+                        value: ""
+                    },
+                },  
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                ready: function () {
+                    debugger;;
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idAccao": this._idaccao, "requestOrigin": this._requestorigin });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    //if (this.$.uploadImages != null) {
+                    //    debugger;;
+
+                    //    this.$.uploadImages.addEventListener('upload-response', function (e) {
+                    //        debugger;
+                    //        var results = JSON.parse(e.detail.xhr.response);
+                    //        if (e.detail.xhr.status == 200) {
+                    //            debugger;;
+
+                    //            e.detail.xhr.requestURL;
+
+                    //            var dd = document.querySelector("x-detalheaccao");
+                    //            dd.$.page_loadattchments_ajax.body = JSON.stringify({ "id": dd.__data._idaccao, "origem": "accao" })
+                    //            dd.$.page_loadattchments_ajax.generateRequest();
+
+                    //        }
+                    //    });
+                    //}
+                },
+
+                _responseProcessor: function (data) {
+                    debugger;;
+                    var self = this;
+                    if (this.data != null) {
+                        this._setValidacaoMenuText();
+                        if (this._escondefundamentacao) {
+                            var self = this;
+                            $(self.$.seccaoFundamentacao).addClass('hidden');
+                        } else {
+                            $(self.$.seccaoFundamentacao).removeClass('hidden');
+                        }
+                    }
+                },
+                _rowSelected: function (item) {
+                    debugger;;
+                    if (item != null) {
+                        //    /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('pedido-pedidoformacao', filters || {});
+
+                        window.location.href = "/Academia/DetalhePedido/" + item.idPedido;
+                    }
+                },
+
+                _identificarSeleccionados: function (e) {
+                    debugger;;
+                    var itemsArr = this.$.grid.selectedItems;
+                    console.log(itemsArr.length);
+                    for (var i = 0; i < itemsArr.length; i++) {
+                        console.log(itemsArr[i].idPedido);
+                    }
+                },               
+
+                _getOpcaoValidacao: function (e) {
+                    if (this.data != null) {
+                        var _option = e.detail.value;
+                        var _data = this.data;
+
+                        var objTransicaoEstado = {
+                            idP:"",
+                            eCorrente:0,
+                            eSeguinte: -1,
+                            txt:"",
+                            msg:""
+                        };
+
+                        var _execute = false;
+                        this.doNotShowMsg = true;
+                        var ajax_request = this.$.transicao_estado_page_ajax;
+                        var estadoSeguinte = 0;
+                        var str = "";
+
+                        if (this._url == "") {
+                            this._url = window.location.href;
+                        }
+
+                        var pedidosParaAprovar = this.$.grid.selectedItems;
+
+                        if (pedidosParaAprovar.length == 0) {
+                            this._openToastError("Deve seleccionar pelo menos um pedido para aprovar!");
+                            return;
+                        }
+
+                        if (_option == null) {
+                            return;
+                        }
+
+                        // Aprovar
+                        if (_option.value == 1) {  
+                            if (this._ischief && this._requestorigin == 2 && (this.__isNullOrEmptyString(this.fundamentacaoChefia) || this.fundamentacaoChefia.length < 5)) {
+                                this._openToastError("Deverá justificar a pertinência da Acção para o desempenho do trabalhador!");
+                                return;
+                            }
+                            
+                            for (var i = 0; i < pedidosParaAprovar.length; i++) {
+                                debugger;;
+                                var pedido = pedidosParaAprovar[i];
+                                pedido.fundamentacaoChefia = this.fundamentacaoChefia;
+
+                                objTransicaoEstado.idP = pedido.idPedido;
+                                objTransicaoEstado.eCorrente = pedido.estado;
+
+                                this.$.page_update_ajax.body = JSON.stringify(pedido);
+                                this.$.page_update_ajax.generateRequest();
+
+                                this._identificaEstadoSeguinte(objTransicaoEstado);
+                                debugger;;
+
+                                if (objTransicaoEstado.eSeguinte > 0) {
+                                    debugger;;
+
+                                    var ix = this.data.pedidosParticipacao.indexOf(pedido);
+
+                                    this.data.pedidosParticipacao.splice(ix, 1);
+                                    //pedidosParaAprovar.splice(i, 1);
+                                    this.$.grid.clearCache();
+
+                                    ajax_request.body = JSON.stringify({ "idPedido": pedido.idPedido, "estado": objTransicaoEstado.eSeguinte, "url": null });
+                                    ajax_request.generateRequest();
+                                }
+
+                            }
+                        }
+
+                        // Rejeitar
+                        if (_option.value == 2) {
+
+                        }
+                    }
+                },
+
+                _identificaEstadoSeguinte: function (o) {
+                    debugger;;
+
+                    o.eSeguinte = 0;
+                    o.txt = "";
+                    o.msg = "";
+
+                    switch (o.eCorrente) {
+                        case 1: {   // Submetido
+                            if (this._isdirector) {
+                                o.eSeguinte = 4;    // Aprovado Direcção
+                                o.str = "Confirma a submissão do pedido " + o.idP + " para a Academia?";
+                                o.msg = "Pedido " + o.idP + " submetido à Academia com sucesso.";
+                            } else {
+                                if (this._iscoordenador) {
+                                    o.eSeguinte = 3;    // Aprovado Coordenação
+                                    o.str = "Confirma a submissão do pedido " + o.idP + " para a Direcção do SP/SAG?";
+                                    o.msg = "Pedido " + o.idP + " submetido à Direcção do SP/SAG com sucesso.";
+                                } else {
+                                    if (this._ischief) {
+                                        o.eSeguinte = 2;    // Aprovado Chefia
+                                        o.str = "Confirma a submissão do pedido " + o.idP + " para a Coordenação?";
+                                        o.msg = "Pedido " + o.idP + " submetido à Coordenação com sucesso.";
+                                    }
+                                }
+                            }
+                        }
+                            break;
+                        case 2: {
+                            if (this._isdirector) {
+                                o.eSeguinte = 4;    // Aprovado Direcção
+                                o.str = "Confirma a submissão do pedido " + o.idP + " para a Academia?";
+                                o.msg = "Pedido " + o.idP + " submetido à Academia com sucesso.";
+                            } else {
+                                if (this._iscoordenador) {
+                                    o.eSeguinte = 3;    // Aprovado Coordenação
+                                    o.str = "Confirma a submissão do pedido " + o.idP + " para a Direcção do SP/SAG?";
+                                    o.msg = "Pedido " + o.idP + " submetido à Direcção do SP/SAG com sucesso.";
+                                }
+                            }
+                        }
+                            break;
+                        case 3:
+                        case 5: {
+                            if (this._isdirector) {
+                                o.eSeguinte = 4;    // Aprovado Direcção
+                                o.str = "Confirma a submissão do pedido " + o.idP + " para a Academia?";
+                                o.msg = "Pedido " + o.idP + " submetido à Academia com sucesso.";
+                            }
+                        }
+                        case 6: {
+                            if (this._isboardmember) {
+                                o.eSeguinte = 8;    // Autorizado CA
+                                o.str = "Confirma a submissão do pedido " + o.idP + " para a Academia?";
+                                o.msg = "Pedido " + o.idP + " submetido à Academia com sucesso.";
+                            }
+                        }
+                            break;
+                        //default:
+                    }
+
+                },
+
+                _transicaoEstadoResponse: function () {
+                    debugger;;
+
+                    var pedidosParaAprovar = this.data.pedidosParticipacao;
+                    var link = "";
+                    if (pedidosParaAprovar.length == 0) {
+                        switch (this._requestorigin) {
+                            case 2: link = "/Academia/AprovacaoChefia";
+                                break;
+                            case 3: link = "/Academia/AprovacaoCoordenacao";
+                                break;
+                            case 4: link = "/Academia/AprovacaoDireccao";
+                                break;
+                            case 5: link = "/Academia/AutorizacaoCA";
+                                break;
+                            default:  link = "/";
+                        }
+                        window.location.href = link;
+                            //"/Academia/DetalhePedido/" + item.idPedido;
+                    }
+                },
+
+                _updatePedidoResponse: function (e) {
+                },
+
+                _setValidacaoMenuText: function () {
+                    if (this.data != null) {
+                        var obj = this.data;                  
+
+                        switch (obj.estado) {
+                            case 1: this.textValidacao = "Opções Chefia";
+                                break;
+                            case 2: this.textValidacao = "Opções Coordenação";
+                                break;
+                            case 3:
+                            case 5:
+                                this.textValidacao = "Opções Direcção";
+                                break;
+                            case 6: this.textValidacao = "Opções CA";
+                                break;
+                            default: this.textValidacao = "Opções Validação";
+                        }
+                    }
+                },
+
+
+                //_update: function () {
+                //    debugger;;
+
+                //    this.data.accaoActiva = this.$.activaCheckBox.ariaChecked;
+
+                //    this.$.page_update_ajax.body = JSON.stringify(this.data);
+                //    this.$.page_update_ajax.generateRequest();
+                //},               
+              
+                __isNullOrEmptyString: function (value) {
+                    return (!value);
+                },
+
+                _dummyFunction: function (e) {
+                    debugger;
+                    this._isPageLoad = false;
+                    console.log("on-indetermined-changed event of vaadin-checkbox");
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                }
+            });
+        });
+    </script>
+</dom-module>
