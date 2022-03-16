@@ -37,6 +37,7 @@ using System.Data.SqlClient;
 using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.OrcamentoL;
+using Hydra.Such.Data.Logic.VisitasDB;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1796,6 +1797,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+
+        [HttpPost]
+        public JsonResult GetAllFornecedores()
+        {
+            List<DDMessageString> result = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetAllClients()
@@ -3672,6 +3684,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult Get_DEV_Estados()
         {
             List<EnumData> result = EnumerablesFixed.DEV_Estados;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetVisitasEstados()
+        {
+            List<DDMessage> result = DBVisitasEstados.GetAll().Select(x => new DDMessage()
+            {
+                id = x.CodEstado,
+                value = x.Estado
+            }).ToList();
             return Json(result);
         }
     }

@@ -24,13 +24,13 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static VisitasTarefas GetByVisita(string Visita)
+        public static List<VisitasTarefas> GetByVisita(string Visita)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.VisitasTarefas.FirstOrDefault(p => p.CodVisita == Visita);
+                    return ctx.VisitasTarefas.Where(p => p.CodVisita == Visita).ToList();
                 }
             }
             catch (Exception e)
@@ -145,6 +145,8 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 DataHoraModificacao = x.DataHoraModificacao,
             };
 
+            if (x.DataDuracao != null) visita.DataTexto = x.DataDuracao.Value.ToString("yyyy-MM-dd");
+            if (x.DataDuracao != null) visita.DuracaoTexto = x.DataDuracao.Value.ToString("HH:mm");
             if (x.DataHoraCriacao != null) visita.DataHoraCriacaoTexto = x.DataHoraCriacao.Value.ToString("yyyy-MM-dd");
             if (x.DataHoraModificacao != null) visita.DataHoraModificacaoTexto = x.DataHoraModificacao.Value.ToString("yyyy-MM-dd");
 

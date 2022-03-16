@@ -149,6 +149,30 @@
             }
         </style>
 
+        <iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{ListaClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllFornecedores" last-response="{{ListaFornecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ListaCresps}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetVisitasEstados" last-response="{{ListaEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{ListaEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Visitas/GetVisitaDetails"
+                   last-response="{{visita}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/GetVisitaTarefas"
+                   last-response="{{tarefas}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tarefas_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -199,20 +223,20 @@
                                 <div class="row break_clear">
                                     <div class="col-md-3">
                                         <such-selectbox id="geral_codCliente" name="geral_codCliente" value="{{visita.codCliente}}" label="Contratos eSUCH (Clientes)"
-                                                        items="[[ListaCodCliente]]"
+                                                        items="[[ListaClients]]"
                                                         text-path="value"
                                                         value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cliente"}]'
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
                                     <div class="col-md-3">
                                         <such-selectbox id="geral_codFornecedor" name="geral_codFornecedor" value="{{visita.codFornecedor}}" label="Outros Contratos eSUCH (Fornecedores)"
-                                                        items="[[ListaCodFornecedor]]"
+                                                        items="[[ListaFornecedores]]"
                                                         text-path="value"
                                                         value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Fornecedor"}]'
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
@@ -222,34 +246,42 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <such-selectbox id="geral_codRegiao" name="geral_codRegiao" value="{{visita.codRegiao}}" label="Região"
-                                                        items="[[ListaCodRegiao]]"
-                                                        text-path="value"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
-                                                        disabled="{{ _lockFields }}">
-                                        </such-selectbox>
+                                        <!--<such-selectbox id="geral_codRegiao" name="geral_codRegiao" value="{{visita.codRegiao}}" label="Região"
+                                                    items="[[ListaRegioes]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
+                                                    disabled="{{ _lockFields }}">
+                                    </such-selectbox>-->
+                                        <vaadin-combo-box id="geral_codRegiao" name="geral_codRegiao" items="[[ListaRegioes]]" item-value-path="id" item-label-path="value" value="{{visita.codRegiao}}" label="Região" disabled="{{ _lockFields }}">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="15%">[[item.id]]</td>
+                                                        <td width="5%"> - </td>
+                                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
 
                                     <div class="col-md-2">
                                         <such-selectbox id="geral_codArea" name="geral_codArea" value="{{visita.codArea}}" label="Área Funcional"
-                                                        items="[[ListaCodArea]]"
+                                                        items="[[ListaAreas]]"
                                                         text-path="value"
                                                         value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'
-                                                        on-value-changed="_GetListaCentros"
-                                                        required error-message="O campo Área Funcional é de preenchimento obrigatório"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área"}]'
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
                                     <div class="col-md-2">
                                         <such-selectbox id="geral_codCresp" name="geral_codCresp" value="{{visita.codCresp}}" label="Centro de Responsabilidade"
-                                                        items="[[ListaCodCresp]]"
+                                                        items="[[ListaCresps]]"
                                                         text-path="value"
                                                         value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
-                                                        required error-message="O campo Centro de Responsabilidade é de preenchimento obrigatório"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
@@ -258,23 +290,32 @@
 
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="geral_inicioData" name="geral_inicioData" value="{{data.inicioData}}" label="Data/Hora - Início" disabled="{{ _lockFieldse }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        <vaadin-date-picker id="geral_inicioData" name="geral_inicioData" value="{{visita.inicioDataTexto}}" label="Data/Hora - Início" disabled="{{ _lockFieldse }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2" style="padding-top: 20px;">
-                                        <vaadin-time-picker id="geral_inicioHora" name="geral_inicioHora" value="{{data.inicioHora}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
+                                        <vaadin-time-picker id="geral_inicioHora" name="geral_inicioHora" value="{{visita.inicioHoraTexto}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="geral_fimData" name="geral_fimData" value="{{data.fimData}}" label="Data/Hora - Fim" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        <vaadin-date-picker id="geral_fimData" name="geral_fimData" value="{{visita.fimDataTexto}}" label="Data/Hora - Fim" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2" style="padding-top: 20px;">
-                                        <vaadin-time-picker id="geral_fimHora" name="geral_fimHora" value="{{data.fimHora}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
+                                        <vaadin-time-picker id="geral_fimHora" name="geral_fimHora" value="{{visita.fimHoraTexto}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
                                     </div>
 
                                     <div class="col-md-4">
-                                        <vaadin-text-field id="geral_estado" name="geral_estado" value="{{visita.estado}}" label="Estado" maxlength="50" disabled></vaadin-text-field>
+                                        <!--<vaadin-text-field id="geral_estado" name="geral_estado" value="{{visita.estadoTexto}}" label="Estado" maxlength="50" disabled></vaadin-text-field>-->
+                                        <vaadin-combo-box id="geral_estado" name="geral_estado" items="[[ListaEstados]]" item-value-path="id" item-label-path="value" value="{{visita.codEstado}}" label="Estado" disabled="{{ _lockFields }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
                                 </div>
 
@@ -285,21 +326,21 @@
                                             <div class="panel-body">
                                                 <div class="col-md-12">
                                                     <div class="col-md-12">
-                                                        <vaadin-text-field id="geral_iniciativaCriador" name="geral_iniciativaCriador" value="{{visita.iniciativaCriador}}" label="Iniciada por:" maxlength="50" disabled></vaadin-text-field>
+                                                        <vaadin-text-field id="geral_iniciativaCriador" name="geral_iniciativaCriador" value="{{visita.iniciativaCriadorTexto}}" label="Iniciada por:" maxlength="50" disabled></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-md-12">
                                                         <such-selectbox id="geral_iniciativaResponsavel" name="geral_iniciativaResponsavel" value="{{visita.iniciativaResponsavel}}" label="Responsável - Iniciativa Visita"
-                                                                        items="[[ListaUtilizadoresESUCH]]"
+                                                                        items="[[ListaEmployees]]"
                                                                         text-path="value"
                                                                         value-path="id"
-                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Responsável"}]'
                                                                         disabled="{{ _lockFields }}">
                                                         </such-selectbox>
                                                     </div>
 
                                                     <div class="col-md-12">
-                                                        <such-textarea id="geral_iniciativaIntervenientes" name="geral_iniciativaIntervenientes" value="{{data.iniciativaIntervenientes}}" label="Contactos/Intervenientes - Iniciativa Visita" disabled="{{ _lockFields }}" rows="3" maxlength="200"> </such-textarea>
+                                                        <such-textarea id="geral_iniciativaIntervenientes" name="geral_iniciativaIntervenientes" value="{{visita.iniciativaIntervinientes}}" label="Contactos/Intervenientes - Iniciativa Visita" disabled="{{ _lockFields }}" rows="3" maxlength="200"> </such-textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -313,15 +354,15 @@
                                             <div class="panel-body">
                                                 <div class="col-md-12">
                                                     <div class="col-md-12">
-                                                        <vaadin-text-field id="geral_rececaoCriador" name="geral_rececaoCriador" value="{{data.rececaoCriador}}" label="Agendamento - Agendado por:" disabled="{{ _lockFields }}" maxlength="100"> </vaadin-text-field>
+                                                        <vaadin-text-field id="geral_rececaoCriador" name="geral_rececaoCriador" value="{{visita.rececaoCriador}}" label="Agendamento - Agendado por:" disabled="{{ _lockFields }}" maxlength="100"> </vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-md-12">
-                                                        <vaadin-text-field id="geral_rececaoResponsavel" name="geral_rececaoResponsavel" value="{{data.rececaoResponsavel}}" label="Responsável - Visitados" disabled="{{ _lockFields }}" maxlength="100"> </vaadin-text-field>
+                                                        <vaadin-text-field id="geral_rececaoResponsavel" name="geral_rececaoResponsavel" value="{{visita.rececaoResponsavel}}" label="Responsável - Visitados" disabled="{{ _lockFields }}" maxlength="100"> </vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-md-12">
-                                                        <such-textarea id="geral_rececaoIntervenientes" name="geral_rececaoIntervenientes" value="{{data.rececaoIntervenientes}}" label="Outros Contactos - Visitados" disabled="{{ _lockFields }}" rows="3" maxlength="200"> </such-textarea>
+                                                        <such-textarea id="geral_rececaoIntervenientes" name="geral_rececaoIntervenientes" value="{{visita.rececaoIntervinientes}}" label="Outros Contactos - Visitados" disabled="{{ _lockFields }}" rows="3" maxlength="200"> </such-textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -331,16 +372,16 @@
 
                                 <div class="row break_clear">
                                     <div class="col-md-12">
-                                        <such-textarea id="geral_relatorioSimplificado" name="geral_relatorioSimplificado" value="{{data.relatorioSimplificado}}" label="Relatório Simplificado (1 000 carateres máximo)" disabled="{{ _lockFields }}" rows="7" maxlength="1000"> </such-textarea>
+                                        <such-textarea id="geral_relatorioSimplificado" name="geral_relatorioSimplificado" value="{{visita.relatorioSimplificado}}" label="Relatório Simplificado (1 000 carateres máximo)" disabled="{{ _lockFields }}" rows="7" maxlength="1000"> </such-textarea>
                                     </div>
                                 </div>
                             </div>
 
-                            <!--Formulários-->
+                            <!--TAREFAS-->
                             <div>
                                 <div class="row break_clear">
                                     <!--Tarefas Realizadas-->
-                                    <vaadin-grid id="grid_tabTarefa" aria-label="grid_tabTarefa" items="{{ tabTarefa }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="grid_tabTarefa" aria-label="grid_tabTarefa" items="{{ tarefas }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="ordem">Ordem</vaadin-grid-sorter>
@@ -369,7 +410,7 @@
                                                 <vaadin-grid-filter path="data" />
                                             </template>
                                             <template>
-                                                {{item.data}}
+                                                {{item.dataTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -379,7 +420,7 @@
                                                 <vaadin-grid-filter path="duracao" />
                                             </template>
                                             <template>
-                                                {{item.duracao}}
+                                                {{item.duracaoTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -496,23 +537,27 @@
                     _permissions: {
                         type: Array
                     },
-                    _isCreate: {
-                        type: Boolean,
-                        value: false
-                    },
                     selectedTab: {
                         type: Number,
                         value: 0
                     },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
 
                 ready: function () {
-                    if (this._visita == "") {
-                        this._isCreate = false;
-                    }
+                    if (this._visita == "")
+                        this._isCreate = true;
 
-                    this.selectedTab = "0";
-                }
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                    this.$.page_tarefas_ajax.generateRequest();
+                },
 
 
 

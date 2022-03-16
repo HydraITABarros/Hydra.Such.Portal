@@ -194,8 +194,10 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 DataHoraModificacao = x.DataHoraModificacao,
             };
 
-            if (x.InicioDataHora != null) visita.InicioDataHoraTexto = x.InicioDataHora.Value.ToString("yyyy-MM-dd");
-            if (x.FimDataHora != null) visita.FimDataHoraTexto = x.FimDataHora.Value.ToString("yyyy-MM-dd");
+            if (x.InicioDataHora != null) visita.InicioDataTexto = x.InicioDataHora.Value.ToString("yyyy-MM-dd");
+            if (x.InicioDataHora != null) visita.InicioHoraTexto = x.InicioDataHora.Value.ToString("HH:mm");
+            if (x.FimDataHora != null) visita.FimDataTexto = x.FimDataHora.Value.ToString("yyyy-MM-dd");
+            if (x.FimDataHora != null) visita.FimHoraTexto = x.FimDataHora.Value.ToString("HH:mm");
             if (x.DataHoraCriacao != null) visita.DataHoraCriacaoTexto = x.DataHoraCriacao.Value.ToString("yyyy-MM-dd");
             if (x.DataHoraModificacao != null) visita.DataHoraModificacaoTexto = x.DataHoraModificacao.Value.ToString("yyyy-MM-dd");
 
