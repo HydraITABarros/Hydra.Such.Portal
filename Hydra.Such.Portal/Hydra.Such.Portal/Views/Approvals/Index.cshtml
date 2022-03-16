@@ -85,13 +85,43 @@
         </div>
 
         <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true" column-reordering-allowed>
-            <vaadin-grid-column width="140px">
+            @*<vaadin-grid-column width="140px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>*@
+
+            <vaadin-grid-column width="50px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px">
                 <template class="header">
                 </template>
                 <template>
                     <center>
                         <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
-                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
                         <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
@@ -149,7 +179,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoProjectNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="requisicaoProjectNo">Req Projeto Nº</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="requisicaoProjectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisicaoProjectNo" value="[[filter.requisicaoProjectNo]]" />
                 </template>
                 <template>
@@ -539,7 +569,7 @@
                         "number": { hidden: false, label: "Associado" },
                         "fhDatePartida": { hidden: false, label: "FH Dia da Partida" },
                         "fhDateChegada": { hidden: false, label: "FH Dia da Chegada" },
-                        "requisicaoProjectNo": { hidden: false, label: "Req Projeto Nº" },
+                        "requisicaoProjectNo": { hidden: false, label: "Nº Ordem/Projeto" },
                         "requisicaoClientNo": { hidden: false, label: "Req Cliente Nº" },
                         "requisicaoClientName": { hidden: false, label: "Req Cliente Nome" },
                         "requisicaoAcordosPrecos": { hidden: false, label: "Req Acordos Preços" },

@@ -191,6 +191,7 @@ namespace Hydra.Such.Data.Logic.Contracts
         {
             return new RequisiçõesClienteContrato()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 NºContrato = ObjectToParse.ContractNo,
                 GrupoFatura = ObjectToParse.InvoiceGroup,
                 NºProjeto = ObjectToParse.ProjectNo,
@@ -225,6 +226,7 @@ namespace Hydra.Such.Data.Logic.Contracts
         {
             return new ContractClientRequisitionViewModel()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 ContractNo = ObjectToParse.NºContrato,
                 InvoiceGroup = ObjectToParse.GrupoFatura,
                 ProjectNo = ObjectToParse.NºProjeto,

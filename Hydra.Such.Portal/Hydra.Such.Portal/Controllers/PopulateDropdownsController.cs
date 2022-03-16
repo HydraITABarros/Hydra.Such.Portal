@@ -1486,7 +1486,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetResourcesCodeFH()
         {
-            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResourcesFH(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
                 value = x.Code + " - " + x.Name,
@@ -1647,6 +1647,14 @@ namespace Hydra.Such.Portal.Controllers
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.AreaCode || string.IsNullOrEmpty(x.AreaCode))));
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CenterResponsibilityCode || string.IsNullOrEmpty(x.CenterResponsibilityCode))));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProjectNavList_FH()
+        {
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.No.StartsWith("OM") || x.No.StartsWith("PJ")).ToList();
 
             return Json(result);
         }

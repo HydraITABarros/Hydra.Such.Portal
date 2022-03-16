@@ -26,6 +26,21 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static ConfiguracaoAjudaCusto GetByCodigoTipoCusto(string CodigoTipoCusto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ConfiguracaoAjudaCusto.FirstOrDefault(x => x.CodigoTipoCusto == CodigoTipoCusto);
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static ConfiguracaoAjudaCusto Create(ConfiguracaoAjudaCusto ObjectToCreate)
         {
             try

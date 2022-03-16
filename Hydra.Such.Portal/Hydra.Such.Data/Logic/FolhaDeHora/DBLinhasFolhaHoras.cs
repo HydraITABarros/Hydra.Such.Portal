@@ -92,6 +92,26 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static bool ExistsRegiaoAutonomaByFolhaHoraNo(string NoFolhaHoras)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    LinhasFolhaHoras Linhas = ctx.LinhasFolhaHoras.FirstOrDefault(x => x.NoFolhaHoras == NoFolhaHoras && x.RegiaoAutonoma == true);
+
+                    if (Linhas != null)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static decimal GetNoTotalKmByFolhaHoraNo(string FolhaHoraNo)
         {
             decimal NoTotalKm = 0;
@@ -132,9 +152,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
         public static decimal GetCustoTotalKMByFolhaHoraNo(string FolhaHoraNo)
         {
-            decimal CustoTotalKM = 0;
             try
             {
+                decimal CustoTotalKM = 0;
                 using (var ctx = new SuchDBContext())
                 {
                     List<LinhasFolhaHoras> result = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
@@ -146,20 +166,27 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                             decimal DistanciaPrevista = x.DistanciaPrevista.HasValue ? (decimal)x.DistanciaPrevista : 0;
                             decimal CustoUnitario = x.CustoUnitario.HasValue ? (decimal)x.CustoUnitario : 0;
 
-                            if (DistanciaEfetuada == 0)
+                            if (DistanciaEfetuada != 0)
                             {
-                                CustoTotalKM = CustoTotalKM + 0;
+                                CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
                             }
                             else
                             {
-                                if (DistanciaPrevista == 0)
-                                    CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
-                                else
-                                    CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
+                                CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
                             }
+                            //if (DistanciaEfetuada == 0)
+                            //{
+                            //    CustoTotalKM = CustoTotalKM + 0;
+                            //}
+                            //else
+                            //{
+                            //    if (DistanciaPrevista == 0)
+                            //        CustoTotalKM = CustoTotalKM + (DistanciaEfetuada * CustoUnitario);
+                            //    else
+                            //        CustoTotalKM = CustoTotalKM + (DistanciaPrevista * CustoUnitario);
+                            //}
                         });
                     }
-
 
                     return CustoTotalKM;
                 }
@@ -428,6 +455,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DescricaoDestino = Percurso.DescricaoDestino,
                         Distancia = Percurso.Distancia,
                         DistanciaPrevista = Percurso.DistanciaPrevista,
+                        RegiaoAutonoma = Percurso.RegiaoAutonoma,
                         RubricaSalarial = Percurso.RubricaSalarial,
                         RegistarSubsidiosPremios = Percurso.RegistarSubsidiosPremios,
                         Observacao = Percurso.Observacao,
@@ -482,6 +510,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         DescricaoDestino = Ajuda.DescricaoDestino,
                         Distancia = Ajuda.Distancia,
                         DistanciaPrevista = Ajuda.DistanciaPrevista,
+                        RegiaoAutonoma = Ajuda.RegiaoAutonoma,
                         RubricaSalarial = Ajuda.RubricaSalarial,
                         RegistarSubsidiosPremios = Ajuda.RegistarSubsidiosPremios,
                         Observacao = Ajuda.Observacao,

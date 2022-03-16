@@ -121,6 +121,32 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static bool GetOrigemDestinoRegiaoAutonoma(string Origem, string Destino)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    bool RegiaoAutonomaOrigemFH;
+                    RegiaoAutonomaOrigemFH = (bool)ctx.OrigemDestinoFh.FirstOrDefault(x => x.Código == Origem).RegiaoAutonoma;
+
+                    bool RegiaoAutonomaDestinoFH;
+                    RegiaoAutonomaDestinoFH = (bool)ctx.OrigemDestinoFh.FirstOrDefault(x => x.Código == Destino).RegiaoAutonoma;
+
+                    bool RegiaoAutonoma = false;
+                    if (RegiaoAutonomaOrigemFH == true || RegiaoAutonomaDestinoFH == true)
+                        RegiaoAutonoma = true;
+
+                    return RegiaoAutonoma;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
         public static OrigemDestinoFh ParseToDB(OrigemDestinoFHViewModel x)
         {
             try
@@ -129,6 +155,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 {
                     Código = x.Codigo,
                     Descrição = x.Descricao,
+                    RegiaoAutonoma = x.RegiaoAutonoma.HasValue ? x.RegiaoAutonoma : false,
                     CriadoPor = x.CriadoPor,
                     DataHoraCriação = x.DataHoraCriacao,
                     AlteradoPor = x.AlteradoPor,
@@ -148,6 +175,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 Codigo = x.Código,
                 Descricao = x.Descrição,
+                RegiaoAutonoma = x.RegiaoAutonoma.HasValue ? x.RegiaoAutonoma : false,
                 CriadoPor = x.CriadoPor,
                 DataHoraCriacao = x.DataHoraCriação,
                 AlteradoPor = x.AlteradoPor,

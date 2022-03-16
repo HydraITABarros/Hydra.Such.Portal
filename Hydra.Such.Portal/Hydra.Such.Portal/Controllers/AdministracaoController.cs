@@ -11,6 +11,7 @@ using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Logic.ProjectDiary;
 using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.Logic.VisitasDB;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Approvals;
@@ -23,6 +24,7 @@ using Hydra.Such.Data.ViewModel.PBIGestiControl;
 using Hydra.Such.Data.ViewModel.ProjectDiary;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.ViewModel.VisitasVM;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -2499,9 +2501,11 @@ namespace Hydra.Such.Portal.Controllers
 
             if (result != null)
             {
+                List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
                 result.ForEach(x =>
                 {
-                    x.CodigoTipoCustoTexto = x.CodigoTipoCusto.Trim() + " - " + DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoTipoCusto.Trim(), "", 0, "").FirstOrDefault().Name;
+                    x.CodigoTipoCustoTexto = x.CodigoTipoCusto.Trim() + " - " + AllResources.FirstOrDefault(y => y.Code == x.CodigoTipoCusto.Trim()).Name;
                 });
             }
 
@@ -4656,6 +4660,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 OrigemDestinoFH.Código = data.Codigo;
                 OrigemDestinoFH.Descrição = data.Descricao;
+                OrigemDestinoFH.RegiaoAutonoma = data.RegiaoAutonoma;
                 OrigemDestinoFH.CriadoPor = User.Identity.Name;
                 OrigemDestinoFH.DataHoraCriação = DateTime.Now;
 
@@ -4697,6 +4702,7 @@ namespace Hydra.Such.Portal.Controllers
                 u =>
                     u.Codigo == x.Codigo &&
                     u.Descricao == x.Descricao &&
+                    u.RegiaoAutonoma == x.RegiaoAutonoma &&
                     u.CriadoPor == x.CriadoPor &&
                     u.DataHoraCriacao == x.DataHoraCriacao
             ));
@@ -4826,14 +4832,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<TabelaConfRecursosFHViewModel> result = DBTabelaConfRecursosFh.ParseListToViewModel(DBTabelaConfRecursosFh.GetAll());
 
-            if (result != null)
-            {
-                result.ForEach(x =>
-                {
-                    x.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
-                    x.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
-                });
-            }
+            //if (result != null)
+            //{
+            //    result.ForEach(x =>
+            //    {
+            //        x.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
+            //        x.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
+            //    });
+            //}
 
             return Json(result);
         }
@@ -4891,8 +4897,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 TabelaConfRecursosFh toUpdate = DBTabelaConfRecursosFh.ParseToDB(x);
                 //toUpdate.UtilizadorModificacao = User.Identity.Name;
-                toUpdate.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
-                toUpdate.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
+                //toUpdate.Descricao = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().Name;
+                //toUpdate.UnidMedida = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodigoRecurso, "", 0, "").FirstOrDefault().MeasureUnit;
                 DBTabelaConfRecursosFh.Update(toUpdate);
             });
             return Json(data);
@@ -9153,5 +9159,120 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region VisitasEstados
+
+        public IActionResult VisitasEstados(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminVisitas);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult VisitasEstadosGetAll()
+        {
+            List<VisitasEstadosViewModel> result = DBVisitasEstados.ParseListToViewModel(DBVisitasEstados.GetAll());
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult VisitasEstadosUpdate([FromBody] List<VisitasEstadosViewModel> data)
+        {
+            List<VisitasEstados> results = DBVisitasEstados.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.ForEach(x => DBVisitasEstados.Delete(x));
+            data.ForEach(x =>
+            {
+                VisitasEstados OS = new VisitasEstados()
+                {
+                    CodEstado = x.CodEstado,
+                    Estado = x.Estado,
+                };
+                if (x.ID > 0)
+                {
+                    OS.ID = x.ID;
+                    OS.UtilizadorModificacao = User.Identity.Name;
+                    OS.DataHoraModificacao = DateTime.Now;
+                    DBVisitasEstados.Update(OS);
+                }
+                else
+                {
+                    OS.UtilizadorCriacao = User.Identity.Name;
+                    OS.DataHoraCriacao = DateTime.Now;
+                    DBVisitasEstados.Create(OS);
+                }
+            });
+            return Json(data);
+        }
+
+        #endregion
+
+        #region VisitasTarefasTarefas
+
+        public IActionResult VisitasTarefas(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminVisitas);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult VisitasTarefasGetAll()
+        {
+            List<VisitasTarefasTarefasViewModel> result = DBVisitasTarefasTarefas.ParseListToViewModel(DBVisitasTarefasTarefas.GetAll());
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult VisitasTarefasUpdate([FromBody] List<VisitasTarefasTarefasViewModel> data)
+        {
+            List<VisitasTarefasTarefas> results = DBVisitasTarefasTarefas.GetAll();
+            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.ForEach(x => DBVisitasTarefasTarefas.Delete(x));
+            data.ForEach(x =>
+            {
+                VisitasTarefasTarefas OS = new VisitasTarefasTarefas()
+                {
+                    CodTarefa = x.CodTarefa,
+                    Tarefa = x.Tarefa,
+                };
+                if (x.ID > 0)
+                {
+                    OS.ID = x.ID;
+                    OS.UtilizadorModificacao = User.Identity.Name;
+                    OS.DataHoraModificacao = DateTime.Now;
+                    DBVisitasTarefasTarefas.Update(OS);
+                }
+                else
+                {
+                    OS.UtilizadorCriacao = User.Identity.Name;
+                    OS.DataHoraCriacao = DateTime.Now;
+                    DBVisitasTarefasTarefas.Create(OS);
+                }
+            });
+            return Json(data);
+        }
+
+        #endregion
     }
 }

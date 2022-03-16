@@ -572,6 +572,7 @@ namespace Hydra.Such.Portal.Controllers
                             DescricaoDestino = Percurso.DescricaoDestino,
                             Distancia = Percurso.Distancia,
                             DistanciaPrevista = Percurso.DistanciaPrevista,
+                            RegiaoAutonoma = Percurso.RegiaoAutonoma,
                             RubricaSalarial = Percurso.RubricaSalarial,
                             RegistarSubsidiosPremios = Percurso.RegistarSubsidiosPremios,
                             Observacao = Percurso.Observacao,
@@ -615,6 +616,7 @@ namespace Hydra.Such.Portal.Controllers
                             DescricaoDestino = Ajuda.DescricaoDestino,
                             Distancia = Ajuda.Distancia,
                             DistanciaPrevista = Ajuda.DistanciaPrevista,
+                            RegiaoAutonoma = Ajuda.RegiaoAutonoma,
                             RubricaSalarial = Ajuda.RubricaSalarial,
                             RegistarSubsidiosPremios = Ajuda.RegistarSubsidiosPremios,
                             Observacao = Ajuda.Observacao,
@@ -1136,14 +1138,13 @@ namespace Hydra.Such.Portal.Controllers
                     data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: ";
                     if (!string.IsNullOrEmpty(data.IntegradoresEmRHKM))
                         data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
-
-
+                    
                     FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
-                    if (DBFolhasDeHoras.Update(FH) == null)
-                    {
+                    if (DBFolhasDeHoras.Update(FH) != null)
+                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
+                    else
                         result = 2;
-                    }
                 }
             }
             catch (Exception ex)
@@ -1196,10 +1197,10 @@ namespace Hydra.Such.Portal.Controllers
                         data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
 
                     data.UtilizadorModificacao = User.Identity.Name;
-                    if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) == null)
-                    {
+                    if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) != null)
+                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
+                    else
                         result = 2;
-                    }
                 }
                 else
                 {
@@ -1367,6 +1368,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.Observacao = data.Observacao;
                     Percurso1.Distancia = DistanciaPrevista;
                     Percurso1.DistanciaPrevista = DistanciaPrevista;
+                    Percurso1.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
@@ -1402,6 +1404,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.Observacao = data.Observacao;
                     Percurso2.Distancia = DistanciaPrevista;
                     Percurso2.DistanciaPrevista = DistanciaPrevista;
+                    Percurso2.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso2.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
@@ -1443,6 +1446,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.Observacao = data.Observacao;
                     Percurso1.Distancia = DistanciaPrevista;
                     Percurso1.DistanciaPrevista = DistanciaPrevista;
+                    Percurso1.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
@@ -1553,6 +1557,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso.Observacao = data.Observacao;
                     Percurso.Distancia = DistanciaEfetuada;
                     Percurso.DistanciaPrevista = DistanciaPrevista;
+                    Percurso.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     if (DistanciaEfetuada == 0)
                         Percurso.CustoTotal = 0;
@@ -1621,6 +1626,7 @@ namespace Hydra.Such.Portal.Controllers
                 PercursoCopia.Observacao = PercursoOriginal.Observacao;
                 PercursoCopia.Distancia = PercursoOriginal.Distancia;
                 PercursoCopia.DistanciaPrevista = PercursoOriginal.DistanciaPrevista;
+                PercursoCopia.RegiaoAutonoma = PercursoOriginal.RegiaoAutonoma;
                 PercursoCopia.CustoUnitario = PercursoOriginal.CustoUnitario;
                 PercursoCopia.CustoTotal = PercursoOriginal.CustoTotal;
                 PercursoCopia.RubricaSalarial = PercursoOriginal.RubricaSalarial;
@@ -1875,10 +1881,22 @@ namespace Hydra.Such.Portal.Controllers
                             NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
                             if (Cliente != null && Cliente.ClienteInterno == true)
                             {
-                                if (CodTipoCusto == "AJC0001")
-                                    CodTipoCusto = "AJC0017";
-                                if (CodTipoCusto == "AJC0002")
-                                    CodTipoCusto = "AJC0018";
+
+                                bool RegiaoAutonoma = DBLinhasFolhaHoras.ExistsRegiaoAutonomaByFolhaHoraNo(data.NoFolhaHoras);
+                                if (RegiaoAutonoma == true)
+                                {
+                                    if (CodTipoCusto == "AJC0001")
+                                        CodTipoCusto = "AJC0020";
+                                    if (CodTipoCusto == "AJC0002")
+                                        CodTipoCusto = "AJC0021";
+                                }
+                                else
+                                {
+                                    if (CodTipoCusto == "AJC0001")
+                                        CodTipoCusto = "AJC0017";
+                                    if (CodTipoCusto == "AJC0002")
+                                        CodTipoCusto = "AJC0018";
+                                }
 
                                 TabelaConfRecursosFh Recurso = DBTabelaConfRecursosFh.GetRecursoByTipoAndCodRecurso(data.TipoCusto.ToString(), CodTipoCusto.ToLower().Trim());
 
@@ -3105,34 +3123,61 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (NoDias > 0)
                             {
+                                decimal CustoUnitario = 0;
+                                decimal PrecoUnitario = 0;
+                                decimal CustoTotal = 0;
+                                decimal PrecoVenda = 0;
+                                string RubricaSalarial = "";
                                 string CodRecurso = x.CodigoTipoCusto.Trim();
-                                TabelaConfRecursosFh Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
-                                decimal CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
-                                decimal PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
-                                decimal CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
-                                decimal PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
-                                string RubricaSalarial = Recurso.RubricaSalarial;
+                                TabelaConfRecursosFh Recurso = new TabelaConfRecursosFh();
+                                bool RegiaoAutonoma = false;
 
-                                if (!string.IsNullOrEmpty(data.ProjetoNo))
+                                RegiaoAutonoma = DBLinhasFolhaHoras.ExistsRegiaoAutonomaByFolhaHoraNo(data.FolhaDeHorasNo);
+                                if (RegiaoAutonoma == true)
                                 {
-                                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
+                                    if (CodRecurso == "AJC0001")
+                                        CodRecurso = "AJC0020";
+                                    if (CodRecurso == "AJC0002")
+                                        CodRecurso = "AJC0021";
 
-                                    if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                                    Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
+                                    CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    RubricaSalarial = Recurso.RubricaSalarial;
+                                }
+                                else
+                                {
+                                    CodRecurso = x.CodigoTipoCusto.Trim();
+                                    Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
+                                    CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    RubricaSalarial = Recurso.RubricaSalarial;
+
+                                    if (!string.IsNullOrEmpty(data.ProjetoNo))
                                     {
-                                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
-                                        if (Cliente != null && Cliente.ClienteInterno == true)
-                                        {
-                                            if (CodRecurso == "AJC0001")
-                                                CodRecurso = "AJC0017";
-                                            if (CodRecurso == "AJC0002")
-                                                CodRecurso = "AJC0018";
+                                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
 
-                                            Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
-                                            CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
-                                            PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
-                                            CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
-                                            PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
-                                            RubricaSalarial = Recurso.RubricaSalarial;
+                                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                                        {
+                                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
+                                            if (Cliente != null && Cliente.ClienteInterno == true)
+                                            {
+                                                if (CodRecurso == "AJC0001")
+                                                    CodRecurso = "AJC0017";
+                                                if (CodRecurso == "AJC0002")
+                                                    CodRecurso = "AJC0018";
+
+                                                Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
+                                                CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                                PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                                CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                                PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                                RubricaSalarial = Recurso.RubricaSalarial;
+                                            }
                                         }
                                     }
                                 }

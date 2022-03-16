@@ -109,11 +109,13 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 decimal CustoTotalKm = 0;
                 decimal NumTotalKm = 0;
                 FolhasDeHoras FolhaDeHora = DBFolhasDeHoras.GetById(NoFolhaHoras);
+                int TipoDeslocacao = FolhaDeHora.TipoDeslocação.HasValue ? (int)FolhaDeHora.TipoDeslocação : 0;
 
                 CustoTotalAjudaCusto = DBLinhasFolhaHoras.GetCustoTotalAjudaCustoByFolhaHoraNo(NoFolhaHoras);
                 CustoTotalHoras = DBMaoDeObraFolhaDeHoras.GetCustoTotalHorasByFolhaHoraNo(NoFolhaHoras);
                 NumTotalKm = DBLinhasFolhaHoras.GetNoTotalKmByFolhaHoraNo(NoFolhaHoras);
-                CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
+                if (TipoDeslocacao == 2) // //2 = Viatura Própria
+                    CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
 
                 using (var ctx = new SuchDBContext())
                 {

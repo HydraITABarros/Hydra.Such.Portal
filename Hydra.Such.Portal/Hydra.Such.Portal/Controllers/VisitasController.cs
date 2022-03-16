@@ -26,6 +26,21 @@ namespace Hydra.Such.Portal.Controllers
             _generalConfig = appSettingsGeneral.Value;
         }
 
+        public IActionResult Visitas_List(string VisitaNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Visitas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult Visitas_Details(string VisitaNo)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Visitas);

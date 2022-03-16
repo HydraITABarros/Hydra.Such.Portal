@@ -183,6 +183,7 @@ namespace Hydra.Such.Data.Logic.Contracts
         {
             return new RequisiçõesClienteContratoEstadoAlteracao()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 NºContrato = ObjectToParse.ContractNo,
                 GrupoFatura = ObjectToParse.InvoiceGroup,
                 NºProjeto = ObjectToParse.ProjectNo,
@@ -205,6 +206,7 @@ namespace Hydra.Such.Data.Logic.Contracts
         {
             return new RequisiçõesClienteContratoEstadoAlteracao()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 NºContrato = ObjectToParse.NºContrato,
                 GrupoFatura = ObjectToParse.GrupoFatura,
                 NºProjeto = ObjectToParse.NºProjeto,
@@ -227,6 +229,7 @@ namespace Hydra.Such.Data.Logic.Contracts
         {
             return new ContractClientRequisitionEstadoAlteracaoViewModel()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 ContractNo = ObjectToParse.NºContrato,
                 InvoiceGroup = ObjectToParse.GrupoFatura,
                 ProjectNo = ObjectToParse.NºProjeto,
