@@ -15,7 +15,7 @@ namespace Hydra.Such.Data.ViewModel.Academia
         public Boolean TemSessoes { get; set; }
         public int NoPedidosParaAprovacao { get; set; }
         public int NoPedidosAprovados { get; set; }
-        public ICollection<AttachmentsViewModel> ImagensAccao { get; set; }
+        public ICollection<AttachmentsViewModel> ImagensAccao { get; set; }        
 
         public AccaoFormacaoView()
         {
@@ -55,8 +55,13 @@ namespace Hydra.Such.Data.ViewModel.Academia
         {
             SessoesFormacao = accao.SessoesFormacao;
 
-            NoSessoes = accao.SessoesFormacao == null ? 0 : accao.SessoesFormacao.Count();
+            NoSessoes = accao.SessoesFormacao != null && accao.SessoesFormacao.Count() > 0 ? accao.SessoesFormacao.Count() : DBAcademia._ContaNoSessoesAccao(accao.IdAccao);
             TemSessoes = NoSessoes > 0;
+        }
+
+        public void ContaSessoesAccao()
+        {
+            NoSessoes = SessoesFormacao != null && SessoesFormacao.Count() > 0 ? SessoesFormacao.Count() : DBAcademia._ContaNoSessoesAccao(this.IdAccao);
         }
 
         public void DetalhesEntidade()
@@ -71,7 +76,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
 
         public void ContaPedidos(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin)
         {
-            
+            int[] NoPedidosArray = DBAcademia.ContaNoPedidosPorAccao(this.IdAccao, cfgUser, origin, false);
+
+            NoPedidosParaAprovacao = NoPedidosArray[0];
+            NoPedidosAprovados = NoPedidosArray[1];
         }
         public AccaoFormacao ParseToDb()
         {

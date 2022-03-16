@@ -136,15 +136,6 @@
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
-        <!--ORIGINAL -->
-        <!--<iron-ajax url="/Academia/GetMeusPedidosAprovacao"
-               last-response="{{ result }}"
-               method="post"
-               handle-as="json"
-               id="grid_databound_ajax"
-               on-response="_responseProcessor"
-               content-type="application/json">
-    </iron-ajax>-->
         <iron-ajax url="/Academia/GetPedidosParaGestao"
                    last-response="{{ result }}"
                    method="post"
@@ -154,10 +145,6 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <!--<div class="subMenu">
-        <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-        <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-    </div>-->
         <iron-form id="formContract">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -706,24 +693,6 @@
                                             <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
                                         </template>
                                     </vaadin-grid-column>
-                                    <!--<vaadin-grid-column width="10%" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
-                <vaadin-grid-filter path="localRealizacao" />
-            </template>
-            <template>
-                <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
-            </template>
-        </vaadin-grid-column>
-        <vaadin-grid-column width="7.5%" resizable>
-            <template class="header">
-                <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
-                <vaadin-grid-filter path="descricaoEntidadeFormadora" />
-            </template>
-            <template>
-                <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
-            </template>
-        </vaadin-grid-column>-->
                                 </vaadin-grid>
                             </div>
                         </div>
@@ -793,16 +762,7 @@
                 ready: function () {
                     debugger;;
 
-                    //this.$.estados_databound_ajax.generateRequest();
-
-                    // ORIGINAL
-                    //this.$.grid_databound_ajax.body = JSON.stringify({
-                    //    "apenasCompletos": this._onlycompleted,
-                    //    "requestOrigin": this._requestorigin
-                    //});
-                    //this.$.grid_databound_ajax.generateRequest();
-
-
+                  
                     this.$.pedidos_databound_ajax.body = JSON.stringify({"requestOrigin": this._requestorigin});
                     this.$.pedidos_databound_ajax.generateRequest();
 

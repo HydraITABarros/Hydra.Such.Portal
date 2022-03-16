@@ -298,6 +298,8 @@
                     debugger;;
                     if(this.catalogoUpdated) {
                         this._showMessage("O Catálogo foi actualizado com sucesso");
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this.onlyActives });
+                        this.$.grid_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage("Não foi possível actualizar o catálogo!");
                     }
