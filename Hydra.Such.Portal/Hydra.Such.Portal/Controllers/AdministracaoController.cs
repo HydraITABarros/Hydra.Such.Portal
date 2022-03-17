@@ -9189,7 +9189,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult VisitasEstadosUpdate([FromBody] List<VisitasEstadosViewModel> data)
         {
             List<VisitasEstados> results = DBVisitasEstados.GetAll();
-            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.RemoveAll(x => data.Any(u => u.CodEstado == x.CodEstado));
             results.ForEach(x => DBVisitasEstados.Delete(x));
             data.ForEach(x =>
             {
@@ -9198,9 +9198,8 @@ namespace Hydra.Such.Portal.Controllers
                     CodEstado = x.CodEstado,
                     Estado = x.Estado,
                 };
-                if (x.ID > 0)
+                if (x.CodEstado > 0)
                 {
-                    OS.ID = x.ID;
                     OS.UtilizadorModificacao = User.Identity.Name;
                     OS.DataHoraModificacao = DateTime.Now;
                     DBVisitasEstados.Update(OS);
@@ -9247,7 +9246,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult VisitasTarefasUpdate([FromBody] List<VisitasTarefasTarefasViewModel> data)
         {
             List<VisitasTarefasTarefas> results = DBVisitasTarefasTarefas.GetAll();
-            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.RemoveAll(x => data.Any(u => u.CodTarefa == x.CodTarefa));
             results.ForEach(x => DBVisitasTarefasTarefas.Delete(x));
             data.ForEach(x =>
             {
@@ -9256,9 +9255,8 @@ namespace Hydra.Such.Portal.Controllers
                     CodTarefa = x.CodTarefa,
                     Tarefa = x.Tarefa,
                 };
-                if (x.ID > 0)
+                if (x.CodTarefa > 0)
                 {
-                    OS.ID = x.ID;
                     OS.UtilizadorModificacao = User.Identity.Name;
                     OS.DataHoraModificacao = DateTime.Now;
                     DBVisitasTarefasTarefas.Update(OS);

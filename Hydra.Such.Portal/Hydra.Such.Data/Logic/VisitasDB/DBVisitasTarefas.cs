@@ -102,7 +102,6 @@ namespace Hydra.Such.Data.Logic.VisitasDB
         {
             VisitasTarefas visita = new VisitasTarefas()
             {
-                ID = x.ID,
                 CodVisita = x.CodVisita,
                 Ordem = x.Ordem,
                 CodTarefa = x.CodTarefa,
@@ -133,7 +132,6 @@ namespace Hydra.Such.Data.Logic.VisitasDB
         {
             VisitasTarefasViewModel visita = new VisitasTarefasViewModel()
             {
-                ID = x.ID,
                 CodVisita = x.CodVisita,
                 Ordem = x.Ordem,
                 CodTarefa = x.CodTarefa,

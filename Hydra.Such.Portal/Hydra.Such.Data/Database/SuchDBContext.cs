@@ -13012,12 +13012,9 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<VisitasEstados>(entity =>
             {
-                entity.HasKey(e => e.ID);
+                entity.HasKey(e => e.CodEstado);
 
                 entity.ToTable("Visitas_Estados");
-
-                entity.Property(e => e.ID)
-                    .HasColumnName("ID");
 
                 entity.Property(e => e.CodEstado)
                     .HasColumnName("CodEstado");
@@ -13045,12 +13042,9 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<VisitasTarefas>(entity =>
             {
-                entity.HasKey(e => e.ID);
+                entity.HasKey(e => new { e.CodVisita, e.Ordem });
 
                 entity.ToTable("Visitas_Tarefas");
-
-                entity.Property(e => e.ID)
-                    .HasColumnName("ID");
 
                 entity.Property(e => e.CodVisita)
                     .HasColumnName("CodVisita")
@@ -13089,12 +13083,9 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<VisitasTarefasTarefas>(entity =>
             {
-                entity.HasKey(e => e.ID);
+                entity.HasKey(e => e.CodTarefa);
 
                 entity.ToTable("Visitas_Tarefas_Tarefas");
-
-                entity.Property(e => e.ID)
-                    .HasColumnName("ID");
 
                 entity.Property(e => e.CodTarefa)
                     .HasColumnName("CodTarefa");

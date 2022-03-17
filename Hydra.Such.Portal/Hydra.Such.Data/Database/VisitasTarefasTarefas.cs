@@ -4,7 +4,6 @@ namespace Hydra.Such.Data.Database
 {
     public partial class VisitasTarefasTarefas
     {
-        public int ID { get; set; }
         public int CodTarefa { get; set; }
         public string Tarefa { get; set; }
         public string UtilizadorCriacao { get; set; }
