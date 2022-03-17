@@ -121,29 +121,38 @@ namespace Hydra.Such.Data.Logic.VisitasDB
         {
             Visitas visita = new Visitas()
             {
-                ID = x.ID,
                 CodVisita = x.CodVisita,
                 Objetivo = x.Objetivo,
                 Local = x.Local,
                 CodCliente = x.CodCliente,
+                NomeCliente = x.NomeCliente,
                 CodFornecedor = x.CodFornecedor,
+                NomeFornecedor = x.NomeFornecedor,
                 Entidade = x.Entidade,
                 CodRegiao = x.CodRegiao,
+                NomeRegiao = x.NomeRegiao,
                 CodArea = x.CodArea,
+                NomeArea = x.NomeArea,
                 CodCresp = x.CodCresp,
+                NomeCresp = x.NomeCresp,
                 InicioDataHora = x.InicioDataHora,
                 FimDataHora = x.FimDataHora,
                 CodEstado = x.CodEstado,
+                NomeEstado = x.NomeEstado,
                 IniciativaCriador = x.IniciativaCriador,
+                IniciativaCriadorNome = x.IniciativaCriadorNome,
                 IniciativaResponsavel = x.IniciativaResponsavel,
+                IniciativaResponsavelNome = x.IniciativaResponsavelNome,
                 IniciativaIntervinientes = x.IniciativaIntervinientes,
                 RececaoCriador = x.RececaoCriador,
                 RececaoResponsavel = x.RececaoResponsavel,
                 RececaoIntervinientes = x.RececaoIntervinientes,
                 RelatorioSimplificado = x.RelatorioSimplificado,
                 UtilizadorCriacao = x.UtilizadorCriacao,
+                UtilizadorCriacaoNome = x.UtilizadorCriacaoNome,
                 DataHoraCriacao = x.DataHoraCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
+                UtilizadorModificacaoNome = x.UtilizadorModificacaoNome,
                 DataHoraModificacao = x.DataHoraModificacao,
             };
 
@@ -168,38 +177,46 @@ namespace Hydra.Such.Data.Logic.VisitasDB
         {
             VisitasViewModel visita = new VisitasViewModel()
             {
-                ID = x.ID,
                 CodVisita = x.CodVisita,
                 Objetivo = x.Objetivo,
                 Local = x.Local,
                 CodCliente = x.CodCliente,
+                NomeCliente = x.NomeCliente,
                 CodFornecedor = x.CodFornecedor,
+                NomeFornecedor = x.NomeFornecedor,
                 Entidade = x.Entidade,
                 CodRegiao = x.CodRegiao,
+                NomeRegiao = x.NomeRegiao,
                 CodArea = x.CodArea,
+                NomeArea = x.NomeArea,
                 CodCresp = x.CodCresp,
+                NomeCresp = x.NomeCresp,
                 InicioDataHora = x.InicioDataHora,
+                InicioDataTexto = x.InicioDataHora.HasValue ? x.InicioDataHora.Value.ToString("yyyy-MM-dd") : "",
+                InicioHoraTexto = x.InicioDataHora.HasValue ? x.InicioDataHora.Value.ToString("HH:mm") : "",
                 FimDataHora = x.FimDataHora,
+                FimDataTexto = x.FimDataHora.HasValue ? x.FimDataHora.Value.ToString("yyyy-MM-dd") : "",
+                FimHoraTexto = x.FimDataHora.HasValue ? x.FimDataHora.Value.ToString("HH:mm") : "",
                 CodEstado = x.CodEstado,
+                NomeEstado = x.NomeEstado,
                 IniciativaCriador = x.IniciativaCriador,
+                IniciativaCriadorNome = x.IniciativaCriadorNome,
                 IniciativaResponsavel = x.IniciativaResponsavel,
+                IniciativaResponsavelNome = x.IniciativaResponsavelNome,
                 IniciativaIntervinientes = x.IniciativaIntervinientes,
                 RececaoCriador = x.RececaoCriador,
                 RececaoResponsavel = x.RececaoResponsavel,
                 RececaoIntervinientes = x.RececaoIntervinientes,
                 RelatorioSimplificado = x.RelatorioSimplificado,
                 UtilizadorCriacao = x.UtilizadorCriacao,
+                UtilizadorCriacaoNome = x.UtilizadorCriacaoNome,
                 DataHoraCriacao = x.DataHoraCriacao,
+                DataHoraCriacaoTexto = x.DataHoraCriacao.HasValue ? x.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                 UtilizadorModificacao = x.UtilizadorModificacao,
+                UtilizadorModificacaoNome = x.UtilizadorModificacaoNome,
                 DataHoraModificacao = x.DataHoraModificacao,
+                DataHoraModificacaoTexto = x.DataHoraModificacao.HasValue ? x.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : ""
             };
-
-            if (x.InicioDataHora != null) visita.InicioDataTexto = x.InicioDataHora.Value.ToString("yyyy-MM-dd");
-            if (x.InicioDataHora != null) visita.InicioHoraTexto = x.InicioDataHora.Value.ToString("HH:mm");
-            if (x.FimDataHora != null) visita.FimDataTexto = x.FimDataHora.Value.ToString("yyyy-MM-dd");
-            if (x.FimDataHora != null) visita.FimHoraTexto = x.FimDataHora.Value.ToString("HH:mm");
-            if (x.DataHoraCriacao != null) visita.DataHoraCriacaoTexto = x.DataHoraCriacao.Value.ToString("yyyy-MM-dd");
-            if (x.DataHoraModificacao != null) visita.DataHoraModificacaoTexto = x.DataHoraModificacao.Value.ToString("yyyy-MM-dd");
 
             return visita;
         }

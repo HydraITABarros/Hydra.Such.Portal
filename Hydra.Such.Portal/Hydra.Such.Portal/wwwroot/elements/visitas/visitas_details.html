@@ -173,18 +173,36 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Visitas/CreateVisita"
+                   last-response="{{resultCreate}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateVisita_ajax"
+                   on-response="_responseCreateVisita"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/UpdateVisita"
+                   last-response="{{resultUpdate}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_UpdateVisita_ajax"
+                   on-response="_responseUpdateVisita"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
             <template is="dom-if" if="{{ _isCreate }}">
                 <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button id="btnCreate" class="btnEdit tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Visita</paper-button>
+                    <paper-button id="btnCreate" class="btnEdit tablinks" on-tap="_createVisita"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Visita</paper-button>
                 </template>
             </template>
 
             <template is="dom-if" if="{{ !_isCreate }}">
                 <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button id="btn_visitaUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button id="btn_visitaUpdate" class="btnEdit tablinks" on-tap="_updateVisita"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     <paper-button id="btn_visitaDuplicar" class="btnEdit tablinks" on-tap="_duplicar"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; Duplicar</paper-button>
                     <paper-button id="btn_visitaTornarModelo" class="btnEdit tablinks" on-tap="_tornarModelo"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Tornar Modelo</paper-button>
                 </template>
@@ -246,13 +264,6 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <!--<such-selectbox id="geral_codRegiao" name="geral_codRegiao" value="{{visita.codRegiao}}" label="Região"
-                                                    items="[[ListaRegioes]]"
-                                                    text-path="value"
-                                                    value-path="id"
-                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
-                                                    disabled="{{ _lockFields }}">
-                                    </such-selectbox>-->
                                         <vaadin-combo-box id="geral_codRegiao" name="geral_codRegiao" items="[[ListaRegioes]]" item-value-path="id" item-label-path="value" value="{{visita.codRegiao}}" label="Região" disabled="{{ _lockFields }}">
                                             <template>
                                                 <table>
@@ -306,7 +317,6 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <!--<vaadin-text-field id="geral_estado" name="geral_estado" value="{{visita.estadoTexto}}" label="Estado" maxlength="50" disabled></vaadin-text-field>-->
                                         <vaadin-combo-box id="geral_estado" name="geral_estado" items="[[ListaEstados]]" item-value-path="id" item-label-path="value" value="{{visita.codEstado}}" label="Estado" disabled="{{ _lockFields }}">
                                             <template>
                                                 <paper-icon-item>
@@ -326,7 +336,7 @@
                                             <div class="panel-body">
                                                 <div class="col-md-12">
                                                     <div class="col-md-12">
-                                                        <vaadin-text-field id="geral_iniciativaCriador" name="geral_iniciativaCriador" value="{{visita.iniciativaCriadorTexto}}" label="Iniciada por:" maxlength="50" disabled></vaadin-text-field>
+                                                        <vaadin-text-field id="geral_iniciativaCriadorNome" name="geral_iniciativaCriadorNome" value="{{visita.iniciativaCriadorNome}}" label="Iniciada por:" maxlength="50" disabled></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-md-12">
@@ -522,6 +532,9 @@
                 </div>
             </div>
         </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -551,7 +564,6 @@
                     if (this._visita == "")
                         this._isCreate = true;
 
-
                     this.$.page_databound_ajax.body = JSON.stringify({ "codVisita": this._visita });
                     this.$.page_databound_ajax.generateRequest();
 
@@ -559,8 +571,39 @@
                     this.$.page_tarefas_ajax.generateRequest();
                 },
 
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
 
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
 
+                _createVisita: function () {
+                    this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
+                    this.$.page_CreateVisita_ajax.generateRequest();
+                },
+                _responseCreateVisita: function () {
+                    if (this.resultCreate.eReasonCode == 1) {
+                        this._openToast(this.resultCreate.eMessage);
+                    } else {
+                        this._openToastError(this.resultCreate.eMessage);
+                    }
+                },
+
+                _updateVisita: function () {
+                    this.$.page_UpdateVisita_ajax.body = JSON.stringify(this.visita);
+                    this.$.page_UpdateVisita_ajax.generateRequest();
+                },
+                _responseUpdateVisita: function () {
+                    if (this.resultUpdate.eReasonCode == 1) {
+                        this._openToast(this.resultUpdate.eMessage);
+                    } else {
+                        this._openToastError(this.resultUpdate.eMessage);
+                    }
+                },
 
 
             });

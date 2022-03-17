@@ -1,5 +1,6 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Logic.VisitasDB;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -82,25 +84,6 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCresp));
 
-            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-            List<NAVFornecedoresViewModel> AllFornecedores = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-            List<VisitasEstados> AllEstados = DBVisitasEstados.GetAll();
-            List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
-            List<NAVEmployeeViewModel> AllEmployees = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
-
-            result.ForEach(x =>
-            {
-                if (!string.IsNullOrEmpty(x.CodCliente)) x.ClienteTexto = AllClients.FirstOrDefault(y => y.No_ == x.CodCliente).Name; else x.ClienteTexto = "";
-                if (!string.IsNullOrEmpty(x.CodFornecedor)) x.FornecedorTexto = AllFornecedores.FirstOrDefault(y => y.No == x.CodFornecedor).Name; else x.FornecedorTexto = "";
-                if (x.InicioDataHora.HasValue) x.InicioDataTexto = x.InicioDataHora.Value.ToString("yyyy-MM-dd"); else x.InicioDataTexto = "";
-                if (x.InicioDataHora.HasValue) x.InicioHoraTexto = x.InicioDataHora.Value.ToString("HH:mm"); else x.InicioHoraTexto = "";
-                if (x.FimDataHora.HasValue) x.FimDataTexto = x.FimDataHora.Value.ToString("yyyy-MM-dd"); else x.FimDataTexto = "";
-                if (x.FimDataHora.HasValue) x.FimHoraTexto = x.FimDataHora.Value.ToString("HH:mm"); else x.FimHoraTexto = "";
-                if (x.CodEstado.HasValue) x.EstadoTexto = AllEstados.FirstOrDefault(y => y.CodEstado == x.CodEstado).Estado; else x.EstadoTexto = "";
-                if (!string.IsNullOrEmpty(x.IniciativaCriador)) x.IniciativaCriadorTexto = AllUsers.FirstOrDefault(y => y.IdUtilizador == x.IniciativaCriador).Nome; else x.IniciativaCriadorTexto = "";
-                if (!string.IsNullOrEmpty(x.IniciativaResponsavel)) x.IniciativaResponsavelTexto = AllEmployees.FirstOrDefault(y => y.No == x.IniciativaResponsavel).Name; else x.IniciativaResponsavelTexto = "";
-            });
-
             return Json(result);
         }
 
@@ -131,20 +114,23 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["objetivo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["objetivo"]["label"].ToString()); Col = Col + 1; }
                 if (dp["local"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["local"]["label"].ToString()); Col = Col + 1; }
                 if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["codCliente"]["label"].ToString()); Col = Col + 1; }
-                if (dp["clienteTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["clienteTexto"]["label"].ToString()); Col = Col + 1; }
+                if (dp["nomeCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["nomeCliente"]["label"].ToString()); Col = Col + 1; }
                 if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["codFornecedor"]["label"].ToString()); Col = Col + 1; }
-                if (dp["fornecedorTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["fornecedorTexto"]["label"].ToString()); Col = Col + 1; }
+                if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["nomeFornecedor"]["label"].ToString()); Col = Col + 1; }
                 if (dp["entidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["entidade"]["label"].ToString()); Col = Col + 1; }
                 if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["codRegiao"]["label"].ToString()); Col = Col + 1; }
+                if (dp["nomeRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["nomeRegiao"]["label"].ToString()); Col = Col + 1; }
                 if (dp["codArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["codArea"]["label"].ToString()); Col = Col + 1; }
+                if (dp["nomeArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["nomeArea"]["label"].ToString()); Col = Col + 1; }
                 if (dp["codCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["codCresp"]["label"].ToString()); Col = Col + 1; }
+                if (dp["nomeCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["nomeCresp"]["label"].ToString()); Col = Col + 1; }
                 if (dp["inicioDataTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["inicioDataTexto"]["label"].ToString()); Col = Col + 1; }
                 if (dp["inicioHoraTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["inicioHoraTexto"]["label"].ToString()); Col = Col + 1; }
                 if (dp["fimDataTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["fimDataTexto"]["label"].ToString()); Col = Col + 1; }
                 if (dp["fimHoraTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["fimHoraTexto"]["label"].ToString()); Col = Col + 1; }
-                if (dp["estadoTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["estadoTexto"]["label"].ToString()); Col = Col + 1; }
-                if (dp["iniciativaCriadorTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["iniciativaCriadorTexto"]["label"].ToString()); Col = Col + 1; }
-                if (dp["iniciativaResponsavelTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["iniciativaResponsavelTexto"]["label"].ToString()); Col = Col + 1; }
+                if (dp["nomeEstado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["nomeEstado"]["label"].ToString()); Col = Col + 1; }
+                if (dp["iniciativaCriadorNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["iniciativaCriadorNome"]["label"].ToString()); Col = Col + 1; }
+                if (dp["iniciativaResponsavelNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["iniciativaResponsavelNome"]["label"].ToString()); Col = Col + 1; }
                 if (dp["iniciativaIntervinientes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["iniciativaIntervinientes"]["label"].ToString()); Col = Col + 1; }
                 if (dp["rececaoCriador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["rececaoCriador"]["label"].ToString()); Col = Col + 1; }
                 if (dp["rececaoResponsavel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(dp["rececaoResponsavel"]["label"].ToString()); Col = Col + 1; }
@@ -163,20 +149,23 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["objetivo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Objetivo); Col = Col + 1; }
                         if (dp["local"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Local); Col = Col + 1; }
                         if (dp["codCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCliente); Col = Col + 1; }
-                        if (dp["clienteTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteTexto); Col = Col + 1; }
+                        if (dp["nomeCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeCliente); Col = Col + 1; }
                         if (dp["codFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodFornecedor); Col = Col + 1; }
-                        if (dp["fornecedorTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FornecedorTexto); Col = Col + 1; }
+                        if (dp["nomeFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeFornecedor); Col = Col + 1; }
                         if (dp["entidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Entidade); Col = Col + 1; }
                         if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
+                        if (dp["nomeRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeRegiao); Col = Col + 1; }
                         if (dp["codArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodArea); Col = Col + 1; }
+                        if (dp["nomeArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeArea); Col = Col + 1; }
                         if (dp["codCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCresp); Col = Col + 1; }
+                        if (dp["nomeCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeCresp); Col = Col + 1; }
                         if (dp["inicioDataTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InicioDataTexto); Col = Col + 1; }
                         if (dp["inicioHoraTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InicioHoraTexto); Col = Col + 1; }
                         if (dp["fimDataTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FimDataTexto); Col = Col + 1; }
                         if (dp["fimHoraTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FimHoraTexto); Col = Col + 1; }
-                        if (dp["estadoTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstadoTexto); Col = Col + 1; }
-                        if (dp["iniciativaCriadorTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IniciativaCriadorTexto); Col = Col + 1; }
-                        if (dp["iniciativaResponsavelTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IniciativaResponsavelTexto); Col = Col + 1; }
+                        if (dp["nomeEstado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeEstado); Col = Col + 1; }
+                        if (dp["iniciativaCriadorNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IniciativaCriadorNome); Col = Col + 1; }
+                        if (dp["iniciativaResponsavelNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IniciativaResponsavelNome); Col = Col + 1; }
                         if (dp["iniciativaIntervinientes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.IniciativaIntervinientes); Col = Col + 1; }
                         if (dp["rececaoCriador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RececaoCriador); Col = Col + 1; }
                         if (dp["rececaoResponsavel"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RececaoResponsavel); Col = Col + 1; }
@@ -207,20 +196,11 @@ namespace Hydra.Such.Portal.Controllers
         {
             VisitasViewModel result = new VisitasViewModel();
             if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
-            {
                 result = DBVisitas.ParseToViewModel(DBVisitas.GetByVisita(visita.CodVisita));
-
-                List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-                List<NAVFornecedoresViewModel> AllFornecedores = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-                List<VisitasEstados> AllEstados = DBVisitasEstados.GetAll();
-                List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
-                List<NAVEmployeeViewModel> AllEmployees = DBNAV2009Employees.GetAll("", _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
-
-                if (!string.IsNullOrEmpty(result.CodCliente)) result.ClienteTexto = AllClients.FirstOrDefault(y => y.No_ == result.CodCliente).Name; else result.ClienteTexto = "";
-                if (!string.IsNullOrEmpty(result.CodFornecedor)) result.FornecedorTexto = AllFornecedores.FirstOrDefault(y => y.No == result.CodFornecedor).Name; else result.FornecedorTexto = "";
-                if (result.CodEstado.HasValue) result.EstadoTexto = AllEstados.FirstOrDefault(y => y.CodEstado == result.CodEstado).Estado; else result.EstadoTexto = "";
-                if (!string.IsNullOrEmpty(result.IniciativaCriador)) result.IniciativaCriadorTexto = AllUsers.FirstOrDefault(y => y.IdUtilizador == result.IniciativaCriador).Nome; else result.IniciativaCriadorTexto = "";
-                if (!string.IsNullOrEmpty(result.IniciativaResponsavel)) result.IniciativaResponsavelTexto = AllEmployees.FirstOrDefault(y => y.No == result.IniciativaResponsavel).Name; else result.IniciativaResponsavelTexto = "";
+            else
+            {
+                result.IniciativaCriador = User.Identity.Name;
+                result.IniciativaCriadorNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
             }
 
             return Json(result);
@@ -238,6 +218,87 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult CreateVisita([FromBody] VisitasViewModel visita)
+        {
+            try
+            {
+                Visitas visitaDB = new Visitas();
+                if (visita != null)
+                {
+                    bool autoGenId = true;
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeracaoVisitas.Value;
+
+                    visita.CodVisita = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+                    visita.NomeCliente = !string.IsNullOrEmpty(visita.CodCliente) ? DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, visita.CodCliente).Name : "";
+                    visita.NomeFornecedor = !string.IsNullOrEmpty(visita.CodFornecedor) ? DBNAV2017Fornecedores.GetFornecedorById(_config.NAVDatabaseName, _config.NAVCompanyName, visita.CodFornecedor).Name : "";
+                    visita.NomeRegiao = !string.IsNullOrEmpty(visita.CodRegiao) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.Region, "", visita.CodRegiao).FirstOrDefault().Name : "";
+                    visita.NomeArea = !string.IsNullOrEmpty(visita.CodArea) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.FunctionalArea, "", visita.CodArea).FirstOrDefault().Name : "";
+                    visita.NomeCresp = !string.IsNullOrEmpty(visita.CodCresp) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.ResponsabilityCenter, "", visita.CodCresp).FirstOrDefault().Name : "";
+                    visita.NomeEstado = visita.CodEstado.HasValue ? DBVisitasEstados.GetByEstado((int)visita.CodEstado).Estado : "";
+                    visita.IniciativaCriadorNome = !string.IsNullOrEmpty(visita.IniciativaCriador) ? DBUserConfigurations.GetById(visita.IniciativaCriador).Nome : "";
+                    visita.IniciativaResponsavelNome = !string.IsNullOrEmpty(visita.IniciativaResponsavel) ? DBNAV2009Employees.GetAll(visita.IniciativaResponsavel, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name : "";
+
+                    visitaDB = DBVisitas.ParseToDB(visita);
+
+                    if (DBVisitas.Create(visitaDB) != null)
+                    {
+                        visita.eReasonCode = 1;
+                        visita.eMessage = "Visita criada com sucesso.";
+                        return Json(visita);
+                    }
+                }
+
+                visita.eReasonCode = 99;
+                visita.eMessage = "Ocorreu um erro ao criar a Visita.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                visita.eReasonCode = 99;
+                visita.eMessage = "Ocorreu um erro ao criar a Visita.";
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateVisita([FromBody] VisitasViewModel visita)
+        {
+            try
+            {
+                Visitas visitaDB = new Visitas();
+                if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
+                {
+                    visita.NomeCliente = !string.IsNullOrEmpty(visita.CodCliente) ? DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, visita.CodCliente).Name : "";
+                    visita.NomeFornecedor = !string.IsNullOrEmpty(visita.CodFornecedor) ? DBNAV2017Fornecedores.GetFornecedorById(_config.NAVDatabaseName, _config.NAVCompanyName, visita.CodFornecedor).Name : "";
+                    visita.NomeRegiao = !string.IsNullOrEmpty(visita.CodRegiao) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.Region, "", visita.CodRegiao).FirstOrDefault().Name : "";
+                    visita.NomeArea = !string.IsNullOrEmpty(visita.CodArea) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.FunctionalArea, "", visita.CodArea).FirstOrDefault().Name : "";
+                    visita.NomeCresp = !string.IsNullOrEmpty(visita.CodCresp) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.ResponsabilityCenter, "", visita.CodCresp).FirstOrDefault().Name : "";
+                    visita.NomeEstado = visita.CodEstado.HasValue ? DBVisitasEstados.GetByEstado((int)visita.CodEstado).Estado : "";
+                    visita.IniciativaCriadorNome = !string.IsNullOrEmpty(visita.IniciativaCriador) ? DBUserConfigurations.GetById(visita.IniciativaCriador).Nome : "";
+                    visita.IniciativaResponsavelNome = !string.IsNullOrEmpty(visita.IniciativaResponsavel) ? DBNAV2009Employees.GetAll(visita.IniciativaResponsavel, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name : "";
+                    visitaDB = DBVisitas.ParseToDB(visita);
+
+                    if (DBVisitas.Update(visitaDB) != null)
+                    {
+                        visita.eReasonCode = 1;
+                        visita.eMessage = "Visita guardada com sucesso.";
+                        return Json(visita);
+                    }
+                }
+
+                visita.eReasonCode = 99;
+                visita.eMessage = "Ocorreu um erro ao guardar a Visita.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                visita.eReasonCode = 99;
+                visita.eMessage = "Ocorreu um erro ao guardar a Visita.";
+                return Json(null);
+            }
+        }
 
 
 
