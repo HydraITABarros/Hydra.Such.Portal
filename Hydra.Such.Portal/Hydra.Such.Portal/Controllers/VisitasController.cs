@@ -223,6 +223,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 result.IniciativaCriador = User.Identity.Name;
                 result.IniciativaCriadorNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
+                result.CodEstado = 1;
+                result.NomeEstado = DBVisitasEstados.GetByEstado(1).Estado;
             }
 
             result.UserLogin = User.Identity.Name;
@@ -550,6 +552,14 @@ namespace Hydra.Such.Portal.Controllers
             List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
             list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
             return Json(attach);
+        }
+
+        [HttpGet]
+        [Route("Visitas/DownloadFile")]
+        [Route("Visitas/DownloadFile/{id}")]
+        public FileStreamResult DownloadFile(string id)
+        {
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + "Visitas\\" + id, FileMode.Open), "application/xlsx");
         }
 
         [HttpPost]

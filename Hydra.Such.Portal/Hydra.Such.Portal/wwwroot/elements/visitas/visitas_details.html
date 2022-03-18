@@ -529,21 +529,17 @@
 
                             <!--Anexos-->
                             <div>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                        <div class="row break_clear">
-                                            <div class="col-md-12">
-                                                <vaadin-upload id="UploadRequest"
-                                                               target="/Visitas/FileUpload/{{_visita}}"
-                                                               method="POST"
-                                                               headers="{'Accept': 'application/json'}"
-                                                               hidden="{{ !_permissions.update }}"
-                                                               timeout=15000>
-                                                </vaadin-upload>
-                                            </div>
-                                        </div>
-                                    </template>
-                                </template>
+                                <div class="row break_clear">
+                                    <div class="col-md-12">
+                                        <vaadin-upload id="UploadRequest"
+                                                        target="/Visitas/FileUpload/{{_visita}}"
+                                                        method="POST"
+                                                        headers="{'Accept': 'application/json'}"
+                                                        hidden="{{ !_permissions.update }}"
+                                                        timeout=15000>
+                                        </vaadin-upload>
+                                    </div>
+                                </div>
 
                                 <div class="row break_clear">
                                     <div class="col-md-12">
@@ -636,6 +632,24 @@
                     if (this._visita == "")
                         this._isCreate = true;
 
+                    if (this._isCreate == false && this.$.UploadRequest != null) {
+                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results == true) {
+                                var msg = document.querySelector("x-visitasdetails");
+                                msg._openToast("Ficheiro adicionado com sucesso.");
+
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-visitasdetails");
+                                dd.$.page_LoadAttachments_ajax.generateRequest();
+                            }
+                            else {
+                                var msg = document.querySelector("x-visitasdetails");
+                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
+                            }
+                        });
+                    };
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "codVisita": this._visita });
                     this.$.page_databound_ajax.generateRequest();
 
@@ -645,24 +659,6 @@
                     this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._visita });
                     this.$.page_LoadAttachments_ajax.generateRequest();
 
-                    if (this.$.UploadRequest != null) {
-                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
-                            var results = JSON.parse(e.detail.xhr.response);
-                            if (results == true) {
-                                var msg = document.querySelector("x-visitasdetails");
-                                msg._openToast("Ficheiro adicionado com sucesso.");
-
-                                e.detail.xhr.requestURL;
-                                var dd = document.querySelector("x-visitasdetails");
-                                dd.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._visita });
-                                dd.$.page_LoadAttachments_ajax.generateRequest();
-                            }
-                            else {
-                                var msg = document.querySelector("x-visitasdetails");
-                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
-                            }
-                        });
-                    }
                 },
                 _responseGetVisita: function () {
                     this._lockFields = false;
