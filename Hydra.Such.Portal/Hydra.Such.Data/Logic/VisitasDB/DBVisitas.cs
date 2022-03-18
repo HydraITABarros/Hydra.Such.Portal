@@ -32,7 +32,7 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 using (var ctx = new SuchDBContext())
                 {
                     if (Ativas == true)
-                        return ctx.Visitas.Where(x => x.CodEstado == 1 || x.CodEstado == 2).ToList();
+                        return ctx.Visitas.Where(x => x.CodEstado == null || x.CodEstado == 1 || x.CodEstado == 2).ToList();
                     else
                         return ctx.Visitas.Where(x => x.CodEstado == 3).ToList();
                 }

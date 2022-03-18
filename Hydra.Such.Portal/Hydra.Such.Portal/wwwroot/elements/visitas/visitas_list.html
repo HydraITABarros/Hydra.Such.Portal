@@ -53,7 +53,7 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax url="/Visitas/GetList"
+        <iron-ajax url="/Visitas/GetListAllAtivas"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -74,6 +74,8 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Nova Visita</paper-button>
             </template>
+            <paper-button class="tablinks" id="showInativas" on-tap="_showInativas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showInativasMessage }}</paper-button>
+
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -371,6 +373,16 @@
                             return {};
                         }
                     },
+                    _inativas: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _showInativasMessage: {
+                        type: String,
+                        notify: true,
+                        value: "Exibir Concluídas"
+                    },
                     /*FILTROS*/
                     filter: {
                         type: Object,
@@ -399,6 +411,7 @@
                     }
                 },
                 ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
@@ -495,8 +508,26 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
+
+                _showInativas: function (item) {
+                    if (item != null) {
+                        if (this._inativas) {
+                            this._showInativasMessage = "Exibir Concluídas";
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
+                            this.$.grid_databound_ajax.generateRequest();
+                        } else {
+                            this._showInativasMessage = "Exibir Ativas";
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": false });
+                            this.$.grid_databound_ajax.generateRequest();
+                        }
+
+                        this._inativas = !this._inativas;
+                    }
+                },
             });
         });
     </script>

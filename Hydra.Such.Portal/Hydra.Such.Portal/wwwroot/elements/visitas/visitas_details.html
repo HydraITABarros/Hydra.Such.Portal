@@ -162,6 +162,7 @@
                    method="post"
                    handle-as="json"
                    id="page_databound_ajax"
+                   on-response="_responseGetVisita"
                    content-type="application/json">
         </iron-ajax>
 
@@ -174,7 +175,7 @@
         </iron-ajax>
 
         <iron-ajax url="/Visitas/CreateVisita"
-                   last-response="{{resultCreate}}"
+                   last-response="{{resultCreateVisita}}"
                    method="post"
                    handle-as="json"
                    id="page_CreateVisita_ajax"
@@ -183,11 +184,64 @@
         </iron-ajax>
 
         <iron-ajax url="/Visitas/UpdateVisita"
-                   last-response="{{resultUpdate}}"
+                   last-response="{{resultUpdateVisita}}"
                    method="post"
                    handle-as="json"
                    id="page_UpdateVisita_ajax"
                    on-response="_responseUpdateVisita"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/DeleteVisita"
+                   last-response="{{resultDeleteVisita}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteVisita_ajax"
+                   on-response="_responseDeleteVisita"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/CreateTarefa"
+                   last-response="{{resultCreateTarefa}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateTarefa_ajax"
+                   on-response="_responseCreateTarefa"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/UpdateTarefa"
+                   last-response="{{resultUpdateTarefa}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_UpdateTarefa_ajax"
+                   on-response="_responseUpdateTarefa"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/DeleteTarefa"
+                   last-response="{{resultDeleteTarefa}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteTarefa_ajax"
+                   on-response="_responseDeleteTarefa"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_LoadAttachments_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -210,7 +264,7 @@
 
             <template is="dom-if" if="{{ !_isCreate }}">
                 <template is="dom-if" if="{{ _permissions.delete }}">
-                    <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_deleteVisita"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </template>
             </template>
         </div>
@@ -301,7 +355,7 @@
 
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="geral_inicioData" name="geral_inicioData" value="{{visita.inicioDataTexto}}" label="Data/Hora - Início" disabled="{{ _lockFieldse }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        <vaadin-date-picker id="geral_inicioData" name="geral_inicioData" value="{{visita.inicioDataTexto}}" label="Data/Hora - Início" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2" style="padding-top: 20px;">
@@ -392,7 +446,7 @@
                                 <div class="row break_clear">
                                     <!--Tarefas Realizadas-->
                                     <vaadin-grid id="grid_tabTarefa" aria-label="grid_tabTarefa" items="{{ tarefas }}" class="grid" multi-sort="true" column-reordering-allowed>
-                                        <vaadin-grid-column resizable width="150px">
+                                        <vaadin-grid-column resizable width="10%">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="ordem">Ordem</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="ordem" />
@@ -404,68 +458,68 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="150px">
+                                        <vaadin-grid-column resizable width="60%">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="tarefa">Tarefa</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="tarefa" />
                                             </template>
                                             <template>
-                                                {{item.tarefa}}
+                                                <vaadin-text-field id="tab_tarefa" name="tab_tarefa" value="{{item.tarefa}}" disabled="{{ _lockFields }}" maxlength="100" on-blur="_updateTarefa"> </vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="150px">
+                                        <vaadin-grid-column resizable width="10%">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="data" />
                                             </template>
                                             <template>
-                                                {{item.dataTexto}}
+                                                <vaadin-date-picker id="tab_data" name="tab_data" value="{{item.dataTexto}}" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" on-changed="_updateTarefa"></vaadin-date-picker>
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="150px">
+                                        <vaadin-grid-column resizable width="10%">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="duracao">Duração</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="duracao" />
                                             </template>
                                             <template>
-                                                {{item.duracaoTexto}}
+                                                <vaadin-time-picker id="tab_duracao" name="tab_duracao" value="{{item.duracaoTexto}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800" on-blur="_updateTarefa"></vaadin-time-picker>
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="100px">
+                                        <vaadin-grid-column resizable width="10%">
                                             <template class="header">
                                             </template>
                                             <template>
                                                 <center>
-                                                    <paper-button id="btn_tarefaDelete" name="btn_tarefaDelete" class="btnRemove tableBtn" raised on-tap="_deleteTarefaLinha" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    <paper-button id="btn_DeleteTtarefa" name="btn_DeleteTtarefa" class="btnRemove tableBtn" raised on-tap="_deleteTarefa" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
-                                    <div class="row break_clear">
+                                    <div class="row break_clear" hidden="{{_isCreate}}">
                                         <paper-collapse-item class="panel-heading" header="Nova Tarefa" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-1 alignRight">
-                                                    <vaadin-text-field id="tarefa_ordem" name="tarefa_ordem" value="" label="Ordem" disabled="{{ _lockFields }}" type="number" maxlength="5"> </vaadin-text-field>
+                                                    <vaadin-text-field id="tarefa_ordem" name="tarefa_ordem" value="" label="Ordem" disabled="{{ _lockFields }}" type="number" maxlength="5" hidden="{{_isCreate}}"> </vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <vaadin-text-field id="tarefa_tarefa" name="tarefa_tarefa" value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="100"> </vaadin-text-field>
+                                                    <vaadin-text-field id="tarefa_tarefa" name="tarefa_tarefa" value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="100" hidden="{{_isCreate}}"> </vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="tarefa_data" name="tarefa_data" value="" label="Data" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="tarefa_data" name="tarefa_data" value="" label="Data" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" hidden="{{_isCreate}}"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-time-picker id="tarefa_duracao" name="tarefa_duracao" label="Duração" value="" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
+                                                    <vaadin-time-picker id="tarefa_duracao" name="tarefa_duracao" label="Duração" value="" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800" hidden="{{_isCreate}}"></vaadin-time-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
-                                                    <paper-button id="btn_tarefaInsert" name="btn_tarefaInsert" class="btnSave" raised on-tap="_insertTarefaLinha" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                                    <paper-button id="btn_tarefaInsert" name="btn_tarefaInsert" class="btnSave" raised on-tap="_createTarefa" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -475,17 +529,21 @@
 
                             <!--Anexos-->
                             <div>
-                                <div class="row break_clear">
-                                    <div class="col-md-12">
-                                        <vaadin-upload id="UploadRequest"
-                                                       target="/Visitas/FileUpload/{{_prerequesitionno}}"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       hidden="{{ !_permissions.update }}"
-                                                       timeout=15000>
-                                        </vaadin-upload>
-                                    </div>
-                                </div>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <template is="dom-if" if="{{ _permissions.update }}">
+                                        <div class="row break_clear">
+                                            <div class="col-md-12">
+                                                <vaadin-upload id="UploadRequest"
+                                                               target="/Visitas/FileUpload/{{_visita}}"
+                                                               method="POST"
+                                                               headers="{'Accept': 'application/json'}"
+                                                               hidden="{{ !_permissions.update }}"
+                                                               timeout=15000>
+                                                </vaadin-upload>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
 
                                 <div class="row break_clear">
                                     <div class="col-md-12">
@@ -558,17 +616,10 @@
                         type: Boolean,
                         value: false
                     },
-                },
-
-                ready: function () {
-                    if (this._visita == "")
-                        this._isCreate = true;
-
-                    this.$.page_databound_ajax.body = JSON.stringify({ "codVisita": this._visita });
-                    this.$.page_databound_ajax.generateRequest();
-
-                    this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
-                    this.$.page_tarefas_ajax.generateRequest();
+                    _lockFields: {
+                        type: Boolean,
+                        value: true
+                    },
                 },
 
                 _openToast: function (message) {
@@ -581,29 +632,294 @@
                     this.$.ToastError.open();
                 },
 
-                _createVisita: function () {
-                    this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
-                    this.$.page_CreateVisita_ajax.generateRequest();
+                ready: function () {
+                    if (this._visita == "")
+                        this._isCreate = true;
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                    this.$.page_tarefas_ajax.generateRequest();
+
+                    this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._visita });
+                    this.$.page_LoadAttachments_ajax.generateRequest();
+
+                    if (this.$.UploadRequest != null) {
+                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results == true) {
+                                var msg = document.querySelector("x-visitasdetails");
+                                msg._openToast("Ficheiro adicionado com sucesso.");
+
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-visitasdetails");
+                                dd.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._visita });
+                                dd.$.page_LoadAttachments_ajax.generateRequest();
+                            }
+                            else {
+                                var msg = document.querySelector("x-visitasdetails");
+                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
+                            }
+                        });
+                    }
+                },
+                _responseGetVisita: function () {
+                    this._lockFields = false;
+
+                    if (this.visita.codEstado == 3) { //3 = Concluída
+                        this._lockFields = true;
+                        if (this.visita.IniciativaCriador == this.visita.UserLogin)
+                            this.$.geral_estado.disabled = false;
+                        else
+                            this.$.geral_estado.disabled = true;
+                    }
+                },
+
+                _createVisita: function() {
+                    
+                    if (this.$.geral_objetivo.value != null && this.$.geral_objetivo.value != "") {
+                        if (this.$.geral_local.value != null && this.$.geral_local.value != "") {
+                            //this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
+                            //this.$.page_CreateVisita_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError("O campo Local / Compartimento é de preenchimento obrigatório.");
+                        }
+                    }
+                    else {
+                        this._openToastError("O campo Objetivo / Descrição da Visita é de preenchimento obrigatório.");
+                    }
                 },
                 _responseCreateVisita: function () {
-                    if (this.resultCreate.eReasonCode == 1) {
-                        this._openToast(this.resultCreate.eMessage);
+                    if (this.resultCreateVisita.eReasonCode == 1) {
+                        this._openToast(this.resultCreateVisita.eMessage);
+
+                        this._visita = this.resultCreateVisita.codVisita;
                     } else {
-                        this._openToastError(this.resultCreate.eMessage);
+                        this._openToastError(this.resultCreateVisita.eMessage);
                     }
                 },
 
                 _updateVisita: function () {
-                    this.$.page_UpdateVisita_ajax.body = JSON.stringify(this.visita);
-                    this.$.page_UpdateVisita_ajax.generateRequest();
-                },
-                _responseUpdateVisita: function () {
-                    if (this.resultUpdate.eReasonCode == 1) {
-                        this._openToast(this.resultUpdate.eMessage);
-                    } else {
-                        this._openToastError(this.resultUpdate.eMessage);
+                    if (this.$.geral_objetivo.value != null && this.$.geral_objetivo.value != "") {
+                        if (this.$.geral_local.value != null && this.$.geral_local.value != "") {
+                            this.$.page_UpdateVisita_ajax.body = JSON.stringify(this.visita);
+                            this.$.page_UpdateVisita_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError("O campo Local / Compartimento é de preenchimento obrigatório.");
+                        }
+                    }
+                    else {
+                        this._openToastError("O campo Objetivo / Descrição da Visita é de preenchimento obrigatório.");
                     }
                 },
+                _responseUpdateVisita: function () {
+                    if (this.resultUpdateVisita.eReasonCode == 1) {
+                        this._openToast(this.resultUpdateVisita.eMessage);
+                    } else {
+                        this._openToastError(this.resultUpdateVisita.eMessage);
+                    }
+                },
+
+                _deleteVisita: function () {
+                    if (this._permissions.delete == true) {
+                        var visita = this._visita;
+                        var ajax_request = this.$.page_DeleteVisita_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende eliminar a Visita Nº " + visita + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteVisita) {
+                                if (deleteVisita) {
+                                    ajax_request.body = JSON.stringify({
+                                        codVisita: visita
+                                    });
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a Visita.');
+                    }
+                },
+                _responseDeleteVisita: function (e) {
+                    if (this.resultDeleteVisita.eReasonCode == 1) {
+                        this._openToast(this.resultDeleteVisita.eMessage);
+
+                        window.location.href = "/Visitas/Visitas_List/";
+                    } else {
+                        this._openToastError(this.resultDeleteVisita.eMessage);
+                    }
+                },
+
+                _createTarefa: function () {
+                    if (this.$.tarefa_ordem.value != null && this.$.tarefa_ordem.value != "") {
+                        this.$.page_CreateTarefa_ajax.body = JSON.stringify({
+                            codVisita: this._visita,
+                            ordem: this.$.tarefa_ordem.value,
+                            //codTarefa: this.$.tarefa_codTarefa.value,
+                            tarefa: this.$.tarefa_tarefa.value,
+                            dataTexto: this.$.tarefa_data.value,
+                            duracaoTexto: this.$.tarefa_duracao.value,
+                        });
+                        this.$.page_CreateTarefa_ajax.generateRequest();
+                        this.$.grid_tabTarefa.clearCache();
+                    }
+                    else {
+                        this._openToastError("O campo Ordem é de preenchimento obrigatório.");
+                    }
+                },
+                _responseCreateTarefa: function () {
+                    if (this.resultCreateTarefa.eReasonCode == 1) {
+                        this._openToast(this.resultCreateTarefa.eMessage);
+
+                        this.$.tarefa_ordem.value = "";
+                        this.$.tarefa_tarefa.value = "";
+                        this.$.tarefa_data.value = "";
+                        this.$.tarefa_duracao.value = "";
+
+                        this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                        this.$.page_tarefas_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.resultCreateTarefa.eMessage);
+                    }
+                },
+
+                _updateTarefa: function (e) {
+                    if (e != null && e != undefined && e.model.item.ordem != null && e.model.item.ordem != "") {
+                        this.$.page_UpdateTarefa_ajax.body = JSON.stringify({
+                            codVisita: this._visita,
+                            ordem: e.model.item.ordem,
+                            //codTarefa: e.model.item.codTarefa,
+                            tarefa: e.model.item.tarefa,
+                            dataTexto: e.model.item.dataTexto,
+                            duracaoTexto: e.model.item.duracaoTexto,
+                        });
+                        this.$.page_UpdateTarefa_ajax.generateRequest();
+                        this.$.grid_tabTarefa.clearCache();
+                    }
+                    else {
+                        this._openToastError("O campo Ordem é de preenchimento obrigatório.");
+                    }
+                },
+                _responseUpdateTarefa: function () {
+                    if (this.resultUpdateTarefa.eReasonCode == 1) {
+                        this._openToast(this.resultUpdateTarefa.eMessage);
+
+                        this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                        this.$.page_tarefas_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.resultUpdateTarefa.eMessage);
+                    }
+                },
+
+                _deleteTarefa: function (e) {
+                    if (this._permissions.update == true) {
+                        var visita = this._visita;
+                        var ordem = e.model.item.ordem;
+                        var ajax_request = this.$.page_DeleteTarefa_ajax;
+                        var tab = this.$.grid_tabTarefa;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a linha das Tarefas Nº " + ordem + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteTarefa) {
+                                if (deleteTarefa) {
+                                    ajax_request.body = JSON.stringify({
+                                        codVisita: visita,
+                                        ordem: ordem
+                                    });
+                                    ajax_request.generateRequest();
+                                    tab.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a linha das Tarefas.');
+                    }
+                },
+                _responseDeleteTarefa: function (e) {
+                    if (this.resultDeleteTarefa.eReasonCode == 1) {
+                        this._openToast(this.resultDeleteTarefa.eMessage);
+
+                        this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                        this.$.page_tarefas_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.resultDeleteTarefa.eMessage);
+                    }
+                },
+
+                _deleteAnexo: function (e) {
+                    if (this._permissions.update == true) {
+                        var anexo = e.model.item;
+                        var anexoFileName = e.model.item.url;
+
+                        var ajax_request = this.$.delete_files_ajax;
+                        var tab = this.$.grid_Anexos;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Anexo " + anexoFileName + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteAnexo) {
+                                if (deleteAnexo) {
+                                    ajax_request.body = JSON.stringify(anexo);
+                                    ajax_request.generateRequest();
+                                    tab.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a linha das Tarefas.');
+                    }
+                },
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._visita });
+                        this.$.page_LoadAttachments_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
+
+
+
+
 
 
             });

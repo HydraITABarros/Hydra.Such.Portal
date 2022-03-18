@@ -24,6 +24,21 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
+        public static VisitasTarefas GetByID(string Visita, int Ordem)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.VisitasTarefas.FirstOrDefault(p => p.CodVisita == Visita && p.Ordem == Ordem);
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static List<VisitasTarefas> GetByVisita(string Visita)
         {
             try
@@ -106,7 +121,8 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 Ordem = x.Ordem,
                 CodTarefa = x.CodTarefa,
                 Tarefa = x.Tarefa,
-                DataDuracao = x.DataDuracao,
+                Data = x.Data,
+                Duracao = x.Duracao,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataHoraCriacao = x.DataHoraCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
@@ -136,17 +152,17 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 Ordem = x.Ordem,
                 CodTarefa = x.CodTarefa,
                 Tarefa = x.Tarefa,
-                DataDuracao = x.DataDuracao,
+                Data = x.Data,
+                DataTexto = x.Data.HasValue ? x.Data.Value.ToString("yyyy-MM-dd") : "",
+                Duracao = x.Duracao,
+                DuracaoTexto = x.Duracao.HasValue ? x.Duracao.ToString() : "", // x.Duracao.Value.ToString("HH:mm") : "",
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataHoraCriacao = x.DataHoraCriacao,
+                DataHoraCriacaoTexto = x.DataHoraCriacao.HasValue ? x.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
                 UtilizadorModificacao = x.UtilizadorModificacao,
                 DataHoraModificacao = x.DataHoraModificacao,
+                DataHoraModificacaoTexto = x.DataHoraModificacao.HasValue ? x.DataHoraModificacao.Value.ToString("yyyy-MM-dd") : "",
             };
-
-            if (x.DataDuracao != null) visita.DataTexto = x.DataDuracao.Value.ToString("yyyy-MM-dd");
-            if (x.DataDuracao != null) visita.DuracaoTexto = x.DataDuracao.Value.ToString("HH:mm");
-            if (x.DataHoraCriacao != null) visita.DataHoraCriacaoTexto = x.DataHoraCriacao.Value.ToString("yyyy-MM-dd");
-            if (x.DataHoraModificacao != null) visita.DataHoraModificacaoTexto = x.DataHoraModificacao.Value.ToString("yyyy-MM-dd");
 
             return visita;
         }

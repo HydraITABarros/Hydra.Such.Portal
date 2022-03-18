@@ -1,4 +1,5 @@
-﻿using Hydra.Such.Data.Database;
+﻿using Hydra.Such.Data;
+using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.Logic.VisitasDB;
@@ -45,6 +46,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
+
                 return View();
             }
             else
@@ -61,6 +63,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.UPermissions = UPerm;
                 ViewBag.VisitaNo = string.IsNullOrEmpty(id) ? "" : id;
+
                 return View();
             }
             else
@@ -73,7 +76,26 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetList()
         {
 
-            List<VisitasViewModel> result = DBVisitas.ParseListToViewModel(DBVisitas.GetAllToList());
+            List<VisitasViewModel> result = DBVisitas.ParseListToViewModel(DBVisitas.GetAllToList()).OrderByDescending(x => x.DataHoraCriacao).ToList();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CodRegiao));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CodArea));
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCresp));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetListAllAtivas([FromBody] JObject requestParams)
+        {
+            Boolean ativas = Boolean.Parse(requestParams["ativas"].ToString());
+
+            List<VisitasViewModel> result = DBVisitas.ParseListToViewModel(DBVisitas.GetAllAtivas(ativas)).OrderByDescending(x => x.DataHoraCriacao).ToList();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -203,6 +225,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.IniciativaCriadorNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
             }
 
+            result.UserLogin = User.Identity.Name;
             return Json(result);
         }
 
@@ -212,7 +235,7 @@ namespace Hydra.Such.Portal.Controllers
             List<VisitasTarefasViewModel> result = new List<VisitasTarefasViewModel>();
             if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
             {
-                result = DBVisitasTarefas.ParseListToViewModel(DBVisitasTarefas.GetByVisita(visita.CodVisita));
+                result = DBVisitasTarefas.ParseListToViewModel(DBVisitasTarefas.GetByVisita(visita.CodVisita)).OrderBy(x => x.Ordem).ToList();
             }
 
             return Json(result);
@@ -223,7 +246,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                Visitas visitaDB = new Visitas();
                 if (visita != null)
                 {
                     bool autoGenId = true;
@@ -239,10 +261,12 @@ namespace Hydra.Such.Portal.Controllers
                     visita.NomeEstado = visita.CodEstado.HasValue ? DBVisitasEstados.GetByEstado((int)visita.CodEstado).Estado : "";
                     visita.IniciativaCriadorNome = !string.IsNullOrEmpty(visita.IniciativaCriador) ? DBUserConfigurations.GetById(visita.IniciativaCriador).Nome : "";
                     visita.IniciativaResponsavelNome = !string.IsNullOrEmpty(visita.IniciativaResponsavel) ? DBNAV2009Employees.GetAll(visita.IniciativaResponsavel, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name : "";
+                    visita.UtilizadorCriacao = User.Identity.Name;
+                    visita.UtilizadorCriacaoNome = !string.IsNullOrEmpty(visita.UtilizadorCriacao) ? DBUserConfigurations.GetById(visita.UtilizadorCriacao).Nome : "";
 
-                    visitaDB = DBVisitas.ParseToDB(visita);
+                    Visitas visitaDB = DBVisitas.ParseToDB(visita);
 
-                    if (DBVisitas.Create(visitaDB) != null)
+                    if (visitaDB != null && DBVisitas.Create(visitaDB) != null)
                     {
                         visita.eReasonCode = 1;
                         visita.eMessage = "Visita criada com sucesso.";
@@ -267,7 +291,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                Visitas visitaDB = new Visitas();
                 if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
                 {
                     visita.NomeCliente = !string.IsNullOrEmpty(visita.CodCliente) ? DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, visita.CodCliente).Name : "";
@@ -278,9 +301,12 @@ namespace Hydra.Such.Portal.Controllers
                     visita.NomeEstado = visita.CodEstado.HasValue ? DBVisitasEstados.GetByEstado((int)visita.CodEstado).Estado : "";
                     visita.IniciativaCriadorNome = !string.IsNullOrEmpty(visita.IniciativaCriador) ? DBUserConfigurations.GetById(visita.IniciativaCriador).Nome : "";
                     visita.IniciativaResponsavelNome = !string.IsNullOrEmpty(visita.IniciativaResponsavel) ? DBNAV2009Employees.GetAll(visita.IniciativaResponsavel, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name : "";
-                    visitaDB = DBVisitas.ParseToDB(visita);
+                    visita.UtilizadorModificacao = User.Identity.Name;
+                    visita.UtilizadorModificacaoNome = !string.IsNullOrEmpty(visita.UtilizadorModificacao) ? DBUserConfigurations.GetById(visita.UtilizadorModificacao).Nome : "";
 
-                    if (DBVisitas.Update(visitaDB) != null)
+                    Visitas visitaDB = DBVisitas.ParseToDB(visita);
+
+                    if (visitaDB != null && DBVisitas.Update(visitaDB) != null)
                     {
                         visita.eReasonCode = 1;
                         visita.eMessage = "Visita guardada com sucesso.";
@@ -300,8 +326,249 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult DeleteVisita([FromBody] VisitasViewModel visita)
+        {
+            try
+            {
+                if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
+                {
+                    Visitas visitaDB = DBVisitas.GetByVisita(visita.CodVisita);
+                    if (visitaDB != null && !string.IsNullOrEmpty(visitaDB.IniciativaCriador) && visitaDB.IniciativaCriador == User.Identity.Name)
+                    {
+                        List<VisitasTarefas> tarefasDB = DBVisitasTarefas.GetByVisita(visita.CodVisita);
 
+                        if (tarefasDB != null && tarefasDB.Count > 0)
+                        {
+                            tarefasDB.ForEach(tarefa =>
+                            {
+                                DBVisitasTarefas.Delete(tarefa);
+                            });
+                        }
 
+                        if (DBVisitas.Delete(visitaDB) == true)
+                        {
+                            visita.eReasonCode = 1;
+                            visita.eMessage = "Visita eliminada com sucesso.";
+                            return Json(visita);
+                        }
+                    }
+                }
+
+                visita.eReasonCode = 99;
+                visita.eMessage = "Ocorreu um erro ao eliminar a Visita.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                visita.eReasonCode = 99;
+                visita.eMessage = "Ocorreu um erro ao eliminar a Visita.";
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult CreateTarefa([FromBody] VisitasTarefasViewModel tarefa)
+        {
+            try
+            {
+                if (tarefa != null && !string.IsNullOrEmpty(tarefa.CodVisita) && tarefa.Ordem.HasValue)
+                {
+                    if (!string.IsNullOrEmpty(tarefa.DataTexto)) tarefa.Data = Convert.ToDateTime(tarefa.DataTexto);
+                    if (!string.IsNullOrEmpty(tarefa.DuracaoTexto)) tarefa.Duracao = TimeSpan.Parse(tarefa.DuracaoTexto);
+                    tarefa.UtilizadorCriacao = User.Identity.Name;
+
+                    VisitasTarefas tarefaDB = DBVisitasTarefas.ParseToDB(tarefa);
+
+                    if (tarefaDB != null && DBVisitasTarefas.Create(tarefaDB) != null)
+                    {
+                        tarefa.eReasonCode = 1;
+                        tarefa.eMessage = "Tarefa criada com sucesso.";
+                        return Json(tarefa);
+                    }
+                }
+
+                tarefa.eReasonCode = 99;
+                tarefa.eMessage = "Ocorreu um erro ao criar a Tarefa.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                tarefa.eReasonCode = 99;
+                tarefa.eMessage = "Ocorreu um erro ao criar a Tarefa.";
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult UpdateTarefa([FromBody] VisitasTarefasViewModel tarefa)
+        {
+            try
+            {
+                if (tarefa != null && !string.IsNullOrEmpty(tarefa.CodVisita) && tarefa.Ordem.HasValue)
+                {
+                    if (!string.IsNullOrEmpty(tarefa.DataTexto)) tarefa.Data = Convert.ToDateTime(tarefa.DataTexto);
+                    if (!string.IsNullOrEmpty(tarefa.DuracaoTexto)) tarefa.Duracao = TimeSpan.Parse(tarefa.DuracaoTexto);
+                    tarefa.UtilizadorModificacao = User.Identity.Name;
+
+                    VisitasTarefas tarefaDB = DBVisitasTarefas.ParseToDB(tarefa);
+
+                    if (tarefaDB != null && DBVisitasTarefas.Update(tarefaDB) != null)
+                    {
+                        tarefa.eReasonCode = 1;
+                        tarefa.eMessage = "Tarefa guardada com sucesso.";
+                        return Json(tarefa);
+                    }
+                }
+
+                tarefa.eReasonCode = 99;
+                tarefa.eMessage = "Ocorreu um erro ao guardar a Tarefa.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                tarefa.eReasonCode = 99;
+                tarefa.eMessage = "Ocorreu um erro ao guardar a Tarefa.";
+                return Json(null);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteTarefa([FromBody] VisitasTarefasViewModel tarefa)
+        {
+            try
+            {
+                if (tarefa != null && !string.IsNullOrEmpty(tarefa.CodVisita) && tarefa.Ordem.HasValue)
+                {
+                    VisitasTarefas tarefaDB = DBVisitasTarefas.GetByID(tarefa.CodVisita, (int)tarefa.Ordem);
+
+                    if (tarefaDB != null && DBVisitasTarefas.Delete(tarefaDB) == true)
+                    {
+                        tarefa.eReasonCode = 1;
+                        tarefa.eMessage = "Tarefa eliminada com sucesso.";
+                        return Json(tarefa);
+                    }
+                }
+
+                tarefa.eReasonCode = 99;
+                tarefa.eMessage = "Ocorreu um erro ao eliminar a Tarefa.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                tarefa.eReasonCode = 99;
+                tarefa.eMessage = "Ocorreu um erro ao eliminar a Tarefa.";
+                return Json(null);
+            }
+        }
+
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
+        [HttpPost]
+        [Route("Visitas/FileUpload")]
+        [Route("Visitas/FileUpload/{id}")]
+        public JsonResult FileUpload(string id)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+
+                            filename = MakeValidFileName(filename);
+                            full_filename = id + "_" + filename;
+                            var path = Path.Combine(_generalConfig.FileUploadFolder + "Visitas\\", full_filename);
+
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+
+                                Anexos newfile = new Anexos();
+                                newfile.NºOrigem = id;
+                                newfile.UrlAnexo = full_filename;
+                                newfile.TipoOrigem = TipoOrigemAnexos.Visitas;
+                                newfile.DataHoraCriação = DateTime.Now;
+                                newfile.UtilizadorCriação = User.Identity.Name;
+
+                                DBAttachments.Create(newfile);
+                                if (newfile.NºLinha == 0)
+                                {
+                                    System.IO.File.Delete(path);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(true);
+        }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            string id = requestParams["id"].ToString();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Visitas);
+
+            List<Anexos> list = DBAttachments.GetById(id);
+
+            if (UPerm != null && UPerm.Update == false)
+            {
+                list.RemoveAll(x => x.Visivel != true);
+            }
+
+            List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
+            list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
+            return Json(attach);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAttachments([FromBody] AttachmentsViewModel requestParams)
+        {
+            try
+            {
+                System.IO.File.Delete(_generalConfig.FileUploadFolder + "Visitas\\" + requestParams.Url);
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+                requestParams.eReasonCode = 1;
+
+            }
+            catch (Exception ex)
+            {
+                requestParams.eReasonCode = 2;
+                return Json(requestParams);
+            }
+            return Json(requestParams);
+        }
 
 
 

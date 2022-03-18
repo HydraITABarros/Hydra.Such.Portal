@@ -8,8 +8,9 @@ namespace Hydra.Such.Data.ViewModel.VisitasVM
         public int? Ordem { get; set; }
         public int CodTarefa { get; set; }
         public string Tarefa { get; set; }
-        public DateTime? DataDuracao { get; set; }
+        public DateTime? Data { get; set; }
         public string DataTexto { get; set; }
+        public TimeSpan? Duracao { get; set; }
         public string DuracaoTexto { get; set; }
         public string UtilizadorCriacao { get; set; }
         public string UtilizadorCriacaoTexto { get; set; }

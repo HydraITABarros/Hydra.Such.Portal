@@ -13060,9 +13060,12 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Tarefa")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.DataDuracao)
-                    .HasColumnName("DataDuracao")
+                entity.Property(e => e.Data)
+                    .HasColumnName("Data")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.Duracao)
+                    .HasColumnName("Duracao");
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")

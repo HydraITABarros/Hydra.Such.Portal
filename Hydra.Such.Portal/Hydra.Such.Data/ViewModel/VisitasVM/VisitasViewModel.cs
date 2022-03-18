@@ -45,6 +45,7 @@ namespace Hydra.Such.Data.ViewModel.VisitasVM
         public string UtilizadorModificacaoNome { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
         public string DataHoraModificacaoTexto { get; set; }
+        public string UserLogin { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
