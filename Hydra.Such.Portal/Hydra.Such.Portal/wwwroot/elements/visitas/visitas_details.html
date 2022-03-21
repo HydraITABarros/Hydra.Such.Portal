@@ -192,6 +192,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Visitas/DuplicarVisita"
+                   last-response="{{resultDuplicarVisita}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DuplicarVisita_ajax"
+                   on-response="_responseDuplicarVisita"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Visitas/DeleteVisita"
                    last-response="{{resultDeleteVisita}}"
                    method="post"
@@ -257,8 +266,7 @@
             <template is="dom-if" if="{{ !_isCreate }}">
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button id="btn_visitaUpdate" class="btnEdit tablinks" on-tap="_updateVisita"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    <paper-button id="btn_visitaDuplicar" class="btnEdit tablinks" on-tap="_duplicar"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; Duplicar</paper-button>
-                    <paper-button id="btn_visitaTornarModelo" class="btnEdit tablinks" on-tap="_tornarModelo"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Tornar Modelo</paper-button>
+                    <paper-button id="btn_visitaDuplicar" class="btnEdit tablinks" on-tap="_duplicarVisita"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; Duplicar</paper-button>
                 </template>
             </template>
 
@@ -529,14 +537,14 @@
 
                             <!--Anexos-->
                             <div>
-                                <div class="row break_clear">
+                                <div class="row break_clear" hidden="{{_isCreate}}">
                                     <div class="col-md-12">
                                         <vaadin-upload id="UploadRequest"
-                                                        target="/Visitas/FileUpload/{{_visita}}"
-                                                        method="POST"
-                                                        headers="{'Accept': 'application/json'}"
-                                                        hidden="{{ !_permissions.update }}"
-                                                        timeout=15000>
+                                                       target="/Visitas/FileUpload/{{_visita}}"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
                                         </vaadin-upload>
                                     </div>
                                 </div>
@@ -676,8 +684,8 @@
                     
                     if (this.$.geral_objetivo.value != null && this.$.geral_objetivo.value != "") {
                         if (this.$.geral_local.value != null && this.$.geral_local.value != "") {
-                            //this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
-                            //this.$.page_CreateVisita_ajax.generateRequest();
+                            this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
+                            this.$.page_CreateVisita_ajax.generateRequest();
                         }
                         else {
                             this._openToastError("O campo Local / Compartimento é de preenchimento obrigatório.");
@@ -692,6 +700,7 @@
                         this._openToast(this.resultCreateVisita.eMessage);
 
                         this._visita = this.resultCreateVisita.codVisita;
+                        window.location.href = "/Visitas/Visitas_Details/" + this._visita;
                     } else {
                         this._openToastError(this.resultCreateVisita.eMessage);
                     }
@@ -912,7 +921,43 @@
                     }
                 },
 
+                _duplicarVisita: function (e) {
+                    if (this._permissions.create == true) {
+                        var codVisita = this._visita;
+                        var visitaOriginal = this.visita;
+                        var ajax_request = this.$.page_DuplicarVisita_ajax;
 
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Duplicar a Visita Nº " + codVisita + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (duplicarVisita) {
+                                if (duplicarVisita) {
+                                    ajax_request.body = JSON.stringify(visitaOriginal);
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para Duplicar a Visita.');
+                    }
+                },
+                _responseDuplicarVisita: function () {
+                    if (this.resultDuplicarVisita.eReasonCode == 1) {
+                        this._openToast(this.resultDuplicarVisita.eMessage);
+                    } else {
+                        this._openToastError(this.resultDuplicarVisita.eMessage);
+                    }
+                },
 
 
 

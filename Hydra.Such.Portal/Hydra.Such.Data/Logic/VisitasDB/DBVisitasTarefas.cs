@@ -129,6 +129,8 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 DataHoraModificacao = x.DataHoraModificacao,
             };
 
+            if (!string.IsNullOrEmpty(x.DataTexto)) visita.Data = Convert.ToDateTime(x.DataTexto);
+            if (!string.IsNullOrEmpty(x.DuracaoTexto)) visita.Duracao = TimeSpan.Parse(x.DuracaoTexto);
             if (!string.IsNullOrEmpty(x.DataHoraCriacaoTexto)) visita.DataHoraCriacao = Convert.ToDateTime(x.DataHoraCriacaoTexto);
             if (!string.IsNullOrEmpty(x.DataHoraModificacaoTexto)) visita.DataHoraModificacao = Convert.ToDateTime(x.DataHoraModificacaoTexto);
 
@@ -155,7 +157,7 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 Data = x.Data,
                 DataTexto = x.Data.HasValue ? x.Data.Value.ToString("yyyy-MM-dd") : "",
                 Duracao = x.Duracao,
-                DuracaoTexto = x.Duracao.HasValue ? x.Duracao.ToString() : "", // x.Duracao.Value.ToString("HH:mm") : "",
+                DuracaoTexto = x.Duracao.HasValue ? x.Duracao.Value.ToString(@"hh\:mm") : "",
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataHoraCriacao = x.DataHoraCriacao,
                 DataHoraCriacaoTexto = x.DataHoraCriacao.HasValue ? x.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",

@@ -218,7 +218,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             VisitasViewModel result = new VisitasViewModel();
             if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
-                result = DBVisitas.ParseToViewModel(DBVisitas.GetByVisita(visita.CodVisita));
+            {
+                Visitas tst = DBVisitas.GetByVisita(visita.CodVisita);
+                result = DBVisitas.ParseToViewModel(tst);
+
+
+                //result = DBVisitas.ParseToViewModel(DBVisitas.GetByVisita(visita.CodVisita));
+            }
             else
             {
                 result.IniciativaCriador = User.Identity.Name;
@@ -368,6 +374,87 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(null);
             }
         }
+
+        [HttpPost]
+        public JsonResult DuplicarVisita([FromBody] VisitasViewModel visitaOriginal)
+        {
+            try
+            {
+                if (visitaOriginal != null)
+                {
+                    Visitas VisitaDuplicada = DBVisitas.ParseToDB(visitaOriginal);
+
+                    bool autoGenId = true;
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeracaoVisitas.Value;
+
+                    VisitaDuplicada.CodVisita = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+                    VisitaDuplicada.NomeCliente = !string.IsNullOrEmpty(VisitaDuplicada.CodCliente) ? DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, VisitaDuplicada.CodCliente).Name : "";
+                    VisitaDuplicada.NomeFornecedor = !string.IsNullOrEmpty(VisitaDuplicada.CodFornecedor) ? DBNAV2017Fornecedores.GetFornecedorById(_config.NAVDatabaseName, _config.NAVCompanyName, VisitaDuplicada.CodFornecedor).Name : "";
+                    VisitaDuplicada.NomeRegiao = !string.IsNullOrEmpty(VisitaDuplicada.CodRegiao) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.Region, "", VisitaDuplicada.CodRegiao).FirstOrDefault().Name : "";
+                    VisitaDuplicada.NomeArea = !string.IsNullOrEmpty(VisitaDuplicada.CodArea) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.FunctionalArea, "", VisitaDuplicada.CodArea).FirstOrDefault().Name : "";
+                    VisitaDuplicada.NomeCresp = !string.IsNullOrEmpty(VisitaDuplicada.CodCresp) ? DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Dimensions.ResponsabilityCenter, "", VisitaDuplicada.CodCresp).FirstOrDefault().Name : "";
+                    VisitaDuplicada.CodEstado = 1;
+                    VisitaDuplicada.NomeEstado = VisitaDuplicada.CodEstado.HasValue ? DBVisitasEstados.GetByEstado((int)VisitaDuplicada.CodEstado).Estado : "";
+                    VisitaDuplicada.IniciativaCriador = User.Identity.Name;
+                    VisitaDuplicada.IniciativaCriadorNome = !string.IsNullOrEmpty(VisitaDuplicada.IniciativaCriador) ? DBUserConfigurations.GetById(VisitaDuplicada.IniciativaCriador).Nome : "";
+                    VisitaDuplicada.IniciativaResponsavelNome = !string.IsNullOrEmpty(VisitaDuplicada.IniciativaResponsavel) ? DBNAV2009Employees.GetAll(VisitaDuplicada.IniciativaResponsavel, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).FirstOrDefault().Name : "";
+                    VisitaDuplicada.UtilizadorCriacao = User.Identity.Name;
+                    VisitaDuplicada.UtilizadorCriacaoNome = !string.IsNullOrEmpty(VisitaDuplicada.UtilizadorCriacao) ? DBUserConfigurations.GetById(VisitaDuplicada.UtilizadorCriacao).Nome : "";
+                    VisitaDuplicada.DataHoraCriacao = DateTime.Now;
+                    VisitaDuplicada.UtilizadorModificacao = null;
+                    VisitaDuplicada.UtilizadorModificacaoNome = null;
+                    VisitaDuplicada.DataHoraModificacao = null;
+
+                    if (VisitaDuplicada != null && DBVisitas.Create(VisitaDuplicada) != null)
+                    {
+                        List<VisitasTarefas> AllTarefasOriginais = DBVisitasTarefas.GetByVisita(visitaOriginal.CodVisita);
+
+                        if (AllTarefasOriginais != null && AllTarefasOriginais.Count > 0)
+                        {
+                            AllTarefasOriginais.ForEach(tarefaOriginal =>
+                            {
+                                VisitasTarefas tarefaDuplicada = tarefaOriginal;
+
+                                tarefaDuplicada.CodVisita = VisitaDuplicada.CodVisita;
+                                tarefaDuplicada.UtilizadorCriacao = User.Identity.Name;
+                                tarefaDuplicada.DataHoraCriacao = DateTime.Now;
+                                tarefaDuplicada.UtilizadorModificacao = null;
+                                tarefaDuplicada.DataHoraModificacao = null;
+
+                                DBVisitasTarefas.Create(tarefaDuplicada);
+                            });
+                        }
+
+                        visitaOriginal.eReasonCode = 1;
+                        visitaOriginal.eMessage = "Visita Duplicada com sucesso com o código Nº " + VisitaDuplicada.CodVisita;
+                        return Json(visitaOriginal);
+                    }
+                }
+
+                visitaOriginal.eReasonCode = 99;
+                visitaOriginal.eMessage = "Ocorreu um erro ao Duplicar a Visita.";
+                return Json(null);
+            }
+            catch (Exception ex)
+            {
+                visitaOriginal.eReasonCode = 99;
+                visitaOriginal.eMessage = "Ocorreu um erro ao Duplicar a Visita.";
+                return Json(null);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
         [HttpPost]
         public JsonResult CreateTarefa([FromBody] VisitasTarefasViewModel tarefa)

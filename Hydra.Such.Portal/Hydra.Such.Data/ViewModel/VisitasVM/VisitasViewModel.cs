@@ -18,13 +18,13 @@ namespace Hydra.Such.Data.ViewModel.VisitasVM
         public string NomeArea { get; set; }
         public string CodCresp { get; set; }
         public string NomeCresp { get; set; }
-        public DateTime? InicioDataHora { get; set; }
-        public string InicioDataHoraTexto { get; set; }
+        public DateTime? InicioData { get; set; }
         public string InicioDataTexto { get; set; }
+        public TimeSpan? InicioHora { get; set; }
         public string InicioHoraTexto { get; set; }
-        public DateTime? FimDataHora { get; set; }
-        public string FimDataHoraTexto { get; set; }
+        public DateTime? FimData { get; set; }
         public string FimDataTexto { get; set; }
+        public TimeSpan? FimHora { get; set; }
         public string FimHoraTexto { get; set; }
         public int? CodEstado { get; set; }
         public string NomeEstado { get; set; }

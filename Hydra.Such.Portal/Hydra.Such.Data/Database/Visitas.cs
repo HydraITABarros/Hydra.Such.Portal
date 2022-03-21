@@ -18,8 +18,10 @@ namespace Hydra.Such.Data.Database
         public string NomeArea { get; set; }
         public string CodCresp { get; set; }
         public string NomeCresp { get; set; }
-        public DateTime? InicioDataHora { get; set; }
-        public DateTime? FimDataHora { get; set; }
+        public DateTime? InicioData { get; set; }
+        public TimeSpan? InicioHora { get; set; }
+        public DateTime? FimData { get; set; }
+        public TimeSpan? FimHora { get; set; }
         public int? CodEstado { get; set; }
         public string NomeEstado { get; set; }
         public string IniciativaCriador { get; set; }

@@ -12934,13 +12934,19 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NomeCresp")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.InicioDataHora)
-                    .HasColumnName("InicioDataHora")
+                entity.Property(e => e.InicioData)
+                    .HasColumnName("InicioData")
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.FimDataHora)
-                    .HasColumnName("FimDataHora")
+                entity.Property(e => e.InicioHora)
+                    .HasColumnName("InicioHora");
+
+                entity.Property(e => e.FimData)
+                    .HasColumnName("FimData")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.FimHora)
+                    .HasColumnName("FimHora");
 
                 entity.Property(e => e.CodEstado)
                     .HasColumnName("CodEstado");
