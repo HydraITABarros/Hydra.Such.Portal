@@ -1467,7 +1467,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Code,
                 value = x.Name,
-                extra = x.MeasureUnit
+                extra = x.MeasureUnit,
+                extra2 = x.VATProductPostingGroup
             }).ToList();
             return Json(result);
         }

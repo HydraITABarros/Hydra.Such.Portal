@@ -1403,12 +1403,15 @@ namespace Hydra.Such.Portal.Controllers
                             List<RequisiçõesClienteContrato> RCC =
                                 DBContractClientRequisition.GetByContract(ContratoDB.NºDeContrato);
 
+                            //Delete Contract Client Requests
                             List<RequisiçõesClienteContrato> RCCToDelete = RCC
                             .Where(x => !data.ClientRequisitions.Any(
                                 y => x.NºContrato == y.ContractNo &&
                                         x.GrupoFatura == y.InvoiceGroup &&
                                         x.NºProjeto == y.ProjectNo &&
                                         x.DataInícioCompromisso == DateTime.Parse(y.StartDate))).ToList();
+                            if (RCCToDelete != null && RCCToDelete.Count > 0)
+                                RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
 
                             data.ClientRequisitions.ForEach(y =>
                             {
@@ -1459,8 +1462,8 @@ namespace Hydra.Such.Portal.Controllers
                             });
 
                             //Delete Contract Client Requests
-                            if (data.eReasonCode == 1)
-                                RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
+                            //if (data.eReasonCode == 1)
+                                //RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
 
                             //Create/Update Contract Invoice Texts
                             List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºDeContrato);
