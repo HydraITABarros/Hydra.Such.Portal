@@ -1374,6 +1374,7 @@ namespace Hydra.Such.Portal.Extensions
 
                 Email.To.Add(proj.CreateUser); // ApprovalMovement.RequestUser);
                 Email.BCC.Add("MMarcelo@such.pt");
+                Email.BCC.Add(rejectUser);
 
                 Email.Body = MakeEmailBodyContent("A aprovação do Projeto Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
 
