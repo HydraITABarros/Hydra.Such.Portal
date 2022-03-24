@@ -13053,8 +13053,7 @@ namespace Hydra.Such.Data.Database
                 entity.ToTable("Visitas_Tarefas");
 
                 entity.Property(e => e.CodVisita)
-                    .HasColumnName("CodVisita")
-                    .HasMaxLength(20);
+                    .HasColumnName("CodVisita");
 
                 entity.Property(e => e.Ordem)
                     .HasColumnName("Ordem");
@@ -13097,7 +13096,8 @@ namespace Hydra.Such.Data.Database
                 entity.ToTable("Visitas_Tarefas_Tarefas");
 
                 entity.Property(e => e.CodTarefa)
-                    .HasColumnName("CodTarefa");
+                    .HasColumnName("CodTarefa")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.Tarefa)
                     .HasColumnName("Tarefa")
