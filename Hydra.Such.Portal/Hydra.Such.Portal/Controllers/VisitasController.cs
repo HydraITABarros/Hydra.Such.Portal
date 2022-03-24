@@ -232,6 +232,15 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetVisitaTarefasOpcoes()
+        {
+            List<VisitasTarefasTarefasViewModel> result = new List<VisitasTarefasTarefasViewModel>();
+            result = DBVisitasTarefasTarefas.ParseListToViewModel(DBVisitasTarefasTarefas.GetAll()).OrderBy(x => x.CodTarefa).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult CreateVisita([FromBody] VisitasViewModel visita)
         {
             try
@@ -266,13 +275,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 visita.eReasonCode = 99;
                 visita.eMessage = "Ocorreu um erro ao criar a Visita.";
-                return Json(null);
+                return Json(visita);
             }
             catch (Exception ex)
             {
                 visita.eReasonCode = 99;
                 visita.eMessage = "Ocorreu um erro ao criar a Visita.";
-                return Json(null);
+                return Json(visita);
             }
         }
 
@@ -306,13 +315,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 visita.eReasonCode = 99;
                 visita.eMessage = "Ocorreu um erro ao guardar a Visita.";
-                return Json(null);
+                return Json(visita);
             }
             catch (Exception ex)
             {
                 visita.eReasonCode = 99;
                 visita.eMessage = "Ocorreu um erro ao guardar a Visita.";
-                return Json(null);
+                return Json(visita);
             }
         }
 
@@ -347,13 +356,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 visita.eReasonCode = 99;
                 visita.eMessage = "Ocorreu um erro ao eliminar a Visita.";
-                return Json(null);
+                return Json(visita);
             }
             catch (Exception ex)
             {
                 visita.eReasonCode = 99;
                 visita.eMessage = "Ocorreu um erro ao eliminar a Visita.";
-                return Json(null);
+                return Json(visita);
             }
         }
 
@@ -416,27 +425,15 @@ namespace Hydra.Such.Portal.Controllers
 
                 visitaOriginal.eReasonCode = 99;
                 visitaOriginal.eMessage = "Ocorreu um erro ao Duplicar a Visita.";
-                return Json(null);
+                return Json(visitaOriginal);
             }
             catch (Exception ex)
             {
                 visitaOriginal.eReasonCode = 99;
                 visitaOriginal.eMessage = "Ocorreu um erro ao Duplicar a Visita.";
-                return Json(null);
+                return Json(visitaOriginal);
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         [HttpPost]
         public JsonResult CreateTarefa([FromBody] VisitasTarefasViewModel tarefa)
@@ -447,6 +444,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!string.IsNullOrEmpty(tarefa.DataTexto)) tarefa.Data = Convert.ToDateTime(tarefa.DataTexto);
                     if (!string.IsNullOrEmpty(tarefa.DuracaoTexto)) tarefa.Duracao = TimeSpan.Parse(tarefa.DuracaoTexto);
+                    if (tarefa.CodTarefa.HasValue == true) tarefa.Tarefa = "";
+                    if (!string.IsNullOrEmpty(tarefa.Tarefa)) tarefa.CodTarefa = null;
                     tarefa.UtilizadorCriacao = User.Identity.Name;
 
                     VisitasTarefas tarefaDB = DBVisitasTarefas.ParseToDB(tarefa);
@@ -461,13 +460,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao criar a Tarefa.";
-                return Json(null);
+                return Json(tarefa);
             }
             catch (Exception ex)
             {
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao criar a Tarefa.";
-                return Json(null);
+                return Json(tarefa);
             }
         }
 
@@ -494,13 +493,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao guardar a Tarefa.";
-                return Json(null);
+                return Json(tarefa);
             }
             catch (Exception ex)
             {
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao guardar a Tarefa.";
-                return Json(null);
+                return Json(tarefa);
             }
         }
 
@@ -523,13 +522,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao eliminar a Tarefa.";
-                return Json(null);
+                return Json(tarefa);
             }
             catch (Exception ex)
             {
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao eliminar a Tarefa.";
-                return Json(null);
+                return Json(tarefa);
             }
         }
 

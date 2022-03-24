@@ -156,6 +156,7 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ListaCresps}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetVisitasEstados" last-response="{{ListaEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{ListaEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Visitas/GetVisitaTarefasOpcoes" last-response="{{ListaTarefasOpcoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Visitas/GetVisitaDetails"
                    last-response="{{visita}}"
@@ -301,29 +302,48 @@
                                 </div>
 
                                 <div class="row break_clear">
-                                    <div class="col-md-3">
-                                        <such-selectbox id="geral_codCliente" name="geral_codCliente" value="{{visita.codCliente}}" label="Contratos eSUCH (Clientes)"
-                                                        items="[[ListaClients]]"
-                                                        text-path="value"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cliente"}]'
-                                                        disabled="{{ _lockFields }}">
-                                        </such-selectbox>
+                                    <div class="col-md-6" id="geral_ClienteFornecedor" name="geral_ClienteFornecedor">
+                                        <div class="col-md-6">
+                                            <such-selectbox id="geral_codCliente" name="geral_codCliente" value="{{visita.codCliente}}" label="Contratos eSUCH (Clientes)"
+                                                            items="[[ListaClients]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cliente"}]'
+                                                            on-value-changed="geral_CodClienteChange"
+                                                            disabled="{{ _lockFields }}">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <such-selectbox id="geral_codFornecedor" name="geral_codFornecedor" value="{{visita.codFornecedor}}" label="Outros Contratos eSUCH (Fornecedores)"
+                                                            items="[[ListaFornecedores]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Fornecedor"}]'
+                                                            on-value-changed="geral_CodFornecedorChange"
+                                                            disabled="{{ _lockFields }}">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-1" style="padding-top:15px">
+                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i></paper-button>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-3">
-                                        <such-selectbox id="geral_codFornecedor" name="geral_codFornecedor" value="{{visita.codFornecedor}}" label="Outros Contratos eSUCH (Fornecedores)"
-                                                        items="[[ListaFornecedores]]"
-                                                        text-path="value"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Fornecedor"}]'
-                                                        disabled="{{ _lockFields }}">
-                                        </such-selectbox>
+                                    <div class="col-md-6" id="geral_Entidade" name="geral_Entidade" hidden>
+                                        <div class="col-md-11">
+                                            <vaadin-text-field id="geral_entidadeText" name="geral_entidadeText" value="{{visita.entidade}}" label="Entidade" disabled="{{ _lockFields }}" maxlength="100" hidden="{{_isCreate}}"> </vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-1" style="padding-top:15px">
+                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i></paper-button>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-6" hidden>
-                                        <vaadin-text-field id="geral_entidade" name="geral_entidade" value="{{visita.entidade}}" label="Entidade" maxlength="100" disabled="{{ _lockFields }}"></vaadin-text-field>
-                                    </div>
+
+
+
+
 
                                     <div class="col-md-2">
                                         <vaadin-combo-box id="geral_codRegiao" name="geral_codRegiao" items="[[ListaRegioes]]" item-value-path="id" item-label-path="value" value="{{visita.codRegiao}}" label="Região" disabled="{{ _lockFields }}">
@@ -472,7 +492,7 @@
                                                 <vaadin-grid-filter path="tarefa" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field id="tab_tarefa" name="tab_tarefa" value="{{item.tarefa}}" disabled="{{ _lockFields }}" maxlength="100" on-blur="_updateTarefa"> </vaadin-text-field>
+                                                {{item.tarefa}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -515,7 +535,17 @@
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <vaadin-text-field id="tarefa_tarefa" name="tarefa_tarefa" value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="100" hidden="{{_isCreate}}"> </vaadin-text-field>
+                                                    <div class="col-md-11">
+                                                        <vaadin-combo-box id="tarefa_tarefaLista" name="tarefa_tarefaLista" items="[[ListaTarefasOpcoes]]" item-value-path="codTarefa" item-label-path="tarefa" label="Tarefa" disabled="{{ _lockFields }}">
+                                                            <template>
+                                                                [[item.tarefa]]
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                        <vaadin-text-field id="tarefa_tarefaText" name="    " value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="100" hidden> </vaadin-text-field>
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-top:15px">
+                                                        <paper-button id="btn_tarefaChange" name="btn_tarefaChange" class="btnSave" raised on-tap="_tarefaChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i></paper-button>
+                                                    </div>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -678,10 +708,15 @@
                         else
                             this.$.geral_estado.disabled = true;
                     }
+
+                    if (this.visita.entidade.value != "") {
+                        this.$.geral_Entidade.hidden = false;
+                        this.$.geral_ClienteFornecedor.hidden = true;
+                    }
                 },
 
-                _createVisita: function() {
-                    
+                _createVisita: function () {
+
                     if (this.$.geral_objetivo.value != null && this.$.geral_objetivo.value != "") {
                         if (this.$.geral_local.value != null && this.$.geral_local.value != "") {
                             this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
@@ -774,8 +809,8 @@
                         this.$.page_CreateTarefa_ajax.body = JSON.stringify({
                             codVisita: this._visita,
                             ordem: this.$.tarefa_ordem.value,
-                            //codTarefa: this.$.tarefa_codTarefa.value,
-                            tarefa: this.$.tarefa_tarefa.value,
+                            codTarefa: this.$.tarefa_tarefaLista.value,
+                            tarefa: this.$.tarefa_tarefaText.value,
                             dataTexto: this.$.tarefa_data.value,
                             duracaoTexto: this.$.tarefa_duracao.value,
                         });
@@ -791,7 +826,8 @@
                         this._openToast(this.resultCreateTarefa.eMessage);
 
                         this.$.tarefa_ordem.value = "";
-                        this.$.tarefa_tarefa.value = "";
+                        this.$.tarefa_tarefaLista.value = null;
+                        this.$.tarefa_tarefaText.value = "";
                         this.$.tarefa_data.value = "";
                         this.$.tarefa_duracao.value = "";
 
@@ -959,8 +995,46 @@
                     }
                 },
 
+                _tarefaChange: function () {
+                    if (this.$.tarefa_tarefaLista.hidden == true) {
+                        this.$.tarefa_tarefaLista.hidden = false;
+                        this.$.tarefa_tarefaText.hidden = true;
 
+                        this.$.tarefa_tarefaText.value = "";
+                    }
+                    else {
+                        this.$.tarefa_tarefaLista.hidden = true;
+                        this.$.tarefa_tarefaText.hidden = false;
 
+                        this.$.tarefa_tarefaLista.value = null;
+                    }
+                },
+
+                _geralChange: function () {
+                    if (this.$.geral_ClienteFornecedor.hidden == true) {
+                        this.$.geral_Entidade.hidden = true;
+                        this.$.geral_ClienteFornecedor.hidden = false;
+
+                        this.$.geral_entidadeText.value = "";
+                    }
+                    else {
+                        this.$.geral_Entidade.hidden = false;
+                        this.$.geral_ClienteFornecedor.hidden = true;
+
+                        this.$.geral_codCliente._clearSelection();
+                        this.$.geral_codFornecedor._clearSelection();
+                    }
+                },
+                geral_CodClienteChange: function () {
+                    if (this.$.geral_codCliente.value != "") {
+                        this.$.geral_codFornecedor._clearSelection();
+                    }
+                },
+                geral_CodFornecedorChange: function () {
+                    if (this.$.geral_codFornecedor.value != "") {
+                        this.$.geral_codCliente._clearSelection();
+                    }
+                },
 
 
             });

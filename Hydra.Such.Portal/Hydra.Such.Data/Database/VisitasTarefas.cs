@@ -6,7 +6,7 @@ namespace Hydra.Such.Data.Database
     {
         public string CodVisita { get; set; }
         public int? Ordem { get; set; }
-        public int CodTarefa { get; set; }
+        public int? CodTarefa { get; set; }
         public string Tarefa { get; set; }
         public DateTime? Data { get; set; }
         public TimeSpan? Duracao { get; set; }

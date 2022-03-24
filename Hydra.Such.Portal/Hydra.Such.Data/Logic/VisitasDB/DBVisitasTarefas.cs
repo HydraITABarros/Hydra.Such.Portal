@@ -148,12 +148,13 @@ namespace Hydra.Such.Data.Logic.VisitasDB
 
         public static VisitasTarefasViewModel ParseToViewModel(VisitasTarefas x)
         {
+            List<VisitasTarefasTarefas> AllTarefas = DBVisitasTarefasTarefas.GetAll();
             VisitasTarefasViewModel visita = new VisitasTarefasViewModel()
             {
                 CodVisita = x.CodVisita,
                 Ordem = x.Ordem,
                 CodTarefa = x.CodTarefa,
-                Tarefa = x.Tarefa,
+                Tarefa = x.CodTarefa.HasValue ? AllTarefas.FirstOrDefault(y => y.CodTarefa == x.CodTarefa).Tarefa : x.Tarefa,
                 Data = x.Data,
                 DataTexto = x.Data.HasValue ? x.Data.Value.ToString("yyyy-MM-dd") : "",
                 Duracao = x.Duracao,

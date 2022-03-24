@@ -881,6 +881,7 @@
         <div class="marginSpace" hidden="{{ disabledFields }}">
             <div class="marginSpace" hidden="{{ !_permissions.update }}">
                 <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
             </div>
         </div>
 
@@ -1377,7 +1378,16 @@
                 <paper-button class="btnSave" raised on-tap="_dlgNext"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Seguinte</paper-button>
                 <paper-button class="btnRemove" on-tap="_Close_Dialog" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancel</paper-button>
             </div>
+        </paper-dialog>
 
+        <!-- Paper Dialog Total Linhas-->
+        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+            <div>
+                <h2>Somatório do Preço Total: <b>{{_TotalLine}} €</b></h2>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
         </paper-dialog>
     </template>
 
@@ -2615,6 +2625,23 @@
                     }
                 },
 
+                _sumLines: function () {
+                    var count = parseFloat(0);
+                    this._TotalLine = 0;
+
+                    if (this.result.items != null && this.result.items.length > 0) {
+                        for (var i = 0; i < this.result.items.length; i++) {
+                            if (this.result.items[i].totalPrice != null)
+                                count += parseFloat(String(this.result.items[i].totalPrice).replace(",", "."));
+                            else
+                                count += 0;
+                            this._TotalLine = count;
+                            this.$.dialogTotal.open();
+                        }
+                    } else {
+                        this.openToastError("Não existem Linhas inseridas.");
+                    }
+                },
 
 
 
