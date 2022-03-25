@@ -303,13 +303,12 @@
 
                                 <div class="row break_clear">
                                     <div class="col-md-6" id="geral_ClienteFornecedor" name="geral_ClienteFornecedor">
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <such-selectbox id="geral_codCliente" name="geral_codCliente" value="{{visita.codCliente}}" label="Contratos eSUCH (Clientes)"
                                                             items="[[ListaClients]]"
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cliente"}]'
-                                                            on-value-changed="geral_CodClienteChange"
                                                             disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
@@ -320,30 +319,24 @@
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Fornecedor"}]'
-                                                            on-value-changed="geral_CodFornecedorChange"
                                                             disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-1" style="padding-top:15px">
-                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i></paper-button>
+                                        <div class="col-md-2" style="padding-top:15px">
+                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6" id="geral_Entidade" name="geral_Entidade" hidden>
-                                        <div class="col-md-11">
+                                        <div class="col-md-10">
                                             <vaadin-text-field id="geral_entidadeText" name="geral_entidadeText" value="{{visita.entidade}}" label="Entidade" disabled="{{ _lockFields }}" maxlength="100" hidden="{{_isCreate}}"> </vaadin-text-field>
                                         </div>
 
-                                        <div class="col-md-1" style="padding-top:15px">
-                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i></paper-button>
+                                        <div class="col-md-2" style="padding-top:15px">
+                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
                                         </div>
                                     </div>
-
-
-
-
-
 
                                     <div class="col-md-2">
                                         <vaadin-combo-box id="geral_codRegiao" name="geral_codRegiao" items="[[ListaRegioes]]" item-value-path="id" item-label-path="value" value="{{visita.codRegiao}}" label="Região" disabled="{{ _lockFields }}">
@@ -508,11 +501,11 @@
 
                                         <vaadin-grid-column resizable width="10%">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="duracao">Duração</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="duracao">Duração (escolha HH:mm)</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="duracao" />
                                             </template>
                                             <template>
-                                                <vaadin-time-picker id="tab_duracao" name="tab_duracao" value="{{item.duracaoTexto}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800" on-blur="_updateTarefa"></vaadin-time-picker>
+                                                <vaadin-time-picker id="tab_duracao" name="tab_duracao" value="{{item.duracaoTexto}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="900" on-blur="_updateTarefa"></vaadin-time-picker>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -535,7 +528,7 @@
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <div class="col-md-11">
+                                                    <div class="col-md-10">
                                                         <vaadin-combo-box id="tarefa_tarefaLista" name="tarefa_tarefaLista" items="[[ListaTarefasOpcoes]]" item-value-path="codTarefa" item-label-path="tarefa" label="Tarefa" disabled="{{ _lockFields }}">
                                                             <template>
                                                                 [[item.tarefa]]
@@ -543,8 +536,8 @@
                                                         </vaadin-combo-box>
                                                         <vaadin-text-field id="tarefa_tarefaText" name="    " value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="100" hidden> </vaadin-text-field>
                                                     </div>
-                                                    <div class="col-md-1" style="padding-top:15px">
-                                                        <paper-button id="btn_tarefaChange" name="btn_tarefaChange" class="btnSave" raised on-tap="_tarefaChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i></paper-button>
+                                                    <div class="col-md-2" style="padding-top:15px">
+                                                        <paper-button id="btn_tarefaChange" name="btn_tarefaChange" class="btnSave" raised on-tap="_tarefaChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
                                                     </div>
                                                 </div>
 
@@ -553,7 +546,7 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-time-picker id="tarefa_duracao" name="tarefa_duracao" label="Duração" value="" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800" hidden="{{_isCreate}}"></vaadin-time-picker>
+                                                    <vaadin-time-picker id="tarefa_duracao" name="tarefa_duracao" label="Duração (escolha HH:mm)" value="" disabled="{{ _lockFields }}" placeholder="HH:mm" step="900" hidden="{{_isCreate}}"></vaadin-time-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -709,25 +702,16 @@
                             this.$.geral_estado.disabled = true;
                     }
 
-                    if (this.visita.entidade.value != "") {
+                    if (this.visita.entidade.value != undefined && this.visita.entidade.value != "") {
                         this.$.geral_Entidade.hidden = false;
                         this.$.geral_ClienteFornecedor.hidden = true;
                     }
                 },
 
                 _createVisita: function () {
-
-                    if (this.$.geral_objetivo.value != null && this.$.geral_objetivo.value != "") {
-                        if (this.$.geral_local.value != null && this.$.geral_local.value != "") {
-                            this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
-                            this.$.page_CreateVisita_ajax.generateRequest();
-                        }
-                        else {
-                            this._openToastError("O campo Local / Compartimento é de preenchimento obrigatório.");
-                        }
-                    }
-                    else {
-                        this._openToastError("O campo Objetivo / Descrição da Visita é de preenchimento obrigatório.");
+                    if (this._validarDados()) {
+                        this.$.page_CreateVisita_ajax.body = JSON.stringify(this.visita);
+                        this.$.page_CreateVisita_ajax.generateRequest();
                     }
                 },
                 _responseCreateVisita: function () {
@@ -742,17 +726,9 @@
                 },
 
                 _updateVisita: function () {
-                    if (this.$.geral_objetivo.value != null && this.$.geral_objetivo.value != "") {
-                        if (this.$.geral_local.value != null && this.$.geral_local.value != "") {
-                            this.$.page_UpdateVisita_ajax.body = JSON.stringify(this.visita);
-                            this.$.page_UpdateVisita_ajax.generateRequest();
-                        }
-                        else {
-                            this._openToastError("O campo Local / Compartimento é de preenchimento obrigatório.");
-                        }
-                    }
-                    else {
-                        this._openToastError("O campo Objetivo / Descrição da Visita é de preenchimento obrigatório.");
+                    if (this._validarDados()) {
+                        this.$.page_UpdateVisita_ajax.body = JSON.stringify(this.visita);
+                        this.$.page_UpdateVisita_ajax.generateRequest();
                     }
                 },
                 _responseUpdateVisita: function () {
@@ -805,7 +781,7 @@
                 },
 
                 _createTarefa: function () {
-                    if (this.$.tarefa_ordem.value != null && this.$.tarefa_ordem.value != "") {
+                    if (this._validarDadosTarefa()) {
                         this.$.page_CreateTarefa_ajax.body = JSON.stringify({
                             codVisita: this._visita,
                             ordem: this.$.tarefa_ordem.value,
@@ -816,9 +792,6 @@
                         });
                         this.$.page_CreateTarefa_ajax.generateRequest();
                         this.$.grid_tabTarefa.clearCache();
-                    }
-                    else {
-                        this._openToastError("O campo Ordem é de preenchimento obrigatório.");
                     }
                 },
                 _responseCreateTarefa: function () {
@@ -1025,18 +998,65 @@
                         this.$.geral_codFornecedor._clearSelection();
                     }
                 },
-                geral_CodClienteChange: function () {
-                    if (this.$.geral_codCliente.value != "") {
-                        this.$.geral_codFornecedor._clearSelection();
+
+                _validarDados: function () {
+                    if (this.$.geral_objetivo.value == null || this.$.geral_objetivo.value == "") {
+                        this._openToastError("O campo Objetivo / Descrição da Visita é de preenchimento obrigatório.");
+                        return false;
                     }
-                },
-                geral_CodFornecedorChange: function () {
-                    if (this.$.geral_codFornecedor.value != "") {
-                        this.$.geral_codCliente._clearSelection();
+
+                    if (this.$.geral_local.value == null || this.$.geral_local.value == "") {
+                        this._openToastError("O campo Local / Compartimento é de preenchimento obrigatório.");
+                        return false;
                     }
+
+                    if (this.$.geral_inicioData.value != null && this.$.geral_inicioData.value != "") {
+                        if (this.$.geral_fimData.value != null && this.$.geral_fimData.value != "") {
+                            var InicioData = Date.parse(this.$.geral_inicioData.value);
+                            var FimData = Date.parse(this.$.geral_fimData.value);
+
+                            if (FimData < InicioData) {
+                                this._openToastError("A Data \"Data/Hora - Fim\" têm que ser superior à Data \"Data/Hora Inicio\".");
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
                 },
 
+                _validarDadosTarefa: function () {
+                    if (this.$.tarefa_ordem.value == null || this.$.tarefa_ordem.value == "") {
+                        this._openToastError("O campo Ordem é de preenchimento obrigatório.");
+                        return false;
+                    }
 
+                    if (this.$.geral_inicioData.value != null && this.$.geral_inicioData.value != "") {
+                        if (this.$.tarefa_data.value != null && this.$.tarefa_data.value != "") {
+                            var InicioData = Date.parse(this.$.geral_inicioData.value);
+                            var TarefaData = Date.parse(this.$.tarefa_data.value);
+
+                            if (TarefaData < InicioData) {
+                                this._openToastError("A Data têm que ser superior a " + this.$.geral_inicioData.value + " .");
+                                return false;
+                            }
+                        }
+                    }
+
+                    if (this.$.geral_fimData.value != null && this.$.geral_fimData.value != "") {
+                        if (this.$.tarefa_data.value != null && this.$.tarefa_data.value != "") {
+                            var FimData = Date.parse(this.$.geral_fimData.value);
+                            var TarefaData = Date.parse(this.$.tarefa_data.value);
+
+                            if (TarefaData > FimData) {
+                                this._openToastError("A Data têm que ser inferior a " + this.$.geral_fimData.value + " .");
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                },
             });
         });
     </script>
