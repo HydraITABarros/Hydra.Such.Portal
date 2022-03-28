@@ -245,5 +245,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UpdateUser = ObjectToParse.UtilizadorModificação
             };
         }
+
     }
 }
