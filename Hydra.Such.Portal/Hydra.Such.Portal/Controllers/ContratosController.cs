@@ -1392,8 +1392,8 @@ namespace Hydra.Such.Portal.Controllers
                     if (UPermContratosRequisicoesCliente.Update == true)
                     {
                         Contratos ContratoAtual = DBContracts.ParseToDB(data);
-                        ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo));
-                        List<LinhasContratos> LinhasAtuais = DBContractLines.ParseToDB(data.Lines);
+                        ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(DBContracts.ParseToDB(data)); //DBContractsEstadoAlteracao.ParseToDB(DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo));
+                        List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo); //DBContractLines.ParseToDB(data.Lines);
                         List<LinhasContratosEstadoAlteracao> LinhasEA = DBContractLinesEstadoAlteracao.ParseToDB(DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo));
                         List <RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.ParseToDB(data.ClientRequisitions);
                         List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.ParseToDB(DBContractClientRequisition.GetByContract(data.ContractNo));
