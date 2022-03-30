@@ -1509,7 +1509,8 @@
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>8pt</FontSize>
-                      <Format>N2</Format>
+                      <Format>0.00</Format>
+                      <Language>pt-PT</Language>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -1543,7 +1544,8 @@
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>8pt</FontSize>
-                      <Format>N2</Format>
+                      <Format>0.00</Format>
+                      <Language>pt-PT</Language>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -2089,7 +2091,8 @@
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
-                                    <Format>N4</Format>
+                                    <Format>0.00</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
