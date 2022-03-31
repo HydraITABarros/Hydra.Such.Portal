@@ -419,7 +419,14 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 4;
+                DateTime data = DateTime.Now.AddMonths(-3);
+                string ano = data.Year.ToString();
+                string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                 ViewBag.UPermissions = UPerm;
+                ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
+
                 return View();
             }
             else

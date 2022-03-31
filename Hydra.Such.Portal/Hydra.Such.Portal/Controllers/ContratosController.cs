@@ -1358,6 +1358,33 @@ namespace Hydra.Such.Portal.Controllers
                                 ConfigNumerations.UtilizadorModificação = User.Identity.Name;
                                 DBNumerationConfigurations.Update(ConfigNumerations);
                             }
+
+                            if (data.ContractType == 3 && data.Type == 1)
+                            {
+                                if (!string.IsNullOrEmpty(cContract.CódigoÁreaFuncional) && cContract.CódigoÁreaFuncional == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+                                {
+                                    bool Result_EnvioEmail_Roupa = false;
+
+                                    Contratos ContratoAtual = DBContracts.GetByIdAndVersion(cContract.NºDeContrato, cContract.NºVersão);
+                                    List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(cContract.NºDeContrato, cContract.NºVersão);
+                                    List<RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.GetByContract(cContract.NºDeContrato);
+
+                                    ContratosEstadoAlteracao ContratoEA = new ContratosEstadoAlteracao();
+                                    List<LinhasContratosEstadoAlteracao> LinhasEA = new List<LinhasContratosEstadoAlteracao>();
+                                    List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = new List<RequisiçõesClienteContratoEstadoAlteracao>();
+                                    if (cContract.NºVersão > 1)
+                                    {
+                                        int VersaoAnterior = cContract.NºVersão - 1;
+
+                                        ContratoEA = DBContractsEstadoAlteracao.GetByIdAndVersion(cContract.NºDeContrato, VersaoAnterior);
+                                        LinhasEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(cContract.NºDeContrato, VersaoAnterior);
+                                        RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(cContract.NºDeContrato);
+                                    }
+
+                                    Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                                }
+                            }
+
                             data.eReasonCode = 1;
                         }
                     }
@@ -1388,17 +1415,20 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "Contrato atualizado com sucesso.";
 
                     bool Result_EnvioEmail_Roupa = false;
-                    UserAccessesViewModel UPermContratosRequisicoesCliente = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosRequisicoesCliente);
-                    if (UPermContratosRequisicoesCliente.Update == true)
+                    if (!string.IsNullOrEmpty(data.CodeFunctionalArea) && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
                     {
-                        Contratos ContratoAtual = DBContracts.ParseToDB(data);
-                        ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(DBContracts.ParseToDB(data)); //DBContractsEstadoAlteracao.ParseToDB(DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo));
-                        List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo); //DBContractLines.ParseToDB(data.Lines);
-                        List<LinhasContratosEstadoAlteracao> LinhasEA = DBContractLinesEstadoAlteracao.ParseToDB(DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo));
-                        List <RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.ParseToDB(data.ClientRequisitions);
-                        List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.ParseToDB(DBContractClientRequisition.GetByContract(data.ContractNo));
+                        UserAccessesViewModel UPermContratosRequisicoesCliente = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContratosRequisicoesCliente);
+                        if (UPermContratosRequisicoesCliente.Update == true)
+                        {
+                            Contratos ContratoAtual = DBContracts.ParseToDB(data);
+                            ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.ParseToDB(DBContracts.ParseToDB(data));
+                            List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                            List<LinhasContratosEstadoAlteracao> LinhasEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                            List<RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.ParseToDB(data.ClientRequisitions);
+                            List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(data.ContractNo);
 
-                        Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                            Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                        }
                     }
 
                     if (data.ContractNo != null)
@@ -1573,16 +1603,19 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (data.ChangeStatus == 2 && ContratoDB_EstadoAlteração == 1) //1 = Aberto » 2 = Bloqueado
                             {
-                                if (Result_EnvioEmail_Roupa == false)
+                                if (!string.IsNullOrEmpty(data.CodeFunctionalArea) && data.CodeFunctionalArea == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
                                 {
-                                    Contratos ContratoAtual = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-                                    ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.GetByIdAndVersion(data.ContractNo, data.VersionNo);
-                                    List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
-                                    List<LinhasContratosEstadoAlteracao> LinhasEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(data.ContractNo, data.VersionNo);
-                                    List<RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.GetByContract(data.ContractNo);
-                                    List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(data.ContractNo);
+                                    if (Result_EnvioEmail_Roupa == false)
+                                    {
+                                        Contratos ContratoAtual = DBContracts.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                                        ContratosEstadoAlteracao ContratoEA = DBContractsEstadoAlteracao.GetByIdAndVersion(data.ContractNo, data.VersionNo);
+                                        List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                                        List<LinhasContratosEstadoAlteracao> LinhasEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                                        List<RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.GetByContract(data.ContractNo);
+                                        List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(data.ContractNo);
 
-                                    Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                                        Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                                    }
                                 }
                             }
                         }
@@ -1599,7 +1632,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public Boolean EnvioEmail_Roupa(Contratos ContratoAtual, ContratosEstadoAlteracao ContratoEA, List<LinhasContratos> LinhasAtuais, List<LinhasContratosEstadoAlteracao> LinhasEA, List<RequisiçõesClienteContrato> RequisicoesClientesAtuais, List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA)
         {
-            if (ContratoAtual.CódigoÁreaFuncional != null && ContratoAtual.CódigoÁreaFuncional == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+            if (!string.IsNullOrEmpty(ContratoAtual.CódigoÁreaFuncional) && ContratoAtual.CódigoÁreaFuncional == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
             {
                 bool EnviarEmail = false;
                 string EmailAssunto = "eSUCH – Informação da atualização do contrato " + ContratoAtual.NºDeContrato.ToString();
@@ -2244,6 +2277,31 @@ namespace Hydra.Such.Portal.Controllers
                             proposal.eMessage = "Ocorreu um erro ao obter a proposta original.";
                             return Json(proposal);
                         }
+
+                        if (!string.IsNullOrEmpty(NewContract.CódigoÁreaFuncional) && NewContract.CódigoÁreaFuncional == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+                        {
+                            bool Result_EnvioEmail_Roupa = false;
+
+                            Contratos ContratoAtual = DBContracts.GetByIdAndVersion(NewContract.NºDeContrato, NewContract.NºVersão);
+                            List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(NewContract.NºDeContrato, NewContract.NºVersão);
+                            List<RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.GetByContract(NewContract.NºDeContrato);
+
+                            ContratosEstadoAlteracao ContratoEA = new ContratosEstadoAlteracao();
+                            List<LinhasContratosEstadoAlteracao> LinhasEA = new List<LinhasContratosEstadoAlteracao>();
+                            List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = new List<RequisiçõesClienteContratoEstadoAlteracao>();
+                            if (NewContract.NºVersão > 1)
+                            {
+                                int VersaoAnterior = NewContract.NºVersão - 1;
+
+                                ContratoEA = DBContractsEstadoAlteracao.GetByIdAndVersion(NewContract.NºDeContrato, VersaoAnterior);
+                                LinhasEA = DBContractLinesEstadoAlteracao.GetAllByActiveContract(NewContract.NºDeContrato, VersaoAnterior);
+                                RequisicoesClientesEA = DBContractClientRequisitionEstadoAlteracao.GetByContract(NewContract.NºDeContrato);
+                            }
+
+                            Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                        }
+
+
 
                         proposal.eReasonCode = 1;
                         proposal.eMessage = "Proposta atualizada com sucesso.";
@@ -5736,6 +5794,18 @@ namespace Hydra.Such.Portal.Controllers
                             ConfigNumerations.UtilizadorModificação = User.Identity.Name;
                             DBNumerationConfigurations.Update(ConfigNumerations);
 
+                            if (!string.IsNullOrEmpty(thisHeader.CódigoÁreaFuncional) && thisHeader.CódigoÁreaFuncional == "22") //22 = Gestão e Tratamento de Roupa Hospitalar
+                            {
+                                bool Result_EnvioEmail_Roupa = false;
+                                Contratos ContratoAtual = DBContracts.GetByIdAndVersion(thisHeader.NºDeContrato, thisHeader.NºVersão);
+                                ContratosEstadoAlteracao ContratoEA = new ContratosEstadoAlteracao();
+                                List<LinhasContratos> LinhasAtuais = DBContractLines.GetAllByActiveContract(thisHeader.NºDeContrato, thisHeader.NºVersão);
+                                List<LinhasContratosEstadoAlteracao> LinhasEA = new List<LinhasContratosEstadoAlteracao>();
+                                List<RequisiçõesClienteContrato> RequisicoesClientesAtuais = DBContractClientRequisition.GetByContract(thisHeader.NºDeContrato);
+                                List<RequisiçõesClienteContratoEstadoAlteracao> RequisicoesClientesEA = new List<RequisiçõesClienteContratoEstadoAlteracao>();
+
+                                Result_EnvioEmail_Roupa = EnvioEmail_Roupa(ContratoAtual, ContratoEA, LinhasAtuais, LinhasEA, RequisicoesClientesAtuais, RequisicoesClientesEA);
+                            }
                         }
                         else if (originType == 1)
                         {
