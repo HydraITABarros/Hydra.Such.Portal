@@ -2820,7 +2820,7 @@
                             }
                         }
                         if (this.data.changeStatus == "2") { //BLOQUEADO
-                            if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
+                            if (this._permissions.update == true) { // || this._permissionsrequisicoescliente.update == true) {
                                 this._contractStatusLocked = false;
                             }
                         }
@@ -3958,8 +3958,8 @@
                                 }
                             }
                             if (this.data.changeStatus == "2") { //BLOQUEADO
-                                if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
-                                    //this._contractStatusLocked = false;
+                                if (this._permissions.update == true) { // || this._permissionsrequisicoescliente.update == true) {
+                                    this._contractStatusLocked = false;
                                 }
                             }
 
