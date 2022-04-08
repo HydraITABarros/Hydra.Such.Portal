@@ -69,7 +69,8 @@ namespace Hydra.Such.Data.Logic
                         {
                             No_ = (string)temp.No_,
                             ValorContrato = (decimal?)temp.ValorContrato,
-                            Data = (string)temp.Data
+                            Data = (string)temp.Data,
+                            DataOriginal = (DateTime?)temp.DataOriginal
                         });
                     }
                 }

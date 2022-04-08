@@ -659,6 +659,10 @@
                     this.$.ToastError.open();
                 },
 
+                _goBack: function () {
+                    window.location.href = "../Visitas_List/";
+                },
+
                 ready: function () {
                     if (this._visita == "")
                         this._isCreate = true;
@@ -1019,6 +1023,21 @@
                                 this._openToastError("A Data \"Data/Hora - Fim\" têm que ser superior à Data \"Data/Hora Inicio\".");
                                 return false;
                             }
+                            if (InicioData == FimData) {
+                                if (this.$.geral_inicioHora.value != null && this.$.geral_inicioHora.value != "") {
+                                    if (this.$.geral_fimHora.value != null && this.$.geral_fimHora.value != "") {
+                                        var myDataPartida = new Date(this.$.geral_inicioData.value).toDateString();
+                                        var myDataChegada = new Date(this.$.geral_fimData.value).toDateString();
+                                        var myDataHoraPartida = new Date(myDataPartida + ' ' + this.$.geral_inicioHora.value);
+                                        var myDataHoraChegada = new Date(myDataChegada + ' ' + this.$.geral_fimHora.value);
+
+                                        if (myDataHoraPartida > myDataHoraChegada) {
+                                            this._openToastError("A Data \"Data/Hora - Fim\" têm que ser superior à Data \"Data/Hora Inicio\".");
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -1039,6 +1058,15 @@
                             if (TarefaData < InicioData) {
                                 this._openToastError("A Data têm que ser superior a " + this.$.geral_inicioData.value + " .");
                                 return false;
+                            }
+
+                            if (this.$.geral_fimData.value != null && this.$.geral_fimData.value != "") {
+                                var FimData = Date.parse(this.$.geral_fimData.value);
+
+                                if (TarefaData > FimData) {
+                                    this._openToastError("A Data têm que ser inferior a " + this.$.geral_fimData.value + " .");
+                                    return false;
+                                }
                             }
                         }
                     }

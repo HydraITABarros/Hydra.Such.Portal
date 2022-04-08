@@ -1084,6 +1084,14 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (data.Status == (EstadoProjecto)0) //PENDENTE
                         {
+                            Projetos ProjectDB = DBProjects.GetById(data.ProjectNo);
+                            if (ProjectDB.Estado != data.Status)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Não é possível Guardar o Projeto pois o mesmo encontra-se num estado diferente na Base de Dados.";
+                                return Json(data);
+                            }
+
                             Projetos cProject = DBProjects.ParseToDB(data);
                             cProject.UtilizadorModificação = User.Identity.Name;
                             cProject.DataHoraModificação = DateTime.Now;

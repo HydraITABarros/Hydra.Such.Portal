@@ -5955,7 +5955,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVContractInvoiceHeaderViewModel> result = new List<NAVContractInvoiceHeaderViewModel>();
             result = DBNAV2017ContractDetails.GetContractInvoiceHeaderByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.DataOriginal));
         }
 
         public JsonResult GetNotasCreditoRegistadas([FromBody] string contractNo)
