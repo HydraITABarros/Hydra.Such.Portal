@@ -285,6 +285,7 @@
                         <paper-tabs id="tabVisita" name="tabVisita" fit-container no-slide autoselect autoselect-delay="0" selected="{{selectedTab}}">
                             <paper-tab>Geral</paper-tab>
                             <paper-tab>Tarefas</paper-tab>
+                            <paper-tab>Detalhes</paper-tab>
                             <paper-tab>Anexos</paper-tab>
                         </paper-tabs>
 
@@ -299,79 +300,6 @@
                                     <div class="col-md-6">
                                         <vaadin-text-field id="geral_local" name="geral_local" value="{{visita.local}}" label="Local / Compartimento" maxlength="100" disabled="{{ _lockFields }}"></vaadin-text-field>
                                     </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-6" id="geral_ClienteFornecedor" name="geral_ClienteFornecedor">
-                                        <div class="col-md-5">
-                                            <such-selectbox id="geral_codCliente" name="geral_codCliente" value="{{visita.codCliente}}" label="Contratos eSUCH (Clientes)"
-                                                            items="[[ListaClients]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cliente"}]'
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>
-                                        </div>
-
-                                        <div class="col-md-5">
-                                            <such-selectbox id="geral_codFornecedor" name="geral_codFornecedor" value="{{visita.codFornecedor}}" label="Outros Contratos eSUCH (Fornecedores)"
-                                                            items="[[ListaFornecedores]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Fornecedor"}]'
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>
-                                        </div>
-
-                                        <div class="col-md-2" style="padding-top:15px">
-                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6" id="geral_Entidade" name="geral_Entidade" hidden>
-                                        <div class="col-md-10">
-                                            <vaadin-text-field id="geral_entidadeText" name="geral_entidadeText" value="{{visita.entidade}}" label="Entidade" disabled="{{ _lockFields }}" maxlength="100" hidden="{{_isCreate}}"> </vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2" style="padding-top:15px">
-                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-combo-box id="geral_codRegiao" name="geral_codRegiao" items="[[ListaRegioes]]" item-value-path="id" item-label-path="value" value="{{visita.codRegiao}}" label="Região" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <table>
-                                                    <tr>
-                                                        <td width="15%">[[item.id]]</td>
-                                                        <td width="5%"> - </td>
-                                                        <td width="80%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <such-selectbox id="geral_codArea" name="geral_codArea" value="{{visita.codArea}}" label="Área Funcional"
-                                                        items="[[ListaAreas]]"
-                                                        text-path="value"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área"}]'
-                                                        disabled="{{ _lockFields }}">
-                                        </such-selectbox>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <such-selectbox id="geral_codCresp" name="geral_codCresp" value="{{visita.codCresp}}" label="Centro de Responsabilidade"
-                                                        items="[[ListaCresps]]"
-                                                        text-path="value"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
-                                                        disabled="{{ _lockFields }}">
-                                        </such-selectbox>
-                                    </div>
-
                                 </div>
 
                                 <div class="row break_clear">
@@ -391,7 +319,11 @@
                                         <vaadin-time-picker id="geral_fimHora" name="geral_fimHora" value="{{visita.fimHoraTexto}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-2">
+                                        <vaadin-time-picker id="geral_tarefasTempoTotal" name="geral_tarefasTempoTotal" value="{{visita.tarefasTempoTotal}}" label="Tarefas - Tempo Total" disabled placeholder="HH:mm"></vaadin-time-picker>
+                                    </div>
+
+                                    <div class="col-md-2">
                                         <vaadin-combo-box id="geral_estado" name="geral_estado" items="[[ListaEstados]]" item-value-path="id" item-label-path="value" value="{{visita.codEstado}}" label="Estado" disabled="{{ _lockFields }}">
                                             <template>
                                                 <paper-icon-item>
@@ -537,7 +469,7 @@
                                                         <vaadin-text-field id="tarefa_tarefaText" name="    " value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="100" hidden> </vaadin-text-field>
                                                     </div>
                                                     <div class="col-md-2" style="padding-top:15px">
-                                                        <paper-button id="btn_tarefaChange" name="btn_tarefaChange" class="btnSave" raised on-tap="_tarefaChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
+                                                        <paper-button id="btn_tarefaChange" name="btn_tarefaChange" class="btnSave" raised on-tap="_tarefaChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; {{ _tarefaBotao }}</paper-button>
                                                     </div>
                                                 </div>
 
@@ -554,6 +486,95 @@
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--DETALHES-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-md-6" id="geral_ClienteFornecedor" name="geral_ClienteFornecedor">
+                                        <div class="col-md-5">
+                                            <such-selectbox id="geral_codCliente" name="geral_codCliente" value="{{visita.codCliente}}" label="Contratos eSUCH (Clientes)"
+                                                            items="[[ListaClients]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Cliente"}]'
+                                                            disabled="{{ _lockFields }}">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <such-selectbox id="geral_codFornecedor" name="geral_codFornecedor" value="{{visita.codFornecedor}}" label="Outros Contratos eSUCH (Fornecedores)"
+                                                            items="[[ListaFornecedores]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Fornecedor"}]'
+                                                            disabled="{{ _lockFields }}">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-2" style="padding-top:15px">
+                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" id="geral_Entidade" name="geral_Entidade" hidden>
+                                        <div class="col-md-10">
+                                            <vaadin-text-field id="geral_entidadeText" name="geral_entidadeText" value="{{visita.entidade}}" label="Entidade" disabled="{{ _lockFields }}" maxlength="100" hidden="{{_isCreate}}"> </vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2" style="padding-top:15px">
+                                            <paper-button id="btn_geralChange" name="btn_geralChange" class="btnSave" raised on-tap="_geralChange" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-refresh" aria-hidden="true"></i>&nbsp; Outra</paper-button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-combo-box id="geral_codRegiao" name="geral_codRegiao" items="[[ListaRegioes]]" item-value-path="id" item-label-path="value" value="{{visita.codRegiao}}" label="Região" disabled="{{ _lockFields }}">
+                                            <template>
+                                                <table>
+                                                    <tr>
+                                                        <td width="15%">[[item.id]]</td>
+                                                        <td width="5%"> - </td>
+                                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codArea" name="geral_codArea" value="{{visita.codArea}}" label="Área Funcional"
+                                                        items="[[ListaAreas]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área"}]'
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codCresp" name="geral_codCresp" value="{{visita.codCresp}}" label="Centro de Responsabilidade"
+                                                        items="[[ListaCresps]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro Responsabilidade"}]'
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-4">
+                                        <vaadin-combo-box id="geral_estado" name="geral_estado" items="[[ListaEstados]]" item-value-path="id" item-label-path="value" value="{{visita.codEstado}}" label="Estado" disabled="{{ _lockFields }}">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
                                 </div>
                             </div>
@@ -646,6 +667,10 @@
                     _lockFields: {
                         type: Boolean,
                         value: true
+                    },
+                    _tarefaBotao: {
+                        type: String,
+                        value: "Lista"
                     },
                 },
 
@@ -978,12 +1003,14 @@
                         this.$.tarefa_tarefaText.hidden = true;
 
                         this.$.tarefa_tarefaText.value = "";
+                        this._tarefaBotao = "Lista";
                     }
                     else {
                         this.$.tarefa_tarefaLista.hidden = true;
                         this.$.tarefa_tarefaText.hidden = false;
 
                         this.$.tarefa_tarefaLista.value = null;
+                        this._tarefaBotao = "Texto";
                     }
                 },
 

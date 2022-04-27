@@ -22,6 +22,7 @@ namespace Hydra.Such.Data.Database
         public TimeSpan? InicioHora { get; set; }
         public DateTime? FimData { get; set; }
         public TimeSpan? FimHora { get; set; }
+        public TimeSpan? TarefasTempoTotal { get; set; }
         public int? CodEstado { get; set; }
         public string NomeEstado { get; set; }
         public string IniciativaCriador { get; set; }

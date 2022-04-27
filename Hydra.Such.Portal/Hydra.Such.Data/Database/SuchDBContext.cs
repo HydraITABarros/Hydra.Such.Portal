@@ -12948,6 +12948,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.FimHora)
                     .HasColumnName("FimHora");
 
+                entity.Property(e => e.TarefasTempoTotal)
+                    .HasColumnName("TarefasTempoTotal");
+
                 entity.Property(e => e.CodEstado)
                     .HasColumnName("CodEstado");
 

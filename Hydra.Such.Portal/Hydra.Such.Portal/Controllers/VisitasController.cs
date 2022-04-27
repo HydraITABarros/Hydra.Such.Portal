@@ -443,7 +443,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (tarefa != null && !string.IsNullOrEmpty(tarefa.CodVisita) && tarefa.Ordem.HasValue)
                 {
                     if (!string.IsNullOrEmpty(tarefa.DataTexto)) tarefa.Data = Convert.ToDateTime(tarefa.DataTexto);
-                    if (!string.IsNullOrEmpty(tarefa.DuracaoTexto)) tarefa.Duracao = TimeSpan.Parse(tarefa.DuracaoTexto);
+                    if (!string.IsNullOrEmpty(tarefa.DuracaoTexto)) tarefa.Duracao = TimeSpan.Parse(tarefa.DuracaoTexto); else tarefa.Duracao = TimeSpan.MinValue;
                     if (tarefa.CodTarefa.HasValue == true) tarefa.Tarefa = "";
                     if (!string.IsNullOrEmpty(tarefa.Tarefa)) tarefa.CodTarefa = null;
                     tarefa.UtilizadorCriacao = User.Identity.Name;
@@ -452,6 +452,14 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (tarefaDB != null && DBVisitasTarefas.Create(tarefaDB) != null)
                     {
+                        List<VisitasTarefas> AllTarefas = DBVisitasTarefas.GetByVisita(tarefa.CodVisita);
+                        TimeSpan totalTarefas = AllTarefas.Aggregate(TimeSpan.Zero, (sumSoFar, nextMyObject) => sumSoFar + (TimeSpan)nextMyObject.Duracao);
+
+                        Visitas Visita = DBVisitas.GetByVisita(tarefa.CodVisita);
+                        Visita.TarefasTempoTotal = totalTarefas;
+                        Visita.UtilizadorModificacao = User.Identity.Name;
+                        DBVisitas.Update(Visita);
+
                         tarefa.eReasonCode = 1;
                         tarefa.eMessage = "Tarefa criada com sucesso.";
                         return Json(tarefa);

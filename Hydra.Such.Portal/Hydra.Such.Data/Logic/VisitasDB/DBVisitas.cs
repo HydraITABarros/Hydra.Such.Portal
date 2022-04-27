@@ -139,6 +139,7 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 InicioHora = x.InicioHora,
                 FimData = x.FimData,
                 FimHora = x.FimHora,
+                TarefasTempoTotal = x.TarefasTempoTotal,
                 CodEstado = x.CodEstado,
                 NomeEstado = x.NomeEstado,
                 IniciativaCriador = x.IniciativaCriador,
@@ -162,6 +163,7 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             if (!string.IsNullOrEmpty(x.InicioHoraTexto)) visita.InicioHora = TimeSpan.Parse(x.InicioHoraTexto);
             if (!string.IsNullOrEmpty(x.FimDataTexto)) visita.FimData = Convert.ToDateTime(x.FimDataTexto);
             if (!string.IsNullOrEmpty(x.FimHoraTexto)) visita.FimHora = TimeSpan.Parse(x.FimHoraTexto);
+            if (!string.IsNullOrEmpty(x.TarefasTempoTotalTexto)) visita.TarefasTempoTotal = TimeSpan.Parse(x.TarefasTempoTotalTexto);
             if (!string.IsNullOrEmpty(x.DataHoraCriacaoTexto)) visita.DataHoraCriacao = Convert.ToDateTime(x.DataHoraCriacaoTexto);
             if (!string.IsNullOrEmpty(x.DataHoraModificacaoTexto)) visita.DataHoraModificacao = Convert.ToDateTime(x.DataHoraModificacaoTexto);
 
@@ -203,6 +205,8 @@ namespace Hydra.Such.Data.Logic.VisitasDB
                 FimDataTexto = x.FimData.HasValue ? x.FimData.Value.ToString("yyyy-MM-dd") : "",
                 FimHora = x.FimHora,
                 FimHoraTexto = x.FimHora.HasValue ? x.FimHora.Value.ToString(@"hh\:mm") : "",
+                TarefasTempoTotal = x.TarefasTempoTotal,
+                TarefasTempoTotalTexto = x.TarefasTempoTotal.HasValue ? x.TarefasTempoTotal.Value.ToString(@"hh\:mm") : "",
                 CodEstado = x.CodEstado,
                 NomeEstado = x.NomeEstado,
                 IniciativaCriador = x.IniciativaCriador,

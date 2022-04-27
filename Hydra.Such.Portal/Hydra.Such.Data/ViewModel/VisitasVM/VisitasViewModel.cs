@@ -26,6 +26,8 @@ namespace Hydra.Such.Data.ViewModel.VisitasVM
         public string FimDataTexto { get; set; }
         public TimeSpan? FimHora { get; set; }
         public string FimHoraTexto { get; set; }
+        public TimeSpan? TarefasTempoTotal { get; set; }
+        public string TarefasTempoTotalTexto { get; set; }
         public int? CodEstado { get; set; }
         public string NomeEstado { get; set; }
         public string IniciativaCriador { get; set; }
