@@ -1322,6 +1322,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.Filed = false;
                         data.History = false;
+                        data.ChangeStatus = data.ChangeStatus != null ? data.ChangeStatus : 2; //2 = Bloqueado
                         Contratos cContract = DBContracts.ParseToDB(data);
                         cContract.TipoContrato = data.ContractType;
                         cContract.UtilizadorCriação = User.Identity.Name;
@@ -1439,6 +1440,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (ContratoDB != null)
                         {
+                            data.ChangeStatus = data.ChangeStatus != null ? data.ChangeStatus : 2; //2 = Bloqueado
                             ContratoDB = DBContracts.ParseToDB(data);
                             ContratoDB.UtilizadorModificação = User.Identity.Name;
                             ContratoDB = DBContracts.Update(ContratoDB);
