@@ -195,6 +195,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<VisitasEstados> VisitasEstados { get; set; }
         public virtual DbSet<VisitasTarefas> VisitasTarefas { get; set; }
         public virtual DbSet<VisitasTarefasTarefas> VisitasTarefasTarefas { get; set; }
+        public virtual DbSet<VisitasContratos> VisitasContratos { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
@@ -8253,7 +8254,7 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataAdjudicacao).HasColumnType("datetime");
 
                 entity.Property(e => e.DataAutorizacaoAdjudicacao).HasColumnType("datetime");
-                
+
                 entity.Property(e => e.DataCriacao).HasColumnType("datetime");
 
                 entity.Property(e => e.DataModificacao).HasColumnType("datetime");
@@ -11629,9 +11630,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ID)
                     .HasColumnName("ID");
 
-                    entity.Property(e => e.Marca)
-                    .HasColumnName("Marca")
-                    .HasMaxLength(60);
+                entity.Property(e => e.Marca)
+                .HasColumnName("Marca")
+                .HasMaxLength(60);
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
@@ -13123,6 +13124,65 @@ namespace Hydra.Such.Data.Database
                     .HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<VisitasContratos>(entity =>
+            {
+                entity.HasKey(e => new { e.CodVisita, e.NoContrato });
+
+                entity.ToTable("Visitas_Contratos");
+
+                entity.Property(e => e.CodVisita)
+                    .HasColumnName("CodVisita")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoContrato)
+                    .HasColumnName("NoContrato")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.AmbitoServico)
+                    .HasColumnName("AmbitoServico")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.NoCliente)
+                    .HasColumnName("NoCliente")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NomeCliente)
+                    .HasColumnName("NomeCliente")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CodArea)
+                    .HasColumnName("CodArea")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NomeArea)
+                    .HasColumnName("NomeArea")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CodCresp)
+                    .HasColumnName("CodCresp")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NomeCresp)
+                    .HasColumnName("NomeCresp")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHoraModificacao")
+                    .HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<WorkflowProcedimentosCcp>(entity =>
             {
                 entity.HasKey(e => new { e.NºProcedimento, e.Estado, e.DataHora });
@@ -14449,8 +14509,9 @@ namespace Hydra.Such.Data.Database
 
             });
 
-            modelBuilder.Entity<Comentario>(entity => {
-                entity.HasKey(e => new { e.NoDocumento, e.DataHoraComentario});
+            modelBuilder.Entity<Comentario>(entity =>
+            {
+                entity.HasKey(e => new { e.NoDocumento, e.DataHoraComentario });
 
                 entity.Property(e => e.NoDocumento)
                     .HasColumnName("NoDocumento")

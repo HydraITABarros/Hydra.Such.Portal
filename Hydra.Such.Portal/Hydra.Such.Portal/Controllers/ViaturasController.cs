@@ -409,7 +409,8 @@ namespace Hydra.Such.Portal.Controllers
                 IDCondutor = AllGestores.Where(x => x.Matricula == data.Matricula && x.IDTipo == 2 && x.DataInicio <= DateTime.Now).FirstOrDefault() != null ? (int)AllGestores.Where(x => x.Matricula == data.Matricula && x.IDTipo == 2 && x.DataInicio <= DateTime.Now).FirstOrDefault().IDGestor : 0;
                 if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
 
-                viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
+                //viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
+                viatura.DataProximaInspecaoTexto = viatura.DataProximaInspecao.HasValue ? viatura.DataProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
 
                 if (viatura.IDEstado != null && viatura.IDEstado > 0) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
                 if (viatura.IDMarca != null && viatura.IDMarca > 0) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
@@ -467,7 +468,7 @@ namespace Hydra.Such.Portal.Controllers
                     DateTime DataMatricula = Convert.ToDateTime(viatura.DataMatricula);
                     DateTime DataIUC = Convert.ToDateTime(DateTime.Now.Year.ToString() + "-" + DataMatricula.Month.ToString() + "-" + DataMatricula.Day.ToString());
 
-                    if (DataIUC.AddDays(-30) <= DateTime.Now.Date && DataIUC >= DateTime.Now.Date)
+                    //if (DataIUC.AddDays(-30) <= DateTime.Now.Date && DataIUC >= DateTime.Now.Date)
                         viatura.IUCate = DataIUC.ToString("yyyy-MM-dd");
                 }
 
