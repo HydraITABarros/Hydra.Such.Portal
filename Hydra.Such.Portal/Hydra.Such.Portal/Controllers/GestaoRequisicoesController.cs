@@ -1223,10 +1223,7 @@ namespace Hydra.Such.Portal.Controllers
             else
                 result = DBRequest.GetByIdAndState((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
 
-            result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
-               x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
-               x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
-               x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
+            result.RemoveAll(x => x.RequestNutrition == true);
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1240,7 +1237,10 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
-            result.RemoveAll(x => x.RequestNutrition == true);
+            result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
+               x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
+               x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
+               x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
