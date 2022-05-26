@@ -217,6 +217,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ModelosRequisicao/NAV2017ContratosFornecedor"
+                   last-response="{{Contracts}}"
+                   id="ajax_ContratosFornecedor_list"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -342,7 +350,7 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <such-selectbox id="CBProducts" label="Cód. Produto"
                                                         items="[[Products]]"
                                                         text-path="code"
@@ -370,16 +378,13 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <vaadin-text-field id="txtQuantityToRequire" name="txtQuantityToRequire" label="Quantidade A Requerer" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-1">
                                         <vaadin-text-field id="txtUnitCost" name="txtUnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                     </div>
-
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <such-selectbox id="CBLineProjects" value="[[Requisition.projectNo]]" label="Nº Ordem/Projeto"
                                                         items="[[CBJobNo]]"
                                                         text-path="no"
@@ -388,6 +393,8 @@
                                                         disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
 
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[Requisition.regionCode]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
@@ -434,6 +441,16 @@
                                                         text-path="name"
                                                         value-path="no_"
                                                         fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_Contracts" label="Nº Contrato"
+                                                        items="[[Contracts]]"
+                                                        text-path="nameContrato"
+                                                        value-path="noContrato"
+                                                        fields='[{"field":"noContrato", "name":"Nº Contrato"}, {"field":"nameContrato", "name":"Descrição Contrato"}, {"field":"noFornecedor", "name":"Nº Fornecedor"}, {"field":"nameFornecedor", "name":"Nome Fornecedor"}, {"field":"dataCelebracao", "name":"Data Celebração"}, {"field":"dataConclusaoInicial", "name":"Data Conclusão Inícial"}, {"field":"dataConclusaoRevista", "name":"Data Conclusão Revista"}, {"field":"precoBase", "name":"Preço Base"}, {"field":"preoContratual", "name":"Preço Contratual"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>

@@ -12318,6 +12318,18 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataFim")
                     .HasColumnType("date");
 
+                entity.Property(e => e.CodRegiao)
+                    .HasColumnName("CodRegiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .HasColumnName("CodAreaFuncional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .HasColumnName("CodCentroResponsabilidade")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
                     .HasMaxLength(50);

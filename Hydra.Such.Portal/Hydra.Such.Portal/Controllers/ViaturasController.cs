@@ -230,11 +230,21 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.IDLocalParqueamento != null && x.IDLocalParqueamento > 0) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
                 if (x.IDGestor != null && x.IDGestor > 0) x.Gestor = AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault() != null ? AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault().Gestor : "";
+                LastAfetacao = AllAfetacao.Where(y => y.Matricula == x.Matricula && y.DataInicio <= DateTime.Now.Date && (y.DataFim.HasValue ? y.DataFim : DateTime.Now.Date) >= DateTime.Now.Date).OrderByDescending(z => z.DataInicio).FirstOrDefault();
+                if (LastAfetacao != null)
+                {
+                    x.AfetacaoCodRegiao = LastAfetacao.CodRegiao;
+                    x.AfetacaoCodArea = LastAfetacao.CodAreaFuncional;
+                    x.AfetacaoCodCresp = LastAfetacao.CodCentroResponsabilidade;
+                }
+                LastAfetacao = null;
                 LastAfetacao = AllAfetacao.Where(y => y.Matricula == x.Matricula).OrderByDescending(z => z.DataInicio).FirstOrDefault();
                 if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue && LastAfetacao.DataInicio.HasValue)
                 {
                     if (Convert.ToDateTime(LastAfetacao.DataInicio) <= DateTime.Now.Date && (LastAfetacao.DataFim.HasValue ? Convert.ToDateTime(LastAfetacao.DataFim) : DateTime.Now.Date) >= DateTime.Now.Date)
+                    {
                         x.Afetacao = AllAfetacaoAreaReal.Where(y => y.ID == LastAfetacao.IDAreaReal).FirstOrDefault().AreaReal;
+                    }
                 }
                 else
                 {
@@ -3870,6 +3880,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["afetacaoCodRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Código Região"); Col = Col + 1; }
+                if (dp["afetacaoCodArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Código Área Funcional"); Col = Col + 1; }
+                if (dp["afetacaoCodCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Código Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["afetacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Área real"); Col = Col + 1; }
                 if (dp["noProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
                 if (dp["projeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto"); Col = Col + 1; }
@@ -3920,6 +3933,9 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
                         if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
+                        if (dp["afetacaoCodRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AfetacaoCodRegiao); Col = Col + 1; }
+                        if (dp["afetacaoCodArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AfetacaoCodArea); Col = Col + 1; }
+                        if (dp["afetacaoCodCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AfetacaoCodCresp); Col = Col + 1; }
                         if (dp["afetacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Afetacao); Col = Col + 1; }
                         if (dp["noProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoProjeto); Col = Col + 1; }
                         if (dp["projeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Projeto); Col = Col + 1; }

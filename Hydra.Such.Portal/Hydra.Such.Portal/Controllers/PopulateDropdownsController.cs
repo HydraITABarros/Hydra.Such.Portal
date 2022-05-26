@@ -38,6 +38,7 @@ using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.OrcamentoL;
 using Hydra.Such.Data.Logic.VisitasDB;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1022,6 +1023,34 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRegionCodeViaturas2()
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
+            {
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+            else
+            {
+                result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetRegionCode_VendasAnuais()
         {
             List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Select(x => new DDMessageString()
@@ -1101,6 +1130,69 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name
             }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetFunctionalAreaCodeViaturas2()
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
+            {
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+            else
+            {
+                result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCentrosCode()
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCentrosCodeViaturas2()
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
+            {
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+            else
+            {
+                result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+
             return Json(result);
         }
 
@@ -2687,18 +2779,30 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();
             List<DDMessageString> result = new List<DDMessageString>();
 
-            if (!string.IsNullOrEmpty(areaCode))
-                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).ToList();
-            else
-                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
-
-            if (AllCentros != null && AllCentros.Count > 0)
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
             {
-                result = AllCentros.Select(x => new DDMessageString()
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Select(x => new DDMessageString()
                 {
                     id = x.Code,
                     value = x.Name
                 }).ToList();
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(areaCode))
+                    AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).ToList();
+                else
+                    AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+
+                if (AllCentros != null && AllCentros.Count > 0)
+                {
+                    result = AllCentros.Select(x => new DDMessageString()
+                    {
+                        id = x.Code,
+                        value = x.Name
+                    }).ToList();
+                }
             }
 
             return Json(result.OrderBy(x => x.value));

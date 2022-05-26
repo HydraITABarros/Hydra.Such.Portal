@@ -475,6 +475,36 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.afetacaoCodRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="afetacaoCodRegiao">Afetação Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="afetacaoCodRegiao" value="[[filter.afetacaoCodRegiao]]" />
+                </template>
+                <template>
+                    {{item.afetacaoCodRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.afetacaoCodArea.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="afetacaoCodArea">Afetação Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="afetacaoCodArea" value="[[filter.afetacaoCodArea]]" />
+                </template>
+                <template>
+                    {{item.afetacaoCodArea}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.afetacaoCodCresp.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="afetacaoCodCresp">Afetação Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="afetacaoCodCresp" value="[[filter.afetacaoCodCresp]]" />
+                </template>
+                <template>
+                    {{item.afetacaoCodCresp}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.afetacao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="afetacao">Afetação Área Real</vaadin-grid-sorter>
@@ -667,6 +697,9 @@
                         "codRegiao": { hidden: false, label: "Código Região" },
                         "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
                         "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "afetacaoCodRegiao": { hidden: false, label: "Afetação Código Região" },
+                        "afetacaoCodArea": { hidden: false, label: "Afetação Código Área Funcional" },
+                        "afetacaoCodCresp": { hidden: false, label: "Afetação Código Centro Responsabilidade" },
                         "afetacao": { hidden: false, label: "Afetação Área Real" },
                         "noProjeto": { hidden: false, label: "Nº Projeto" },
                         "projeto": { hidden: false, label: "Projeto" }
