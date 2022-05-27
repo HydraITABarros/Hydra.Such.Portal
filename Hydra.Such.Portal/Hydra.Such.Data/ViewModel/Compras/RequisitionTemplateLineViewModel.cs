@@ -106,6 +106,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string MarketLocalRegion { get; set; }
         public string CustomerNo { get; set; }
         public string Approvers { get; set; }
+        public string NoContrato { get; set; }
+
 
         public bool Selected { get; set; }
         public Object Colunas { get; set; }

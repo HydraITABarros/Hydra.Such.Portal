@@ -139,6 +139,7 @@
         <iron-ajax url="/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}" on-response="_benbyreqResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/UpdateAgreementVendor" id="grid_updateAgreementByVendor_ajax" last-response="{{priceAgreementByVendor}}" on-response="_agreementByVendorResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetQuantidades" id="ajax_GetQuantidades" last-response="{{quantidadesResult}}" on-response="_getQuantidadesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ModelosRequisicao/GetContratosFornecedor" last-response="{{ContratosFornecedores}}" id="ajax_ContratosFornecedor_list" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <style>
@@ -258,11 +259,11 @@
         </such-selectbox>
 
         <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <vaadin-date-picker label="Data Receção Esperada" id="dpExpectedReceiptId" name="dpExpectedReceiptName" value="{{_expectedReceiptDate}}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
 
-            <div class="col-md-3 ">
+            <div class="col-md-2 ">
                 <vaadin-date-picker label="Data p/ Preço Fornecedor" id="dpVendedorPriceId" name="dpVendedorPriceName" value="{{_pricesDate}}" on-value-changed="_DatePriceChange" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
 
@@ -278,28 +279,28 @@
                                         {"field":"custoUnitario", "name":"Custo Unitário"},
                                         {"field":"noFornecedor", "name":"Nº Fornecedor"},
                                         {"field":"noSubFornecedor", "name":"Nº SubFornecedor"}]'>
-                                        @*,{"field":"noContrato", "name":"Nº Contrato"}]'>*@
+                    @*,{"field":"noContrato", "name":"Nº Contrato"}]'>*@
                 </such-selectbox>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <vaadin-text-field id="supplierProdDescription2Id" name="supplierProdDescription2Name" label="Descrição 2 Produto" value="" maxlength="50"></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <vaadin-text-field id="qtyID" name="qtyName" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" on-blur="_verificaMultiplo" required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
 
-            <div class="col-md-2">
-                <vaadin-text-field id="qtyDisponivel" name="qtyDisponivel" label="Quantidade Disponível" class="alignRight" disabled></vaadin-text-field>
+            <div class="col-md-1">
+                <vaadin-text-field id="qtyDisponivel" name="qtyDisponivel" label="Quant. Disponível" class="alignRight" disabled></vaadin-text-field>
             </div>
 
-            <div class="col-md-2">
-                <vaadin-text-field id="qtyReservada" name="qtyReservada" label="Quantidade Reservada" class="alignRight" disabled></vaadin-text-field>
+            <div class="col-md-1">
+                <vaadin-text-field id="qtyReservada" name="qtyReservada" label="Quant. Reservada" class="alignRight" disabled></vaadin-text-field>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Fornecedor" value="{{supplierNo}}" disabled></vaadin-text-field>
                 <vaadin-text-field id="subsupplierNoId" name="subsupplierNoId" label="Nº SubForncedor" value="{{subsupplierNo}}" disabled hidden></vaadin-text-field>
             </div>
@@ -307,6 +308,10 @@
             <div class="col-md-4">
                 <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
                 <vaadin-text-field id="subSupplierNameId" name="subSupplierName" label="Nome SubFornecedor" value="{{subSupplierName}}" disabled hidden></vaadin-text-field>
+            </div>
+
+            <div class="col-md-4">
+                <vaadin-text-field id="subSupplierNameId" name="subSupplierName" label="Nome SubFornecedor" value="{{subSupplierName}}" disabled></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
@@ -331,8 +336,8 @@
                 <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
             </div>
             @*<div class="col-md-3 ">
-            <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
-        </div>*@
+                <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
+            </div>*@
             <div class="col-md-6">
                 <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value="" maxlength="100"></vaadin-text-field>
             </div>
@@ -354,7 +359,7 @@
             </div>
 
             <div class="col-md-3">
-                <vaadin-text-field id="subSupplierNameId" name="subSupplierName" label="Nome SubFornecedor" value="{{subSupplierName}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" value="{{noContrato}}" disabled></vaadin-text-field>
             </div>
 
             <div class="col-md-1" hidden="{{ !_permissionsVal.create }}" style="padding-top:15px">
@@ -382,10 +387,6 @@
             <div class="col-md-2">
                 <vaadin-text-field id="interfaceId" name="interfaceId" label="Interface" value="{{interface}}" disabled hidden></vaadin-text-field>
             </div>
-
-            <div class="col-md-2">
-                <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" disabled hidden></vaadin-text-field>
-            </div>
         </div>
         @* Grid *@
 
@@ -407,11 +408,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-date-picker value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    [[ _parseExpectedReception(item.expectedReceptionDate) ]]
-                </template>*@
+                        <vaadin-date-picker value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseExpectedReception(item.expectedReceptionDate) ]]
+                    </template>*@
                     [[ _parseExpectedReception(item.expectedReceptionDate) ]]
                 </template>
             </vaadin-grid-column>
@@ -423,11 +424,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-date-picker on-value-changed="_DatePriceGridChange" value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
-                </template>*@
+                        <vaadin-date-picker on-value-changed="_DatePriceGridChange" value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
+                    </template>*@
                     [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
                 </template>
             </vaadin-grid-column>
@@ -439,20 +440,20 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesIdGrid" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.productNo}}">
-                        <template>
-                            <table width="300px">
-                                <tr>
-                                    <td width="20%"><b>[[item.numb]]</b></td>
-                                    <td width="80%">[[item.documentNO]]</td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.productNo}}
-                </template>*@
+                        <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesIdGrid" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.productNo}}">
+                            <template>
+                                <table width="300px">
+                                    <tr>
+                                        <td width="20%"><b>[[item.numb]]</b></td>
+                                        <td width="80%">[[item.documentNO]]</td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.productNo}}
+                    </template>*@
                     {{item.productNo}}
                 </template>
             </vaadin-grid-column>
@@ -464,11 +465,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.description}}
-                </template>*@
+                        <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.description}}
+                    </template>*@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
@@ -530,11 +531,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field value="{{item.supplierNo}}" disabled></vaadin-text-field>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.supplierNo}}
-                </template>*@
+                        <vaadin-text-field value="{{item.supplierNo}}" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.supplierNo}}
+                    </template>*@
                     {{item.supplierNo}}
                 </template>
             </vaadin-grid-column>
@@ -546,11 +547,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.supplierName}}
-                </template>*@
+                        <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.supplierName}}
+                    </template>*@
                     {{item.supplierName}}
                 </template>
             </vaadin-grid-column>
@@ -582,20 +583,20 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-combo-box items="[[unitmeasureresult]]" id="unitofMeasureCodeId" item-value-path="id" item-label-path="value" value="{{item.unitMeasureCode}}" disabled>
-                        <template>
-                            <table width="200px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"><b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.unitMeasureCode}}
-                </template>*@
+                        <vaadin-combo-box items="[[unitmeasureresult]]" id="unitofMeasureCodeId" item-value-path="id" item-label-path="value" value="{{item.unitMeasureCode}}" disabled>
+                            <template>
+                                <table width="200px">
+                                    <tr>
+                                        <td width="20%">[[item.id]]</td>
+                                        <td width="80%"><b>[[item.value]]</b></td>
+                                    </tr>
+                                </table>
+                            </template>
+                        </vaadin-combo-box>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.unitMeasureCode}}
+                    </template>*@
                     {{item.unitMeasureCode}}
                 </template>
             </vaadin-grid-column>
@@ -607,11 +608,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field value="{{item.directUnitCost}}" id="lineUnitCost" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.directUnitCost}}€
-                </template>*@
+                        <vaadin-text-field value="{{item.directUnitCost}}" id="lineUnitCost" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.directUnitCost}}€
+                    </template>*@
                     {{item.directUnitCost}}€
                 </template>
             </vaadin-grid-column>
@@ -663,11 +664,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.quantitybyUnitMeasure}}
-                </template>*@
+                        <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.quantitybyUnitMeasure}}
+                    </template>*@
                     {{item.quantitybyUnitMeasure}}
                 </template>
             </vaadin-grid-column>
@@ -679,11 +680,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                    <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
-                </template>
-                <template is="dom-if" if="{{ !item.selected }}">
-                    {{item.totalValue}}€
-                </template>*@
+                        <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        {{item.totalValue}}€
+                    </template>*@
                     {{item.totalValue}}€
                 </template>
             </vaadin-grid-column>
@@ -703,7 +704,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noContrato" />
@@ -782,34 +783,34 @@
                 </vaadin-grid-column>
 
                 @*<vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="localCode" />
-                        </template>
-                        <template>
-                            [[_parseLocalCode(item.localCode)]]
-                        </template>
-                    </vaadin-grid-column>*@
+            <template class="header">
+                <vaadin-grid-sorter path="localCode"> Código Localização</vaadin-grid-sorter>
+                <vaadin-grid-filter path="localCode" />
+            </template>
+            <template>
+                [[_parseLocalCode(item.localCode)]]
+            </template>
+        </vaadin-grid-column>*@
 
                 @*<vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="unitFoodProduction" />
-                        </template>
-                        <template>
-                            [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
-                        </template>
-                    </vaadin-grid-column>*@
+            <template class="header">
+                <vaadin-grid-sorter path="unitFoodProduction">Unidade Produtiva Alimentação</vaadin-grid-sorter>
+                <vaadin-grid-filter path="unitFoodProduction" />
+            </template>
+            <template>
+                [[ _parseUnitFoodProd(item.unitFoodProduction) ]]
+            </template>
+        </vaadin-grid-column>*@
 
                 @*<vaadin-grid-column width="160px" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="receivedDate" />
-                        </template>
-                        <template>
-                            [[ _parseDateFormat(item.receivedDate) ]]
-                        </template>
-                    </vaadin-grid-column>*@
+            <template class="header">
+                <vaadin-grid-sorter path="receivedDate">Data Receção</vaadin-grid-sorter>
+                <vaadin-grid-filter path="receivedDate" />
+            </template>
+            <template>
+                [[ _parseDateFormat(item.receivedDate) ]]
+            </template>
+        </vaadin-grid-column>*@
             </vaadin-grid>
             <div class="buttons">
                 <paper-button class="btnSave" raised on-tap="_confirm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
