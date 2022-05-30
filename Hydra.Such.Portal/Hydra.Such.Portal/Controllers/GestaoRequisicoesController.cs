@@ -147,11 +147,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult RequisitionsByDimensions()
         {
-            UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+
             if (userPermissions != null && userPermissions.Read.Value)
             {
+                DateTime data = DateTime.Now.AddMonths(-3);
+                string ano = data.Year.ToString();
+                string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                 ViewBag.UPermissions = userPermissions;
+                ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
+
                 return View();
             }
             else
@@ -1274,7 +1281,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRequisitionsByDimensions([FromBody] JObject requestParams)
         {
+            DateTime pesquisaData = DateTime.MinValue;
             int Historic = 0;
+
+            string pesquisaDataText = (string)requestParams.GetValue("pesquisadata");
+            string pesquisaNoRequisicao = (string)requestParams.GetValue("pesquisaNoRequisicao");
+            if (!string.IsNullOrEmpty(pesquisaDataText))
+                pesquisaData = Convert.ToDateTime(pesquisaDataText);
+
             if (requestParams["Historic"] != null)
                 Historic = int.Parse(requestParams["Historic"].ToString());
 
@@ -1304,7 +1318,11 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
 
-            result = DBRequest.GetByStateSimple((int)RequisitionTypes.Normal, states).ParseToViewModel();
+            if (string.IsNullOrEmpty(pesquisaNoRequisicao))
+                result = DBRequest.GetByStateSimpleAndDate((int)RequisitionTypes.Normal, states, pesquisaData).ParseToViewModel();
+            else
+                result = DBRequest.GetByStateSimpleAndID((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+            //result = DBRequest.GetByStateSimple((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);

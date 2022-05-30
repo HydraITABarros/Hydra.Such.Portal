@@ -222,6 +222,85 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<Requisição> GetByStateSimpleAndDate(int TipoReq, List<RequisitionStates> states, DateTime date)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    if (date == DateTime.MinValue)
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && x.DataRequisição > date)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByStateSimpleAndID(int TipoReq, List<RequisitionStates> states, string NoRequisicao)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    if (string.IsNullOrEmpty(NoRequisicao))
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && x.NºRequisição.Contains(NoRequisicao))
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public static List<Requisição> GetByStateSimple(int TipoReq, List<RequisitionStates> states)
         {
             try
