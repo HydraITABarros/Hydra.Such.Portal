@@ -147,7 +147,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult RequisitionsByDimensions()
         {
-            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
 
             if (userPermissions != null && userPermissions.Read.Value)
             {

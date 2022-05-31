@@ -3230,11 +3230,11 @@ namespace Hydra.Such.Portal.Controllers
                             item.DtValidadeFim = Convert.ToDateTime(item.DtValidadeFimTexto);
                             item.DtValidadeFimTexto = "";
                         }
-                        if (!string.IsNullOrEmpty(item.CustoUnitarioTexto))
-                        {
-                            item.CustoUnitario = Convert.ToDecimal(item.CustoUnitarioTexto);
-                            item.CustoUnitarioTexto = "";
-                        }
+                        //if (!string.IsNullOrEmpty(item.CustoUnitarioTexto))
+                        //{
+                        //    item.CustoUnitario = Convert.ToDecimal(item.CustoUnitarioTexto);
+                        //    item.CustoUnitarioTexto = "";
+                        //}
                         if (!string.IsNullOrEmpty(item.CustoUnitarioSubFornecedorTexto))
                         {
                             item.CustoUnitarioSubFornecedor = Convert.ToDecimal(item.CustoUnitarioSubFornecedorTexto);

@@ -39,6 +39,7 @@ using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.OrcamentoL;
 using Hydra.Such.Data.Logic.VisitasDB;
 using Hydra.Such.Data;
+using Hydra.Such.Data.ViewModel.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -2065,6 +2066,33 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAllContratosByUser()
+        {
+            List<Contratos> ContractsList = DBContracts.GetAllByContractType(ContractType.Contract);
+            ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
+            return Json(result);
+        }
 
         public JsonResult GetPriceAgreementLines([FromBody]string Area, DateTime DataFornecedor)
         {

@@ -157,6 +157,7 @@
         <iron-ajax url="/PopulateDropdowns/GetVisitasEstados" last-response="{{ListaEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{ListaEmployees}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Visitas/GetVisitaTarefasOpcoes" last-response="{{ListaTarefasOpcoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllContratosByUser" last-response="{{ListaContratos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Visitas/GetVisitaDetails"
                    last-response="{{visita}}"
@@ -172,6 +173,14 @@
                    method="post"
                    handle-as="json"
                    id="page_tarefas_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/GetVisitaContratos"
+                   last-response="{{contratos}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_contratos_ajax"
                    content-type="application/json">
         </iron-ajax>
 
@@ -577,6 +586,125 @@
                                         </vaadin-combo-box>
                                     </div>
                                 </div>
+
+                                <div class="row break_clear" hidden="{{_isCreate}}">
+                                    <paper-collapse-item class="panel-heading" header="Contratos" opened>
+                                        <div class="row break_clear">
+                                            <!--Contratos-->
+                                            <vaadin-grid id="grid_tabContrato" aria-label="grid_tabContrato" items="{{ contratos }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noContrato" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.noContrato}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="20%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="ambitoServico">Âmbito Serviço</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="ambitoServico" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.ambitoServico}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noCliente" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.noCliente}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="20%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="nomeCliente">Cliente</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="nomeCliente" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.nomeCliente}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="codArea">Cód. Área</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="codArea" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.codArea}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="20%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="nomeArea">Área</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="nomeArea" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.nomeArea}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="codCresp">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="codCresp" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.codCresp}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="20%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="nomeCresp">Centro Responsabilidade</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="nomeCresp" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.nomeCresp}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <paper-button id="btn_DeleteContrato" name="btn_DeleteContrato" class="btnRemove tableBtn" raised on-tap="_deleteContrato" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+
+                                            <div class="row break_clear" hidden="{{_isCreate}}">
+                                                <paper-collapse-item class="panel-heading" header="Novo Contrato" closed>
+                                                    <div class="row break_clear">
+                                                        <div class="col-md-4">
+                                                            <such-selectbox id="detalhes_codContrato" name="detalhes_codContrato" value="" label="Contratos"
+                                                                            items="[[ListaContratos]]"
+                                                                            text-path="description"
+                                                                            value-path="contractNo"
+                                                                            fields='[{"field":"contractNo", "name":"Nº Contrato"}, {"field":"description", "name":"Âmbito dos Serviços"}, {"field":"clientNo", "name":"Nº Cliente"}, {"field":"clientName", "name":"Nome Cliente"}, {"field":"codeFunctionalArea", "name":"Cód. Área Funcional"}, {"field":"codeResponsabilityCenter", "name":"Cód. Centro Respon."}]'
+                                                                            disabled="{{ _lockFields }}">
+                                                            </such-selectbox>
+                                                        </div>
+
+                                                        <div class="col-md-1" style="padding-top:15px">
+                                                            <paper-button id="btn_contratoInsert" name="btn_contratoInsert" class="btnSave" raised on-tap="_createContrato" disabled="{{ _lockFields }}" hidden="{{_isCreate}}"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                                        </div>
+                                                    </div>
+                                                </paper-collapse-item>
+                                            </div>
+                                        </div>
+                                    </paper-collapse-item>
+                                </div>
                             </div>
 
                             <!--Anexos-->
@@ -715,6 +843,9 @@
 
                     this.$.page_tarefas_ajax.body = JSON.stringify({ "codVisita": this._visita });
                     this.$.page_tarefas_ajax.generateRequest();
+
+                    this.$.page_contratos_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                    this.$.page_contratos_ajax.generateRequest();
 
                     this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._visita });
                     this.$.page_LoadAttachments_ajax.generateRequest();

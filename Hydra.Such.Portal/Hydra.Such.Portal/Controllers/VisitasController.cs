@@ -232,6 +232,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetVisitaContratos([FromBody] VisitasViewModel visita)
+        {
+            List<VisitasContratosViewModel> result = new List<VisitasContratosViewModel>();
+            if (visita != null && !string.IsNullOrEmpty(visita.CodVisita))
+            {
+                result = DBVisitasContratos.ParseListToViewModel(DBVisitasContratos.GetByVisita(visita.CodVisita)).OrderBy(x => x.NoContrato).ToList();
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetVisitaTarefasOpcoes()
         {
             List<VisitasTarefasTarefasViewModel> result = new List<VisitasTarefasTarefasViewModel>();
