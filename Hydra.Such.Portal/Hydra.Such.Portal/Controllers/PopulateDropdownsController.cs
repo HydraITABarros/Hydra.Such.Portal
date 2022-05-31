@@ -2071,6 +2071,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<Contratos> ContractsList = DBContracts.GetAllByContractType(ContractType.Contract);
             ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            ContractsList.RemoveAll(x => x.NºDeContrato.Contains("QA"));
+            ContractsList.RemoveAll(x => x.NºDeContrato.Contains("VCI"));
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -2084,12 +2086,33 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
-            List<ContractViewModel> result = new List<ContractViewModel>();
+            List<VisitasContratos> result = new List<VisitasContratos>();
+            List<NAVClientsViewModel> AllClients =  DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            List<NAVDimValueViewModel> AllCresps = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
 
-            ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+            ContractsList.ForEach(x =>
+            {
+                VisitasContratos Contrato = new VisitasContratos();
 
-            List<EnumData> status = EnumerablesFixed.ContractStatus;
-            result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+                Contrato.NoContrato = x.NºDeContrato;
+                Contrato.AmbitoServico = x.Descrição;
+                Contrato.NoCliente = x.NºCliente;
+                Contrato.NomeCliente = !string.IsNullOrEmpty(x.NºCliente) && AllClients.FirstOrDefault(y => y.No_ == x.NºCliente) != null ? AllClients.FirstOrDefault(y => y.No_ == x.NºCliente).Name : "";
+                Contrato.CodArea = x.CódigoÁreaFuncional;
+                Contrato.NomeArea = !string.IsNullOrEmpty(x.CódigoÁreaFuncional) && AllAreas.FirstOrDefault(y => y.Code == x.CódigoÁreaFuncional) != null ? AllAreas.FirstOrDefault(y => y.Code == x.CódigoÁreaFuncional).Name : "";
+                Contrato.CodCresp = x.CódigoCentroResponsabilidade;
+                Contrato.NomeCresp = !string.IsNullOrEmpty(x.CódigoCentroResponsabilidade) && AllCresps.FirstOrDefault(y => y.Code == x.CódigoCentroResponsabilidade) != null ? AllCresps.FirstOrDefault(y => y.Code ==  x.CódigoCentroResponsabilidade).Name : "";
+
+                result.Add(Contrato);
+            });
+
+
+
+
+            //ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            //result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
 
             return Json(result);
         }

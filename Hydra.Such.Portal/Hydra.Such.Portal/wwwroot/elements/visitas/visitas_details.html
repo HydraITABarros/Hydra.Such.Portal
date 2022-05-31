@@ -247,6 +247,24 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Visitas/CreateContrato"
+                   last-response="{{resultCreateContrato}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateContrato_ajax"
+                   on-response="_responseCreateContrato"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Visitas/DeleteContrato"
+                   last-response="{{resultDeleteContrato}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteContrato_ajax"
+                   on-response="_responseDeleteContrato"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Visitas/LoadAttachments"
                    last-response="{{uploads}}"
                    method="post"
@@ -686,12 +704,12 @@
                                             <div class="row break_clear" hidden="{{_isCreate}}">
                                                 <paper-collapse-item class="panel-heading" header="Novo Contrato" closed>
                                                     <div class="row break_clear">
-                                                        <div class="col-md-4">
+                                                        <div class="col-md-6">
                                                             <such-selectbox id="detalhes_codContrato" name="detalhes_codContrato" value="" label="Contratos"
                                                                             items="[[ListaContratos]]"
-                                                                            text-path="description"
-                                                                            value-path="contractNo"
-                                                                            fields='[{"field":"contractNo", "name":"Nº Contrato"}, {"field":"description", "name":"Âmbito dos Serviços"}, {"field":"clientNo", "name":"Nº Cliente"}, {"field":"clientName", "name":"Nome Cliente"}, {"field":"codeFunctionalArea", "name":"Cód. Área Funcional"}, {"field":"codeResponsabilityCenter", "name":"Cód. Centro Respon."}]'
+                                                                            text-path="ambitoServico"
+                                                                            value-path="noContrato"
+                                                                            fields='[{"field":"noContrato", "name":"Nº Contrato"}, {"field":"ambitoServico", "name":"Âmbito dos Serviços"}, {"field":"noCliente", "name":"Nº Cliente"}, {"field":"nomeCliente", "name":"Nome Cliente"}, {"field":"codArea", "name":"Cód. Área Funcional"}, {"field":"nomeArea", "name":"Área Funcional"}, {"field":"codCresp", "name":"Cód. Centro Respon."}, {"field":"nomeCresp", "name":"Cód. Centro Respon."}]'
                                                                             disabled="{{ _lockFields }}">
                                                             </such-selectbox>
                                                         </div>
@@ -968,6 +986,84 @@
                         this.$.page_tarefas_ajax.generateRequest();
                     } else {
                         this._openToastError(this.resultCreateTarefa.eMessage);
+                    }
+                },
+
+                _createContrato: function () {
+                    if (this.$.detalhes_codContrato.value != "") {
+                        var contrato = this.ListaContratos.find(x => x.noContrato == this.$.detalhes_codContrato.value);
+
+                        this.$.page_CreateContrato_ajax.body = JSON.stringify({
+                            codVisita: this._visita,
+                            noContrato: contrato.noContrato,
+                            ambitoServico: contrato.ambitoServico,
+                            noCliente: contrato.noCliente,
+                            nomeCliente: contrato.nomeCliente,
+                            codArea: contrato.codArea,
+                            nomeArea: contrato.nomeArea,
+                            codCresp: contrato.codCresp,
+                            nomeCresp: contrato.nomeCresp
+                        });
+                        this.$.page_CreateContrato_ajax.generateRequest();
+                        this.$.grid_tabContrato.clearCache();
+                    }
+                },
+                _responseCreateContrato: function () {
+                    if (this.resultCreateContrato.eReasonCode == 1) {
+                        this._openToast(this.resultCreateContrato.eMessage);
+
+                        this.$.detalhes_codContrato._clearSelection();
+
+                        this.$.page_contratos_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                        this.$.page_contratos_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.resultCreateContrato.eMessage);
+                    }
+                },
+
+                _deleteContrato: function (e) {
+                    if (this._permissions.update == true) {
+                        var visita = this._visita;
+                        var noContrato = e.model.item.noContrato;
+                        var ajax_request = this.$.page_DeleteContrato_ajax;
+                        var tab = this.$.grid_tabContrato;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a linha do Contrato Nº " + noContrato + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteContrato) {
+                                if (deleteContrato) {
+                                    ajax_request.body = JSON.stringify({
+                                        codVisita: visita,
+                                        noContrato: noContrato
+                                    });
+                                    ajax_request.generateRequest();
+                                    tab.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a linha do Contrato.');
+                    }
+                },
+                _responseDeleteContrato: function (e) {
+                    if (this.resultDeleteContrato.eReasonCode == 1) {
+                        this._openToast(this.resultDeleteContrato.eMessage);
+
+                        this.$.page_contratos_ajax.body = JSON.stringify({ "codVisita": this._visita });
+                        this.$.page_contratos_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.resultDeleteContrato.eMessage);
                     }
                 },
 

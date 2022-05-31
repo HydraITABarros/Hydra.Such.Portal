@@ -357,6 +357,16 @@ namespace Hydra.Such.Portal.Controllers
                             });
                         }
 
+                        List<VisitasContratos> contratosDB = DBVisitasContratos.GetByVisita(visita.CodVisita);
+
+                        if (contratosDB != null && contratosDB.Count > 0)
+                        {
+                            contratosDB.ForEach(contrato =>
+                            {
+                                DBVisitasContratos.Delete(contrato);
+                            });
+                        }
+
                         if (DBVisitas.Delete(visitaDB) == true)
                         {
                             visita.eReasonCode = 1;
@@ -426,6 +436,24 @@ namespace Hydra.Such.Portal.Controllers
                                 tarefaDuplicada.DataHoraModificacao = null;
 
                                 DBVisitasTarefas.Create(tarefaDuplicada);
+                            });
+                        }
+
+                        List<VisitasContratos> AllContratosOriginais = DBVisitasContratos.GetByVisita(visitaOriginal.CodVisita);
+
+                        if (AllContratosOriginais != null && AllContratosOriginais.Count > 0)
+                        {
+                            AllContratosOriginais.ForEach(contratoOriginal =>
+                            {
+                                VisitasContratos contratoDuplicado = contratoOriginal;
+
+                                contratoDuplicado.CodVisita = VisitaDuplicada.CodVisita;
+                                contratoDuplicado.UtilizadorCriacao = User.Identity.Name;
+                                contratoDuplicado.DataHoraCriacao = DateTime.Now;
+                                contratoDuplicado.UtilizadorModificacao = null;
+                                contratoDuplicado.DataHoraModificacao = null;
+
+                                DBVisitasContratos.Create(contratoDuplicado);
                             });
                         }
 
@@ -549,6 +577,65 @@ namespace Hydra.Such.Portal.Controllers
                 tarefa.eReasonCode = 99;
                 tarefa.eMessage = "Ocorreu um erro ao eliminar a Tarefa.";
                 return Json(tarefa);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult CreateContrato([FromBody] VisitasContratosViewModel contrato)
+        {
+            try
+            {
+                if (contrato != null && !string.IsNullOrEmpty(contrato.NoContrato))
+                {
+                    contrato.UtilizadorCriacao = User.Identity.Name;
+                    contrato.DataHoraCriacao = DateTime.Now;
+
+                    if (DBVisitasContratos.Create(DBVisitasContratos.ParseToDB(contrato)) != null)
+                    {
+                        contrato.eReasonCode = 1;
+                        contrato.eMessage = "Contrato criado com sucesso.";
+                        return Json(contrato);
+                    }
+                }
+
+                contrato.eReasonCode = 99;
+                contrato.eMessage = "Ocorreu um erro ao criar o Contrato.";
+                return Json(contrato);
+            }
+            catch (Exception ex)
+            {
+                contrato.eReasonCode = 99;
+                contrato.eMessage = "Ocorreu um erro ao criar o Contrato.";
+                return Json(contrato);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteContrato([FromBody] VisitasContratosViewModel contrato)
+        {
+            try
+            {
+                if (contrato != null && !string.IsNullOrEmpty(contrato.NoContrato))
+                {
+                    VisitasContratos contratoDB = DBVisitasContratos.GetByID(contrato.CodVisita, contrato.NoContrato);
+
+                    if (contratoDB != null && DBVisitasContratos.Delete(contratoDB) == true)
+                    {
+                        contrato.eReasonCode = 1;
+                        contrato.eMessage = "Contrato eliminado com sucesso.";
+                        return Json(contrato);
+                    }
+                }
+
+                contrato.eReasonCode = 99;
+                contrato.eMessage = "Ocorreu um erro ao eliminar o Contrato.";
+                return Json(contrato);
+            }
+            catch (Exception ex)
+            {
+                contrato.eReasonCode = 99;
+                contrato.eMessage = "Ocorreu um erro ao eliminar o Contrato.";
+                return Json(contrato);
             }
         }
 

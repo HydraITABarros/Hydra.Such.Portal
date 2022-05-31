@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hydra.Such.Data.ViewModel.VisitasVM
 {
-    public class VisitasContratosViewModel
+    public class VisitasContratosViewModel : ErrorHandler
     {
         public string CodVisita { get; set; }
         public string NoContrato { get; set; }
