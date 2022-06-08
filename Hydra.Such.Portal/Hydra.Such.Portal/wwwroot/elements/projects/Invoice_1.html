@@ -166,6 +166,7 @@
                 padding-top: 0px !important;
             }
         </style>
+
         <iron-ajax url="/PopulateDropdowns/GetLocations"
                    last-response="{{Locations}}"
                    auto
@@ -464,24 +465,23 @@
             </vaadin-grid-column>
 
             <!--<vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataPrestacaoServico.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataPrestacaoServico">Data Início Serv. Prestado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPrestacaoServico" value="[[filter.dataPrestacaoServico]]" />
-                </template>
-                <template>
-                    <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
-                </template>
-            </vaadin-grid-column>-->
-
+            <template class="header">
+                <vaadin-grid-sorter path="dataPrestacaoServico">Data Início Serv. Prestado</vaadin-grid-sorter>
+                <vaadin-grid-filter path="dataPrestacaoServico" value="[[filter.dataPrestacaoServico]]" />
+            </template>
+            <template>
+                <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
+            </template>
+        </vaadin-grid-column>-->
             <!--<vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataPrestacaoServicoFim.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataPrestacaoServicoFim">Data Fim Serv. Prestado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataPrestacaoServicoFim" value="[[filter.dataPrestacaoServicoFim]]" />
-                </template>
-                <template>
-                    <vaadin-date-picker value="{{item.dataPrestacaoServicoFim}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
-                </template>
-            </vaadin-grid-column>-->
+            <template class="header">
+                <vaadin-grid-sorter path="dataPrestacaoServicoFim">Data Fim Serv. Prestado</vaadin-grid-sorter>
+                <vaadin-grid-filter path="dataPrestacaoServicoFim" value="[[filter.dataPrestacaoServicoFim]]" />
+            </template>
+            <template>
+                <vaadin-date-picker value="{{item.dataPrestacaoServicoFim}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
+            </template>
+        </vaadin-grid-column>-->
 
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.numCompromisso.hidden }}">
                 <template class="header">
