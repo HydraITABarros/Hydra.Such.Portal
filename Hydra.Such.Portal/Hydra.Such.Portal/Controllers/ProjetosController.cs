@@ -235,6 +235,21 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+
+        //[HttpPost]
+        //public JsonResult TESTE([FromBody] JObject requestParams)
+        //{
+        //    decimal result = decimal.Zero;
+
+        //    result = Math.Round((decimal)1.002, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.005, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.003, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.055, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.0352, 2, MidpointRounding.AwayFromZero);
+
+        //    return Json(null);
+        //}
         #endregion
 
         #region Details
