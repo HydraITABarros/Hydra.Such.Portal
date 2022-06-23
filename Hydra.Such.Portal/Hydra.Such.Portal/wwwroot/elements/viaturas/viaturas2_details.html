@@ -174,8 +174,9 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaAbastecimentosCombustiveis" last-response="{{ListaAbastecimentosCombustiveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaRentingPeriodicidade" last-response="{{ListaRentingPeriodicidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCodeViaturas2" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCodeViaturas2" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetCentrosCodeViaturas2" last-response="{{ListaCentrosAfetacao}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Viaturas/GetViatura2Details"
@@ -2464,21 +2465,31 @@
                                         <vaadin-grid id="gridAfetacao" aria-label="gridAfetacao" items="{{ tabAfetacao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="areaReal">Área Real</vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="areaReal" />
+                                                    <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="codRegiao" />
                                                 </template>
                                                 <template>
-                                                    {{item.areaReal}}
+                                                    {{item.codRegiao}}
                                                 </template>
                                             </vaadin-grid-column>
 
                                             <vaadin-grid-column resizable width="150px">
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="localExato">Local Exato</vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="localExato" />
+                                                    <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="codAreaFuncional" />
                                                 </template>
                                                 <template>
-                                                    {{item.localExato}}
+                                                    {{item.codAreaFuncional}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="codCentroResponsabilidade" />
+                                                </template>
+                                                <template>
+                                                    {{item.codCentroResponsabilidade}}
                                                 </template>
                                             </vaadin-grid-column>
 
@@ -2502,6 +2513,26 @@
                                                 </template>
                                             </vaadin-grid-column>
 
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="areaReal">Área Real</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="areaReal" />
+                                                </template>
+                                                <template>
+                                                    {{item.areaReal}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="localExato">Local Exato</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="localExato" />
+                                                </template>
+                                                <template>
+                                                    {{item.localExato}}
+                                                </template>
+                                            </vaadin-grid-column>
+
                                             <vaadin-grid-column resizable width="100px">
                                                 <template class="header">
                                                 </template>
@@ -2516,19 +2547,37 @@
                                         <div style="padding-left:50px">
                                             <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                                 <div class="row break_clear">
-                                                    <div class="col-md-3">
-                                                        <such-selectbox id="afetacao_areaReal" name="afetacao_areaReal" value="" label="Área Real"
-                                                                        items="[[ListaAfetacaoAreaReal]]"
+                                                    <div class="col-md-2">
+                                                        <such-selectbox id="afetacao_codRegiao" name="afetacao_codRegiao" value="" label="Região"
+                                                                        items="[[ListaRegioes]]"
                                                                         text-path="value"
                                                                         value-path="id"
-                                                                        fields='[{"field":"value", "name":"Área Real"}]'
-                                                                        required error-message="O campo Área Real é de preenchimento obrigatório"
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                                        required error-message="O campo Região é de preenchimento obrigatório"
                                                                         disabled="{{ _lockFields }}">
                                                         </such-selectbox>
                                                     </div>
 
-                                                    <div class="col-md-3">
-                                                        <vaadin-text-field id="afetacao_localExato" name="afetacao_localExato" label="Local Exato" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Local Exato é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <div class="col-md-2">
+                                                        <such-selectbox id="afetacao_codAreaFuncional" name="afetacao_codAreaFuncional" value="" label="Área Funcional"
+                                                                        items="[[ListaAreas]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                                        required error-message="O campo Área Funcional é de preenchimento obrigatório"
+                                                                        disabled="{{ _lockFields }}">
+                                                        </such-selectbox>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <such-selectbox id="afetacao_codCentroResponsabilidade" name="afetacao_codCentroResponsabilidade" value="" label="Centro de Responsabilidade"
+                                                                        items="[[ListaCentrosAfetacao]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                                        required error-message="O campo Centro de Responsabilidade é de preenchimento obrigatório"
+                                                                        disabled="{{ _lockFields }}">
+                                                        </such-selectbox>
                                                     </div>
 
                                                     <div class="col-md-2">
@@ -2538,11 +2587,28 @@
                                                     <div class="col-md-2">
                                                         <vaadin-date-picker id="afetacao_dataFim" name="afetacao_dataFim" label="Fim Afetação" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                     </div>
+                                                </div>
+
+                                                <div class="row break_clear">
+                                                    <div class="col-md-3">
+                                                        <such-selectbox id="afetacao_areaReal" name="afetacao_areaReal" value="" label="Área Real"
+                                                                        items="[[ListaAfetacaoAreaReal]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"value", "name":"Área Real"}]'
+                                                                        disabled="{{ _lockFields }}">
+                                                        </such-selectbox>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <vaadin-text-field id="afetacao_localExato" name="afetacao_localExato" label="Local Exato" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                    </div>
 
                                                     <div class="col-md-1" style="padding-top:15px">
                                                         <paper-button raised id="btnCreateAfetacao" class="btnSave" on-tap="_createAfetacao" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                     </div>
                                                 </div>
+
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
@@ -4579,13 +4645,18 @@
                 _validateDataAfetacao: function () {
                     var errors = 0;
 
-                    if (this.$.afetacao_areaReal.value == null || this.$.afetacao_areaReal.value == "") {
-                        this.$.afetacao_areaReal.validate();
+                    if (this.$.afetacao_codRegiao.value == null || this.$.afetacao_codRegiao.value == "") {
+                        this.$.afetacao_codRegiao.validate();
                         errors = errors + 1;
                     }
 
-                    if (this.$.afetacao_localExato.value == null || this.$.afetacao_localExato.value == "") {
-                        this.$.afetacao_localExato.validate();
+                    if (this.$.afetacao_codAreaFuncional.value == null || this.$.afetacao_codAreaFuncional.value == "") {
+                        this.$.afetacao_codAreaFuncional.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.afetacao_codCentroResponsabilidade.value == null || this.$.afetacao_codCentroResponsabilidade.value == "") {
+                        this.$.afetacao_codCentroResponsabilidade.validate();
                         errors = errors + 1;
                     }
 
@@ -4619,6 +4690,9 @@
                             localExato: this.$.afetacao_localExato.value,
                             dataInicio: this.$.afetacao_dataInicio.value,
                             dataFim: this.$.afetacao_dataFim.value,
+                            codRegiao: this.$.afetacao_codRegiao.value,
+                            codAreaFuncional: this.$.afetacao_codAreaFuncional.value,
+                            codCentroResponsabilidade: this.$.afetacao_codCentroResponsabilidade.value,
                         });
                         this.$.page_CreateViaturas2Afetacao_ajax.generateRequest();
                         this.$.gridAfetacao.clearCache();
@@ -4632,6 +4706,9 @@
                         this.$.afetacao_localExato.value = "";
                         this.$.afetacao_dataInicio.value = "";
                         this.$.afetacao_dataFim.value = "";
+                        this.$.afetacao_codRegiao._clearSelection();
+                        this.$.afetacao_codAreaFuncional._clearSelection();
+                        this.$.afetacao_codCentroResponsabilidade._clearSelection();
 
                         this.$.page_tabAfetacao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabAfetacao_ajax.generateRequest();

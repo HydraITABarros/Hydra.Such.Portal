@@ -11,6 +11,9 @@ namespace Hydra.Such.Data.Database
         public string LocalExato { get; set; }
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
+        public string CodRegiao { get; set; }
+        public string CodAreaFuncional { get; set; }
+        public string CodCentroResponsabilidade { get; set; }
 
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }

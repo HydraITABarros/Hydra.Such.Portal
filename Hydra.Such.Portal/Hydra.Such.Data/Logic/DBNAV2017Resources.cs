@@ -36,7 +36,8 @@ namespace Hydra.Such.Data.Logic
                             Name = (string)temp.Name,
                             MeasureUnit = (string)temp.Base_Unit_of_Measure,
                             ResourceGroup = (string)temp.Resource_Group_No,
-                            WasteRate = (int)temp.WasteRate
+                            WasteRate = (int)temp.WasteRate,
+                            VATProductPostingGroup = (string)temp.VATProductPostingGroup
                         });
                     }
                 }

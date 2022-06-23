@@ -147,11 +147,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult RequisitionsByDimensions()
         {
-            UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.RequisicoesPorDimensoes);
+
             if (userPermissions != null && userPermissions.Read.Value)
             {
+                DateTime data = DateTime.Now.AddMonths(-3);
+                string ano = data.Year.ToString();
+                string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                 ViewBag.UPermissions = userPermissions;
+                ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
+
                 return View();
             }
             else
@@ -419,7 +426,14 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.Area = 4;
+                DateTime data = DateTime.Now.AddMonths(-3);
+                string ano = data.Year.ToString();
+                string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                 ViewBag.UPermissions = UPerm;
+                ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
+
                 return View();
             }
             else
@@ -1216,10 +1230,7 @@ namespace Hydra.Such.Portal.Controllers
             else
                 result = DBRequest.GetByIdAndState((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
 
-            result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
-               x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
-               x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
-               x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
+            result.RemoveAll(x => x.RequestNutrition == true);
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -1233,7 +1244,10 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
-            result.RemoveAll(x => x.RequestNutrition == true);
+            result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
+               x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
+               x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
+               x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
@@ -1267,7 +1281,14 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetRequisitionsByDimensions([FromBody] JObject requestParams)
         {
+            DateTime pesquisaData = DateTime.MinValue;
             int Historic = 0;
+
+            string pesquisaDataText = (string)requestParams.GetValue("pesquisadata");
+            string pesquisaNoRequisicao = (string)requestParams.GetValue("pesquisaNoRequisicao");
+            if (!string.IsNullOrEmpty(pesquisaDataText))
+                pesquisaData = Convert.ToDateTime(pesquisaDataText);
+
             if (requestParams["Historic"] != null)
                 Historic = int.Parse(requestParams["Historic"].ToString());
 
@@ -1297,7 +1318,11 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
 
-            result = DBRequest.GetByStateSimple((int)RequisitionTypes.Normal, states).ParseToViewModel();
+            if (string.IsNullOrEmpty(pesquisaNoRequisicao))
+                result = DBRequest.GetByStateSimpleAndDate((int)RequisitionTypes.Normal, states, pesquisaData).ParseToViewModel();
+            else
+                result = DBRequest.GetByStateSimpleAndID((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+            //result = DBRequest.GetByStateSimple((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -3704,6 +3729,23 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
+                //Falar primeiro com o Marco Marcelo  (email 14/06/2022 - DUPLICAÇÃO DE REQUISIÇÕES NO E-SUCH - ANOMALIA GRAVE) antes de ativar
+                //Validação para não processar 2 vezes a mesma Requisição
+                if (Requisicoes != null && Requisicoes.Count > 0)
+                {
+                    Requisicoes.ForEach(Requisicao =>
+                    {
+                        Requisicao.Lines.ForEach(Linha =>
+                        {
+                            LinhasRequisição LIN = DBRequestLine.GetByRequisicaoNoAndLineNo(Requisicao.RequisitionNo, (int)Linha.LineNo);
+                            if (!string.IsNullOrEmpty(LIN.NºEncomendaCriada))
+                                Linha.CreatedOrderNo = LIN.NºEncomendaCriada;
+                        });
+                        Requisicao.Lines.RemoveAll(x => !string.IsNullOrEmpty(x.CreatedOrderNo));
+                    });
+                    Requisicoes.RemoveAll(x => x.Lines == null || x.Lines.Count == 0);
+                }
+
                 if (Requisicoes != null && Requisicoes.Count > 0)
                 {
                     //Preenchimento automático do campo Grupo Registo IVA Negócio nas linhas das requisições
@@ -3772,7 +3814,7 @@ namespace Hydra.Such.Portal.Controllers
                 else
                 {
                     result.eReasonCode = 3;
-                    result.eMessage = "Não é possivel criar encomenda de compra. Não escolheu nenhuma linha.";
+                    result.eMessage = "Não é possivel criar encomenda de compra, por não existirem linhas elígiveis para criar Encomendas.";
                 }
             }
             catch (Exception ex)

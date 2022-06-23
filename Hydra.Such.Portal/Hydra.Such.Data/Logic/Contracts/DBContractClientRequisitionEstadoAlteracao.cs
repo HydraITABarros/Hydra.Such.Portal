@@ -179,6 +179,18 @@ namespace Hydra.Such.Data.Logic.Contracts
 
 
 
+        public static List<RequisiçõesClienteContratoEstadoAlteracao> ParseToDB(List<RequisiçõesClienteContrato> items)
+        {
+            List<RequisiçõesClienteContratoEstadoAlteracao> parsedItems = new List<RequisiçõesClienteContratoEstadoAlteracao>();
+            if (items != null && items.Count > 0)
+            {
+                items.ForEach(x =>
+                    parsedItems.Add(ParseToDB(x))
+                );
+            }
+            return parsedItems;
+        }
+
         public static RequisiçõesClienteContratoEstadoAlteracao ParseToDB(ContractClientRequisitionEstadoAlteracaoViewModel ObjectToParse)
         {
             return new RequisiçõesClienteContratoEstadoAlteracao()

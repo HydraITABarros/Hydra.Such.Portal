@@ -102,7 +102,6 @@ namespace Hydra.Such.Data.Logic.VisitasDB
         {
             VisitasEstados visita = new VisitasEstados()
             {
-                ID = x.ID,
                 CodEstado = x.CodEstado,
                 Estado = x.Estado,
                 UtilizadorCriacao = x.UtilizadorCriacao,
@@ -130,7 +129,6 @@ namespace Hydra.Such.Data.Logic.VisitasDB
         {
             VisitasEstadosViewModel visita = new VisitasEstadosViewModel()
             {
-                ID = x.ID,
                 CodEstado = x.CodEstado,
                 Estado = x.Estado,
                 UtilizadorCriacao = x.UtilizadorCriacao,

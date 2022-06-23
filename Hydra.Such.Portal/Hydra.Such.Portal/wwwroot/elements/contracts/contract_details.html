@@ -1884,8 +1884,8 @@
 
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="data" />
+                        Data
+                        <vaadin-grid-filter path="data">Data</vaadin-grid-filter>
                     </template>
                     <template>
                         {{item.data}}
@@ -2032,7 +2032,7 @@
 
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo</vaadin-grid-sorter>
                         <vaadin-grid-filter path="dataRegistoDiarioSTR" />
                     </template>
                     <template>
@@ -2356,20 +2356,20 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 3 });
                     this.$.page_databound_ajax.generateRequest();
 
-                    //if (!this._permissions.update) {
-                    //    this._lockFields = true;
-                    //    this._contractStatusLocked = true;
-                    //}
-                    //this._lockFieldsReqClientes = this._lockFields;
-                    //if (this._permissionsrequisicoescliente.update == true)
-                    //    this._lockFieldsReqClientes = false;
-
-                    this._lockFields = true;
-                    this._contractStatusLocked = true;
-                    this._lockFieldsReqClientes = true;
-                    if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
-                        this._contractStatusLocked = false;
+                    if (!this._permissions.update) {
+                        this._lockFields = true;
+                        this._contractStatusLocked = true;
                     }
+                    this._lockFieldsReqClientes = this._lockFields;
+                    if (this._permissionsrequisicoescliente.update == true)
+                        this._lockFieldsReqClientes = false;
+
+                    //this._lockFields = true;
+                    //this._contractStatusLocked = true;
+                    //this._lockFieldsReqClientes = true;
+                    //if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
+                    //    this._contractStatusLocked = false;
+                    //}
 
                     if (this._ishistoric == "true") {
                         this._isHistoricDiv = true;
@@ -2799,28 +2799,28 @@
                         this._showContractLinesForm = this.data.changeStatus == 2 && this._permissions.update ? "none" : "";
                         this._showButtons = this.data.changeStatus != 2 && !this._permissions.update ? "none" : "";
 
-                        //this._lockFieldsReqClientes = this._lockFields;
-                        //if (this._permissionsrequisicoescliente.update == true)
-                        //    this._lockFieldsReqClientes = false;
+                        this._lockFieldsReqClientes = this._lockFields;
+                        if (this._permissionsrequisicoescliente.update == true)
+                            this._lockFieldsReqClientes = false;
 
                         this._lockFields = true;
                         this._contractStatusLocked = true;
-                        this._lockFieldsReqClientes = true;
+                        //this._lockFieldsReqClientes = true;
                         if (this.data.changeStatus == "1") { //ABERTO
                             if (this._permissions.update == true) {
                                 this._lockFields = false;
                                 this._contractStatusLocked = false;
-                                this._lockFieldsReqClientes = false;
+                                //this._lockFieldsReqClientes = false;
                             }
                             else {
                                 if (this._permissionsrequisicoescliente.update == true) {
-                                    this._lockFieldsReqClientes = false;
+                                    //this._lockFieldsReqClientes = false;
                                     this._contractStatusLocked = false;
                                 }
                             }
                         }
                         if (this.data.changeStatus == "2") { //BLOQUEADO
-                            if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
+                            if (this._permissions.update == true) { // || this._permissionsrequisicoescliente.update == true) {
                                 this._contractStatusLocked = false;
                             }
                         }
@@ -3958,8 +3958,8 @@
                                 }
                             }
                             if (this.data.changeStatus == "2") { //BLOQUEADO
-                                if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
-                                    //this._contractStatusLocked = false;
+                                if (this._permissions.update == true) { // || this._permissionsrequisicoescliente.update == true) {
+                                    this._contractStatusLocked = false;
                                 }
                             }
 
@@ -4018,7 +4018,7 @@
                         this.$.dlVerPDF.open();
                     }
                     else {
-                        this._openToastError("Documento não desponível.");
+                        this._openToastError("Documento não disponível.");
                     }
                 },
             });

@@ -1944,11 +1944,8 @@ namespace Hydra.Such.Portal.Controllers
             List<RequisitionViewModel> result = null;
             result = DBRequest.GetAllHistoric((int)RequisitionTypes.Normal).ParseToViewModel();
 
-            //requisition.RemoveAll(x => x.RequisiçãoNutrição == true);
-
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            
             //Regions
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
@@ -1959,42 +1956,51 @@ namespace Hydra.Such.Portal.Controllers
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
-            //requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
+        public JsonResult GetHistoryReqFilter([FromBody] JObject requestParams)
+        {
+            DateTime pesquisaData = DateTime.MinValue;
+
+            string pesquisaDataText = (string)requestParams.GetValue("pesquisadata");
+            string pesquisaNoRequisicao = (string)requestParams.GetValue("pesquisaNoRequisicao");
+
+            if (!string.IsNullOrEmpty(pesquisaDataText))
+                pesquisaData = Convert.ToDateTime(pesquisaDataText);
+
+
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Archived
+            };
+
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            if (string.IsNullOrEmpty(pesquisaNoRequisicao))
+                result = DBRequest.GetByStateAndDateSimple((int)RequisitionTypes.Normal, states, pesquisaData).ParseToViewModel();
+            else
+                result = DBRequest.GetByIdAndStateSimple((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+
+            //result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
+            //   x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
+            //   x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
+            //   x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
-
-
-
-            //CODIGO ORIGINAL 2
-            //List<Requisição> requisition = null;
-            //List<RequisitionStates> states = new List<RequisitionStates>()
-            //{
-            //    RequisitionStates.Archived,
-            //};
-            //requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.Normal, User.Identity.Name, states);
-
-            //List<RequisitionViewModel> result = new List<RequisitionViewModel>();
-
-            //requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
-
-            //return Json(result.OrderByDescending(x => x.RequisitionNo));
-
-
-
-            //CODIGO ORIGINAL
-            //List<RequisiçãoHist> requisition = null;
-            //List<RequisitionStates> states = new List<RequisitionStates>()
-            //{
-            //    RequisitionStates.Archived,
-            //};
-            //requisition = DBRequesitionHist.GetReqByUserAreaStatus(User.Identity.Name, states);
-
-            //List<RequisitionHistViewModel> result = new List<RequisitionHistViewModel>();
-
-            //requisition.ForEach(x => result.Add(DBRequesitionHist.ParseToViewModel(x)));
-
-            //return Json(result.OrderByDescending(x => x.RequisitionNo));
-            //FIM
         }
 
         public JsonResult GetMyHistoryReq()

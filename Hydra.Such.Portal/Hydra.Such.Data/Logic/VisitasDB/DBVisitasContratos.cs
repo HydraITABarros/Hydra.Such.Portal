@@ -7,15 +7,15 @@ using System.Linq;
 
 namespace Hydra.Such.Data.Logic.VisitasDB
 {
-    public class DBVisitasTarefas
+    public class DBVisitasContratos
     {
-        public static List<VisitasTarefas> GetAllToList()
+        public static List<VisitasContratos> GetAllToList()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.VisitasTarefas.ToList();
+                    return ctx.VisitasContratos.ToList();
                 }
             }
             catch (Exception e)
@@ -24,13 +24,13 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static VisitasTarefas GetByID(string Visita, int Ordem)
+        public static VisitasContratos GetByID(string Visita, string NoContrato)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.VisitasTarefas.FirstOrDefault(p => p.CodVisita == Visita && p.Ordem == Ordem);
+                    return ctx.VisitasContratos.FirstOrDefault(p => p.CodVisita == Visita && p.NoContrato == NoContrato);
                 }
             }
             catch (Exception e)
@@ -39,13 +39,13 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static List<VisitasTarefas> GetByVisita(string Visita)
+        public static List<VisitasContratos> GetByVisita(string Visita)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.VisitasTarefas.Where(p => p.CodVisita == Visita).ToList();
+                    return ctx.VisitasContratos.Where(p => p.CodVisita == Visita).ToList();
                 }
             }
             catch (Exception e)
@@ -54,14 +54,14 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static VisitasTarefas Create(VisitasTarefas ObjectToCreate)
+        public static VisitasContratos Create(VisitasContratos ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataHoraCriacao = DateTime.Now;
-                    ctx.VisitasTarefas.Add(ObjectToCreate);
+                    ctx.VisitasContratos.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -74,13 +74,13 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static bool Delete(VisitasTarefas ObjectToDelete)
+        public static bool Delete(VisitasContratos ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.VisitasTarefas.Remove(ObjectToDelete);
+                    ctx.VisitasContratos.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -93,14 +93,14 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static VisitasTarefas Update(VisitasTarefas ObjectToUpdate)
+        public static VisitasContratos Update(VisitasContratos ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataHoraModificacao = DateTime.Now;
-                    ctx.VisitasTarefas.Update(ObjectToUpdate);
+                    ctx.VisitasContratos.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -113,52 +113,53 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             }
         }
 
-        public static VisitasTarefas ParseToDB(VisitasTarefasViewModel x)
+        public static VisitasContratos ParseToDB(VisitasContratosViewModel x)
         {
-            VisitasTarefas visita = new VisitasTarefas()
+            VisitasContratos visita = new VisitasContratos()
             {
                 CodVisita = x.CodVisita,
-                Ordem = x.Ordem,
-                CodTarefa = x.CodTarefa,
-                Tarefa = x.Tarefa,
-                Data = x.Data,
-                Duracao = x.Duracao,
+                NoContrato = x.NoContrato,
+                AmbitoServico = x.AmbitoServico,
+                NoCliente = x.NoCliente,
+                NomeCliente = x.NomeCliente,
+                CodArea = x.CodArea,
+                NomeArea = x.NomeArea,
+                CodCresp = x.CodCresp,
+                NomeCresp = x.NomeCresp,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataHoraCriacao = x.DataHoraCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
                 DataHoraModificacao = x.DataHoraModificacao,
             };
 
-            if (!string.IsNullOrEmpty(x.DataTexto)) visita.Data = Convert.ToDateTime(x.DataTexto);
-            if (!string.IsNullOrEmpty(x.DuracaoTexto)) visita.Duracao = TimeSpan.Parse(x.DuracaoTexto);
             if (!string.IsNullOrEmpty(x.DataHoraCriacaoTexto)) visita.DataHoraCriacao = Convert.ToDateTime(x.DataHoraCriacaoTexto);
             if (!string.IsNullOrEmpty(x.DataHoraModificacaoTexto)) visita.DataHoraModificacao = Convert.ToDateTime(x.DataHoraModificacaoTexto);
 
             return visita;
         }
 
-        public static List<VisitasTarefas> ParseListToViewModel(List<VisitasTarefasViewModel> x)
+        public static List<VisitasContratos> ParseListToViewModel(List<VisitasContratosViewModel> x)
         {
-            List<VisitasTarefas> VisitasTarefas = new List<VisitasTarefas>();
+            List<VisitasContratos> VisitasContratos = new List<VisitasContratos>();
 
-            x.ForEach(y => VisitasTarefas.Add(ParseToDB(y)));
+            x.ForEach(y => VisitasContratos.Add(ParseToDB(y)));
 
-            return VisitasTarefas;
+            return VisitasContratos;
         }
 
-        public static VisitasTarefasViewModel ParseToViewModel(VisitasTarefas x)
+        public static VisitasContratosViewModel ParseToViewModel(VisitasContratos x)
         {
-            List<VisitasTarefasTarefas> AllTarefas = DBVisitasTarefasTarefas.GetAll();
-            VisitasTarefasViewModel visita = new VisitasTarefasViewModel()
+            VisitasContratosViewModel visita = new VisitasContratosViewModel()
             {
                 CodVisita = x.CodVisita,
-                Ordem = x.Ordem,
-                CodTarefa = x.CodTarefa,
-                Tarefa = x.CodTarefa.HasValue ? AllTarefas.FirstOrDefault(y => y.CodTarefa == x.CodTarefa).Tarefa : x.Tarefa,
-                Data = x.Data,
-                DataTexto = x.Data.HasValue ? x.Data.Value.ToString("yyyy-MM-dd") : "",
-                Duracao = x.Duracao,
-                DuracaoTexto = x.Duracao.HasValue ? x.Duracao.Value.ToString(@"hh\:mm") : "",
+                NoContrato = x.NoContrato,
+                AmbitoServico = x.AmbitoServico,
+                NoCliente = x.NoCliente,
+                NomeCliente = x.NomeCliente,
+                CodArea = x.CodArea,
+                NomeArea = x.NomeArea,
+                CodCresp = x.CodCresp,
+                NomeCresp = x.NomeCresp,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataHoraCriacao = x.DataHoraCriacao,
                 DataHoraCriacaoTexto = x.DataHoraCriacao.HasValue ? x.DataHoraCriacao.Value.ToString("yyyy-MM-dd") : "",
@@ -170,13 +171,13 @@ namespace Hydra.Such.Data.Logic.VisitasDB
             return visita;
         }
 
-        public static List<VisitasTarefasViewModel> ParseListToViewModel(List<VisitasTarefas> x)
+        public static List<VisitasContratosViewModel> ParseListToViewModel(List<VisitasContratos> x)
         {
-            List<VisitasTarefasViewModel> VisitasTarefas = new List<VisitasTarefasViewModel>();
+            List<VisitasContratosViewModel> VisitasContratos = new List<VisitasContratosViewModel>();
 
-            x.ForEach(y => VisitasTarefas.Add(ParseToViewModel(y)));
+            x.ForEach(y => VisitasContratos.Add(ParseToViewModel(y)));
 
-            return VisitasTarefas;
+            return VisitasContratos;
         }
     }
 }

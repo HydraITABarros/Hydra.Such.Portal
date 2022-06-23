@@ -4,4 +4,8 @@
 }
 <link rel="import" href="~/elements/prerequesitions/history_requesitions.html">
 
-<x-historyreq _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-historyreq>
+<x-historyreq 
+            _areaid="1" 
+            _pesquisadate=@Html.Raw(Json.Serialize(ViewBag.PesquisaDate)),
+            _permissions=@Html.Raw(Json.Serialize(ViewBag.UPermissions))>
+</x-historyreq>

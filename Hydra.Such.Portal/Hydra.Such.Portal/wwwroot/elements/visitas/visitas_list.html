@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -54,7 +53,7 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax url="/Visitas/GetList2"
+        <iron-ajax url="/Visitas/GetListAllAtivas"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -62,7 +61,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/Visitas/ExportToExcel_Visitas"
+        <iron-ajax url="/Visitas/ExportToExcel_VisitasList"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -73,8 +72,10 @@
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova Visita</paper-button>
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Nova Visita</paper-button>
             </template>
+            <paper-button class="tablinks" id="showInativas" on-tap="_showInativas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showInativasMessage }}</paper-button>
+
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -93,7 +94,7 @@
         </div>
 
         <vaadin-grid column-reordering-allowed id="grdVisitasGrid" aria-label="VisitasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codVisita.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codVisita.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codVisita">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codVisita" value="[[filter.codVisita]]" />
@@ -103,7 +104,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.objetivo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.objetivo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="objetivo">Objetivo / Descrição da Visita</vaadin-grid-sorter>
                     <vaadin-grid-filter path="objetivo" value="[[filter.objetivo]]" />
@@ -113,7 +114,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.local.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.local.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="local">Local / Compartimento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="local" value="[[filter.local]]" />
@@ -123,7 +124,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codCliente.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCliente.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codCliente">Cód. Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codCliente" value="[[filter.codCliente]]" />
@@ -133,17 +134,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.clienteTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeCliente.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="clienteTexto">Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="clienteTexto" value="[[filter.clienteTexto]]" />
+                    <vaadin-grid-sorter path="nomeCliente">Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeCliente" value="[[filter.nomeCliente]]" />
                 </template>
                 <template>
-                    {{item.clienteTexto}}
+                    {{item.nomeCliente}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codFornecedor">Cód. Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codFornecedor" value="[[filter.codFornecedor]]" />
@@ -153,17 +154,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.fornecedorTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="fornecedorTexto">Outros Contratos eSUCH (Fornecedores)</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fornecedorTexto" value="[[filter.fornecedorTexto]]" />
+                    <vaadin-grid-sorter path="nomeFornecedor">Outros Contratos eSUCH (Fornecedores)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor" value="[[filter.nomeFornecedor]]" />
                 </template>
                 <template>
-                    {{item.fornecedorTexto}}
+                    {{item.nomeFornecedor}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.entidade.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.entidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="entidade">Entidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="entidade" value="[[filter.entidade]]" />
@@ -173,7 +174,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codRegiao" value="[[filter.codRegiao]]" />
@@ -183,7 +184,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codArea.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeRegiao">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeRegiao" value="[[filter.nomeRegiao]]" />
+                </template>
+                <template>
+                    {{item.nomeRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codArea">Cód. Área</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codArea" value="[[filter.codArea]]" />
@@ -193,7 +204,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codCresp.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeArea.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeArea">Área</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeArea" value="[[filter.nomeArea]]" />
+                </template>
+                <template>
+                    {{item.nomeArea}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCresp.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codCresp">Cód. Cresp</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codCresp" value="[[filter.codCresp]]" />
@@ -203,7 +224,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.inicioDataTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeCresp.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeCresp">Cresp</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeCresp" value="[[filter.nomeCresp]]" />
+                </template>
+                <template>
+                    {{item.nomeCresp}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.inicioDataTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="inicioDataTexto">Início Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="inicioDataTexto" value="[[filter.inicioDataTexto]]" />
@@ -213,7 +244,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.inicioHoraTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.inicioHoraTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="inicioHoraTexto">Início Hora</vaadin-grid-sorter>
                     <vaadin-grid-filter path="inicioHoraTexto" value="[[filter.inicioHoraTexto]]" />
@@ -223,7 +254,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.fimDataTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fimDataTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fimDataTexto">Fim Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="fimDataTexto" value="[[filter.fimDataTexto]]" />
@@ -233,7 +264,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.fimHoraTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fimHoraTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fimHoraTexto">Fim Hora</vaadin-grid-sorter>
                     <vaadin-grid-filter path="fimHoraTexto" value="[[filter.fimHoraTexto]]" />
@@ -243,37 +274,37 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.estadoTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeEstado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="estadoTexto">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estadoTexto" value="[[filter.estadoTexto]]" />
+                    <vaadin-grid-sorter path="nomeEstado">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeEstado" value="[[filter.nomeEstado]]" />
                 </template>
                 <template>
-                    {{item.estadoTexto}}
+                    {{item.nomeEstado}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.iniciativaCriadorTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.iniciativaCriadorNome.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="iniciativaCriadorTexto">Iniciada por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="iniciativaCriadorTexto" value="[[filter.iniciativaCriadorTexto]]" />
+                    <vaadin-grid-sorter path="iniciativaCriadorNome">Iniciada por</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="iniciativaCriadorNome" value="[[filter.iniciativaCriadorNome]]" />
                 </template>
                 <template>
-                    {{item.iniciativaCriadorTexto}}
+                    {{item.iniciativaCriadorNome}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.iniciativaResponsavelTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.iniciativaResponsavelNome.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="iniciativaResponsavelTexto">Responsável - Iniciativa Visita</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="iniciativaResponsavelTexto" value="[[filter.iniciativaResponsavelTexto]]" />
+                    <vaadin-grid-sorter path="iniciativaResponsavelNome">Responsável - Iniciativa Visita</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="iniciativaResponsavelNome" value="[[filter.iniciativaResponsavelNome]]" />
                 </template>
                 <template>
-                    {{item.iniciativaResponsavelTexto}}
+                    {{item.iniciativaResponsavelNome}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.iniciativaIntervinientes.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.iniciativaIntervinientes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="iniciativaIntervinientes">Contactos/Intervenientes - Iniciativa Visita</vaadin-grid-sorter>
                     <vaadin-grid-filter path="iniciativaIntervinientes" value="[[filter.iniciativaIntervinientes]]" />
@@ -283,7 +314,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.rececaoCriador.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.rececaoCriador.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="rececaoCriador">Agendamento - Agendado por</vaadin-grid-sorter>
                     <vaadin-grid-filter path="rececaoCriador" value="[[filter.rececaoCriador]]" />
@@ -293,7 +324,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.rececaoResponsavel.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.rececaoResponsavel.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="rececaoResponsavel">Responsável - Visitados</vaadin-grid-sorter>
                     <vaadin-grid-filter path="rececaoResponsavel" value="[[filter.rececaoResponsavel]]" />
@@ -303,7 +334,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.rececaoIntervinientes.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.rececaoIntervinientes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="rececaoIntervinientes">Outros Contactos - Visitados</vaadin-grid-sorter>
                     <vaadin-grid-filter path="rececaoIntervinientes" value="[[filter.rececaoIntervinientes]]" />
@@ -313,7 +344,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.relatorioSimplificado.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.relatorioSimplificado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="relatorioSimplificado">Relatório Simplificado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="relatorioSimplificado" value="[[filter.relatorioSimplificado]]" />
@@ -350,7 +381,7 @@
                     _showInativasMessage: {
                         type: String,
                         notify: true,
-                        value: "Exibir Histórico"
+                        value: "Exibir Concluídas"
                     },
                     /*FILTROS*/
                     filter: {
@@ -367,7 +398,7 @@
                         });
                         window.setGridFilter('visitas-visitaslist', filters || {});
 
-                        window.location.href = "/visitas/Visitas_Details/" + item.id;
+                        window.location.href = "/Visitas/Visitas_Details/" + item.codVisita;
                     }
                 },
                 /*FILTROS*/
@@ -416,28 +447,8 @@
 
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
-                    location.href = '../Visitas/ExportToExcelDownload_visitas?sFileName=' + FileName;
+                    location.href = '../Visitas/ExportToExcelDownload_VisitasList?sFileName=' + FileName;
                 },
-
-                _showInativas: function (item) {
-                    if (item != null) {
-                        if (this._inativas) {
-                            this._showInativasMessage = "Exibir Histórico";
-
-                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
-                            this.$.grid_databound_ajax.generateRequest();
-                        } else {
-                            this._showInativasMessage = "Exibir Gestão";
-
-                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": false });
-                            this.$.grid_databound_ajax.generateRequest();
-                        }
-
-                        this._inativas = !this._inativas;
-                    }
-                },
-
-
 
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
@@ -445,21 +456,24 @@
                         "codVisita": { hidden: false, label: "Código" },
                         "objetivo": { hidden: false, label: "Objetivo / Descrição da Visita" },
                         "local": { hidden: false, label: "Local / Compartimento" },
-                        "codCliente": { hidden: false, label: "Cód. Clientes" },
-                        "clienteTexto": { hidden: false, label: "Cliente" },
+                        "codCliente": { hidden: false, label: "Cód. Cliente" },
+                        "nomeCliente": { hidden: false, label: "Cliente" },
                         "codFornecedor": { hidden: false, label: "Cód. Fornecedor" },
-                        "fornecedorTexto": { hidden: false, label: "Outros Contratos eSUCH (Fornecedores)" },
+                        "nomeFornecedor": { hidden: false, label: "Outros Contratos eSUCH (Fornecedores)" },
                         "entidade": { hidden: false, label: "Entidade" },
                         "codRegiao": { hidden: false, label: "Cód. Região" },
+                        "nomeRegiao": { hidden: false, label: "Região" },
                         "codArea": { hidden: false, label: "Cód. Área" },
+                        "nomeArea": { hidden: false, label: "Área" },
                         "codCresp": { hidden: false, label: "Cód. Cresp" },
+                        "nomeCresp": { hidden: false, label: "Cresp" },
                         "inicioDataTexto": { hidden: false, label: "Início Data" },
                         "inicioHoraTexto": { hidden: false, label: "Início Hora" },
                         "fimDataTexto": { hidden: false, label: "Fim Data" },
                         "fimHoraTexto": { hidden: false, label: "Fim Hora" },
-                        "estadoTexto": { hidden: false, label: "Estado" },
-                        "iniciativaCriadorTexto": { hidden: false, label: "Iniciada por" },
-                        "iniciativaResponsavelTexto": { hidden: false, label: "Responsável - Iniciativa Visita" },
+                        "nomeEstado": { hidden: false, label: "Estado" },
+                        "iniciativaCriadorNome": { hidden: false, label: "Iniciada por" },
+                        "iniciativaResponsavelNome": { hidden: false, label: "Responsável - Iniciativa Visita" },
                         "iniciativaIntervinientes": { hidden: false, label: "Contactos/Intervenientes - Iniciativa Visita" },
                         "rececaoCriador": { hidden: false, label: "Agendamento - Agendado por" },
                         "rececaoResponsavel": { hidden: false, label: "Responsável - Visitados" },
@@ -494,8 +508,26 @@
                             value: obj[key]
                         };
                     });
-                }
+                },
                 /* end - ColumnToggle */
+
+                _showInativas: function (item) {
+                    if (item != null) {
+                        if (this._inativas) {
+                            this._showInativasMessage = "Exibir Concluídas";
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
+                            this.$.grid_databound_ajax.generateRequest();
+                        } else {
+                            this._showInativasMessage = "Exibir Ativas";
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": false });
+                            this.$.grid_databound_ajax.generateRequest();
+                        }
+
+                        this._inativas = !this._inativas;
+                    }
+                },
             });
         });
     </script>

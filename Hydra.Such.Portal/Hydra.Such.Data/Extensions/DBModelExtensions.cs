@@ -14,14 +14,14 @@ namespace Hydra.Such.Data.Extensions
             item.ProjectNo = projectNo;
             item.Code = x.Código;
             item.Description = x.Descrição;
-            item.Quantity = Math.Round((decimal)x.Quantidade, 2); //A pedido Marco Marcelo 03/07/2019 = 0;
+            item.Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) : Math.Round((decimal)0, 2); //A pedido Marco Marcelo 03/07/2019 = 0;
             item.MeasurementUnitCode = x.CódUnidadeMedida;
             item.RegionCode = x.CódigoRegião;
             item.FunctionalAreaCode = x.CódigoÁreaFuncional;
             item.ResponsabilityCenterCode = x.CódigoCentroResponsabilidade;
             item.User = userName;
             item.UnitPrice = Math.Round((decimal)x.PreçoUnitário, 4);
-            item.TotalPrice = Math.Round((decimal)(Math.Round((decimal)x.Quantidade, 2) * Math.Round((decimal)x.PreçoUnitário, 4)), 2);
+            item.TotalPrice = x.Quantidade.HasValue ? Math.Round(Math.Round((decimal)x.Quantidade, 2) * Math.Round((decimal)x.PreçoUnitário, 4), 2) : Math.Round((decimal)0, 2);
             item.Billable = x.Faturável;
             item.Registered = false;
             item.Date = string.IsNullOrEmpty(date) ? "" : date;

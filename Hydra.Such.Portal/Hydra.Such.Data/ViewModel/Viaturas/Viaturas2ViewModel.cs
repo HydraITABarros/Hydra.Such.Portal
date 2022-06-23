@@ -96,6 +96,9 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string IUCate { get; set; }
         public string Substituicao { get; set; }
         public string Afetacao { get; set; }
+        public string AfetacaoCodRegiao { get; set; }
+        public string AfetacaoCodArea { get; set; }
+        public string AfetacaoCodCresp { get; set; }
         public int AfetacaoIDAreaReal { get; set; }
 
 

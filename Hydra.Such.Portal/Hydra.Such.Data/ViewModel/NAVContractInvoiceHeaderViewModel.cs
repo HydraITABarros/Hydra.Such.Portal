@@ -9,5 +9,6 @@ namespace Hydra.Such.Data.ViewModel
         public string No_ { get; set; }
         public decimal? ValorContrato { get; set; }
         public string Data { get; set; }
+        public DateTime? DataOriginal { get; set; }
     }
 }

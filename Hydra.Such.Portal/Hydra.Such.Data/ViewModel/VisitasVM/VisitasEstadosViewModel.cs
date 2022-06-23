@@ -4,7 +4,6 @@ namespace Hydra.Such.Data.ViewModel.VisitasVM
 {
     public class VisitasEstadosViewModel: ErrorHandler
     {
-        public int ID { get; set; }
         public int CodEstado { get; set; }
         public string Estado { get; set; }
         public string UtilizadorCriacao { get; set; }

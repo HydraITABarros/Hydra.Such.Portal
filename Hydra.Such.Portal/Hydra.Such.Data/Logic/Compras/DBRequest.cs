@@ -136,6 +136,31 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetByStateAndDateSimple(int TipoReq, List<RequisitionStates> states, DateTime date)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    if (date == DateTime.MinValue)
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0))
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.DataRequisição > date)
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetByIdAndState(int TipoReq, List<RequisitionStates> states, string NoRequisicao)
         {
             try
@@ -147,6 +172,25 @@ namespace Hydra.Such.Data.Logic.Request
                     return ctx.Requisição
                         .Include("LinhasRequisição")
                         .Include(x => x.RequisicoesRegAlteracoes)
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.NºRequisição.Contains(NoRequisicao))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByIdAndStateSimple(int TipoReq, List<RequisitionStates> states, string NoRequisicao)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição
                         .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.NºRequisição.Contains(NoRequisicao))
                         .ToList();
                 }
@@ -177,6 +221,85 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetByStateSimpleAndDate(int TipoReq, List<RequisitionStates> states, DateTime date)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    if (date == DateTime.MinValue)
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && x.DataRequisição > date)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByStateSimpleAndID(int TipoReq, List<RequisitionStates> states, string NoRequisicao)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    if (string.IsNullOrEmpty(NoRequisicao))
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && x.NºRequisição.Contains(NoRequisicao))
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public static List<Requisição> GetByStateSimple(int TipoReq, List<RequisitionStates> states)
         {

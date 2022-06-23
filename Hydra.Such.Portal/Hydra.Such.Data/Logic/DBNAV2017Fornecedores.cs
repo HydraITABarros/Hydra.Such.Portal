@@ -3,12 +3,21 @@ using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 
 namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017Fornecedores
     {
+        public static NAVFornecedoresViewModel GetFornecedorById(string NAVDatabaseName, string NAVCompanyName, string NAVFornecedorNo)
+        {
+            List<NAVFornecedoresViewModel> result = GetFornecedores(NAVDatabaseName, NAVCompanyName, NAVFornecedorNo);
+            if (result != null)
+                return result.FirstOrDefault();
+            return null;
+        }
+
         public static List<NAVFornecedoresViewModel> GetFornecedores(string NAVDatabaseName, string NAVCompanyName, string NAVFornecedorNo)
         {
             try

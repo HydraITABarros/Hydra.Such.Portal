@@ -391,6 +391,17 @@ namespace Hydra.Such.Data.Logic.Contracts
             };
         }
 
+        public static List<LinhasContratosEstadoAlteracao> ParseToDB(List<LinhasContratos> items)
+        {
+            List<LinhasContratosEstadoAlteracao> parsedItems = new List<LinhasContratosEstadoAlteracao>();
+            if (items != null && items.Count > 0)
+            {
+                items.ForEach(x =>
+                    parsedItems.Add(ParseToDB(x))
+                );
+            }
+            return parsedItems;
+        }
 
     }
 }

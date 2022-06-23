@@ -9189,27 +9189,34 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult VisitasEstadosUpdate([FromBody] List<VisitasEstadosViewModel> data)
         {
             List<VisitasEstados> results = DBVisitasEstados.GetAll();
-            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.RemoveAll(x => data.Any(u => u.CodEstado == x.CodEstado));
             results.ForEach(x => DBVisitasEstados.Delete(x));
+
+            VisitasEstados DBEstado = new VisitasEstados();
             data.ForEach(x =>
             {
-                VisitasEstados OS = new VisitasEstados()
+                DBEstado = DBVisitasEstados.GetByEstado(x.CodEstado);
+
+                if (DBEstado != null)
                 {
-                    CodEstado = x.CodEstado,
-                    Estado = x.Estado,
-                };
-                if (x.ID > 0)
-                {
-                    OS.ID = x.ID;
-                    OS.UtilizadorModificacao = User.Identity.Name;
-                    OS.DataHoraModificacao = DateTime.Now;
-                    DBVisitasEstados.Update(OS);
+                    DBEstado.CodEstado = x.CodEstado;
+                    DBEstado.Estado = x.Estado;
+                    DBEstado.UtilizadorCriacao = x.UtilizadorCriacao;
+                    DBEstado.DataHoraCriacao = x.DataHoraCriacao;
+                    DBEstado.UtilizadorModificacao = User.Identity.Name;
+                    DBEstado.DataHoraModificacao = DateTime.Now;
+                    DBVisitasEstados.Update(DBEstado);
                 }
                 else
                 {
-                    OS.UtilizadorCriacao = User.Identity.Name;
-                    OS.DataHoraCriacao = DateTime.Now;
-                    DBVisitasEstados.Create(OS);
+                    DBEstado = new VisitasEstados
+                    {
+                        CodEstado = x.CodEstado,
+                        Estado = x.Estado,
+                        UtilizadorCriacao = User.Identity.Name,
+                        DataHoraCriacao = DateTime.Now
+                    };
+                    DBVisitasEstados.Create(DBEstado);
                 }
             });
             return Json(data);
@@ -9247,27 +9254,34 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult VisitasTarefasUpdate([FromBody] List<VisitasTarefasTarefasViewModel> data)
         {
             List<VisitasTarefasTarefas> results = DBVisitasTarefasTarefas.GetAll();
-            results.RemoveAll(x => data.Any(u => u.ID == x.ID));
+            results.RemoveAll(x => data.Any(u => u.CodTarefa == x.CodTarefa));
             results.ForEach(x => DBVisitasTarefasTarefas.Delete(x));
+
+            VisitasTarefasTarefas DBTarefa = new VisitasTarefasTarefas(); ;
             data.ForEach(x =>
             {
-                VisitasTarefasTarefas OS = new VisitasTarefasTarefas()
+                DBTarefa = DBVisitasTarefasTarefas.GetByTarefa(x.CodTarefa);
+
+                if (DBTarefa != null)
                 {
-                    CodTarefa = x.CodTarefa,
-                    Tarefa = x.Tarefa,
-                };
-                if (x.ID > 0)
-                {
-                    OS.ID = x.ID;
-                    OS.UtilizadorModificacao = User.Identity.Name;
-                    OS.DataHoraModificacao = DateTime.Now;
-                    DBVisitasTarefasTarefas.Update(OS);
+                    DBTarefa.CodTarefa = x.CodTarefa;
+                    DBTarefa.Tarefa = x.Tarefa;
+                    DBTarefa.UtilizadorCriacao = x.UtilizadorCriacao;
+                    DBTarefa.DataHoraCriacao = x.DataHoraCriacao;
+                    DBTarefa.UtilizadorModificacao = User.Identity.Name;
+                    DBTarefa.DataHoraModificacao = DateTime.Now;
+                    DBVisitasTarefasTarefas.Update(DBTarefa);
                 }
                 else
                 {
-                    OS.UtilizadorCriacao = User.Identity.Name;
-                    OS.DataHoraCriacao = DateTime.Now;
-                    DBVisitasTarefasTarefas.Create(OS);
+                    DBTarefa = new VisitasTarefasTarefas
+                    {
+                        CodTarefa = x.CodTarefa,
+                        Tarefa = x.Tarefa,
+                        UtilizadorCriacao = User.Identity.Name,
+                        DataHoraCriacao = DateTime.Now
+                    };
+                    DBVisitasTarefasTarefas.Create(DBTarefa);
                 }
             });
             return Json(data);

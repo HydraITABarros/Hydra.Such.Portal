@@ -145,12 +145,18 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <template is="dom-if" if="{{ _permissions.update }}">
+            <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button id="btn_registarDiario" class="tablinks" on-tap="_registerDiary"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Linhas de Diário</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovements"><i class="fa fa-get-pocket" aria-hidden="true"></i> Obter Movimentos</paper-button>
                 <paper-button class="tablinks" on-tap="_getMovementsProject"><i class="fa fa-check-square" aria-hidden="true"></i> Obter movimentos de projeto</paper-button>
+            </template>
+            <template is="dom-if" if="{{ _permissions.verTudo }}">
                 <paper-button class="tablinks" on-tap="_getPriceServiceClient"><i class="fa fa-check-square" aria-hidden="true"></i> Obter Faturação (Alim)</paper-button>
             </template>
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button id="btnAddNew" disabled="{{ !_permissions.update }}" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            </template>
+
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProductsCodeDiarioProjeto" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -190,7 +196,7 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <div>
+        <div hidden="{{ !_permissions.verTudo }}">
             <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="projectList" name="projectList" value="{{projectNumber}}" label="Nº Projeto" disabled="{{disabledProjectNo}}"
@@ -527,7 +533,7 @@
                 <template>
                     <div class="alignRight">
                         <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-value-changed="_lineCalcTotals"></vaadin-text-field>
+                            <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" id="lineQuantity" disabled="{{ !_permissions.update }}" value="{{item.quantity}}" on-blur="_lineCalcTotals"></vaadin-text-field>
                         </template>
                         <template is="dom-if" if="{{ !item.selected }}">
                             {{item.quantity}}
@@ -565,7 +571,7 @@
                 <template>
                     <div class="alignRight">
                         <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-text-field id="lineUnitCost" on-value-changed="_lineCalcTotals" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field id="lineUnitCost" on-blur="_lineCalcTotals" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{item.unitCost}}"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                         <template is="dom-if" if="{{ !item.selected }}">
                             {{item.unitCost}} €
@@ -581,12 +587,7 @@
                 </template>
                 <template>
                     <div class="alignRight">
-                        <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalCost}}"><div slot="suffix">€</div></vaadin-text-field>
-                        </template>
-                        <template is="dom-if" if="{{ !item.selected }}">
-                            {{item.totalCost}} €
-                        </template>
+                        {{ item.totalCost }} €
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -599,7 +600,7 @@
                 <template>
                     <div class="alignRight">
                         <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" id="lineUnitPrice" on-value-changed="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
+                            <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" id="lineUnitPrice" on-blur="_lineCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                         </template>
                         <template is="dom-if" if="{{ !item.selected }}">
                             {{item.unitPrice}} €
@@ -615,12 +616,7 @@
                 </template>
                 <template>
                     <div class="alignRight">
-                        <template is="dom-if" if="{{ item.selected }}">
-                            <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" disabled="{{ !_permissions.update }}" class="alignRight" value="{{item.totalPrice}}"><div slot="suffix">€</div></vaadin-text-field>
-                        </template>
-                        <template is="dom-if" if="{{ !item.selected }}">
-                            {{item.totalPrice}} €
-                        </template>
+                        {{item.totalPrice}} €
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -648,7 +644,7 @@
                 </template>
                 <template>
                     <div class="alignCenter">
-                        <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
+                        <vaadin-checkbox checked="{{item.billable}}" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -895,9 +891,8 @@
         </vaadin-grid>
 
         <div class="marginSpace" hidden="{{ disabledFields }}">
-            <div class="marginSpace" hidden="{{ !_permissions.update }}">
-                <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            </div>
+            <paper-button raised id="btnAddNew" disabled="{{ !_permissions.update }}" hidden="{{ !_permissions.update }}" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; Total</paper-button>
         </div>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -905,7 +900,7 @@
         <!-- Paper Dialog -->
         <paper-dialog id="dialog" class="dialgoBox">
             <h2 class="dialogTitle">Movimentos de Projeto</h2>
-            <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
+            <vaadin-grid column-reordering-allowed id="projectMovementTable" aria-label="Movimentos de Projeto" items="[[resultMovements]]" class="editDialogGrid" active-item="{{_SelectedTabLine}}" selected-items={{selectedItems}}>
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
 
@@ -929,24 +924,6 @@
                     </template>
                 </vaadin-grid-column>
 
-                <!--<vaadin-grid-column width="10%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="moveType" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>-->
-
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="movementTypeText">Tipo Movimento</vaadin-grid-sorter>
@@ -956,24 +933,6 @@
                         {{item.movementTypeText}}
                     </template>
                 </vaadin-grid-column>
-
-                <!--<vaadin-grid-column width="10%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="type" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>-->
 
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
@@ -1004,16 +963,13 @@
                         {{item.description}}
                     </template>
                 </vaadin-grid-column>
-
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header" width="200px" resizable>
                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                         <vaadin-grid-filter path="quantity" />
                     </template>
                     <template>
-                        <div class="alignRight">
-                            {{item.quantity}}
-                        </div>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" id="tabQuantity" on-blur="_tabCalcTotals" class="alignRight" value="{{item.quantity}}"></vaadin-text-field>
                     </template>
                 </vaadin-grid-column>
 
@@ -1152,9 +1108,7 @@
                         <vaadin-grid-filter path="unitPrice" />
                     </template>
                     <template>
-                        <div class="alignRight">
-                            {{item.unitPrice}} €
-                        </div>
+                        <vaadin-text-field pattern="^[1-9]\d*(\.\d+)?$" id="tabUnitPrice" on-blur="_tabCalcTotals" class="alignRight" value="{{item.unitPrice}}"><div slot="suffix">€</div></vaadin-text-field>
                     </template>
                 </vaadin-grid-column>
 
@@ -1444,6 +1398,15 @@
             <div></div>
         </paper-dialog>
 
+        <!-- Paper Dialog Total Linhas-->
+        <paper-dialog id="dialogTotal" style="height:120px; width:300px">
+            <div>
+                <h2>Somatório do Preço Total: <b>{{_TotalLine}} €</b></h2>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
 
 
     </template>
@@ -1485,6 +1448,11 @@
                         type: String,
                         notifiy: true,
                         value: ""
+                    },
+                    _verTudo: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
                     },
                     disabledProjectNo: {
                         type: Boolean,
@@ -1620,6 +1588,9 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    _SelectedTabLine: {
+                        observer: '_tabSelected'
+                    },
                     selected: {
                         type: Number,
                         value: 0
@@ -1670,6 +1641,10 @@
                         type: String,
                         notify: true,
                         value: ""
+                    },
+                    _TotalLine: {
+                        type: Number,
+                        value: 0
                     },
 
                 },
@@ -2278,7 +2253,7 @@
                     }
                 },
 
-                _lineDescriptionChange: function(e) {
+                _lineDescriptionChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "") {
                         var originalDescriptionLINE = "";
                         var tipo = this.result.items.find(x => x == this._SelectedLine).type;
@@ -2495,22 +2470,24 @@
 
                 _lineCalcTotals: function (param) {
                     if (this.result != null) {
+                        debugger;
                         var res = this.result.items.find(x => x == this._SelectedLine);
                         if (res != null) {
-                            var qnt = res.quantity.toFixed(2);
-                            var unitCost = res.unitCost.toFixed(4);
-                            var unitPrice = res.unitPrice.toFixed(4);
+                            var qnt = parseFloat(String(res.quantity).replace(",", "."));
+                            var unitCost = parseFloat(String(res.unitCost).replace(",", "."));
+                            var unitPrice = parseFloat(String(res.unitPrice).replace(",", "."));
+
                             switch (param.target.id) {
                                 case "lineQuantity":
-                                    qnt = param.target.value.replace(",", ".");
+                                    qnt = parseFloat(String(param.target.value).replace(",", "."));
                                     res.quantity = qnt;
                                     break;
                                 case "lineUnitCost":
-                                    unitCost = param.target.value.replace(",", ".");
+                                    unitCost = parseFloat(String(param.target.value).replace(",", "."));
                                     res.unitCost = unitCost;
                                     break;
                                 case "lineUnitPrice":
-                                    unitPrice = param.target.value.replace(",", ".");
+                                    unitPrice = parseFloat(String(param.target.value).replace(",", "."));
                                     res.unitPrice = unitPrice;
                                     break;
                                 default:
@@ -2518,12 +2495,45 @@
                             }
 
                             if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
-                                res.totalCost = (qnt.toFixed(2) * unitCost.toFixed(4)).toFixed(2);
+                                res.totalCost = (qnt * unitCost).toFixed(2);
+                            }
+                            else {
+                                res.totalCost = 0;
                             }
                             if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
-                                res.totalPrice = (qnt.toFixed(2) * unitPrice.toFixed(4)).toFixed(2);
+                                res.totalPrice = (qnt * unitPrice).toFixed(2);
+                            }
+                            else {
+                                res.totalPrice = 0;
                             }
                             this.$.projectDiaryProject.clearCache();
+                        }
+                    }
+                },
+
+                _tabCalcTotals: function (param) {
+                    if (this.resultMovements != null) {
+                        var res = this.resultMovements.find(x => x.lineNo == param.model.__data.item.lineNo);
+                        if (res != null) {
+                            var qnt = parseFloat(String(res.quantity).replace(",", "."));
+                            var unitPrice = parseFloat(String(res.unitPrice).replace(",", "."));
+                            switch (param.target.id) {
+                                case "tabQuantity":
+                                    qnt = parseFloat(String(param.target.value).replace(",", "."));
+                                    res.quantity = qnt;
+                                    break;
+                                case "tabUnitPrice":
+                                    unitPrice = parseFloat(String(param.target.value).replace(",", "."));
+                                    res.unitPrice = unitPrice;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
+                                res.totalPrice = (qnt * unitPrice).toFixed(2);
+                            }
+                            this.$.projectMovementTable.clearCache();
                         }
                     }
                 },
@@ -2546,6 +2556,20 @@
                         this.$.page_GetMeasureUnitsWithResource_ajax.generateRequest();
                     }
                 },
+
+                _tabSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.resultMovements.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+                        var sel = this.resultMovements.find(x => x == item);
+                        if (sel != undefined) {
+                            this.resultMovements.find(x => x == item).selected = true;
+                        }
+                    }
+                },
+
                 _parseDateFormat: function (date) {
                     if (date != null && date != "") {
                         var x = date.split("-");
@@ -2666,8 +2690,25 @@
                 _InverterSinalCheck: function () {
                     this.invertersinal = !this.invertersinal;
                     this._projectChange();
-                }
+                },
 
+                _sumLines: function () {
+                    var count = parseFloat(0);
+                    this._TotalLine = 0;
+
+                    if (this.result.items != null && this.result.items.length > 0) {
+                        for (var i = 0; i < this.result.items.length; i++) {
+                            if (this.result.items[i].totalPrice != null)
+                                count += parseFloat(String(this.result.items[i].totalPrice).replace(",", "."));
+                            else
+                                count += 0;
+                            this._TotalLine = count;
+                            this.$.dialogTotal.open();
+                        }
+                    } else {
+                        this._openToast("Não existem Linhas inseridas.");
+                    }
+                },
 
 
             });
