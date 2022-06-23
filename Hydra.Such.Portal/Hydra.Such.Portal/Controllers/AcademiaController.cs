@@ -172,7 +172,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                var item = EnumerablesFixed.TipoAlteracaoPedidoFormacao.Where(t => t.Id == type).FirstOrDefault();
+                var item = EnumerablesFixed.TipoAlteracaoPedidoFormacao.FirstOrDefault(t => t.Id == type);
                 if (item != null)
                 {
                     return item.Value;
@@ -191,51 +191,72 @@ namespace Hydra.Such.Portal.Controllers
         {
             EnumData result = new EnumData();
 
-            switch (newStatus)
+            Enumerations.EstadoPedidoFormacao novo_estado = (Enumerations.EstadoPedidoFormacao)newStatus;
+            Enumerations.EstadoPedidoFormacao estado_corrente = (Enumerations.EstadoPedidoFormacao)currStatus;
+
+            //switch (newStatus)
+            switch (novo_estado)
             {
-                case 1:
+                //case 1:
+                case Enumerations.EstadoPedidoFormacao.PedidoSubmetido:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoChefia;
                     break;
-                case 2:
+                //case 2:
+                case Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoChefia;
                     break;
-                case 3:
+                //case 3:
+                case Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoCoordenacao;
                     break;
-                case 4:
+                //case 4:
+                case Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao:
                     {
-                        if (currStatus == 1 || currStatus == 2 || currStatus == 3)
+                        if (estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoSubmetido ||
+                            estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia ||
+                            estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao)
+                        {
                             result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao;
+                        }
 
-                        if (currStatus == 5)
+                        if (estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia)
+                        {
                             result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.ReconfirmacaoDireccao;
+                        }
                     }
                     break;
-                case 5: result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoAcademia;
+                //case 5:
+                case Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia:
+                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoAcademia;
                     break;
-                case 6:
+                //case 6:
+                case Enumerations.EstadoPedidoFormacao.PedidoAnalisadoAcademia:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoConsAdmin;
                     break;
-                case 7:
+                //case 7:
+                case Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoConsAdmin;
                     break;
-                case 8:
+                //case 8:
+                case Enumerations.EstadoPedidoFormacao.PedidoAutorizadoCa:
                     result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.AutorizacaoConsAdmin;
                     break;
-                case 9:
-                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.PedidoEncerrado;
+                //case 9:
+                case Enumerations.EstadoPedidoFormacao.PedidoFinalizado:
+                    result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.CriacaoInscricao;
                     break;
-                case 99:
+                //case 99:
+                case Enumerations.EstadoPedidoFormacao.PedidoCancelado:
                     {
-                        switch (currStatus)
+                        switch (estado_corrente)
                         {
-                            case 1:
+                            case Enumerations.EstadoPedidoFormacao.PedidoSubmetido:
                                 result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoChefia;
                                 break;
-                            case 2:                            
+                            case Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia:
                                 result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoCoordenacao;
                                 break;
-                            case 3:
+                            case Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao:
                                 result.Id = (int)Enumerations.TipoAlteracaoPedidoFormacao.RejeicaoDireccao;
                                 break;
                             default:
@@ -256,6 +277,9 @@ namespace Hydra.Such.Portal.Controllers
 
         private void SendNotification(PedidoParticipacaoFormacao pedido, int newStatus, int currStatus, string url)
         {
+            Enumerations.EstadoPedidoFormacao novo_estado = (Enumerations.EstadoPedidoFormacao)newStatus;
+            Enumerations.EstadoPedidoFormacao estado_corrente = (Enumerations.EstadoPedidoFormacao)currStatus;
+
             if (pedido != null && !string.IsNullOrEmpty(pedido.IdPedido) && !string.IsNullOrEmpty(pedido.IdEmpregado))
             {
                 Formando f = DBAcademia.__GetDetailsFormando(pedido.IdEmpregado);
@@ -263,20 +287,21 @@ namespace Hydra.Such.Portal.Controllers
                 if (f != null && !string.IsNullOrEmpty(f.No))
                 {
                     f.GetTraineeManagers(TrainingRequestApprovalType);
-                    switch (newStatus)
+                    switch (novo_estado)
                     {
-                        case 1:
+                        case Enumerations.EstadoPedidoFormacao.PedidoSubmetido:
                             {
+                                // alerta para a chefia
                                 EmailAcademia e = new EmailAcademia
                                 {
                                     IdPedido = pedido.IdPedido,
                                     BodyText = string.Format(MsgSubmissaoPedido,
-                                            pedido.NomeEmpregado,
-                                            pedido.IdEmpregado,
-                                            f.CrespNav2017,
-                                            f.DescCrespNav2017,
-                                            pedido.DesignacaoAccao,
-                                            pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                                           pedido.NomeEmpregado,
+                                           pedido.IdEmpregado,
+                                           f.CrespNav2017,
+                                           f.DescCrespNav2017,
+                                           pedido.DesignacaoAccao,
+                                           pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
                                     SubjectText = "Pedido de Participação em Formação Externa para validar",
                                     SenderAddress = AcademiaEmailAddress,
                                     SenderName = AcademiaName,
@@ -290,23 +315,73 @@ namespace Hydra.Such.Portal.Controllers
                                 email.SendEmail();
                             }
                             break;
-                        case 2:
+                        case Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia:
                             {
+                                pedido.CustoInscricao = pedido.CustoInscricao ?? pedido.CustoInscricao;
+                                if (pedido.CustoInscricao > 0)
+                                {
+                                    // alerta para a coordenação
+                                    EmailAcademia e = new EmailAcademia
+                                    {
+                                        IdPedido = pedido.IdPedido,
+                                        BodyText = string.Format(MsgChefiaParaCoordenacao,
+                                                        pedido.NomeEmpregado,
+                                                        pedido.IdEmpregado,
+                                                        f.CrespNav2017,
+                                                        f.DescCrespNav2017,
+                                                        pedido.DesignacaoAccao,
+                                                        pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                                        SubjectText = "Pedido de Participação em Formação Externa para aprovar",
+                                        SenderAddress = AcademiaEmailAddress,
+                                        SenderName = AcademiaName,
+                                        IsHtml = true,
+                                        ToAddresses = f.GetManagersEmailAddresses(2)
+                                    };
+
+                                    SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                    email.MakeEmailToDirectorForApproval(f, pedido, url);
+
+                                    email.SendEmail();
+                                }
+                                else
+                                {
+                                    // email para a Academia
+                                    EmailAcademia e = new EmailAcademia
+                                    {
+                                        IdPedido = pedido.IdPedido,
+                                        BodyText = string.Format("Foi aprovado pela chefia o pedido de participação em formação, sem custos, com o n.º {0}", pedido.IdPedido),
+                                        SubjectText = "Pedido de Participação em Formação Externa (sem custos) Aprovado pela Chefia",
+                                        SenderAddress = "esuch@such.pt",
+                                        SenderName = "e-SUCH",
+                                        IsHtml = true,
+                                        ToAddresses = new List<string> { "academia@such.pt" }
+                                    };
+
+                                    SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                    email.MakeEmailToAcademy(pedido, url);
+
+                                    email.SendEmail();
+                                }
+                            }
+                            break;
+                        case Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao:
+                            {
+                                // alerta para a direcção
                                 EmailAcademia e = new EmailAcademia
                                 {
                                     IdPedido = pedido.IdPedido,
                                     BodyText = string.Format(MsgCoordenacaoParaDireccao,
-                                            pedido.NomeEmpregado,
-                                            pedido.IdEmpregado,
-                                            f.CrespNav2017,
-                                            f.DescCrespNav2017,
-                                            pedido.DesignacaoAccao,
-                                            pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
+                                         pedido.NomeEmpregado,
+                                         pedido.IdEmpregado,
+                                         f.CrespNav2017,
+                                         f.DescCrespNav2017,
+                                         pedido.DesignacaoAccao,
+                                         pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy")),
                                     SubjectText = "Pedido de Participação em Formação Externa para aprovar",
                                     SenderAddress = AcademiaEmailAddress,
                                     SenderName = AcademiaName,
                                     IsHtml = true,
-                                    ToAddresses = f.GetManagersEmailAddresses(1)
+                                    ToAddresses = f.GetManagersEmailAddresses(3)
                                 };
 
                                 SendEmailsAcademia email = new SendEmailsAcademia(e);
@@ -315,9 +390,13 @@ namespace Hydra.Such.Portal.Controllers
                                 email.SendEmail();
                             }
                             break;
-                        case 3:
+                        case Enumerations.EstadoPedidoFormacao.PedidoAprovadoDireccao:
                             {
-                                if (currStatus == 1 || currStatus == 2)
+                                // alerta para a Academia
+                                // a. Fluxo de aprovação "normal"
+                                if (estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoSubmetido ||
+                                    estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia ||
+                                    estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoAprovadoCoordenacao)
                                 {
                                     EmailAcademia e = new EmailAcademia
                                     {
@@ -336,7 +415,8 @@ namespace Hydra.Such.Portal.Controllers
                                     email.SendEmail();
                                 }
 
-                                if (currStatus == 4)
+                                // b. Fluxo de "re-submissão"
+                                if (estado_corrente == Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia)
                                 {
                                     EmailAcademia e = new EmailAcademia
                                     {
@@ -356,21 +436,22 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
                             break;
-                        case 4:
+                        case Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia:
                             {
+                                // alerta para a Direcção
                                 EmailAcademia e = new EmailAcademia
                                 {
                                     IdPedido = pedido.IdPedido,
                                     BodyText = string.Format(MsgRejeicaoAcademia,
-                                        pedido.IdPedido,
-                                        pedido.NomeEmpregado,
-                                        pedido.IdEmpregado,
-                                        f.CrespNav2017,
-                                        f.DescCrespNav2017,
-                                        pedido.DesignacaoAccao,
-                                        pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy"),
-                                        pedido.ParecerDotacaoAcademia
-                                    ),
+                                       pedido.IdPedido,
+                                       pedido.NomeEmpregado,
+                                       pedido.IdEmpregado,
+                                       f.CrespNav2017,
+                                       f.DescCrespNav2017,
+                                       pedido.DesignacaoAccao,
+                                       pedido.DataInicio.Value.Date.ToString("dd-MM-yyyy"),
+                                       pedido.ParecerDotacaoAcademia
+                                   ),
                                     SubjectText = "Pedido de Participação em Formação Externa Rejeitado pela Academia",
                                     SenderAddress = AcademiaEmailAddress,
                                     SenderName = AcademiaName,
@@ -384,18 +465,19 @@ namespace Hydra.Such.Portal.Controllers
                                 email.SendEmail();
                             }
                             break;
-                        case 5:
+                        case Enumerations.EstadoPedidoFormacao.PedidoAnalisadoAcademia:
                             {
+                                // alerta para o CA
                                 EmailAcademia e = new EmailAcademia
                                 {
                                     IdPedido = pedido.IdPedido,
                                     BodyText = string.Format(MsgSubmissaoConselho,
-                                        pedido.NomeEmpregado,
-                                        pedido.IdEmpregado,
-                                        f.CrespNav2017,
-                                        f.DescCrespNav2017,
-                                        url
-                                    ),
+                                       pedido.NomeEmpregado,
+                                       pedido.IdEmpregado,
+                                       f.CrespNav2017,
+                                       f.DescCrespNav2017,
+                                       url
+                                   ),
                                     SubjectText = "Pedido de Participação em Formação Externa para Autorizar",
                                     SenderAddress = AcademiaEmailAddress,
                                     SenderName = AcademiaName,
@@ -409,8 +491,29 @@ namespace Hydra.Such.Portal.Controllers
                                 email.SendEmail();
                             }
                             break;
-                        case 6:
+                        case Enumerations.EstadoPedidoFormacao.PedidoRejeitadoCA:
                             {
+                                // alerta para a Academia
+                                EmailAcademia e = new EmailAcademia
+                                {
+                                    IdPedido = pedido.IdPedido,
+                                    BodyText = string.Format(MsgRejeicaoConselho, pedido.IdPedido),
+                                    SubjectText = "Pedido de Participação em Formação Externa Rejeitado pelo CA",
+                                    SenderAddress = "esuch@such.pt",
+                                    SenderName = "e-SUCH",
+                                    IsHtml = true,
+                                    ToAddresses = new List<string> { AcademiaEmailAddress }
+                                };
+
+                                SendEmailsAcademia email = new SendEmailsAcademia(e);
+                                email.MakeEmailToAcademy(pedido, url);
+
+                                email.SendEmail();
+                            }
+                            break;
+                        case Enumerations.EstadoPedidoFormacao.PedidoAutorizadoCa:
+                            {
+                                // alerta para a Academia
                                 PedidoParticipacaoFormacaoView p = new PedidoParticipacaoFormacaoView(pedido);
 
                                 EmailAcademia e = new EmailAcademia
@@ -426,25 +529,6 @@ namespace Hydra.Such.Portal.Controllers
                                     CcAddresses = new List<string> { p.UtilizadorAprovacaoChefia, p.UtilizadorAprovacaoDireccao, p.UtilizadorSubmissao }
 
 
-                                };
-
-                                SendEmailsAcademia email = new SendEmailsAcademia(e);
-                                email.MakeEmailToAcademy(pedido, url);
-
-                                email.SendEmail();
-                            }
-                            break;
-                        case 7:
-                            {
-                                EmailAcademia e = new EmailAcademia
-                                {
-                                    IdPedido = pedido.IdPedido,
-                                    BodyText = string.Format(MsgRejeicaoConselho, pedido.IdPedido),
-                                    SubjectText = "Pedido de Participação em Formação Externa Rejeitado pelo CA",
-                                    SenderAddress = "esuch@such.pt",
-                                    SenderName = "e-SUCH",
-                                    IsHtml = true,
-                                    ToAddresses = new List<string> { AcademiaEmailAddress }
                                 };
 
                                 SendEmailsAcademia email = new SendEmailsAcademia(e);
