@@ -65,7 +65,7 @@
     <PackageReference Include="EPPlus" Version="4.5.3.1" />
     <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore" Version="3.0.7" />
     <PackageReference Include="JavaScriptEngineSwitcher.Extensions.MsDependencyInjection" Version="3.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3"><PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.6"><PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
 <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
 </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />
