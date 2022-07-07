@@ -1520,7 +1520,7 @@ namespace Hydra.Such.Portal.Controllers
                                 catch (Exception ex)
                                 {
                                     result.eReasonCode = 503;
-                                    result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                    result.eMessage = "Ocorreu um erro ao criar o projeto no NAV (Verificar configuração de Cliente).";
                                 }
                                 if (!TCreateNavProj.IsCompletedSuccessfully)
                                 {

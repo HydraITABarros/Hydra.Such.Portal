@@ -182,6 +182,27 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<Requisição> GetByCMAndState(int TipoReq, List<RequisitionStates> states, string NoCM)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição
+                        .Include("LinhasRequisição")
+                        .Include(x => x.RequisicoesRegAlteracoes)
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.NºConsultaMercado.Contains(NoCM))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetByIdAndStateSimple(int TipoReq, List<RequisitionStates> states, string NoRequisicao)
         {
             try
@@ -274,6 +295,31 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<Requisição> GetByStateSimpleAndCM(int TipoReq, List<RequisitionStates> states, string NoCM)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    if (string.IsNullOrEmpty(NoCM))
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && x.NºConsultaMercado.Contains(NoCM))
+                            //.Include("LinhasRequisição")
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
 
