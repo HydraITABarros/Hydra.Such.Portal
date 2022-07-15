@@ -1210,6 +1210,7 @@ namespace Hydra.Such.Portal.Controllers
 
             string pesquisaDataText = (string)requestParams.GetValue("pesquisadata");
             string pesquisaNoRequisicao = (string)requestParams.GetValue("pesquisaNoRequisicao");
+            string pesquisaNoCM = (string)requestParams.GetValue("pesquisaNoCM");
 
             if (!string.IsNullOrEmpty(pesquisaDataText))
                 pesquisaData = Convert.ToDateTime(pesquisaDataText);
@@ -1225,10 +1226,15 @@ namespace Hydra.Such.Portal.Controllers
 
             List<RequisitionViewModel> result = new List<RequisitionViewModel>();
 
-            if (string.IsNullOrEmpty(pesquisaNoRequisicao))
+            if (string.IsNullOrEmpty(pesquisaNoRequisicao) && string.IsNullOrEmpty(pesquisaNoCM))
                 result = DBRequest.GetByStateAndDate((int)RequisitionTypes.Normal, states, pesquisaData).ParseToViewModel();
             else
-                result = DBRequest.GetByIdAndState((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+            {
+                if (!string.IsNullOrEmpty(pesquisaNoRequisicao))
+                    result = DBRequest.GetByIdAndState((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+                else
+                    result = DBRequest.GetByCMAndState((int)RequisitionTypes.Normal, states, pesquisaNoCM).ParseToViewModel();
+            }
 
             result.RemoveAll(x => x.RequestNutrition == true);
 
@@ -1286,6 +1292,7 @@ namespace Hydra.Such.Portal.Controllers
 
             string pesquisaDataText = (string)requestParams.GetValue("pesquisadata");
             string pesquisaNoRequisicao = (string)requestParams.GetValue("pesquisaNoRequisicao");
+            string pesquisaNoCM = (string)requestParams.GetValue("pesquisaNoCM");
             if (!string.IsNullOrEmpty(pesquisaDataText))
                 pesquisaData = Convert.ToDateTime(pesquisaDataText);
 
@@ -1318,10 +1325,15 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
 
-            if (string.IsNullOrEmpty(pesquisaNoRequisicao))
+            if (string.IsNullOrEmpty(pesquisaNoRequisicao) && string.IsNullOrEmpty(pesquisaNoCM))
                 result = DBRequest.GetByStateSimpleAndDate((int)RequisitionTypes.Normal, states, pesquisaData).ParseToViewModel();
             else
-                result = DBRequest.GetByStateSimpleAndID((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+            {
+                if (!string.IsNullOrEmpty(pesquisaNoRequisicao))
+                    result = DBRequest.GetByStateSimpleAndID((int)RequisitionTypes.Normal, states, pesquisaNoRequisicao).ParseToViewModel();
+                else
+                    result = DBRequest.GetByStateSimpleAndCM((int)RequisitionTypes.Normal, states, pesquisaNoCM).ParseToViewModel();
+            }
             //result = DBRequest.GetByStateSimple((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations

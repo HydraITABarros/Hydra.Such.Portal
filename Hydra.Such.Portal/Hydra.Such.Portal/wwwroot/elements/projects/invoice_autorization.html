@@ -1338,7 +1338,7 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    if (parseFloat(this.$.txtValorAAutorizar.value).toFixed(2) < 0 && this.$.idListaFaturasRelacionadas.value == "") {
+                    if (this.roundHalfUp(this.$.txtValorAAutorizar.value, 2) < 0 && this.$.idListaFaturasRelacionadas.value == "") {
                         this.openToastError("O campo Nº Fatura Relacionada é de preenchimento obrigatório.");
                         return;
                     }
@@ -1355,7 +1355,7 @@
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
-                            "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
+                            "authorizationTotalValue": this.roundHalfUp(this.$.txtValorAAutorizar.value, 2),
                             "projMovements": this.selectedItems,
                             "projObs": this.$.IdObs.value,
                             "noFaturaRelacionada": this.$.idListaFaturasRelacionadas.value
@@ -1443,7 +1443,7 @@
                                             precounitario = items[i].unitPrice;
 
                                         //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
-                                        total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
+                                        total = this.roundHalfUp(total, 2) + this.roundHalfUp((quantidade * precounitario), 2);
                                     }
 
                                     if (items[i].selecionada == true) {
@@ -1458,7 +1458,7 @@
                                 }
                             }
 
-                            //if ((this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) &&
+                            //if ((this._totalToAuthorize < 0 || this.roundHalfUp(total, 2) < 0) &&
                             //    (this.$.txtNoFaturaRelacionada.value == null || this.$.txtNoFaturaRelacionada.value == "")) {
                             //    this.openToastError("Não é possivel Autorizar, por ser obrigatório o preenchimento do campo Nº Fatura Relacionada.");
                             //    this.$.btnConfirm.disabled = false;
@@ -1467,7 +1467,7 @@
 
                             //this.$.idListaFaturasRelacionadas._clearSelection();
                             this.$.idListaFaturasRelacionadas.value = "";
-                            if (this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) {
+                            if (this._totalToAuthorize < 0 || this.roundHalfUp(total, 2) < 0) {
                                 this.$.idListaFaturasRelacionadas.hidden = false;
 
                                 if (items.length > 0) {
@@ -1519,7 +1519,7 @@
                                 this.$.idListaFaturasRelacionadas.hidden = true;
                             }
 
-                            if (this._totalToAuthorize == this.roundToTwo(total)) {
+                            if (this._totalToAuthorize == this.roundHalfUp(total, 2)) {
                                 this.validationMessages = [];
                                 var validationRequest = {
                                     "projectNo": this._projectno,
@@ -1529,7 +1529,7 @@
                                     "customerRequestDate": this._customerRequestDate,
                                     "serviceDate": this.$.dpDataPrestacaoServ.value,
                                     "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
-                                    "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
+                                    "authorizationTotalValue": this.roundHalfUp(this.$.txtValorAAutorizar.value, 2),
                                     "projMovements": this.selectedItems,
                                     "dataServPrestado": this.$.txtDataPrestacaoServ.value,
                                     //"noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value,
@@ -2291,14 +2291,18 @@
                                     precounitario = items[i].unitPrice;
 
                                 //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
-                                total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
+                                total = this.roundHalfUp(total, 2) + this.roundHalfUp((quantidade * precounitario), 2);
                             }
                         }
                     }
                     //this._totalToAuthorize = parseFloat(total).toFixed(2);
-                    this._totalToAuthorize = this.roundToTwo(total);
+                    this._totalToAuthorize = this.roundHalfUp(total, 2);
 
 
+                },
+
+                roundHalfUp: function (value, decimals) {
+                    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
                 },
 
                 roundToTwo: function (num) {

@@ -2172,7 +2172,7 @@ namespace Hydra.Such.Portal.Controllers
                             ObjetoServiço = proposal.ServiceObject,
                             ContratoAvençaVariável = proposal.VariableAvengeAgrement,
                             Notas = proposal.Notes,
-                            NºContrato = proposal.ContractNo,
+                            NºContrato = OldContract.NºContrato, //Pedido pela Dulce Mota (04-07-2022) para ir buscar o valor do contato ativo » ORIGINAL: proposal.ContractNo,
                             DataInícioContrato = string.IsNullOrEmpty(proposal.ContractStartDate) ? (DateTime?)null : DateTime.Parse(proposal.ContractStartDate),
                             DataFimContrato = string.IsNullOrEmpty(proposal.ContractEndDate) ? (DateTime?)null : DateTime.Parse(proposal.ContractEndDate),
                             DescriçãoDuraçãoContrato = proposal.ContractDurationDescription,

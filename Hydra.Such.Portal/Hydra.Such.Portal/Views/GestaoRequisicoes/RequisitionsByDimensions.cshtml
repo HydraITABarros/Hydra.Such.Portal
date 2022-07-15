@@ -141,6 +141,10 @@
                         </div>
 
                         <div class="col-sm-2">
+                            <vaadin-text-field id="pesquisaNoCM" name="pesquisaNoCM" label="Filtrar por Nº Consulta Mercado:" value="" title="Filtrar por Nº Consulta Mercado:"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
                             <vaadin-date-picker id="pesquisaData" name="pesquisaData" label="Filtrar a partir de:" value="{{ pesquisadate }}" title="Filtrar a partir de:"></vaadin-date-picker>
                         </div>
 
@@ -677,7 +681,7 @@
                             this._historico = 0;
                             this._isHistoric = "false";
                         }
-                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "Historic": this._historico });
+                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "pesquisaNoCM": this.$.pesquisaNoCM.value, "Historic": this._historico });
                         this.$.ajax_getgrid.generateRequest();
                         this._setButtonTexts();
                     }
@@ -750,7 +754,7 @@
 
                 _search: function () {
                     this.result = null;
-                    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "Historic": this._historico });
+                    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "pesquisaNoCM": this.$.pesquisaNoCM.value, "Historic": this._historico });
                     this.$.ajax_getgrid.generateRequest();
                     this.$.gridrequest.clearCache();
                 },
