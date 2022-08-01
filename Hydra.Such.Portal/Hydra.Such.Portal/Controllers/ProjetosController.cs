@@ -4882,7 +4882,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 List<NAVClientsViewModel> customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customersIds);
 
-                List<AuthorizedCustomerBilling> groupedbyclient = null;
+                List<AuthorizedCustomerBilling> groupedbyclient = new List<AuthorizedCustomerBilling>();
                 if (agrupar == true)
                 {
                     groupedbyclient = data.GroupBy(x => new
@@ -4959,63 +4959,137 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    data.ForEach(x =>
+                    groupedbyclient = data.GroupBy(x => new
                     {
-                        AuthorizedCustomerBilling Autorizacao = new AuthorizedCustomerBilling();
+                        x.ProjectNo
+                        //x.Date,
+                        //x.DateFim,
+                        //x.CommitmentNumber,
+                        //x.ClientRequest
+                    },
+                        x => x,
+                        (key, items) => new AuthorizedCustomerBilling
+                        {
+                            //InvoiceToClientNo = key.InvoiceToClientNo,
+                            //Date = key.Date,
+                            //DateFim = key.DateFim,
+                            //CommitmentNumber = key.CommitmentNumber,
+                            //ClientRequest = key.ClientRequest,
 
-                        Autorizacao.InvoiceToClientNo = x.InvoiceToClientNo;
+                            InvoiceToClientNo = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.InvoiceToClientNo,
 
-                        Autorizacao.Date = x.Date;
-                        Autorizacao.DateFim = x.DateFim;
-                        Autorizacao.CommitmentNumber = x.CommitmentNumber;
-                        Autorizacao.ClientRequest = x.ClientRequest;
+                            Date = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.Date,
+                            DateFim = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.DateFim,
+                            CommitmentNumber = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.CommitmentNumber,
+                            ClientRequest = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.ClientRequest,
 
-                        Autorizacao.ClientVATReg = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo)?.VATRegistrationNo_;
-                        Autorizacao.ContractNo = projectsDetails.Select(y => y.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y));
-                        Autorizacao.Currency = x.Currency;
-                        Autorizacao.LocationCode = x.LocationCode;
-                        Autorizacao.MovementType = Convert.ToInt32(OptionInvoice);
-                        Autorizacao.CreateUser = User.Identity.Name;
+                            ClientVATReg = customers.FirstOrDefault(x => x.No_ == items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.VATRegistrationNo_,// DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                            ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
+                            Currency = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.Currency,
+                            LocationCode = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.LocationCode,
+                            MovementType = Convert.ToInt32(OptionInvoice),
+                            CreateUser = User.Identity.Name,
 
-                        //##################################    Obter de projetos autorizados
-                        Autorizacao.CodMetodoPagamento = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.CodMetodoPagamento).CodMetodoPagamento;
-                        Autorizacao.CodTermosPagamento = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.ClientRequest)?.CodTermosPagamento;
-                        Autorizacao.Comments = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.ClientRequest)?.Observacoes;
-                        Autorizacao.ServiceDate = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.ClientRequest)?.DataServPrestado;
-                        Autorizacao.RegionCode = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.ClientRequest)?.CodRegiao;
-                        Autorizacao.FunctionalAreaCode = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.ClientRequest)?.CodAreaFuncional;
-                        Autorizacao.ResponsabilityCenterCode = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
-                                                    y.DataPrestacaoServico == x.Date &&
-                                                    y.NumCompromisso == x.CommitmentNumber &&
-                                                    y.PedidoCliente == x.ClientRequest)?.CodCentroResponsabilidade;
+                            Items = items.ToList(),
 
-                        groupedbyclient.Add(Autorizacao);
-                    });
+                            //##################################    Obter de projetos autorizados
+                            CodMetodoPagamento = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodMetodoPagamento,
+                            CodTermosPagamento = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodTermosPagamento,
+                            Comments = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.Observacoes,
+                            ServiceDate = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.DataServPrestado,
+                            RegionCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodRegiao,
+                            FunctionalAreaCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodAreaFuncional,
+                            ResponsabilityCenterCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodCentroResponsabilidade,
+                        })
+                    .ToList();
+                    
+                    //data.ForEach(x =>
+                    //{
+                    //    AuthorizedCustomerBilling Autorizacao = new AuthorizedCustomerBilling();
+
+                    //    Autorizacao.InvoiceToClientNo = x.InvoiceToClientNo;
+
+                    //    Autorizacao.Date = x.Date;
+                    //    Autorizacao.DateFim = x.DateFim;
+                    //    Autorizacao.CommitmentNumber = x.CommitmentNumber;
+                    //    Autorizacao.ClientRequest = x.ClientRequest;
+
+                    //    Autorizacao.ClientVATReg = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo)?.VATRegistrationNo_;
+                    //    Autorizacao.ContractNo = projectsDetails.Select(y => y.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y));
+                    //    Autorizacao.Currency = x.Currency;
+                    //    Autorizacao.LocationCode = x.LocationCode;
+                    //    Autorizacao.MovementType = Convert.ToInt32(OptionInvoice);
+                    //    Autorizacao.CreateUser = User.Identity.Name;
+
+                    //    Autorizacao.Items = data.Where(y => y.InvoiceToClientNo == x.InvoiceToClientNo).ToList();
+
+                    //    //##################################    Obter de projetos autorizados
+                    //    Autorizacao.CodMetodoPagamento = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest).CodMetodoPagamento;
+                    //    Autorizacao.CodTermosPagamento = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodTermosPagamento;
+                    //    Autorizacao.Comments = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.Observacoes;
+                    //    Autorizacao.ServiceDate = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.DataServPrestado;
+                    //    Autorizacao.RegionCode = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodRegiao;
+                    //    Autorizacao.FunctionalAreaCode = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodAreaFuncional;
+                    //    Autorizacao.ResponsabilityCenterCode = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodCentroResponsabilidade;
+
+                    //    groupedbyclient.Add(Autorizacao);
+                    //});
                 }
 
 

@@ -204,9 +204,6 @@ namespace Hydra.Such.Portal.Controllers
         //    {
         //        return RedirectToAction("AccessDenied", "Error");
         //    }
-
-
-
         //}
 
         public IActionResult DetalhesContrato(string id, string version = "", bool isHistoric = false)
