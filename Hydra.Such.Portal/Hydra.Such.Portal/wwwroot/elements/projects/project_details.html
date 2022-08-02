@@ -234,7 +234,7 @@
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
             <paper-tab>Envio</paper-tab>
-            <paper-tab>AEC</paper-tab>
+            <paper-tab>Detalhes</paper-tab>
         </paper-tabs>
 
         <iron-pages selected="{{selected}}">
@@ -454,7 +454,7 @@
                 </div>
             </div>
 
-            <!--AEC-->
+            <!--DETALHES-->
             <div>
                 <div class="row">
                     <div class="col-lg-3">
@@ -490,6 +490,12 @@
 
                     <div class="col-lg-3 alignPoga">
                         <vaadin-checkbox checked="{{data.internalProject}}" disabled="{{ _bloqueado() }}">Projeto Interno</vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-3">
+                        <vaadin-text-field value="{{data.kwPotenciaInstalada}}" id="kwPotenciaInstalada" name="kwPotenciaInstalada" label="kW de potência instalada" disabled="{{ _bloqueado() }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" error-message="Valor inválido" class="alignRight"><div slot="suffix">kW</div></vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -815,6 +821,13 @@
                                 if (this.data.clientNo != "" && this.$.ProjectClient.valueText == "") {
                                     this._openToastError("Cliente não existe..")
                                 }
+
+                                if (this.data.functionalAreaCode == "13") { //ENERGIA
+                                    this.$.kwPotenciaInstalada.hidden = false;
+                                }
+                                else {
+                                    this.$.kwPotenciaInstalada.hidden = true;
+                                }
                                 //JP this._shippingAddressCode = this.data.shippingAddressCode;
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
@@ -1121,6 +1134,10 @@
                                 }, 2500);
                         }
                     }
+                },
+
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
                 },
 
             });

@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string ContractNo { get; set; }
         public int VersionNo { get; set; }
         public int LineNo { get; set; }
+        public int? Ordenacao { get; set; }
         public int? Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }

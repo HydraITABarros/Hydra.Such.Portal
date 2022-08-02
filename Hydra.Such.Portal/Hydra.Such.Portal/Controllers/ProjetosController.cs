@@ -333,7 +333,8 @@ namespace Hydra.Such.Portal.Controllers
                         CreateUser = cProject.UtilizadorCriação,
                         CreateDate = cProject.DataHoraCriação,
                         UpdateUser = cProject.UtilizadorModificação,
-                        UpdateDate = cProject.DataHoraModificação
+                        UpdateDate = cProject.DataHoraModificação,
+                        KWPotenciaInstalada = cProject.KWPotenciaInstalada
                     };
 
                     string TextoFatura = "";
@@ -845,6 +846,7 @@ namespace Hydra.Such.Portal.Controllers
                                 UtilizadorModificação = User.Identity.Name,
                                 FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
                                 FechoAutomatico = data.FechoAutomatico,
+                                KWPotenciaInstalada = data.KWPotenciaInstalada
                             };
 
                             //Create Project on NAV
@@ -953,6 +955,7 @@ namespace Hydra.Such.Portal.Controllers
                                     UtilizadorModificação = User.Identity.Name,
                                     FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
                                     FechoAutomatico = data.FechoAutomatico,
+                                    KWPotenciaInstalada = data.KWPotenciaInstalada
                                 };
 
                                 //Create Project On Database
@@ -1470,6 +1473,7 @@ namespace Hydra.Such.Portal.Controllers
                                         cProject.GrupoContabObra = "PROJETO";
                                         cProject.UtilizadorModificação = User.Identity.Name;
                                         cProject.DataHoraModificação = DateTime.Now;
+                                        cProject.KWPotenciaInstalada = data.KWPotenciaInstalada;
 
                                         if (DBProjects.Update(cProject) != null)
                                         {
@@ -1636,6 +1640,7 @@ namespace Hydra.Such.Portal.Controllers
                                         cProject.GrupoContabObra = "PROJETO";
                                         cProject.UtilizadorModificação = User.Identity.Name;
                                         cProject.DataHoraModificação = DateTime.Now;
+                                        cProject.KWPotenciaInstalada = data.KWPotenciaInstalada;
 
                                         if (DBProjects.Update(cProject) != null)
                                         {
@@ -1759,6 +1764,7 @@ namespace Hydra.Such.Portal.Controllers
                             UtilizadorModificação = User.Identity.Name,
                             FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
                             FechoAutomatico = data.FechoAutomatico,
+                            KWPotenciaInstalada = data.KWPotenciaInstalada
 
                         };
 
@@ -1848,7 +1854,8 @@ namespace Hydra.Such.Portal.Controllers
                             ProjetoInterno = data.InternalProject,
                             ChefeProjeto = data.ProjectLeader,
                             ResponsávelProjeto = data.ProjectResponsible,
-                            UtilizadorCriação = User.Identity.Name
+                            UtilizadorCriação = User.Identity.Name,
+                            KWPotenciaInstalada = data.KWPotenciaInstalada
                         };
 
                         //Create Project On Database

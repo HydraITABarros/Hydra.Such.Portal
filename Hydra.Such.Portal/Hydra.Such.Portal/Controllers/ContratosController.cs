@@ -2497,6 +2497,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.NºContrato = x.ContractNo;
                             CLine.NºVersão = x.VersionNo;
                             CLine.NºLinha = x.LineNo;
+                            CLine.Ordenacao = x.Ordenacao;
                             CLine.Tipo = x.Type;
                             CLine.Código = x.Code;
                             CLine.Descrição = x.Description;
@@ -5898,6 +5899,7 @@ namespace Hydra.Such.Portal.Controllers
             newline.Periodicidade = contractlinestocreate.Periodicidade;
             newline.PreçoUnitário = contractlinestocreate.PreçoUnitário;
             newline.Quantidade = contractlinestocreate.Quantidade;
+            newline.Ordenacao = contractlinestocreate.Ordenacao;
             newline.Tipo = contractlinestocreate.Tipo;
             newline.TipoProposta = contractlinestocreate.TipoProposta;
 

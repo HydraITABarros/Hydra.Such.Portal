@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Database
         public string NºContrato { get; set; }
         public int NºVersão { get; set; }
         public int NºLinha { get; set; }
+        public int? Ordenacao { get; set; }
         public int? Tipo { get; set; }
         public string Código { get; set; }
         public string Descrição { get; set; }

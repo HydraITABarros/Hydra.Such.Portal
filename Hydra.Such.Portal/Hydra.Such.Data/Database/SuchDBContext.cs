@@ -4585,6 +4585,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Linha")
                     .ValueGeneratedOnAdd();
 
+                entity.Property(e => e.Ordenacao)
+                    .HasColumnName("Ordenacao");
+
                 entity.Property(e => e.CriaContrato).HasColumnName("Cria Contrato");
 
                 entity.Property(e => e.CódServiçoCliente)
@@ -8659,6 +8662,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.FaturaPrecosIvaIncluido).HasColumnName("FaturaPrecosIvaIncluido");
 
                 entity.Property(e => e.FechoAutomatico).HasColumnName("FechoAutomatico");
+
+                entity.Property(e => e.KWPotenciaInstalada).HasColumnName("KWPotenciaInstalada");
+
 
                 entity.HasOne(d => d.CódTipoProjetoNavigation)
                     .WithMany(p => p.Projetos)

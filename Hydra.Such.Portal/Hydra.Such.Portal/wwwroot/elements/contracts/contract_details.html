@@ -1267,6 +1267,9 @@
                                         </vaadin-combo-box>
                                     </div>
                                     <div class="col-lg-2">
+                                        <vaadin-text-field value="{{_CLOrdenacao}}" id="_CLOrdenacao" name="_CLOrdenacao" label="Ordenação linhas" disabled="{{ _lockFields }}" type="number" pattern="[0-9]*" class="alignRight"> </vaadin-text-field>
+                                    </div>
+                                    <div class="col-lg-2">
                                         <such-selectbox id="_CLCode" value="{{_CLCode}}" label="Código"
                                                         items="[[CBContractLineCodes]]"
                                                         text-path="value"
@@ -1294,11 +1297,11 @@
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLUnitPrice}}" id="_CLUnitPrice" name="_CLUnitPrice" label="Preço Unitário (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-text-field value="{{_CLDiscountLine}}" id="_CLDiscountLine" name="_CLDiscountLine" label="Desconto Linha (€)" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
@@ -1337,6 +1340,8 @@
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLInvoiceGroup" name="_CLInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CLInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}" class="alignRight">
                                             <template>
@@ -1348,8 +1353,6 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                </div>
-                                <div class="row break_clear" style="display: {{ _showContractLinesForm }};">
                                     <div class="col-lg-2" hidden>
                                         <vaadin-text-field value="{{_CLInterventionHours}}" id="_CLInterventionHours" name="_CLInterventionHours" label="Nº Horas Intervenção" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
@@ -1390,13 +1393,13 @@
 
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                <vaadin-grid-column width="3%" resizable>
+                                <vaadin-grid-column width="3%" resizable hidden>
                                     <template class="header">
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ _permissions.update }}">
                                             <center style="padding-bottom:10px">
-                                                <paper-button class="btnSave tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                                <paper-button class="btnSave tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha" disabled="{{ _lockFields }}"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
                                             </center>
                                         </template>
                                     </template>
@@ -1414,6 +1417,23 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _clFormatType(item.type) ]]
                                         </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="10%" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="ordenacao">Ordenação linhas</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="ordenacao" />
+                                    </template>
+                                    <template>
+                                        <div style="text-align:right">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.ordenacao}}" id="_CLGridOrdenacao" name="_CLGridOrdenacao" disabled="{{ _lockFields }}" type="number" pattern="[0-9]*"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.ordenacao}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -2294,6 +2314,10 @@
                         type: Boolean,
                         value: false
                     },
+                    _CLOrdenacao: {
+                        type: Number,
+                        value: 0
+                    },
                     _CLQuantity: {
                         type: Number,
                         value: 0
@@ -3150,7 +3174,8 @@
                             responsibleNo: this._CLResponsible,
                             createContract: this._CLCreateContract,
                             quantity: this._CLQuantity,
-                            billable: this._CLBillable
+                            billable: this._CLBillable,
+                            ordenacao: this._CLOrdenacao
                         });
                         this.$.grid_contractlines.clearCache();
 
@@ -3223,6 +3248,7 @@
                             this._CLQuantity = "";
                             this._CLBillable = true;
                             this._CLCreateContract = true;
+                            this._CLOrdenacao = "";
 
 
                             this._CLRegion = this.data.codeRegion;

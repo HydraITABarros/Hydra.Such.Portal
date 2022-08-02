@@ -278,7 +278,8 @@ namespace Hydra.Such.Data.Logic.Project
                     UpdateUser = item.UtilizadorModificação,
                     UpdateDate = item.DataHoraModificação,
                     FaturaPrecosIvaIncluido = item.FaturaPrecosIvaIncluido,
-                    FechoAutomatico = item.FechoAutomatico
+                    FechoAutomatico = item.FechoAutomatico,
+                    KWPotenciaInstalada = item.KWPotenciaInstalada
                 };
             }
             return null;
@@ -337,7 +338,8 @@ namespace Hydra.Such.Data.Logic.Project
                     UtilizadorModificação = item.UpdateUser,
                     DataHoraModificação = item.UpdateDate,
                     FaturaPrecosIvaIncluido = item.FaturaPrecosIvaIncluido,
-                    FechoAutomatico = item.FechoAutomatico
+                    FechoAutomatico = item.FechoAutomatico,
+                    KWPotenciaInstalada = item.KWPotenciaInstalada
                 };
             }
             return null;
