@@ -85,13 +85,43 @@
         </div>
 
         <vaadin-grid aria-label="ApprovalsTable" id="grid" items="[[result]]" class="grid" multi-sort="true" column-reordering-allowed>
-            <vaadin-grid-column width="140px">
+            @*<vaadin-grid-column width="140px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>*@
+
+            <vaadin-grid-column width="50px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px">
                 <template class="header">
                 </template>
                 <template>
                     <center>
                         <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
-                        <paper-button class="btnEdit tableBtn" on-tap="_Approve" title="Aprovar"><i class="fa fa-check" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
                         <paper-button class="btnRemove tableBtn" on-tap="_Reject" title="Rejeitar"><i class="fa fa-times" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
@@ -149,7 +179,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoProjectNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="requisicaoProjectNo">Req Projeto Nº</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="requisicaoProjectNo">Nº Ordem/Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="requisicaoProjectNo" value="[[filter.requisicaoProjectNo]]" />
                 </template>
                 <template>
@@ -183,7 +213,7 @@
                     <vaadin-grid-filter path="requisicaoAcordosPrecos" value="[[filter.requisicaoAcordosPrecos]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoAcordosPrecos}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoAcordosPrecos}}
                 </template>
             </vaadin-grid-column>
 
@@ -193,7 +223,7 @@
                     <vaadin-grid-filter path="requisicaoUrgente" value="[[filter.requisicaoUrgente]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoUrgente}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoUrgente}}
                 </template>
             </vaadin-grid-column>
 
@@ -203,7 +233,7 @@
                     <vaadin-grid-filter path="requisicaoOrcamentoEmAnexo" value="[[filter.requisicaoOrcamentoEmAnexo]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoOrcamentoEmAnexo}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoOrcamentoEmAnexo}}
                 </template>
             </vaadin-grid-column>
 
@@ -213,7 +243,7 @@
                     <vaadin-grid-filter path="requisicaoImobilizado" value="[[filter.requisicaoImobilizado]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoImobilizado}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoImobilizado}}
                 </template>
             </vaadin-grid-column>
 
@@ -223,7 +253,7 @@
                     <vaadin-grid-filter path="requisicaoExclusivo" value="[[filter.requisicaoExclusivo]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoExclusivo}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoExclusivo}}
                 </template>
             </vaadin-grid-column>
 
@@ -233,7 +263,7 @@
                     <vaadin-grid-filter path="requisicaoJaExecutado" value="[[filter.requisicaoJaExecutado]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoJaExecutado}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoJaExecutado}}
                 </template>
             </vaadin-grid-column>
 
@@ -243,7 +273,7 @@
                     <vaadin-grid-filter path="requisicaoAmostra" value="[[filter.requisicaoAmostra]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoAmostra}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoAmostra}}
                 </template>
             </vaadin-grid-column>
 
@@ -253,7 +283,7 @@
                     <vaadin-grid-filter path="requisicaoEquipamento" value="[[filter.requisicaoEquipamento]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoEquipamento}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoEquipamento}}
                 </template>
             </vaadin-grid-column>
 
@@ -263,7 +293,7 @@
                     <vaadin-grid-filter path="requisicaoReposicaoDeStock" value="[[filter.requisicaoReposicaoDeStock]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoReposicaoDeStock}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoReposicaoDeStock}}
                 </template>
             </vaadin-grid-column>
 
@@ -273,7 +303,7 @@
                     <vaadin-grid-filter path="requisicaoPrecoIvaIncluido" value="[[filter.requisicaoPrecoIvaIncluido]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoPrecoIvaIncluido}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoPrecoIvaIncluido}}
                 </template>
             </vaadin-grid-column>
 
@@ -283,7 +313,7 @@
                     <vaadin-grid-filter path="requisicaoAdiantamento" value="[[filter.requisicaoAdiantamento]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoAdiantamento}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoAdiantamento}}
                 </template>
             </vaadin-grid-column>
 
@@ -293,7 +323,17 @@
                     <vaadin-grid-filter path="requisicaoPedirOrcamento" value="[[filter.requisicaoPedirOrcamento]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox checked="{{item.requisicaoPedirOrcamento}}" disabled></vaadin-checkbox>
+                    {{item.requisicaoPedirOrcamento}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoRoupaManutencao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoRoupaManutencao">Req Roupa Manutenção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoRoupaManutencao" value="[[filter.requisicaoRoupaManutencao]]" />
+                </template>
+                <template>
+                    {{item.requisicaoRoupaManutencao}}
                 </template>
             </vaadin-grid-column>
 
@@ -529,7 +569,7 @@
                         "number": { hidden: false, label: "Associado" },
                         "fhDatePartida": { hidden: false, label: "FH Dia da Partida" },
                         "fhDateChegada": { hidden: false, label: "FH Dia da Chegada" },
-                        "requisicaoProjectNo": { hidden: false, label: "Req Projeto Nº" },
+                        "requisicaoProjectNo": { hidden: false, label: "Nº Ordem/Projeto" },
                         "requisicaoClientNo": { hidden: false, label: "Req Cliente Nº" },
                         "requisicaoClientName": { hidden: false, label: "Req Cliente Nome" },
                         "requisicaoAcordosPrecos": { hidden: false, label: "Req Acordos Preços" },
@@ -544,6 +584,7 @@
                         "requisicaoPrecoIvaIncluido": { hidden: false, label: "Req Preço IVA Incluído" },
                         "requisicaoAdiantamento": { hidden: false, label: "Req Adiantamento" },
                         "requisicaoPedirOrcamento": { hidden: false, label: "Req Pedir Orçamento" },
+                        "requisicaoRoupaManutencao": { hidden: false, label: "Req Roupa Manutenção" },
                         "requestUser": { hidden: false, label: "Solicitado Por" },
                         "value": { hidden: false, label: "Valor" },
                         "statusText": { hidden: false, label: "Estado" },

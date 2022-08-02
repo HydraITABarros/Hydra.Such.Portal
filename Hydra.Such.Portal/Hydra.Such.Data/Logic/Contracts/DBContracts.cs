@@ -533,7 +533,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                     Tipo= x.Type,
                     NºVep = x.NoVEP,
                     TextoFatura = x.TextoFatura,
-                    FaturaPrecosIvaIncluido = x.FaturaPrecosIvaIncluido
+                    FaturaPrecosIvaIncluido = x.FaturaPrecosIvaIncluido,
+                    SomatorioLinhas = x.SomatorioLinhas
             };
             
             if (result.DataHoraLimiteEsclarecimentos != null)
@@ -696,7 +697,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 Type= x.Tipo ?? 0,
                 NoVEP = x.NºVep,
                 TextoFatura = x.TextoFatura,
-                FaturaPrecosIvaIncluido = x.FaturaPrecosIvaIncluido
+                FaturaPrecosIvaIncluido = x.FaturaPrecosIvaIncluido,
+                SomatorioLinhas = x.SomatorioLinhas
             };
             if (x.NºCliente!=null && x.NºCliente!="") {
                 result.ClientName = DBNAV2017Clients.GetClientNameByNo(x.NºCliente, NAVDatabaseName, NAVCompanyName);
@@ -814,7 +816,8 @@ namespace Hydra.Such.Data.Logic.Contracts
                 Type = x.Tipo ?? 0,
                 NoVEP = x.NºVep,
                 TextoFatura = x.TextoFatura,
-                FaturaPrecosIvaIncluido = x.FaturaPrecosIvaIncluido
+                FaturaPrecosIvaIncluido = x.FaturaPrecosIvaIncluido,
+                SomatorioLinhas = x.SomatorioLinhas
             };
             
             //if (x.NºCliente != null && x.NºCliente != "")

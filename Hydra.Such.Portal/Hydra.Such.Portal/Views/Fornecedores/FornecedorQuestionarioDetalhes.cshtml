@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "Avaliação Desempenho Ambiental";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/fornecedores/fornecedor_questionario_details.html">
+
+<x-fornecedorquestionariodetails
+    _codigo="@ViewBag.Codigo"
+    _versao="@ViewBag.Versao"
+    _id_fornecedor="@ViewBag.ID_Fornecedor"
+    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-fornecedorquestionariodetails>

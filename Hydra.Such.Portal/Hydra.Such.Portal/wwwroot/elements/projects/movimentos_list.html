@@ -233,6 +233,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" />
+                </template>
+                <template>
+                    {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.date.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -741,6 +751,7 @@
                         "projectNo": { hidden: false, label: "Nº Projeto" },
                         "projectDescription": { hidden: false, label: "Descrição Projeto" },
                         "invoiceToClientNo": { hidden: false, label: "Nº Cliente" },
+                        "contractNo": { hidden: false, label: "Nº Contrato" },
                         "date": { hidden: false, label: "Data" },
                         "movementTypeText": { hidden: false, label: "Tipo Movimento" },
                         "documentNo": { hidden: false, label: "Nº Documento" },

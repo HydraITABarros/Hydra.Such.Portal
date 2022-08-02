@@ -39,6 +39,7 @@ namespace Hydra.Such.Data.Database
         public string ReportPassword { get; set; }
         public string ArmazemCompraDireta { get; set; }
         public int? NumeracaoRequisicaoFornecedor { get; set; }
+        public int? NumeracaoVisitas { get; set; }
         public DateTime? DataFechoFaturacao { get; set; }
 
 

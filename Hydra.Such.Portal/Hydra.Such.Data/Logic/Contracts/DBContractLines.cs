@@ -206,6 +206,22 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<LinhasContratos> GetAllByContractAndVersionAndGroup(string contractNo, int versionNo, int Group)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºContrato == contractNo && x.NºVersão == versionNo && x.GrupoFatura == Group).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<LinhasContratos> GetAllByContractLinesTypeAndType(ContractType contractType, int Type)
         {
             try
@@ -343,6 +359,18 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataHoraModificação = x.UpdateDate,
                 UtilizadorModificação = x.UpdateUser
             };
+        }
+
+        public static List<LinhasContratos> ParseToDB(List<ContractLineViewModel> items)
+        {
+            List<LinhasContratos> parsedItems = new List<LinhasContratos>();
+            if (items != null && items.Count > 0)
+            {
+                items.ForEach(x =>
+                    parsedItems.Add(ParseToDB(x))
+                );
+            }
+            return parsedItems;
         }
     }
 }

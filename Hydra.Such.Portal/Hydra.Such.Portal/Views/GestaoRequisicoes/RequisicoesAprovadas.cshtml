@@ -287,12 +287,35 @@
                         value: {},
                     },
                 },
+                ready: function () {
+                    if (!this.Flag) {
+                        this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
+                    }
+                    this.Flag = true;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-requisicoesaprovadas');
+                    window.grid = this.$.gridrequest;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocationsData)'
                 ],
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocationsData) {
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
                     }
                     this.Flag = true;
 
@@ -338,7 +361,47 @@
                         });
                         window.setGridFilter('gestaorequisicoes-requisicoesaprovadas', filters || {});
 
-                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/" + item.requisitionNo;
+                        var requisitionNo = "";
+                        var state = "";
+                        var projectNo = "";
+                        var clientCode = "";
+                        var clientName = "";
+                        var regionCode = "";
+                        var functionalAreaCode = "";
+                        var centerResponsibilityCode = "";
+                        var localCode = "";
+                        var comments = "";
+                        var requisitionDate = "";
+                        var estimatedValue = "";
+
+                        if (filters != null && filters.requisitionNo != undefined && filters.requisitionNo != "") requisitionNo = filters.requisitionNo;
+                        if (filters != null && filters.state != undefined && filters.state != "") state = filters.state;
+                        if (filters != null && filters.projectNo != undefined && filters.projectNo != "") projectNo = filters.projectNo;
+                        if (filters != null && filters.clientCode != undefined && filters.clientCode != "") clientCode = filters.clientCode;
+                        if (filters != null && filters.clientName != undefined && filters.clientName != "") clientName = filters.clientName;
+                        if (filters != null && filters.regionCode != undefined && filters.regionCode != "") regionCode = filters.regionCode;
+                        if (filters != null && filters.functionalAreaCode != undefined && filters.functionalAreaCode != "") functionalAreaCode = filters.functionalAreaCode;
+                        if (filters != null && filters.centerResponsibilityCode != undefined && filters.centerResponsibilityCode != "") centerResponsibilityCode = filters.centerResponsibilityCode;
+                        if (filters != null && filters.localCode != undefined && filters.localCode != "") localCode = filters.localCode;
+                        if (filters != null && filters.comments != undefined && filters.comments != "") comments = filters.comments;
+                        if (filters != null && filters.requisitionDate != undefined && filters.requisitionDate != "") requisitionDate = filters.requisitionDate;
+                        if (filters != null && filters.estimatedValue != undefined && filters.estimatedValue != "") estimatedValue = filters.estimatedValue;
+
+                        var listafiltro = this.$.gridrequest._filter(this.result);
+                        item.lista = listafiltro;
+                        window.location.href = "/GestaoRequisicoes/DetalhesReqAprovada/?id=" + item.requisitionNo +
+                            "&requisitionNo=" + requisitionNo +
+                            "&state=" + state +
+                            "&projectNo=" + projectNo +
+                            "&clientCode=" + clientCode +
+                            "&clientName=" + clientName +
+                            "&regionCode=" + regionCode +
+                            "&functionalAreaCode=" + functionalAreaCode +
+                            "&centerResponsibilityCode=" + centerResponsibilityCode +
+                            "&localCode=" + localCode +
+                            "&comments=" + comments +
+                            "&requisitionDate=" + requisitionDate +
+                            "&estimatedValue=" + estimatedValue;
                     }
                 },
                 /*FILTROS*/
@@ -396,7 +459,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     var result = this.$.gridrequest._filter(this.result);
                     if (result != null && result.length > 0) {
                         result[0].ColunasEXCEL = this._columns;
@@ -407,7 +469,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../GestaoRequisicoes/ExportToExcelDownload_RequisicoesValidar?sFileName=' + FileName;
                 },

@@ -217,6 +217,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ModelosRequisicao/GetContratosFornecedor"
+                   last-response="{{ContratosFornecedores}}"
+                   id="ajax_ContratosFornecedor_list"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -342,7 +350,7 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <such-selectbox id="CBProducts" label="Cód. Produto"
                                                         items="[[Products]]"
                                                         text-path="code"
@@ -370,16 +378,13 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <vaadin-text-field id="txtQuantityToRequire" name="txtQuantityToRequire" label="Quantidade A Requerer" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                     </div>
-                                </div>
-                                <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-1">
                                         <vaadin-text-field id="txtUnitCost" name="txtUnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                     </div>
-
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <such-selectbox id="CBLineProjects" value="[[Requisition.projectNo]]" label="Nº Ordem/Projeto"
                                                         items="[[CBJobNo]]"
                                                         text-path="no"
@@ -388,6 +393,8 @@
                                                         disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         </such-selectbox>
                                     </div>
+                                </div>
+                                <div class="row break_clear" hidden="{{_isArchived}}">
 
                                     <div class="col-lg-2">
                                         <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[Requisition.regionCode]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
@@ -434,6 +441,17 @@
                                                         text-path="name"
                                                         value-path="no_"
                                                         fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ !_permissions.update }}"
+                                                        on-value-changed="_onFornecedorChanged">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLContratosFornecedores" label="Nº Contrato"
+                                                        items="[[ContratosFornecedores]]"
+                                                        text-path="nameContrato"
+                                                        value-path="noContrato"
+                                                        fields='[{"field":"noContrato", "name":"Nº Contrato"}, {"field":"nameContrato", "name":"Descrição Contrato"}, {"field":"noFornecedor", "name":"Nº Fornecedor"}, {"field":"nameFornecedor", "name":"Nome Fornecedor"}, {"field":"dataCelebracaoTexto", "name":"Data Celebração"}, {"field":"dataConclusaoInicialTexto", "name":"Data Conclusão Inícial"}, {"field":"dataConclusaoRevistaTexto", "name":"Data Conclusão Revista"}, {"field":"precoBase", "name":"Preço Base"}, {"field":"preoContratual", "name":"Preço Contratual"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -705,7 +723,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <such-selectbox id="_CLGridSupplierNo"
+                                            <!--<such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
                                                             text-path="name"
@@ -713,10 +731,26 @@
                                                             fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
                                                             on-change="_onSupplierInGridChanged"
                                                             disabled="{{ !_permissions.update }}">
-                                            </such-selectbox>
+                                            </such-selectbox>-->
+                                            [[ _getSupplierDescription(item.supplierNo) ]]
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ _getSupplierDescription(item.supplierNo) ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.noContrato.hidden }}">
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="noContrato" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            {{item.noContrato}}
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.noContrato}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -1112,7 +1146,8 @@
                                 regionCode: this.$._CLRegion.value,
                                 functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                                 centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                supplierNo: this.$._CLSuppliers.value
+                                supplierNo: this.$._CLSuppliers.value,
+                                noContrato: this.$._CLContratosFornecedores.value
                                 //vehicle: this.$.CBVehicles.value,
                                 //unitCostSould: this.$.unitCostsouldId.value,
                                 //budgetValue: this.$.budgetValueId.value,
@@ -1273,6 +1308,15 @@
                         this.$.CBUnitsOfMmeasure.value = "";
                     }
                 },
+                _onFornecedorChanged: function (e) {
+                    if (this.$._CLSuppliers.value != "") {
+                        this.$.ajax_ContratosFornecedor_list.body = JSON.stringify({ "noFornecedor": this.$._CLSuppliers.value });
+                        this.$.ajax_ContratosFornecedor_list.generateRequest();
+                    }
+                    else {
+                        this.$._CLContratosFornecedores._clearSelection();
+                    }
+                },
                 _RespChange: function (e) {
                     if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
                         this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
@@ -1369,6 +1413,7 @@
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "supplierNo": { hidden: false, label: "Fornecedor" },
+                        "noContrato": { hidden: false, label: "Nº Contrato" },
                     };
 
                     if (localStorage["requisitionmodeldetails.ToggleColumn"]) {

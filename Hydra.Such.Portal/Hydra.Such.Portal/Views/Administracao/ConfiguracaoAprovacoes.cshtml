@@ -219,7 +219,7 @@
                         </div>
 
                         <div class="col-lg-3">
-                            <vaadin-date-picker id="ddDataStart" label="Data de Inicial" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
+                            <vaadin-date-picker id="ddDataStart" label="Data Inicial" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
                         </div>
 
                         <div class="col-lg-3">
@@ -490,6 +490,16 @@
                             this.openToastError("O nivel de aprovação tem que ser superior a Zero");
                             return;
                         }
+                        var hasInvalidDataStart = this.result.some(x => x.startDate == null || x.startDate == "");
+                        if (hasInvalidDataStart) {
+                            this.openToastError("A Data Inicial é de preenchimento obrigatório.");
+                            return;
+                        }
+                        var hasInvalidDataEnd = this.result.some(x => x.endDate == null || x.endDate == "");
+                        if (hasInvalidDataEnd) {
+                            this.openToastError("A Data Final é de preenchimento obrigatório.");
+                            return;
+                        }
                     }
                     this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
                     this.$.ajax_update.body = JSON.stringify(this.result);
@@ -497,33 +507,42 @@
                 },
                 _createApproval: function () {
                     if (this.$.ddLevelApproval.value != null && this.$.ddLevelApproval.value != "") {
-                        var line = {
-                            Type: this.$.ddType.value,
-                            Area: 0,//this.$.ddArea.value,
-                            Region: this.$.ddRegion.value,
-                            FunctionalArea: this.$.ddFunctionalArea.value,
-                            ResponsabilityCenter : this.$.ddResponsabilityCenter.value,
-                            Level: this.$.ddLevelApproval.value,
-                            ApprovalUser: this.$.ddUserApproval.value,
-                            ApprovalGroup: this.$.ddGroupApproval.value,
-                            ApprovalValue: this.$.ddValueApproval.value,
-                            StartDate: this.$.ddDataStart.value,
-                            EndDate: this.$.ddDataEnd.value
-                        }
-                        debugger;;
-                        if (this.result == null) {
-                            this.result = line;
+                        if (this.$.ddDataStart.value != null && this.$.ddDataStart.value != "") {
+                            if (this.$.ddDataEnd.value != null && this.$.ddDataEnd.value != "") {
+                                var line = {
+                                    Type: this.$.ddType.value,
+                                    Area: 0,//this.$.ddArea.value,
+                                    Region: this.$.ddRegion.value,
+                                    FunctionalArea: this.$.ddFunctionalArea.value,
+                                    ResponsabilityCenter: this.$.ddResponsabilityCenter.value,
+                                    Level: this.$.ddLevelApproval.value,
+                                    ApprovalUser: this.$.ddUserApproval.value,
+                                    ApprovalGroup: this.$.ddGroupApproval.value,
+                                    ApprovalValue: this.$.ddValueApproval.value,
+                                    StartDate: this.$.ddDataStart.value,
+                                    EndDate: this.$.ddDataEnd.value
+                                }
+                                debugger;;
+                                if (this.result == null) {
+                                    this.result = line;
+                                }
+                                else {
+                                    this.result.push(line);
+                                }
+                                this.$.ajax_update.body = JSON.stringify(this.result);
+                                this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
+                                this.$.ajax_update.generateRequest();
+                            }
+                            else {
+                                this.openToastError("A Data Final é de preenchimento obrigatório.");
+                            }
                         }
                         else {
-                            this.result.push(line);
+                            this.openToastError("A Data Inicial é de preenchimento obrigatório.");
                         }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
-                        this.$.ajax_update.url = "/Administracao/UpdateApprovalConfig";
-                        this.$.ajax_update.generateRequest();
                     }
                     else {
                         this.openToastError("O nivel de aprovação tem que ser superior a Zero");
-
                     }
                 },
                 _onChangeUser: function (data) {

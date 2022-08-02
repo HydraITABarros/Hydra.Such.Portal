@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using Hydra.Such.Data.Database;
-using System.Linq;
 using Hydra.Such.Data.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 using static Hydra.Such.Data.Enumerations;
+using static Hydra.Such.Data.Logic.DBNAV2009Procedimentos;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -249,6 +251,75 @@ namespace Hydra.Such.Data.Logic
             catch (Exception ex)
             {
 
+                return null;
+            }
+        }
+
+        public static List<NAV2017FornecedoresContratos> AcordoPrecoGetContratos(string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                List<NAV2017FornecedoresContratos> result = new List<NAV2017FornecedoresContratos>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017AcordoPrecoGetContratos @DBName, @CompanyName", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAV2017FornecedoresContratos()
+                        {
+                            ContratoNo = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                            FornecedorNo = temp.FornecedorNo.Equals(DBNull.Value) ? "" : (string)temp.FornecedorNo,
+                            Descricao = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao,
+                            Excecao = temp.Excecao.Equals(DBNull.Value) ? false : Convert.ToBoolean(temp.Excecao)
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<NAV2017FornecedoresContratos> NAV2017AcordoPrecoGetContratosByFornecedor(string NAVDatabaseName, string NAVCompanyName, string FornecedorNo = null)
+        {
+            try
+            {
+                List<NAV2017FornecedoresContratos> result = new List<NAV2017FornecedoresContratos>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@FornecedorNo", FornecedorNo )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017AcordoPrecoGetContratosByFornecedor @DBName, @CompanyName, @FornecedorNo", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAV2017FornecedoresContratos()
+                        {
+                            ContratoNo = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                            FornecedorNo = temp.FornecedorNo.Equals(DBNull.Value) ? "" : (string)temp.FornecedorNo,
+                            Descricao = temp.Descricao.Equals(DBNull.Value) ? "" : (string)temp.Descricao,
+                            Excecao = temp.Excecao.Equals(DBNull.Value) ? false : Convert.ToBoolean(temp.Excecao)
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
                 return null;
             }
         }

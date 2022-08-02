@@ -7,12 +7,12 @@
 
     if (@ViewBag.fromCatalogo)
     {
-        <x-detalhetemacatalogo _idtema="@ViewBag.idTema"></x-detalhetemacatalogo>
+        <x-detalhetemacatalogo _idtema="@ViewBag.idTema" _filtrodata="@ViewBag.filtroData"></x-detalhetemacatalogo>
 
     }
     else
     {
-        <x-detalhetema _idtema="@ViewBag.idTema"></x-detalhetema>
+        <x-detalhetema _idtema="@ViewBag.idTema" _filtrodata="@ViewBag.filtroData"></x-detalhetema>
     }
 }
 

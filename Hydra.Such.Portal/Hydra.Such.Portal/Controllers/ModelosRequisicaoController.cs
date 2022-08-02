@@ -339,6 +339,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetContratosFornecedor([FromBody] JObject requestParams)
+        {
+            List<NAV2017ContratosFornecedorViewModel> result = new List<NAV2017ContratosFornecedorViewModel>();
+            string noFornecedor = string.Empty;
+            if (requestParams != null)
+            {
+                noFornecedor = requestParams["noFornecedor"].ToString();
+
+                result = DBNAV2017ContratosFornecedor.GetContratosFornecedorByNoFornecedor(_config.NAVDatabaseName, _config.NAVCompanyName, noFornecedor);
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
         
         public JsonResult CreateRequisitionLine([FromBody] RequisitionTemplateLineViewModel item)
         {
@@ -620,6 +634,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["supplierNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Fornecedor"); Col = Col + 1; }
+                if (dp["noContrato"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
 
                 if (Lista != null)
                 {
@@ -642,6 +657,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
                         if (dp["supplierNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SupplierNo); Col = Col + 1; }
+                        if (dp["noContrato"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoContrato); Col = Col + 1; }
 
                         count++;
                     }
@@ -677,6 +693,7 @@ namespace Hydra.Such.Portal.Controllers
                     List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
                     List<NAVDimValueViewModel> AllCresps = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name);
                     List<NAVVendorViewModel> AllVendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
+                    List<NAV2017ContratosFornecedorViewModel> AllContratosFornecedores = DBNAV2017ContratosFornecedor.GetContratosFornecedorByNoFornecedor(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
                     RequisitionTemplateLineViewModel nrow = new RequisitionTemplateLineViewModel();
                     for (int i = 0; i < files.Count; i++)
@@ -732,6 +749,12 @@ namespace Hydra.Such.Portal.Controllers
                                             NAVDimValueViewModel Area = AllAreas.Where(x => x.Code == row.GetCell(10).ToString()).FirstOrDefault();
                                             NAVDimValueViewModel Cresp = AllCresps.Where(x => x.Code == row.GetCell(11).ToString()).FirstOrDefault();
                                             NAVVendorViewModel Vendor = AllVendors.Where(x => x.No_ == row.GetCell(12).ToString()).FirstOrDefault();
+                                            if (!string.IsNullOrEmpty(row.GetCell(12).ToString()) && !string.IsNullOrEmpty(row.GetCell(13).ToString()))
+                                            {
+                                                NAV2017ContratosFornecedorViewModel ContratoFornecedor = AllContratosFornecedores.Where(x => x.NoFornecedor == row.GetCell(12).ToString() && x.NoContrato == row.GetCell(13).ToString()).FirstOrDefault();
+                                                if (ContratoFornecedor == null)
+                                                    return Json(null);
+                                            }
 
                                             nrow.RequestNo = Requisition.RequisitionNo;
                                             nrow.LineNo = 0;
@@ -751,6 +774,7 @@ namespace Hydra.Such.Portal.Controllers
                                             nrow.CreateDateTime = DateTime.Now;
                                             nrow.CreateUser = User.Identity.Name;
                                             nrow.SupplierNo = row.GetCell(2) == null ? "" : Vendor != null ? Vendor.No_ : "";
+                                            nrow.NoContrato = row.GetCell(13) == null ? "" : row.GetCell(13).ToString();
 
                                             Requisition.Lines.Add(nrow);
                                         }

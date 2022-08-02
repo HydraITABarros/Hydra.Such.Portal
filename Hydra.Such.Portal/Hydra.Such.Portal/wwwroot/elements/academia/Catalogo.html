@@ -54,8 +54,8 @@
                     display: block;
                     justify-content: space-around;
                     align-items: center;
-                    box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.14);
-                    font-size: 20px;
+                    box-shadow: 0 10px 50px 0 gba(0, 0, 0, 0.14);
+                    font-size: 20px;                     
                 }
 
                 input[readonly] {
@@ -72,6 +72,35 @@
 
                 .grid {
                     font-size: 13px;
+                    --vaadin-grid-header-cell: {
+                       /* background: rgba(235, 238, 246, 0.9); */
+                        background-color: rgba(235,238,246,0.9);
+                        border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+                        border-top: 1px solid rgba(248, 250, 252, 0.9);
+                        min-height: 35px;
+
+                        background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+                        background-size: 1px 100%;
+                        background-position: 100% 0%;
+                        background-repeat: no-repeat;
+                    };
+                    --vaadin-grid-body-row-selected-cell: {
+                        background-color: rgb(131, 183, 236);
+                        color: #fff;
+                        border-bottom-color: rgb(108, 160, 218);
+                    };
+                    --vaadin-grid-body-row-odd-cell: {
+                        background-color: rgb(251, 252, 254);
+                    };
+                    --vaadin-grid-body-row-hover-cell: {
+                        background-color: rgb(235, 238, 246);
+                    };
+                    --vaadin-grid-body-row-details-cell: {
+                        text-align: center;
+                    };
+                    --vaadin-grid-column-resize-handle: {
+                        opacity: 0;
+                    };
                 }
 
                     .grid input {
@@ -82,6 +111,7 @@
                 paper-input {
                     max-width: 200px !important;
                 }
+                
             </style>
         </custom-style>
         <iron-ajax url="/Academia/GetCatalogo"
@@ -93,11 +123,10 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <vaadin-grid aria-label="catalogoGrid" id="gridCatalogo" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid aria-label="gridCatalogo" id="gridCatalogo" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
-                    <!--<vaadin-grid-filter path="descricaoTema" />-->
                 </template>
                 <template>
                     {{ item.descricaoTema }}
@@ -110,10 +139,12 @@
                     <iron-image src="/Academia/DownloadImage/TemaFormacao/{{item.idTema}}/{{item.urlImagem}}"
                                 sizing="contain"
                                 id="sizing-contain">
-                    </iron-image>
+                    </iron-image>   
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -123,19 +154,23 @@
                     activeItem: {
                         observer: '_rowSelected'
                     },
+                    _callToResponseProcessorNumber: {
+                        type: Number,
+                        value: 0
+                    },
+
                     filter: {
                         type: Object,
                         value: {},
                     }
                 },
-                _openToast: function (message) {
-
+                _openToast: function (message) {  
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },
 
                 ready: function () {
-                    debugger;;
+                    debugger;;                         
 
                     this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": true });
                     this.$.grid_databound_ajax.generateRequest();
@@ -156,17 +191,19 @@
                 _responseProcessor: function (data) {
                     debugger;;
                     var self = this;
-
+                    
                     if (data.detail.status === 200) {
-                        if (this.result == null || this.result.length == 0) {
+                        if (this._callToResponseProcessorNumber > 0 && (this.result == null || this.result.length == 0)) {
                             this._openToast("Não há nada para mostrar no catálogo!");
-
+                            
                             setTimeout(
                                 function () {
                                     window.location.replace("/");
                                 }, 2500);
                         } 
                     }
+
+                    this._callToResponseProcessorNumber = 1;
                 },
 
                 fixGridToBottom: function () {

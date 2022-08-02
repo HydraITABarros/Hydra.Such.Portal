@@ -9,7 +9,6 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
-<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -32,6 +31,12 @@
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+
+
 
 <dom-module id="x-invoice1">
     <template>
@@ -166,6 +171,7 @@
                 padding-top: 0px !important;
             }
         </style>
+
         <iron-ajax url="/PopulateDropdowns/GetLocations"
                    last-response="{{Locations}}"
                    auto
@@ -472,7 +478,6 @@
                     <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>-->
-
             <!--<vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataPrestacaoServicoFim.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataPrestacaoServicoFim">Data Fim Serv. Prestado</vaadin-grid-sorter>
@@ -484,6 +489,7 @@
             </vaadin-grid-column>-->
 
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.numCompromisso.hidden }}">
+                cl
                 <template class="header">
                     <vaadin-grid-sorter path="numCompromisso">Núm. Compromisso</vaadin-grid-sorter>
                     <vaadin-grid-filter path="numCompromisso" value="[[filter.numCompromisso]]" />
@@ -875,7 +881,8 @@
             </template>
         </paper-toast>
 
-        <paper-dialog id="dlgInvoice" modal style="height:300px; width:300px">
+        <!--POPUP POSITIVO-->
+        <paper-dialog id="dlgInvoice" modal style="height:350px; width:300px">
             <div>
                 <vaadin-combo-box id="_CLOptionInvoice" item-value-path="id" item-label-path="value" label="Documento a Emitir" required error-message="Este campo é obrigatório">
                     <template>
@@ -890,12 +897,17 @@
             <div>
                 <vaadin-date-picker id="_CLData" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
+            <div>
+                <vaadin-checkbox id="chkbox_agrupar" name="chkbox_agrupar" checked="{{chkAgrupar}}" on-click="_chkBoxAgrupar">Criar 1 fatura</vaadin-checkbox>
+                <label id="lbl_Agrupar">{{lbl_Agrupar_Texto}}</label>
+            </div>
             <div class="buttons">
                 <paper-button raised id="btn_FaturarConfirmarPositivo" class="btnEdit" on-tap="_validateInvoice">Confirmar</paper-button>
                 <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>
 
+        <!--POPUP NEGATIVO-->
         <paper-dialog id="dlgInvoiceNegativo" modal style="height:300px; width:300px">
             <div>
                 <vaadin-combo-box id="_CLOptionInvoiceNegativo" item-value-path="id" item-label-path="value" label="Documento a Emitir" required error-message="Este campo é obrigatório">
@@ -910,6 +922,10 @@
             </div>
             <div>
                 <vaadin-date-picker id="_CLDataNegativo" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+            </div>
+            <div>
+                <vaadin-checkbox id="chkbox_agruparNegativo" name="chkbox_agruparNegativo" checked="{{chkAgruparNegativo}}" on-click="_chkBoxAgruparNegativo">Criar 1 fatura</vaadin-checkbox>
+                <label id="lbl_AgruparNegativo">{{lbl_Agrupar_TextoNegativo}}</label>
             </div>
             <div class="buttons">
                 <paper-button raised id="btn_FaturarConfirmarNegativo" class="btnEdit" on-tap="_validateInvoiceNegativo">Confirmar</paper-button>
@@ -950,6 +966,27 @@
 
                     ddCGTOM_FailType: {
                         type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    chkAgrupar: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    lbl_Agrupar_Texto: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    chkAgruparNegativo: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    lbl_Agrupar_TextoNegativo: {
+                        type: String,
                         notify: true,
                         value: ""
                     },
@@ -1006,6 +1043,7 @@
                 },
                 ready: function () {
                     this.isHistoricUpdate = this._permissions.update;
+
                     /*FILTROS*/
                     window.handleGridListColumnsOrder(this.$.projectInvoiceAutorization, 'projects-invoice1');
                     window.grid = this.$.projectInvoiceAutorization;
@@ -1280,8 +1318,10 @@
                     }
                 },
 
+                //FATURAR POSITIVO
                 _createInvoice: function () {
                     var dataFormulario = this.$._CLData.value;
+                    var agrupar = this.chkAgrupar;
 
                     if (this.CustBillingValResponse.eMessages.length != 0) {
                         var option = this.$._CLOptionInvoice.value;
@@ -1312,7 +1352,7 @@
                                             //$(this.$.btn_FaturarConfirmarPositivo).addClass('disabled');
 
                                             ajax_request.body = JSON.stringify(selectedItem);
-                                            ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario };
+                                            ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario, "agrupar": agrupar };
                                             ajax_request.generateRequest();
                                         }
                                     }
@@ -1320,19 +1360,22 @@
                             }
                             else {
                                 this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario, "agrupar": agrupar };
                                 this.$.billProjects_ajax.generateRequest();
                             }
                         }
                     }
                     else {
                         this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario, "agrupar": agrupar };
                         this.$.billProjects_ajax.generateRequest();
                     }
                 },
+
+                //FATURAR NEGATIVO
                 _createInvoiceNegativo: function () {
                     var dataFormulario = this.$._CLDataNegativo.value;
+                    var agruparNegativo = this.chkAgruparNegativo;
 
                     if (this.CustBillingValResponse.eMessages.length != 0) {
                         var option = this.$._CLOptionInvoiceNegativo.value;
@@ -1363,7 +1406,7 @@
                                             //$(this.$.btn_FaturarConfirmarNegativo).addClass('disabled');
 
                                             ajax_request.body = JSON.stringify(selectedItem);
-                                            ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario };
+                                            ajax_request.params = { "OptionInvoice": option, "dataFormulario": dataFormulario, "agrupar": agruparNegativo };
                                             ajax_request.generateRequest();
                                         }
                                     }
@@ -1371,14 +1414,14 @@
                             }
                             else {
                                 this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoiceNegativo.value, "dataFormulario": dataFormulario };
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoiceNegativo.value, "dataFormulario": dataFormulario, "agrupar": agruparNegativo };
                                 this.$.billProjects_ajax.generateRequest();
                             }
                         }
                     }
                     else {
                         this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoiceNegativo.value, "dataFormulario": dataFormulario };
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoiceNegativo.value, "dataFormulario": dataFormulario, "agrupar": agruparNegativo };
                         this.$.billProjects_ajax.generateRequest();
                     }
                 },
@@ -1697,7 +1740,7 @@
                     var CurrentMonth = CurrentDate.getUTCMonth() + 1; //months from 1-12
                     var CurrentYear = CurrentDate.getUTCFullYear();
                     CurrentDate = new Date(CurrentYear, (CurrentMonth - 1), CurrentDay);
-                   
+
                     var DataFechoDay = this._datafechofaturacao.substring(0, 2);
                     var DataFechoMonth = this._datafechofaturacao.substring(3, 5);
                     var DataFechoYear = this._datafechofaturacao.substring(6, 10);
@@ -1718,7 +1761,7 @@
                             var PrevMonth = CurrentMonth - 1;
                             var PrevYear = CurrentYear;
                             if (PrevMonth == 0) {
-                                PrevMonth = 11;
+                                PrevMonth = 12;
                                 PrevYear = PrevYear - 1;
                             }
                             var PrevDay = new Date(PrevYear, PrevMonth, 0).getDate();
@@ -1740,6 +1783,41 @@
                     }
                 },
 
+                _round2: function (value, decimals) {
+                    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+                },
+                _chkBoxAgrupar: function () {
+                    this.chkAgrupar = !this.chkAgrupar;
+
+                    var saldo = 0;
+                    var noProjetos = this.selectedItems.length;
+                    if (this.chkAgrupar == true) {
+                        for (i = 0; i < this.selectedItems.length; i++) {
+                            saldo = saldo + this.selectedItems[i].valorAutorizado;
+                        }
+
+                        this.lbl_Agrupar_Texto = "Selecionou " + noProjetos.toString() + " Projetos: " + this._formatValue(this._round2(saldo, 2)).toString() + " €";
+                    }
+                    else {
+                        this.lbl_Agrupar_Texto = "";
+                    }
+                },
+                _chkBoxAgruparNegativo: function () {
+                    this.chkAgruparNegativo = !this.chkAgruparNegativo;
+
+                    var saldo = 0;
+                    var noProjetos = this.selectedItems.length;
+                    if (this.chkAgruparNegativo == true) {
+                        for (i = 0; i < this.selectedItems.length; i++) {
+                            saldo = saldo + this.selectedItems[i].valorAutorizado;
+                        }
+
+                        this.lbl_Agrupar_TextoNegativo = "Selecionou " + noProjetos.toString() + " Projetos: " + this._formatValue(this._round2(saldo, 2)).toString() + " €";
+                    }
+                    else {
+                        this.lbl_Agrupar_TextoNegativo = "";
+                    }
+                },
 
 
 

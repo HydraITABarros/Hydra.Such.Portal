@@ -90,5 +90,6 @@ namespace Hydra.Such.Data.ViewModel
         public string Fatura { get; set; }
         public decimal? TaxaIVA { get; set; }
         public string FaturaRelacionada { get; set; }
+        public string ContractNo { get; set; }
     }
 }

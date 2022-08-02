@@ -291,7 +291,7 @@ namespace Hydra.Such.Portal.Services
                 var requisitionLines = requisition.Lines;
 
                 requisitionLines.RemoveAll(x => x.CriarNotaEncomenda == null || x.CriarNotaEncomenda == false);
-                requisitionLines.RemoveAll(x => x.CreatedOrderNo != "" && x.CreatedOrderNo != null);
+                requisitionLines.RemoveAll(x => !string.IsNullOrEmpty(x.CreatedOrderNo));
                 //FIM
 
                 if (requisitionLines.Any(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0 || string.IsNullOrEmpty(x.VATBusinessPostingGroup)))
@@ -352,6 +352,7 @@ namespace Hydra.Such.Portal.Services
                                 VATBusinessPostingGroup = line.VATBusinessPostingGroup,
                                 VATProductPostingGroup = line.VATProductPostingGroup,
                                 DiscountPercentage = line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
+                                NoContrato = !string.IsNullOrEmpty(line.NoContrato) ? line.NoContrato : ""
                             })
                             .ToList()
                         })

@@ -424,7 +424,7 @@
                                         <div class="col-md-12 col-md-12 col-lg-12">
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="noGuiaTransporte" name="noGuiaTransporte" label="Nº Guia" value="{{ data.noGuiaTransporte}}" disabled="disabled" maxlength="20"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-time-picker id="shipmentStartTime"
@@ -478,10 +478,10 @@
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="nomeCliente" name="nomeCliente" label="Nome Cliente" value="{{ data.nomeCliente }}" maxlength="30"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="nomeCliente2" name="nomeCliente2" label="Nome Cliente 2" value="{{ data.nomeCliente2 }}" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -499,29 +499,29 @@
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" maxlength="50" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}" maxlength="50"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <!-- zpgm.12112019 -->
                                                     <!--<vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" required error-message="Campo obrigatório"></vaadin-text-field>-->
-                                                    <vaadin-text-field id="vatRegistrationNo" name="vatRegistrationNo" label="No. Contribuinte" value="{{ data.vatRegistrationNo }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                    <vaadin-text-field id="vatRegistrationNo" name="vatRegistrationNo" label="No. Contribuinte" value="{{ data.vatRegistrationNo }}" maxlength="20" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                    <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" on-click="_selectPostCode" maxlength="20" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" maxlength="30" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}" maxlength="20"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="responsabilityCenter" name="responsabilityCenter" label="Centro Responsabilidade" value="{{ data.responsabilityCenter }}" maxlength="10"></vaadin-text-field>
                                                 </div>
 
                                             </div>
@@ -538,13 +538,13 @@
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="requisicao" name="requisicao" label="V/ Requisição" value="{{ data.requisicao }}" maxlength="20"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="reportedBy" name="reportedBy" label="Reportado por" value="{{ data.reportedBy }}" maxlength="30"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="utilizador" name="utilizador" label="Utilizador" value="{{ data.utilizador }}" disabled="disabled"></vaadin-text-field>
+                                                    <vaadin-text-field id="utilizador" name="utilizador" label="Utilizador" value="{{ data.utilizador }}" disabled="disabled" maxlength="30"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <!--<div class="row break_clear">
@@ -603,10 +603,10 @@
                                             </div>
                                             <div class="row break_clear">
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="pesoTotal" name="pesoTotal" label="Peso Total" value="{{ data.pesoTotal }}" maxlength="38"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="quantidadeTotal" name="quantidadeTotal" label="Quantidade Total" value="{{ data.quantidadeTotal }}" maxlength="38"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <such-textarea id="observacoes" name="observacoes" maxlength="250" error-message="Este campo só pode ter no máximo 250 caracteres" label="Observações" rows="3" value="{{ data.observacoes }}"> </such-textarea>
@@ -628,16 +628,16 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}" maxlength="50" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="address" name="address" label="Endereço" value="{{ data.address }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="address" name="address" label="Endereço" value="{{ data.address }}" maxlength="30"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="city" name="city" maxlength="30" label="Cidade" value="{{ data.city }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                                <vaadin-text-field id="city" name="city" label="Cidade" value="{{ data.city }}" maxlength="30" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" maxlength="20" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaCarga"
@@ -655,7 +655,7 @@
                                                                 </vaadin-date-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="paisCarga" name="paisCarga" label="País Carga" value="{{ data.paisCarga }}" disabled="disabled"></vaadin-text-field>
+                                                                <vaadin-text-field id="paisCarga" name="paisCarga" label="País Carga" value="{{ data.paisCarga }}" maxlength="2" disabled="disabled"></vaadin-text-field>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -668,13 +668,13 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}" maxlength="100" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}" maxlength="50"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                                <vaadin-text-field id="codPostalDescarga" name="codPostalDescarga" label="Cód. Postal Descarga" value="{{ data.codPostalDescarga }}" maxlength="8" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaDescarga"
@@ -691,7 +691,7 @@
                                                                 </vaadin-date-picker>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="viatura" name="viatura" label="Viatura" value="{{ data.viatura }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="viatura" name="viatura" label="Viatura" value="{{ data.viatura }}" maxlength="10"></vaadin-text-field>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -734,21 +734,21 @@
                                         <vaadin-text-field id="descricaoItem" name="descricaoItem" value="{{ _itemDescription }}" maxlength="250" required error-message="Este campo só pode ter no máximo 250 caracteres e é obrigatório!" label="Descrição"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-1">
-                                        <vaadin-text-field id="unidadeMedidaItem" name="unidadeMedidaItem" value="{{ _itemBaseUnit}}" label="U.M." required error-message="Este campo é obrigatório!" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="unidadeMedidaItem" name="unidadeMedidaItem" value="{{ _itemBaseUnit}}" maxlength="10" label="U.M." required error-message="Este campo é obrigatório!" disabled></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-1">
-                                        <vaadin-text-field id="quantidadeItem" name="quantidadeItem" value="{{ _itemQuantity }}" label="Quant." required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" on-blur="_roundQuantity"></vaadin-text-field>
+                                        <vaadin-text-field id="quantidadeItem" name="quantidadeItem" value="{{ _itemQuantity }}" maxlength="38" label="Quant." required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" on-blur="_roundQuantity"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-1">
-                                        <vaadin-text-field id="quantidadeEnviarItem" name="quantidadeEnviarItem" value="{{ _itemQuantityToShip }}" label="Quant. Enviar" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="quantidadeEnviarItem" name="quantidadeEnviarItem" value="{{ _itemQuantityToShip }}" maxlength="38" label="Quant. Enviar" required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais" prevent-invalid-input pattern="[0-9.]*" disabled></vaadin-text-field>
                                     </div>
                                 </div>
                                 <div class="row break_clear">
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="precoCustoItem" name="precoCustoItem" value="{{ _itemUnitCost }}" label="Preço Custo" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                        <vaadin-text-field id="precoCustoItem" name="precoCustoItem" value="{{ _itemUnitCost }}" maxlength="38" label="Preço Custo" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="precoVendaItem" name="precoVendaItem" value="{{ _itemUnitPrice }}" label="Preço Venda" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                        <vaadin-text-field id="precoVendaItem" name="precoVendaItem" value="{{ _itemUnitPrice }}" maxlength="38" label="Preço Venda" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
                                         <!--<vaadin-text-field id="noProjectoItem" name="noProjectoItem" value="{{_itemProjectNo }}" label="Projecto"></vaadin-text-field>-->
@@ -901,6 +901,7 @@
                                                                        value="{{ item.quantidade }}"
                                                                        on-blur="_updateShipmentLine"
                                                                        required error-message="Este campo é obrigatório, tem que ser superior a 0 e só pode ter 4 casas decimais"
+                                                                       maxlength="38"
                                                                        prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
@@ -915,7 +916,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="quantidadeEnviarGrid" name="quantidadeEnviaGrid" value="{{ item.quantidadeEnviar }}" prevent-invalid-input pattern="[0-9.]*" disabled></vaadin-text-field>
+                                                    <vaadin-text-field id="quantidadeEnviarGrid" name="quantidadeEnviaGrid" value="{{ item.quantidadeEnviar }}" maxlength="38" prevent-invalid-input pattern="[0-9.]*" disabled></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.quantidadeEnviar }}
@@ -929,7 +930,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="unitCostGrid" name="unitCostGrid" value="{{ item.unitCost }}" on-blur="_updateShipmentLine" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                    <vaadin-text-field id="unitCostGrid" name="unitCostGrid" value="{{ item.unitCost }}" maxlength="38" on-blur="_updateShipmentLine" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.unitCost }}
@@ -943,7 +944,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="unitPriceGrid" name="unitPriceGrid" value="{{ item.unitPrice }}" on-blur="_updateShipmentLine" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                                    <vaadin-text-field id="unitPriceGrid" name="unitPriceGrid" value="{{ item.unitPrice }}" maxlength="38" on-blur="_updateShipmentLine" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{ item.unitPrice }}

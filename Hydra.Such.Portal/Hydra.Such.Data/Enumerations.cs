@@ -209,6 +209,8 @@ namespace Hydra.Such.Data
             Ocorrencias = 80,
             [Description("Contratos - Requisições Cliente")]
             ContratosRequisicoesCliente = 81,
+            [Description("Fornecedores - Avaliação Desempenho Ambiental")]
+            FornecedoresAvaliacao = 82,
 
 
 
@@ -251,80 +253,56 @@ namespace Hydra.Such.Data
             [Description("Administração Aprovisionamento")]
             AdminAprovisionamento = 117,
             [Description("Administração GestiControl")]
-            AdminGestiControl = 118,          
+            AdminGestiControl = 118,
+            [Description("Administração Visitas")]
+            AdminVisitas = 119,
         }
 
         #region zpgm.SGPPF
         public enum TipoUtilizadorFluxoPedidoFormacao
         {
-            [Description("Gestor Formação")]
-            GestorFormacao = 0,
-            [Description("Formando")]
-            Formando = 1,
-            [Description("Chefia")]
-            AprovadorChefia = 2,
-            [Description("Director")]
-            AprovadorDireccao = 3,
-            [Description("Conselho de Administração")]
-            ConselhoAdministracao = 99
+            [Description("Gestor Formação")] GestorFormacao = 0,
+            [Description("Formando")] Formando = 1,
+            [Description("Chefia")] AprovadorChefia = 2,
+            [Description("Coordenador")] AprovadorCoordenador = 3,
+            [Description("Director")] AprovadorDireccao = 4,
+            [Description("Conselho de Administração")] ConselhoAdministracao = 99
         }
 
         public enum EstadoPedidoFormacao
         {
-            [Description("Criado")]
-            PedidoCriado = 0,
-            [Description("Submetido")]
-            PedidoSubmetido = 1,
-            [Description("Aprovado pela Chefia")]
-            PedidoAprovadoChefia = 2,
-            [Description("Aprovado pela Direcção")]
-            PedidoAprovadoDireccao = 3,
-            [Description("Devolvido à Direcção")]   // para todos os efeitos, equivale a Rejeitado
-            PedidoRejeitadoAcademia = 4,
-            [Description("Analisado pela Academia")]
-            PedidoAnalisadoAcademia = 5,
-            [Description("Autorizado CA")]
-            PedidoAutorizadoConsAdmin = 6,
-            [Description("Rejeitado Conselho de Administração")]
-            PedidoRejeitadoCA = 7,
-            [Description("Finalizado")]
-            PedidoFinalizado = 8,
-            [Description("Cancelado")]
-            PedidoCancelado = 99
+            [Description("Criado")] PedidoCriado = 0,
+            [Description("Submetido")] PedidoSubmetido = 1,
+            [Description("Aprovado pela Chefia")] PedidoAprovadoChefia = 2,
+            [Description("Aprovado pela Coordenação")] PedidoAprovadoCoordenacao = 3,
+            [Description("Aprovado pela Direcção")] PedidoAprovadoDireccao = 4,
+            [Description("Devolvido à Direcção")] PedidoRejeitadoAcademia = 5,
+            [Description("Analisado")] PedidoAnalisadoAcademia = 6,
+            [Description("Rejeitado Conselho de Administração")] PedidoRejeitadoCA = 7,
+            [Description("Autorizado Conselho Administração")] PedidoAutorizadoCa = 8,
+            [Description("Finalizado")] PedidoFinalizado = 9,
+            [Description("Cancelado")] PedidoCancelado = 99
         }
 
         public enum TipoAlteracaoPedidoFormacao
         {
-            [Description("Criação")]
-            Criacao = 0,
-            [Description("Submissão Chefia")]
-            SubmissaoChefia = 1,
-            [Description("Rejeição Chefia")]
-            RejeicaoChefia = 2,
-            [Description("Aprovação Chefia e Submissão Direcção")]
-            AprovacaoChefia = 3,
-            [Description("Rejeição Direcção")]
-            RejeicaoDireccao = 4,
-            [Description("Aprovação Direcção e Submissão Academia")]
-            AprovacaoDireccao = 5,
-            [Description("Validação dotação orçamental")]
-            ValidacaoDotacao = 6,
-            [Description("Parecer Academia")]
-            ParecerAcademia = 7,
-            [Description("Rejeição Academia e Devolução Direcção")]
-            RejeicaoAcademia = 8,
-            [Description("Reconfirmação Direcção e Re-submissão Academia")]
-            ReconfirmacaoDireccao = 9,
-            [Description("Submissão ao CA")]
-            SubmissaoConsAdmin = 10,
-            [Description("Rejeição CA")]
-            RejeicaoConsAdmin = 11,
-            [Description("Autorização CA")]
-            AutorizacaoConsAdmin = 12,
-            [Description("Criação de Inscrição e Finalização do Pedido")]
-            CriacaoInscricao = 13,
-            [Description("Encerrado")]
-            PedidoEncerrado = 99
+            [Description("Criação")] Criacao = 0,
+            [Description("Submissão Chefia")] SubmissaoChefia = 1,
+            [Description("Rejeição Chefia")] RejeicaoChefia = 2,
+            [Description("Aprovação Chefia e Submissão Coordenação")] AprovacaoChefia = 3,
+            [Description("Rejeição Coordenação")] RejeicaoCoordenacao = 4,
+            [Description("Aprovação Coordenação e Submissão Direcção")] AprovacaoCoordenacao = 5,
+            [Description("Rejeição Direcção")] RejeicaoDireccao = 6,
+            [Description("Aprovação Direcção e Submissão Academia")] AprovacaoDireccao = 7,
+            [Description("Validação dotação orçamental")] ValidacaoDotacao = 8,
+            [Description("Parecer Academia")] ParecerAcademia = 9,
+            [Description("Rejeição Academia e Devolução Direcção")] RejeicaoAcademia = 10,
+            [Description("Reconfirmação Direcção e Re-submissão Academia")] ReconfirmacaoDireccao = 11,
+            [Description("Submissão ao CA")] SubmissaoConsAdmin = 12,
+            [Description("Rejeição CA")] RejeicaoConsAdmin = 13,
+            [Description("Autorização CA")] AutorizacaoConsAdmin = 14,
+            [Description("Criação de Inscrição e Finalização do Pedido")] CriacaoInscricao = 15,
+            [Description("Encerrado")] PedidoEncerrado = 99
         }
 
         public enum AcademiaOrigemAcessoFuncionalidade
@@ -332,8 +310,9 @@ namespace Hydra.Such.Data
             MeusPedidos = 0,
             MenuGestao = 1,
             MenuChefia = 2,
-            MenuDirector = 3,
-            MenuCA = 4
+            MenuCoodenacao = 3,
+            MenuDireccao = 4,
+            MenuCA = 5
         }
 
         public enum IntToBoolean

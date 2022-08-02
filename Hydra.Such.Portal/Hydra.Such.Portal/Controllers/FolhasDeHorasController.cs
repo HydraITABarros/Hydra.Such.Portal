@@ -171,8 +171,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             result.ForEach(FH =>
                             {
-                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
-                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
+                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao) != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao).Value : "";
+                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms) != null ? AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).Descricao : "";
                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -196,8 +196,8 @@ namespace Hydra.Such.Portal.Controllers
                                     else
                                         FH.Estadotexto = "Não está Terminada";
 
-                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
-                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
+                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao) != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao).Value : "";
+                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms) != null ? AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).Descricao : "";
                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -216,8 +216,8 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     result.ForEach(FH =>
                                     {
-                                        FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
-                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
+                                        FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao) != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao).Value : "";
+                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms) != null ? AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).Descricao : "";
                                         FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                         FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                         FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -236,8 +236,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         result.ForEach(FH =>
                                         {
-                                            FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
-                                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
+                                            FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao) != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao).Value : "";
+                                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms) != null ? AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).Descricao : "";
                                             FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                             FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                             FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -256,8 +256,8 @@ namespace Hydra.Such.Portal.Controllers
                                         {
                                             result.ForEach(FH =>
                                             {
-                                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
-                                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
+                                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao) != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao).Value : "";
+                                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms) != null ? AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).Descricao : "";
                                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -276,8 +276,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 result.ForEach(FH =>
                                                 {
-                                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
-                                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
+                                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao) != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.FirstOrDefault(y => y.Id == FH.TipoDeslocacao).Value : "";
+                                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms) != null ? AllRecursos.FirstOrDefault(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).Descricao : "";
                                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -572,6 +572,7 @@ namespace Hydra.Such.Portal.Controllers
                             DescricaoDestino = Percurso.DescricaoDestino,
                             Distancia = Percurso.Distancia,
                             DistanciaPrevista = Percurso.DistanciaPrevista,
+                            RegiaoAutonoma = Percurso.RegiaoAutonoma,
                             RubricaSalarial = Percurso.RubricaSalarial,
                             RegistarSubsidiosPremios = Percurso.RegistarSubsidiosPremios,
                             Observacao = Percurso.Observacao,
@@ -595,6 +596,7 @@ namespace Hydra.Such.Portal.Controllers
                         }).ToList();
 
                         //AJUDA DE CUSTO/DESPESA
+                        List<TabelaConfRecursosFh> AllRecursos = DBTabelaConfRecursosFh.GetAll();
                         result.FolhaDeHorasAjuda = DBLinhasFolhaHoras.GetAllByAjudaToList(data.FolhaDeHorasNo).Select(Ajuda => new LinhasFolhaHorasViewModel()
                         {
                             NoFolhaHoras = Ajuda.NoFolhaHoras,
@@ -602,8 +604,7 @@ namespace Hydra.Such.Portal.Controllers
                             TipoCusto = Ajuda.TipoCusto,
                             CodTipoCusto = Ajuda.CodTipoCusto,
                             DescricaoTipoCusto = Ajuda.DescricaoTipoCusto,
-                            //DescricaoCodTipoCusto = Ajuda.CodTipoCusto + " - " + DBTabelaConfRecursosFh.GetAll().Where(y => y.CodRecurso == Ajuda.CodTipoCusto).FirstOrDefault().Descricao,
-                            DescricaoCodTipoCusto = DBTabelaConfRecursosFh.GetAll().Where(y => y.CodRecurso == Ajuda.CodTipoCusto).FirstOrDefault().Descricao,
+                            DescricaoCodTipoCusto = AllRecursos.FirstOrDefault(y => y.CodRecurso == Ajuda.CodTipoCusto).Descricao,
                             Quantidade = Ajuda.Quantidade,
                             CustoUnitario = Ajuda.CustoUnitario,
                             CustoTotal = Ajuda.CustoTotal,
@@ -615,6 +616,7 @@ namespace Hydra.Such.Portal.Controllers
                             DescricaoDestino = Ajuda.DescricaoDestino,
                             Distancia = Ajuda.Distancia,
                             DistanciaPrevista = Ajuda.DistanciaPrevista,
+                            RegiaoAutonoma = Ajuda.RegiaoAutonoma,
                             RubricaSalarial = Ajuda.RubricaSalarial,
                             RegistarSubsidiosPremios = Ajuda.RegistarSubsidiosPremios,
                             Observacao = Ajuda.Observacao,
@@ -910,19 +912,22 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().ToList();
-                    if (FH.Count() > 0)
+                    var ctx = new SuchDBContext();
+                    List<FolhasDeHoras> FH = ctx.FolhasDeHoras.Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && FH_DataHoraInicio >= x.DataHoraPartida && FH_DataHoraFim <= x.DataHoraChegada).ToList();
+                    //List<FolhasDeHoras> FH = DBFolhasDeHoras.g .GetAll().ToList();
+                    if (FH != null && FH.Count() > 0)
                     {
-                        FH.ForEach(x =>
-                        {
-                            if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
-                            {
-                                if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && FH_DataHoraInicio >= x.DataHoraPartida && FH_DataHoraFim <= x.DataHoraChegada)
-                                {
-                                    result = 88;
-                                }
-                            }
-                        });
+                        result = 88;
+                        //FH.ForEach(x =>
+                        //{
+                        //    if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
+                        //    {
+                        //        if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && FH_DataHoraInicio >= x.DataHoraPartida && FH_DataHoraFim <= x.DataHoraChegada)
+                        //        {
+                        //            result = 88;
+                        //        }
+                        //    }
+                        //});
                     }
                 }
             }
@@ -944,21 +949,24 @@ namespace Hydra.Such.Portal.Controllers
                 DateTime DataHoraInicio = Convert.ToDateTime(string.Concat(data.DataPartidaTexto, " ", data.HoraPartidaTexto));
                 DateTime DataHoraFim = Convert.ToDateTime(string.Concat(data.DataChegadaTexto, " ", data.HoraChegadaTexto));
 
-                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().ToList();
-                if (FH.Count() > 0)
+                var ctx = new SuchDBContext();
+                List<FolhasDeHoras> FH = ctx.FolhasDeHoras.Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && DataHoraInicio >= x.DataHoraPartida && DataHoraFim <= x.DataHoraChegada).ToList();
+                //List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().ToList();
+                if (FH != null && FH.Count() > 0)
                 {
                     FH.ForEach(x =>
                     {
-                        if (result == 1)
-                        {
-                            if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
-                            {
-                                if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && DataHoraInicio >= x.DataHoraPartida && DataHoraFim <= x.DataHoraChegada)
-                                {
-                                    result = 0;
-                                }
-                            }
-                        }
+                        result = 0;
+                        //if (result == 1)
+                        //{
+                        //    if (x.NºFolhaDeHoras != null && x.NºEmpregado != null && x.DataHoraPartida != null && x.DataHoraChegada != null)
+                        //    {
+                        //        if (x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && DataHoraInicio >= x.DataHoraPartida && DataHoraFim <= x.DataHoraChegada)
+                        //        {
+                        //            result = 0;
+                        //        }
+                        //    }
+                        //}
                     });
                 }
             }
@@ -994,9 +1002,9 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (result == 0)
                     {
-                        List<MovimentosDeAprovação> Aprovacoes = DBApprovalMovements.GetAll().Where(x => x.Número == data.FolhaDeHorasNo).ToList();
+                        List<MovimentosDeAprovação> Aprovacoes = DBApprovalMovements.GetAllByNumero(data.FolhaDeHorasNo);
 
-                        if (Aprovacoes.Count > 0)
+                        if (Aprovacoes != null && Aprovacoes.Count > 0)
                         {
                             Aprovacoes.ForEach(Aprovacao =>
                             {
@@ -1041,13 +1049,14 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (result == 0)
                     {
-                        List<MovimentosDeAprovação> Aprovacoes = DBApprovalMovements.GetAll().Where(x => x.Número == data.FolhaDeHorasNo).ToList();
+                        List<MovimentosDeAprovação> Aprovacoes = DBApprovalMovements.GetAllByNumero(data.FolhaDeHorasNo);
 
-                        if (Aprovacoes.Count > 0)
+                        if (Aprovacoes != null && Aprovacoes.Count > 0)
                         {
                             Aprovacoes.ForEach(Aprovacao =>
                             {
                                 Aprovacao.Estado = 3;
+                                Aprovacao.MotivoDeRecusa = "FH Histórico - " + User.Identity.Name + " - " + DateTime.Now.ToString();
 
                                 DBApprovalMovements.Update(Aprovacao);
                             });
@@ -1129,14 +1138,13 @@ namespace Hydra.Such.Portal.Controllers
                     data.Intervenientes = data.Intervenientes + " INTEGRADORESEMRHKM: ";
                     if (!string.IsNullOrEmpty(data.IntegradoresEmRHKM))
                         data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
-
-
+                    
                     FolhasDeHoras FH = DBFolhasDeHoras.ParseToFolhaHoras(data);
 
-                    if (DBFolhasDeHoras.Update(FH) == null)
-                    {
+                    if (DBFolhasDeHoras.Update(FH) != null)
+                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
+                    else
                         result = 2;
-                    }
                 }
             }
             catch (Exception ex)
@@ -1189,10 +1197,10 @@ namespace Hydra.Such.Portal.Controllers
                         data.Intervenientes = data.Intervenientes + data.IntegradoresEmRHKM;
 
                     data.UtilizadorModificacao = User.Identity.Name;
-                    if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) == null)
-                    {
+                    if (DBFolhasDeHoras.Update(DBFolhasDeHoras.ParseToFolhaHoras(data)) != null)
+                        DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
+                    else
                         result = 2;
-                    }
                 }
                 else
                 {
@@ -1360,6 +1368,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.Observacao = data.Observacao;
                     Percurso1.Distancia = DistanciaPrevista;
                     Percurso1.DistanciaPrevista = DistanciaPrevista;
+                    Percurso1.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
@@ -1395,6 +1404,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.Observacao = data.Observacao;
                     Percurso2.Distancia = DistanciaPrevista;
                     Percurso2.DistanciaPrevista = DistanciaPrevista;
+                    Percurso2.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso2.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
@@ -1436,6 +1446,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.Observacao = data.Observacao;
                     Percurso1.Distancia = DistanciaPrevista;
                     Percurso1.DistanciaPrevista = DistanciaPrevista;
+                    Percurso1.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
@@ -1546,6 +1557,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso.Observacao = data.Observacao;
                     Percurso.Distancia = DistanciaEfetuada;
                     Percurso.DistanciaPrevista = DistanciaPrevista;
+                    Percurso.RegiaoAutonoma = DBOrigemDestinoFh.GetOrigemDestinoRegiaoAutonoma(data.CodOrigem, data.CodDestino);
                     Percurso.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
                     if (DistanciaEfetuada == 0)
                         Percurso.CustoTotal = 0;
@@ -1614,6 +1626,7 @@ namespace Hydra.Such.Portal.Controllers
                 PercursoCopia.Observacao = PercursoOriginal.Observacao;
                 PercursoCopia.Distancia = PercursoOriginal.Distancia;
                 PercursoCopia.DistanciaPrevista = PercursoOriginal.DistanciaPrevista;
+                PercursoCopia.RegiaoAutonoma = PercursoOriginal.RegiaoAutonoma;
                 PercursoCopia.CustoUnitario = PercursoOriginal.CustoUnitario;
                 PercursoCopia.CustoTotal = PercursoOriginal.CustoTotal;
                 PercursoCopia.RubricaSalarial = PercursoOriginal.RubricaSalarial;
@@ -1679,12 +1692,13 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 List<LinhasFolhaHorasViewModel> result = DBLinhasFolhaHoras.GetAllByAjudaToList(FolhaHoraNo);
+                List<TabelaConfRecursosFh> AllRecursos = DBTabelaConfRecursosFh.GetAll();
                 if (result != null)
                 {
                     result.ForEach(x =>
                     {
-                        x.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
-                        x.DescricaoCodTipoCusto = x.CodTipoCusto + " - " + DBTabelaConfRecursosFh.GetAll().Where(y => y.CodRecurso == x.CodTipoCusto).FirstOrDefault().Descricao;
+                        x.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.FirstOrDefault(y => y.Id == x.TipoCusto).Value;
+                        x.DescricaoCodTipoCusto = x.CodTipoCusto + " - " + AllRecursos.FirstOrDefault(y => y.CodRecurso == x.CodTipoCusto).Descricao;
                     });
                 }
 
@@ -1703,7 +1717,7 @@ namespace Hydra.Such.Portal.Controllers
             int result = 99;
             try
             {
-                TabelaConfRecursosFh Recurso = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == data.TipoCusto.ToString() && x.CodRecurso == data.CodTipoCusto).FirstOrDefault();
+                TabelaConfRecursosFh Recurso = DBTabelaConfRecursosFh.GetRecursoByTipoAndCodRecurso(data.TipoCusto.ToString(), data.CodTipoCusto);
 
                 if (Recurso != null)
                 {
@@ -1724,7 +1738,7 @@ namespace Hydra.Such.Portal.Controllers
                         Ajuda.NoLinha = noLinha;
                         Ajuda.TipoCusto = data.TipoCusto;
                         Ajuda.CodTipoCusto = data.CodTipoCusto;
-                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.FirstOrDefault(y => y.Id == data.TipoCusto).Value;
                         Ajuda.Quantidade = data.Quantidade;
                         Ajuda.CustoUnitario = data.CustoUnitario;
                         Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
@@ -1867,16 +1881,30 @@ namespace Hydra.Such.Portal.Controllers
                             NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
                             if (Cliente != null && Cliente.ClienteInterno == true)
                             {
-                                if (CodTipoCusto == "AJC0001")
-                                    CodTipoCusto = "AJC0017";
-                                if (CodTipoCusto == "AJC0002")
-                                    CodTipoCusto = "AJC0018";
 
-                                CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == data.TipoCusto.ToString() && y.CodRecurso == CodTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                CustoTotal = Quantidade * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                PrecoVenda = Quantidade * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                bool RegiaoAutonoma = DBLinhasFolhaHoras.ExistsRegiaoAutonomaByFolhaHoraNo(data.NoFolhaHoras);
+                                if (RegiaoAutonoma == true)
+                                {
+                                    if (CodTipoCusto == "AJC0001")
+                                        CodTipoCusto = "AJC0020";
+                                    if (CodTipoCusto == "AJC0002")
+                                        CodTipoCusto = "AJC0021";
+                                }
+                                else
+                                {
+                                    if (CodTipoCusto == "AJC0001")
+                                        CodTipoCusto = "AJC0017";
+                                    if (CodTipoCusto == "AJC0002")
+                                        CodTipoCusto = "AJC0018";
+                                }
+
+                                TabelaConfRecursosFh Recurso = DBTabelaConfRecursosFh.GetRecursoByTipoAndCodRecurso(data.TipoCusto.ToString(), CodTipoCusto.ToLower().Trim());
+
+                                CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                CustoTotal = Quantidade * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                PrecoVenda = Quantidade * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                RubricaSalarial = Recurso.RubricaSalarial;
                             }
                         }
                     }
@@ -1887,7 +1915,7 @@ namespace Hydra.Such.Portal.Controllers
                         Ajuda.ProjetoDescricao = ProjetoDescricao;
                         Ajuda.TipoCusto = TipoCusto;
                         Ajuda.CodTipoCusto = CodTipoCusto;
-                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.FirstOrDefault(y => y.Id == data.TipoCusto).Value;
                         Ajuda.Quantidade = Quantidade;
                         Ajuda.CustoUnitario = CustoUnitario;
                         Ajuda.PrecoUnitario = PrecoUnitario;
@@ -1903,7 +1931,7 @@ namespace Hydra.Such.Portal.Controllers
                         Ajuda.ProjetoDescricao = ProjetoDescricao;
                         Ajuda.TipoCusto = data.TipoCusto;
                         Ajuda.CodTipoCusto = data.CodTipoCusto;
-                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.FirstOrDefault(y => y.Id == data.TipoCusto).Value;
                         Ajuda.Quantidade = data.Quantidade;
                         Ajuda.CustoUnitario = data.CustoUnitario;
                         Ajuda.CustoTotal = data.Quantidade * data.CustoUnitario;
@@ -2058,7 +2086,7 @@ namespace Hydra.Such.Portal.Controllers
                 bool Almoco = Convert.ToBoolean(data.HorarioAlmoco);
                 bool Jantar = Convert.ToBoolean(data.HorarioJantar);
 
-                Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).FirstOrDefault();
+                Configuração Configuracao = DBConfigurations.GetById(1);
 
                 TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
                 TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
@@ -2126,7 +2154,7 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.CodigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
 
                     //TABELA RHRECURSOSFH
-                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower() && x.Recurso.ToLower() == data.CodigoRecurso.ToLower()).FirstOrDefault();
+                    RhRecursosFh Recurso = DBRHRecursosFH.GetByID(data.EmpregadoNo, data.CodigoRecurso);
                     if (Recurso != null)
                     {
                         MaoDeObra.NºRecurso = Recurso.Recurso;
@@ -2142,9 +2170,10 @@ namespace Hydra.Such.Portal.Controllers
                     //PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() &&
                     //    x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now &&
                     //    Convert.ToDateTime(x.EndingDate) >= DateTime.Now).FirstOrDefault();
-                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() &&
+                    var ctx = new SuchDBContext();
+                    PrecoVendaRecursoFh PrecoVendaRecurso = ctx.PrecoVendaRecursoFh.FirstOrDefault(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() &&
                         x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= Convert.ToDateTime(data.Date) &&
-                        Convert.ToDateTime(x.EndingDate) >= Convert.ToDateTime(data.Date)).FirstOrDefault();
+                        Convert.ToDateTime(x.EndingDate) >= Convert.ToDateTime(data.Date));
                     if (PrecoVendaRecurso != null)
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
@@ -2483,7 +2512,7 @@ namespace Hydra.Such.Portal.Controllers
                 DateTime DataHoraInicio = Convert.ToDateTime(string.Concat(Convert.ToDateTime(data.Date).ToShortDateString(), " ", data.HoraInicio));
                 DateTime DataHoraFim = Convert.ToDateTime(string.Concat(Convert.ToDateTime(data.Date).ToShortDateString(), " ", data.HoraFim));
 
-                Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).FirstOrDefault();
+                Configuração Configuracao = DBConfigurations.GetById(1);
                 TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
                 TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
                 TimeSpan InicioHoraJantar = (TimeSpan)Configuracao.InicioHoraJantar;
@@ -2528,7 +2557,8 @@ namespace Hydra.Such.Portal.Controllers
                     MaoDeObra.CodigoCentroResponsabilidade = data.CodigoCentroResponsabilidade;
 
                     //TABELA RHRECURSOSFH
-                    RhRecursosFh Recurso = DBRHRecursosFH.GetAll().Where(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower()).FirstOrDefault();
+                    var ctx = new SuchDBContext();
+                    RhRecursosFh Recurso = ctx.RhRecursosFh.FirstOrDefault(x => x.NoEmpregado.ToLower() == data.EmpregadoNo.ToLower());
                     if (Recurso != null)
                     {
                         MaoDeObra.NºRecurso = Recurso.Recurso;
@@ -2536,7 +2566,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //TABELA PRECOVENDARECURSOFH
-                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() && x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).FirstOrDefault();
+                    PrecoVendaRecursoFh PrecoVendaRecurso = ctx.PrecoVendaRecursoFh.FirstOrDefault(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() && x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now);
                     if (PrecoVendaRecurso != null)
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
@@ -2645,7 +2675,7 @@ namespace Hydra.Such.Portal.Controllers
             bool Almoco = Convert.ToBoolean(data.HorarioAlmoco);
             bool Jantar = Convert.ToBoolean(data.HorarioJantar);
 
-            Configuração Configuracao = DBConfigurations.GetAll().Where(x => x.Id == 1).FirstOrDefault();
+            Configuração Configuracao = DBConfigurations.GetById(1);
 
             TimeSpan InicioHoraAlmoco = (TimeSpan)Configuracao.InicioHoraAlmoco;
             TimeSpan FimHoraAlmoco = (TimeSpan)Configuracao.FimHoraAlmoco;
@@ -2903,7 +2933,8 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    PresençasFolhaDeHoras Presenca = DBPresencasFolhaDeHoras.GetAll().Where(x => x.NºFolhaDeHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.Data == data.Data).FirstOrDefault();
+                    var ctx = new SuchDBContext();
+                    PresençasFolhaDeHoras Presenca = ctx.PresençasFolhaDeHoras.FirstOrDefault(x => x.NºFolhaDeHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.Data == data.Data);
 
                     if (Presenca != null)
                     {
@@ -2972,7 +3003,8 @@ namespace Hydra.Such.Portal.Controllers
                 decimal NoDias = 0;
                 int noLinha;
 
-                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && x.Eliminada == false &&
+                var ctx = new SuchDBContext();
+                List<FolhasDeHoras> FH = ctx.FolhasDeHoras.Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && x.Eliminada == false &&
                     ((data.DataHoraPartida >= x.DataHoraPartida && data.DataHoraChegada <= x.DataHoraChegada) ||
                     ((data.DataHoraPartida >= x.DataHoraPartida && data.DataHoraPartida < x.DataHoraChegada) && data.DataHoraChegada >= x.DataHoraChegada) ||
                     (data.DataHoraPartida <= x.DataHoraPartida && (data.DataHoraChegada <= x.DataHoraChegada && data.DataHoraChegada > x.DataHoraPartida)) ||
@@ -3012,7 +3044,7 @@ namespace Hydra.Such.Portal.Controllers
                         });
                     }
 
-                    List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
+                    List<ConfiguracaoAjudaCusto> AjudaCusto = ctx.ConfiguracaoAjudaCusto.Where(x =>
                         (x.DataChegadaDataPartida == false) &&
                         (x.DistanciaMinima < GetMAXDistancia(data.FolhaDeHorasNo)) &&
                         (x.TipoCusto != 1) &&
@@ -3091,32 +3123,61 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (NoDias > 0)
                             {
+                                decimal CustoUnitario = 0;
+                                decimal PrecoUnitario = 0;
+                                decimal CustoTotal = 0;
+                                decimal PrecoVenda = 0;
+                                string RubricaSalarial = "";
                                 string CodRecurso = x.CodigoTipoCusto.Trim();
-                                decimal CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                decimal PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                decimal CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                decimal PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                string RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                TabelaConfRecursosFh Recurso = new TabelaConfRecursosFh();
+                                bool RegiaoAutonoma = false;
 
-                                if (!string.IsNullOrEmpty(data.ProjetoNo))
+                                RegiaoAutonoma = DBLinhasFolhaHoras.ExistsRegiaoAutonomaByFolhaHoraNo(data.FolhaDeHorasNo);
+                                if (RegiaoAutonoma == true)
                                 {
-                                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
+                                    if (CodRecurso == "AJC0001")
+                                        CodRecurso = "AJC0020";
+                                    if (CodRecurso == "AJC0002")
+                                        CodRecurso = "AJC0021";
 
-                                    if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                                    Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
+                                    CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    RubricaSalarial = Recurso.RubricaSalarial;
+                                }
+                                else
+                                {
+                                    CodRecurso = x.CodigoTipoCusto.Trim();
+                                    Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
+                                    CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                    PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                    RubricaSalarial = Recurso.RubricaSalarial;
+
+                                    if (!string.IsNullOrEmpty(data.ProjetoNo))
                                     {
-                                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
-                                        if (Cliente != null && Cliente.ClienteInterno == true)
-                                        {
-                                            if (CodRecurso == "AJC0001")
-                                                CodRecurso = "AJC0017";
-                                            if (CodRecurso == "AJC0002")
-                                                CodRecurso = "AJC0018";
+                                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
 
-                                            CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                            PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                            CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                            PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                            RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                                        {
+                                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
+                                            if (Cliente != null && Cliente.ClienteInterno == true)
+                                            {
+                                                if (CodRecurso == "AJC0001")
+                                                    CodRecurso = "AJC0017";
+                                                if (CodRecurso == "AJC0002")
+                                                    CodRecurso = "AJC0018";
+
+                                                Recurso = ctx.TabelaConfRecursosFh.FirstOrDefault(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim());
+                                                CustoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                                PrecoUnitario = Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                                CustoTotal = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioCusto);
+                                                PrecoVenda = NoDias * Convert.ToDecimal(Recurso.PrecoUnitarioVenda);
+                                                RubricaSalarial = Recurso.RubricaSalarial;
+                                            }
                                         }
                                     }
                                 }
@@ -3129,7 +3190,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Ajuda.NoLinha = noLinha;
                                 Ajuda.CodTipoCusto = CodRecurso; // x.CodigoTipoCusto.Trim();
                                 Ajuda.TipoCusto = x.TipoCusto;
-                                Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
+                                Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.FirstOrDefault(y => y.Id == x.TipoCusto).Value;
                                 Ajuda.Quantidade = Convert.ToDecimal(NoDias);
                                 Ajuda.CustoUnitario = CustoUnitario; // Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
                                 Ajuda.PrecoUnitario = PrecoUnitario; // Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
@@ -3374,7 +3435,9 @@ namespace Hydra.Such.Portal.Controllers
 
                                         if (DBFolhasDeHoras.GetById(data.FolhaDeHorasNo).Estado == 0) //CRIADO
                                         {
-                                            if (DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList().Count() == 0)
+                                            var ctx = new SuchDBContext();
+                                            List<MovimentosDeAprovação> AllMov = ctx.MovimentosDeAprovação.Where(x => x.Tipo == 3 && x.Número == FH.NºFolhaDeHoras && x.Estado == 1).ToList();
+                                            if (AllMov.Count() == 0)
                                                 resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_FH(3, FH.CódigoÁreaFuncional, FH.CódigoCentroResponsabilidade, FH.CódigoRegião, CustoTotal, FH.NºFolhaDeHoras, User.Identity.Name);
                                         }
                                         else
@@ -3415,26 +3478,27 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
-                    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 1).ToList());
+                //List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
+                //    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 1).ToList());
 
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+                //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
-                int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
+                //int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
 
-                if (totalPendingApprovals == 0)
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não tem permissão para Validar a Folha de Horas para estas Dimensões.";
-                }
-                else
-                {
+                //if (totalPendingApprovals == 0)
+                //{
+                //    result.eReasonCode = 101;
+                //    result.eMessage = "Não tem permissão para Validar a Folha de Horas para estas Dimensões.";
+                //}
+                //else
+                //{
+                    var ctx = new SuchDBContext();
                     if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo))
                     {
                         result.eReasonCode = 101;
@@ -3464,7 +3528,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    using (var ctx = new SuchDBContextExtention())
+                                    using (var ctxext = new SuchDBContextExtention())
                                     {
                                         var parameters = new[]
                                         {
@@ -3472,7 +3536,7 @@ namespace Hydra.Such.Portal.Controllers
                                         new SqlParameter("@NoUtilizador", data.EmpregadoNo),
                                         new SqlParameter("@NoValidador", User.Identity.Name)
                                     };
-                                        result.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador, @NoValidador", parameters);
+                                        result.eReasonCode = ctxext.execStoredProcedureFH("exec FH_Validar @NoFH, @NoUtilizador, @NoValidador", parameters);
                                     }
 
                                     if (result.eReasonCode == 0)
@@ -3483,8 +3547,8 @@ namespace Hydra.Such.Portal.Controllers
                                         int NoRegistosAjC = 0;
                                         int NoRegistoskm = 0;
 
-                                        NoRegistosAjC = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
-                                        NoRegistoskm = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 1).Count();
+                                        NoRegistosAjC = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
+                                        NoRegistoskm = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 1).Count();
 
                                         if ((NoRegistosAjC > 0) || (TipoDeslocação == 2 && NoRegistoskm > 0))
                                             Estado = 1; //VALIDADO
@@ -3754,10 +3818,10 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 ErrorHandler approvalResult = new ErrorHandler();
 
-                                                //Approve Movement
-                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                            //Approve Movement
+                                            MovimentosDeAprovação approvalMovement = ctx.MovimentosDeAprovação.FirstOrDefault(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                         x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                        x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+                                                        x.Estado == 1 && x.Nivel == 1);
 
                                                 if (approvalMovement != null)
                                                     approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.NºMovimento, User.Identity.Name);
@@ -3783,9 +3847,9 @@ namespace Hydra.Such.Portal.Controllers
                                             if (Estado == 2) //PASSA PARA HISTÓRICO
                                             {
                                                 //Update Old Movement
-                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                MovimentosDeAprovação approvalMovement = ctx.MovimentosDeAprovação.FirstOrDefault(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                     x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                    x.Estado == 1 && x.Nivel == 1).FirstOrDefault();
+                                                    x.Estado == 1 && x.Nivel == 1);
 
                                                 if (approvalMovement != null)
                                                 {
@@ -3922,7 +3986,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -3936,12 +4000,12 @@ namespace Hydra.Such.Portal.Controllers
         //Obtem a próxima Folha de Horas a validar
         public JsonResult ValidarFolhaDeHorasGetNext([FromBody] FolhaDeHorasViewModel data)
         {
-            List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
-            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 1);
+            MovimentosDeAprovação MOV = new MovimentosDeAprovação();
+            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 1).FirstOrDefault();
 
-            if (MOV != null && MOV.Count > 0)
-                if (!string.IsNullOrEmpty(MOV.FirstOrDefault().Número))
-                    return Json(MOV.FirstOrDefault().Número);
+            if (MOV != null)
+                if (!string.IsNullOrEmpty(MOV.Número))
+                    return Json(MOV.Número);
 
             return Json(null);
         }
@@ -3953,26 +4017,27 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
-                    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 2).ToList());
+                //List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
+                //    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 2).ToList());
 
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+                //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
-                int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
+                //int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
 
-                if (totalPendingApprovals == 0)
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não tem permissão para Integrar Aj. Custo da Folha de Horas para estas Dimensões.";
-                }
-                else
-                {
+                //if (totalPendingApprovals == 0)
+                //{
+                //    result.eReasonCode = 101;
+                //    result.eMessage = "Não tem permissão para Integrar Aj. Custo da Folha de Horas para estas Dimensões.";
+                //}
+                //else
+                //{
+                    var ctx = new SuchDBContext();
                     if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo))
                     {
                         result.eReasonCode = 101;
@@ -4001,7 +4066,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    using (var ctx = new SuchDBContextExtention())
+                                    using (var ctxext = new SuchDBContextExtention())
                                     {
                                         var parameters = new[]
                                         {
@@ -4009,7 +4074,7 @@ namespace Hydra.Such.Portal.Controllers
                                         new SqlParameter("@NoUtilizador", data.EmpregadoNo),
                                         new SqlParameter("@NoValidador", User.Identity.Name)
                                     };
-                                        result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador, @NoValidador", parameters);
+                                        result.eReasonCode = ctxext.execStoredProcedureFH("exec FH_IntegrarEmRH @NoFH, @NoUtilizador, @NoValidador", parameters);
                                     }
 
                                     if (result.eReasonCode == 0)
@@ -4018,7 +4083,7 @@ namespace Hydra.Such.Portal.Controllers
                                         bool IntegradoEmRhKm = (bool)data.IntegradoEmRhKm;
                                         string TipoDeslocação = data.TipoDeslocacaoTexto;
                                         int Estado = (int)data.Estado;
-                                        int NoRegistoskm = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 1).Count();
+                                        int NoRegistoskm = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 1).Count();
 
                                         if (IntegradoEmRhKm == true || NoRegistoskm == 0)
                                             Estado = 2; // 2 = Registado
@@ -4088,7 +4153,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 {
                                                     if (data.TipoDeslocacao == 2 && NoRegistoskm > 0)
                                                     {
-                                                        using (var ctx = new SuchDBContextExtention())
+                                                        using (var ctxext = new SuchDBContextExtention())
                                                         {
                                                             var parameters = new[]
                                                             {
@@ -4096,7 +4161,7 @@ namespace Hydra.Such.Portal.Controllers
                                                             new SqlParameter("@NoUtilizador", data.EmpregadoNo),
                                                             new SqlParameter("@NoValidador", User.Identity.Name)
                                                         };
-                                                            result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
+                                                            result.eReasonCode = ctxext.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
                                                         }
 
                                                         if (result.eReasonCode == 0)
@@ -4157,10 +4222,10 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 ErrorHandler approvalResult = new ErrorHandler();
 
-                                                //Approve Movement
-                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                            //Approve Movement
+                                                MovimentosDeAprovação approvalMovement = ctx.MovimentosDeAprovação.FirstOrDefault(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                     x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                    x.Estado == 1 && x.Nivel == 2).FirstOrDefault();
+                                                    x.Estado == 1 && x.Nivel == 2);
 
                                                 if (approvalMovement != null)
                                                     approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.NºMovimento, User.Identity.Name);
@@ -4186,9 +4251,9 @@ namespace Hydra.Such.Portal.Controllers
                                             if (Estado == 2)
                                             {
                                                 //Update Old Movement
-                                                MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                MovimentosDeAprovação approvalMovement = ctx.MovimentosDeAprovação.FirstOrDefault(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                     x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                    x.Estado == 1 && x.Nivel == 2).FirstOrDefault();
+                                                    x.Estado == 1 && x.Nivel == 2);
 
                                                 if (approvalMovement != null)
                                                 {
@@ -4242,7 +4307,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -4256,12 +4321,12 @@ namespace Hydra.Such.Portal.Controllers
         //Obtem a próxima Folha de Horas a validar
         public JsonResult IntegrarEmRHFolhaDeHorasGetNext([FromBody] FolhaDeHorasViewModel data)
         {
-            List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
-            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 2);
+            MovimentosDeAprovação MOV = new MovimentosDeAprovação();
+            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 2).FirstOrDefault();
 
-            if (MOV != null && MOV.Count > 0)
-                if (!string.IsNullOrEmpty(MOV.FirstOrDefault().Número))
-                    return Json(MOV.FirstOrDefault().Número);
+            if (MOV != null)
+                if (!string.IsNullOrEmpty(MOV.Número))
+                    return Json(MOV.Número);
 
             return Json(null);
         }
@@ -4273,26 +4338,27 @@ namespace Hydra.Such.Portal.Controllers
             ErrorHandler result = new ErrorHandler();
             try
             {
-                List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
-                    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 3).ToList());
+                //List<ApprovalMovementsViewModel> NoFHValidar = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1).Where(
+                //    y => y.Tipo == 3 && y.Número == data.FolhaDeHorasNo && y.Estado == 1 && y.Nivel == 3).ToList());
 
-                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-                if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+                //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+                //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //    NoFHValidar.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
-                int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
+                //int totalPendingApprovals = NoFHValidar != null ? NoFHValidar.Count : 0;
 
-                if (totalPendingApprovals == 0)
-                {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não tem permissão para Integrar Km da Folha de Horas para estas Dimensões.";
-                }
-                else
-                {
+                //if (totalPendingApprovals == 0)
+                //{
+                //    result.eReasonCode = 101;
+                //    result.eMessage = "Não tem permissão para Integrar Km da Folha de Horas para estas Dimensões.";
+                //}
+                //else
+                //{
+                    var ctx = new SuchDBContext();
                     if (string.IsNullOrEmpty(data.FolhaDeHorasNo) || string.IsNullOrEmpty(data.EmpregadoNo) || string.IsNullOrEmpty(data.ProjetoNo))
                     {
                         result.eReasonCode = 101;
@@ -4328,7 +4394,7 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        using (var ctx = new SuchDBContextExtention())
+                                        using (var ctxext = new SuchDBContextExtention())
                                         {
                                             var parameters = new[]
                                             {
@@ -4336,7 +4402,7 @@ namespace Hydra.Such.Portal.Controllers
                                             new SqlParameter("@NoUtilizador", data.EmpregadoNo),
                                             new SqlParameter("@NoValidador", User.Identity.Name)
                                         };
-                                            result.eReasonCode = ctx.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
+                                            result.eReasonCode = ctxext.execStoredProcedureFH("exec FH_IntegrarEmRHKM @NoFH, @NoUtilizador, @NoValidador", parameters);
                                         }
 
                                         if (result.eReasonCode == 0)
@@ -4344,7 +4410,7 @@ namespace Hydra.Such.Portal.Controllers
                                             string EmpregadoNome = DBUserConfigurations.GetById(User.Identity.Name).Nome;
                                             bool IntegradoEmRh = (bool)data.IntegradoEmRh;
                                             int Estado = (int)data.Estado;
-                                            int NoRegistosAjC = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
+                                            int NoRegistosAjC = ctx.LinhasFolhaHoras.Where(x => x.NoFolhaHoras.ToLower() == data.FolhaDeHorasNo.ToLower() && x.TipoCusto == 2).Count();
 
                                             if (IntegradoEmRh == true || NoRegistosAjC == 0)
                                                 Estado = 2; // 2 = Registado
@@ -4479,9 +4545,9 @@ namespace Hydra.Such.Portal.Controllers
                                                         ErrorHandler approvalResult = new ErrorHandler();
 
                                                         //Approve Movement
-                                                        MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                        MovimentosDeAprovação approvalMovement = ctx.MovimentosDeAprovação.FirstOrDefault(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                             x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                            x.Estado == 1 && x.Nivel == 3).FirstOrDefault();
+                                                            x.Estado == 1 && x.Nivel == 3);
 
                                                         if (approvalMovement != null)
                                                             approvalResult = ApprovalMovementsManager.ApproveMovement_FH(approvalMovement.NºMovimento, User.Identity.Name);
@@ -4507,9 +4573,9 @@ namespace Hydra.Such.Portal.Controllers
                                                     if (Estado == 2)
                                                     {
                                                         //Update Old Movement
-                                                        MovimentosDeAprovação approvalMovement = DBApprovalMovements.GetAll().Where(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
+                                                        MovimentosDeAprovação approvalMovement = ctx.MovimentosDeAprovação.FirstOrDefault(x => x.Tipo == 3 && x.CódigoÁreaFuncional == data.CodigoAreaFuncional &&
                                                             x.CódigoRegião == data.CodigoRegiao && x.CódigoCentroResponsabilidade == data.CodigoCentroResponsabilidade && x.Número == data.FolhaDeHorasNo &&
-                                                            x.Estado == 1 && x.Nivel == 3).FirstOrDefault();
+                                                            x.Estado == 1 && x.Nivel == 3);
 
                                                         if (approvalMovement != null)
                                                         {
@@ -4563,7 +4629,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                     }
-                }
+                //}
             }
             catch (Exception ex)
             {
@@ -4577,12 +4643,12 @@ namespace Hydra.Such.Portal.Controllers
         //Obtem a próxima Folha de Horas a validar
         public JsonResult IntegrarEmRHKMFolhaDeHorasGetNext([FromBody] FolhaDeHorasViewModel data)
         {
-            List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
-            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 2);
+            MovimentosDeAprovação MOV = new MovimentosDeAprovação();
+            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 2).FirstOrDefault();
 
-            if (MOV != null && MOV.Count > 0)
-                if (!string.IsNullOrEmpty(MOV.FirstOrDefault().Número))
-                    return Json(MOV.FirstOrDefault().Número);
+            if (MOV != null)
+                if (!string.IsNullOrEmpty(MOV.Número))
+                    return Json(MOV.Número);
 
             return Json(null);
         }

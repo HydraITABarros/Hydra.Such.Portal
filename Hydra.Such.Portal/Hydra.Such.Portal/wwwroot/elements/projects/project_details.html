@@ -283,7 +283,6 @@
 
                     <div class="col-lg-3">
                         <such-selectbox id="ProjectLeader" value="{{data.projectLeader}}" label="Criador de Projeto" disabled
-                                        required error-message="Este campo é obrigatório"
                                         items="[[LProjectEmployees]]"
                                         text-path="value"
                                         value-path="id"
@@ -661,10 +660,10 @@
                     //    this._openToastError("É obrigatória seleção de um Nº Contrato");
                     //    return false;
                     //}
-                    if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
-                        this._openToastError("É obrigatória seleção de um Criador de Projeto.");
-                        return false;
-                    }
+                    //if (this.$.ProjectLeader.value == "" || this.$.ProjectLeader.value == undefined) {
+                    //    this._openToastError("É obrigatória seleção de um Criador de Projeto.");
+                    //    return false;
+                    //}
                     if (this.$.ProjectStatus.value == 1 && (this.$.ProjectResponsible.value == "" || this.$.ProjectResponsible.value == undefined)) {
                         this._openToastError("É obrigatória seleção de um Validador de Projeto.");
                         return false;

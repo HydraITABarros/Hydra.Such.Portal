@@ -2,6 +2,7 @@
     ViewData["Title"] = "Gestão Requisições";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -111,7 +112,7 @@
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
-                    on-response="_getgridResponse"
+                   on-response="_getgridResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -148,6 +149,10 @@
                     <div class="row break_clear">
                         <div class="col-sm-2">
                             <vaadin-text-field id="pesquisaNoRequisicao" name="pesquisaNoRequisicao" label="Filtrar por Nº Requisição:" value="" title="Filtrar por Nº Requisição:"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="pesquisaNoCM" name="pesquisaNoCM" label="Filtrar por Nº Consulta Mercado:" value="" title="Filtrar por Nº Consulta Mercado:"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-2">
@@ -218,6 +223,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.validationDateText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="validationDateText">Data Validação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="validationDateText" value="[[filter.validationDateText]]" />
+                </template>
+                <template>
+                    {{item.validationDateText}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
                 <template class="header">
                     Urgente
@@ -228,13 +243,13 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-            <template class="header">
-                Compra a Dinheiro
-            </template>
-            <template>
-                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        Compra a Dinheiro
+                    </template>
+                    <template>
+                        <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -424,23 +439,23 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
-            <template class="header">
-                Reclamação
-            </template>
-            <template>
-                <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        Reclamação
+                    </template>
+                    <template>
+                        <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+                    </template>
+                </vaadin-grid-column>*@
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-            <template class="header">
-                <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                <vaadin-grid-filter path="requestReclaimNo" value="[[filter.requestReclaimNo]]" />
-            </template>
-            <template>
-                {{item.requestReclaimNo}}
-            </template>
-        </vaadin-grid-column>*@
+                    <template class="header">
+                        <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="requestReclaimNo" value="[[filter.requestReclaimNo]]" />
+                    </template>
+                    <template>
+                        {{item.requestReclaimNo}}
+                    </template>
+                </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
@@ -508,17 +523,45 @@
                         value: {},
                     },
                 },
+                ready: function () {
+                    this.$.pesquisaData.value = this.pesquisadate;
+
+                    //if (!this.Flag) {
+                        //this.result = null;
+                        //this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
+                        //this.$.ajax_getgrid.generateRequest();
+                        //this.$.gridrequest.clearCache();
+                    //}
+                    //this.Flag = true;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-index');
+                    window.grid = this.$.gridrequest;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
                 ],
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
                     this.$.pesquisaData.value = this.pesquisadate;
 
-                    if (!this.Flag) {
-                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
-                        this.$.ajax_getgrid.generateRequest();
-                    }
-                    this.Flag = true;
+                    //if (!this.Flag) {
+                    //    this.result = null;
+                    //    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
+                    //    this.$.ajax_getgrid.generateRequest();
+                    //    this.$.gridrequest.clearCache();
+                    //}
+                    //this.Flag = true;
 
                     /*FILTROS*/
                     window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-index');
@@ -538,7 +581,7 @@
                     var grid_el = $(this.$.gridrequest);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var height = parentHeight - offsetTop - 150;
                     grid_el.height(height);
                 },
                 _parsestate: function (param1) {
@@ -628,8 +671,10 @@
                 },
 
                 _search: function () {
-                    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
+                    this.result = null;
+                    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "pesquisaNoCM": this.$.pesquisaNoCM.value });
                     this.$.ajax_getgrid.generateRequest();
+                    this.$.gridrequest.clearCache();
                 },
 
                 _getgridResponse: function () {
@@ -637,7 +682,6 @@
                 },
 
                 _exportEXCEL: function() {
-                    debugger;
                     var result = this.$.gridrequest._filter(this.result);
                     if (result != null && result.length > 0) {
                         if (result.length <= 7500) {
@@ -662,6 +706,7 @@
                     var columns = {
                         "requisitionNo": { hidden: false, label: "Nº Requisição" },
                         "state": { hidden: false, label: "Estado" },
+                        "validationDateText": { hidden: false, label: "Data Validação" },
                         "urgent": { hidden: false, label: "Urgente" },
                         "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
                         "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
@@ -746,8 +791,11 @@
                     }
                     else {
                         this.openToastSuccess(this.closeRequisitionResult.eMessage);
-                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value });
+
+                        this.result = null;
+                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "pesquisaNoCM": this.$.pesquisaNoCM.value });
                         this.$.ajax_getgrid.generateRequest();
+                        this.$.gridrequest.clearCache();
                     }
                 },
 
@@ -772,5 +820,3 @@
 
     </script>
 </dom-module>
-
-

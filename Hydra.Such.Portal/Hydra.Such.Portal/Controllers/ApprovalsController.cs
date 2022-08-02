@@ -52,13 +52,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
 
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+            //AMARO TESTE 1
+            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+            //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+            //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
             int totalPendingApprovals = result != null ? result.Count : 0;
             this.session.SetString("totalPendingApprovals", totalPendingApprovals.ToString());
@@ -74,6 +75,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllAssignedToUserFilteredByStatus(User.Identity.Name, 1));
 
+            //AMARO TESTE 2
             //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
             //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
@@ -127,6 +129,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         x.FHDatePartida = FH.DataHoraPartida.HasValue ? Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString() : "";
                         x.FHDateChegada = FH.DataHoraChegada.HasValue ? Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString() : "";
+                        x.RequisicaoProjectNo = !string.IsNullOrEmpty(FH.NºProjeto) ? FH.NºProjeto : "";
                     }
 
                     switch (x.Level)
@@ -162,18 +165,19 @@ namespace Hydra.Such.Portal.Controllers
                         x.RequisicaoProjectNo = REQ.NºProjeto;
                         x.RequisicaoClientNo = REQ.ClientNo;
                         x.RequisicaoClientName = REQ.ClientName;
-                        x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
-                        x.RequisicaoUrgente = REQ.Urgente;
-                        x.RequisicaoOrcamentoEmAnexo = REQ.Orçamento;
-                        x.RequisicaoImobilizado = REQ.Imobilizado;
-                        x.RequisicaoExclusivo = REQ.Exclusivo;
-                        x.RequisicaoJaExecutado = REQ.JáExecutado;
-                        x.RequisicaoAmostra = REQ.Amostra;
-                        x.RequisicaoEquipamento = REQ.Equipamento;
-                        x.RequisicaoReposicaoDeStock = REQ.ReposiçãoDeStock;
-                        x.RequisicaoPrecoIvaIncluido = REQ.PrecoIvaincluido;
-                        x.RequisicaoAdiantamento = REQ.Adiantamento;
-                        x.RequisicaoPedirOrcamento = REQ.PedirOrcamento;
+                        x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição.HasValue ? REQ.RequisiçãoNutrição == true ? "Sim" : "Não" : "";
+                        x.RequisicaoUrgente = REQ.Urgente.HasValue ? REQ.Urgente == true ? "Sim" : "Não" : "";
+                        x.RequisicaoOrcamentoEmAnexo = REQ.Orçamento.HasValue ? REQ.Orçamento == true ? "Sim" : "Não" : "";
+                        x.RequisicaoImobilizado = REQ.Imobilizado.HasValue ? REQ.Imobilizado == true ? "Sim" : "Não" : "";
+                        x.RequisicaoExclusivo = REQ.Exclusivo.HasValue ? REQ.Exclusivo == true ? "Sim" : "Não" : "";
+                        x.RequisicaoJaExecutado = REQ.JáExecutado.HasValue ? REQ.JáExecutado == true ? "Sim" : "Não" : "";
+                        x.RequisicaoAmostra = REQ.Amostra.HasValue ? REQ.Amostra == true ? "Sim" : "Não" : "";
+                        x.RequisicaoEquipamento = REQ.Equipamento.HasValue ? REQ.Equipamento == true ? "Sim" : "Não" : "";
+                        x.RequisicaoReposicaoDeStock = REQ.ReposiçãoDeStock.HasValue ? REQ.ReposiçãoDeStock == true ? "Sim" : "Não" : "";
+                        x.RequisicaoPrecoIvaIncluido = REQ.PrecoIvaincluido.HasValue ? REQ.PrecoIvaincluido == true ? "Sim" : "Não" : "";
+                        x.RequisicaoAdiantamento = REQ.Adiantamento.HasValue ? REQ.Adiantamento == true ? "Sim" : "Não" : "";
+                        x.RequisicaoPedirOrcamento = REQ.PedirOrcamento.HasValue ? REQ.PedirOrcamento == true ? "Sim" : "Não" : "";
+                        x.RequisicaoRoupaManutencao = REQ.RoupaManutencao.HasValue ? REQ.RoupaManutencao == true ? "Sim" : "Não" : "";
                     }
                 }
             });
@@ -186,13 +190,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<ApprovalMovementsViewModel> result = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetAllREQAssignedToUserFilteredByStatus(User.Identity.Name, 1));
 
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
-            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
-            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
+            //AMARO TESTE 3
+            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.Region));
+            //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalArea));
+            //if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+            //    result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenter));
 
             this.session.SetString("totalPendingApprovals", result != null ? result.Count.ToString() : 0.ToString());
 
@@ -247,7 +252,7 @@ namespace Hydra.Such.Portal.Controllers
                     Requisição REQ = DBRequest.GetById(x.Number);
 
                     if (REQ != null)
-                        x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
+                        x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição.HasValue ? REQ.RequisiçãoNutrição == true ? "Sim" : "Não" : "";
                 }
             });
 
@@ -1515,7 +1520,7 @@ namespace Hydra.Such.Portal.Controllers
                                 catch (Exception ex)
                                 {
                                     result.eReasonCode = 503;
-                                    result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                    result.eMessage = "Ocorreu um erro ao criar o projeto no NAV (Verificar configuração de Cliente).";
                                 }
                                 if (!TCreateNavProj.IsCompletedSuccessfully)
                                 {
@@ -1648,7 +1653,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (dp["requisicaoProjectNo"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Req Projeto Nº");
+                    row.CreateCell(Col).SetCellValue("Nº Ordem/Projeto");
                     Col = Col + 1;
                 }
                 if (dp["requisicaoClientNo"]["hidden"].ToString() == "False")
@@ -1719,6 +1724,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["requisicaoPedirOrcamento"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Req Pedir Orçamento");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoRoupaManutencao"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Roupa Manutenção");
                     Col = Col + 1;
                 }
                 if (dp["requestUser"]["hidden"].ToString() == "False")
@@ -1802,62 +1812,67 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoAcordosPrecos == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoAcordosPrecos);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoUrgente"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoUrgente == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoUrgente);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoOrcamentoEmAnexo"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoOrcamentoEmAnexo == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoOrcamentoEmAnexo);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoImobilizado"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoImobilizado == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoImobilizado);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoExclusivo"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoExclusivo == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoExclusivo);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoJaExecutado"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoJaExecutado == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoJaExecutado);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoAmostra"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoAmostra == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoAmostra);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoEquipamento"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoEquipamento == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoEquipamento);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoReposicaoDeStock"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoReposicaoDeStock == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoReposicaoDeStock);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoPrecoIvaIncluido"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoPrecoIvaIncluido == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoPrecoIvaIncluido);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoAdiantamento"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoAdiantamento == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoAdiantamento);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoPedirOrcamento"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RequisicaoPedirOrcamento == true ? "Sim" : "Não");
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoPedirOrcamento);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoRoupaManutencao"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoRoupaManutencao);
                             Col = Col + 1;
                         }
                         if (dp["requestUser"]["hidden"].ToString() == "False")

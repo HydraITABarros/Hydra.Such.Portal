@@ -13,7 +13,9 @@ namespace Hydra.Such.Data.ViewModel.Academia
         public int NoSessoes { get; set; }
         public bool AccaoActiva { get; set; }
         public Boolean TemSessoes { get; set; }
-        public ICollection<AttachmentsViewModel> ImagensAccao { get; set; }
+        public int NoPedidosParaAprovacao { get; set; }
+        public int NoPedidosAprovados { get; set; }
+        public ICollection<AttachmentsViewModel> ImagensAccao { get; set; }        
 
         public AccaoFormacaoView()
         {
@@ -26,15 +28,16 @@ namespace Hydra.Such.Data.ViewModel.Academia
             CodigoInterno = accao.CodigoInterno;
             DesignacaoAccao = accao.DesignacaoAccao;
             IdTema = accao.IdTema;
-            Activa = accao.Activa == null ? 0 : accao.Activa.Value;
+            Activa = accao.Activa.HasValue ? accao.Activa.Value : 0;
             AccaoActiva = Activa == 1;
             DataInicio = accao.DataInicio;
             //Activa = DataInicio != null && DataInicio.Value.Date < DateTime.Now.Date ? 0 : Activa.Value;
             DataFim = accao.DataFim;
             IdEntidadeFormadora = accao.IdEntidadeFormadora;
-            NumeroTotalHoras = accao.NumeroTotalHoras == null ? 0 : accao.NumeroTotalHoras.Value;
+            NumeroTotalHoras = accao.NumeroTotalHoras ?? 0;
             LocalRealizacao = accao.LocalRealizacao;
             UrlImagem = accao.UrlImagem;
+            CustoInscricao = accao.CustoInscricao ?? 0;
 
         }
 
@@ -52,8 +55,13 @@ namespace Hydra.Such.Data.ViewModel.Academia
         {
             SessoesFormacao = accao.SessoesFormacao;
 
-            NoSessoes = accao.SessoesFormacao == null ? 0 : accao.SessoesFormacao.Count();
+            NoSessoes = accao.SessoesFormacao != null && accao.SessoesFormacao.Count() > 0 ? accao.SessoesFormacao.Count() : DBAcademia._ContaNoSessoesAccao(accao.IdAccao);
             TemSessoes = NoSessoes > 0;
+        }
+
+        public void ContaSessoesAccao()
+        {
+            NoSessoes = SessoesFormacao != null && SessoesFormacao.Count() > 0 ? SessoesFormacao.Count() : DBAcademia._ContaNoSessoesAccao(this.IdAccao);
         }
 
         public void DetalhesEntidade()
@@ -61,6 +69,18 @@ namespace Hydra.Such.Data.ViewModel.Academia
             Entidade = DBAcademia.__GetDetailsEntidade(IdEntidadeFormadora);
         }
 
+       public void CarregaPedidos(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin, bool onlyCompleted)
+        {
+            PedidosParticipacao = DBAcademia.__GetAllPedidosFormacao(IdAccao, cfgUser, origin, onlyCompleted);
+        }
+
+        public void ContaPedidos(ConfiguracaoAprovacaoUtilizador cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade origin)
+        {
+            int[] NoPedidosArray = DBAcademia.ContaNoPedidosPorAccao(this.IdAccao, cfgUser, origin, false);
+
+            NoPedidosParaAprovacao = NoPedidosArray[0];
+            NoPedidosAprovados = NoPedidosArray[1];
+        }
         public AccaoFormacao ParseToDb()
         {
             AccaoFormacao accao = new AccaoFormacao()
@@ -75,9 +95,14 @@ namespace Hydra.Such.Data.ViewModel.Academia
                 IdEntidadeFormadora = IdEntidadeFormadora,
                 NumeroTotalHoras = NumeroTotalHoras,
                 LocalRealizacao = LocalRealizacao,
-                UrlImagem = UrlImagem
+                UrlImagem = UrlImagem,
+                CustoInscricao = CustoInscricao
             };
 
+            if (Entidade != null)
+            {
+                accao.Entidade = Entidade;
+            }
             return accao;
         }
     }

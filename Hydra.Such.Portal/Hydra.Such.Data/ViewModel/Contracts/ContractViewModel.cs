@@ -33,7 +33,9 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string LastInvoiceDate { get; set; }
         public string NextInvoiceDate { get; set; }
         public string StartData { get; set; }
+        public string StartDataOriginal { get; set; }
         public string EndData { get; set; }
+        public string EndDataOriginal { get; set; }
         public string DueDate { get; set; }
         public bool? BatchInvoices { get; set; }
         public string NextBillingPeriod { get; set; }
@@ -126,7 +128,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string NoVEP { get; set; }
         public string TextoFatura { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
-        public decimal SomatorioLinhas { get; set; }
+        public decimal? SomatorioLinhas { get; set; }
 
 
         //EXPORTAR PARA EXCEL

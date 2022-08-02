@@ -37,6 +37,9 @@ using System.Data.SqlClient;
 using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.ViewModel.Viaturas;
 using Hydra.Such.Data.Logic.OrcamentoL;
+using Hydra.Such.Data.Logic.VisitasDB;
+using Hydra.Such.Data;
+using Hydra.Such.Data.ViewModel.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -449,17 +452,95 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllPurchaseLines([FromBody] string CodEncomenda)
+        public JsonResult GetAllPurchase24Months([FromBody] string respcenter)
         {
             List<DDMessageString> result = null;
 
-            result = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "").Select(x => new DDMessageString()
+            string FromDate = DateTime.Now.AddMonths(-24).ToString("yyyy-MM-dd");
+            string ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            result = DBNAV2017Encomendas.AllEncomendasAndArchive(_config.NAVDatabaseName, _config.NAVCompanyName, "C%", FromDate, ToDate).Select(x => new DDMessageString()
             {
                 id = x.No,
-                value = x.Description
+                value = x.PayToName
             }).ToList();
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentos2Years()
+        {
+            List<DDMessageRelated4> result = null;
+
+            result = DBNAV2009Procedimentos.ListProcedimentos2Years(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName).Select(x => new DDMessageRelated4()
+            {
+                id = x.No,
+                value = x.No,
+                extra1 = x.Local,
+                extra2 = x.Regiao,
+                extra3 = x.Area,
+                extra4 = x.Cresp
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllProcedimentosFornecedores([FromBody] string ProcedimentoNo)
+        {
+            List<DDMessageString> result = null;
+
+            result = DBNAV2009Procedimentos.ListProcedimentosFornecedores(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, ProcedimentoNo).Select(x => new DDMessageString()
+            {
+                id = x.id,
+                value = x.value
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllDocExternos([FromBody] string EncomendaNo)
+        {
+            List<DDMessageRelated> result = null;
+
+            result = DBNAV2017Encomendas.EncomendasNoDocExterno(_config.NAVDatabaseName, _config.NAVCompanyName, EncomendaNo).Select(x => new DDMessageRelated()
+            {
+                id = x.VendorShipmentNo,
+                value = x.VendorShipmentNo,
+                extra = x.OrderDate.ToString("yyyy-MM-dd")
+        }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllPurchaseLines([FromBody] string CodEncomenda)
+        {
+            List<DDMessageString> result = null;
+            List<EncomendasLinhasViewModel> AllEncomendas = new List<EncomendasLinhasViewModel>();
+
+            AllEncomendas = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "", 0);
+            if (AllEncomendas == null || AllEncomendas.Count == 0)
+            {
+                AllEncomendas = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "", 1);
+            }
+
+            if (AllEncomendas != null && AllEncomendas.Count > 0)
+            {
+                result = AllEncomendas.Select(x => new DDMessageString()
+                {
+                    id = x.No,
+                    value = x.Description
+                }).ToList();
+
+                return Json(result);
+            }
+            else
+            {
+                return Json(null);
+            }
         }
 
         [HttpPost]
@@ -490,6 +571,7 @@ namespace Hydra.Such.Portal.Controllers
                     dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));
                     _item.descricao2Produto = AllProducts.Where(x => x.Code == r.CodProduto).FirstOrDefault() != null ? AllProducts.Where(x => x.Code == r.CodProduto).FirstOrDefault().Name2 : "";
                     _item.produtoFornecedor = r.CodProduto.ToString() + r.NoFornecedor.ToString();
+                    _item.noContrato = !string.IsNullOrEmpty(r.NoContrato) ? r.NoContrato.ToString() : "";
                     retval.Add(_item);
                 });
 
@@ -942,6 +1024,34 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRegionCodeViaturas2()
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
+            {
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+            else
+            {
+                result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+
+
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetRegionCode_VendasAnuais()
         {
             List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Select(x => new DDMessageString()
@@ -1021,6 +1131,69 @@ namespace Hydra.Such.Portal.Controllers
                 id = x.Code,
                 value = x.Name
             }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetFunctionalAreaCodeViaturas2()
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
+            {
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+            else
+            {
+                result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCentrosCode()
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetCentrosCodeViaturas2()
+        {
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
+            {
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+            else
+            {
+                result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name).Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+
             return Json(result);
         }
 
@@ -1387,7 +1560,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 id = x.Code,
                 value = x.Name,
-                extra = x.MeasureUnit
+                extra = x.MeasureUnit,
+                extra2 = x.VATProductPostingGroup
             }).ToList();
             return Json(result);
         }
@@ -1407,7 +1581,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetResourcesCodeFH()
         {
-            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
+            List<DDMessageRelated> result = DBNAV2017Resources.GetAllResourcesFH(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").Select(x => new DDMessageRelated()
             {
                 id = x.Code,
                 value = x.Code + " - " + x.Name,
@@ -1573,6 +1747,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllProjectNavList_FH()
+        {
+            List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.No.StartsWith("OM") || x.No.StartsWith("PJ")).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProjectById([FromBody] string ProjectNo)
         {
             List<NAVProjectsViewModel> result = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo).ToList();
@@ -1709,6 +1891,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+
+        [HttpPost]
+        public JsonResult GetAllFornecedores()
+        {
+            List<DDMessageString> result = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.Name
+            }).ToList();
+            return Json(result);
+        }
 
         [HttpPost]
         public JsonResult GetAllClients()
@@ -1873,6 +2066,56 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetAllContratosByUser()
+        {
+            List<Contratos> ContractsList = DBContracts.GetAllByContractType(ContractType.Contract);
+            ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+            ContractsList.RemoveAll(x => x.NºDeContrato.Contains("QA"));
+            ContractsList.RemoveAll(x => x.NºDeContrato.Contains("VCI"));
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+            List<VisitasContratos> result = new List<VisitasContratos>();
+            List<NAVClientsViewModel> AllClients =  DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+            List<NAVDimValueViewModel> AllCresps = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+
+            ContractsList.ForEach(x =>
+            {
+                VisitasContratos Contrato = new VisitasContratos();
+
+                Contrato.NoContrato = x.NºDeContrato;
+                Contrato.AmbitoServico = x.Descrição;
+                Contrato.NoCliente = x.NºCliente;
+                Contrato.NomeCliente = !string.IsNullOrEmpty(x.NºCliente) && AllClients.FirstOrDefault(y => y.No_ == x.NºCliente) != null ? AllClients.FirstOrDefault(y => y.No_ == x.NºCliente).Name : "";
+                Contrato.CodArea = x.CódigoÁreaFuncional;
+                Contrato.NomeArea = !string.IsNullOrEmpty(x.CódigoÁreaFuncional) && AllAreas.FirstOrDefault(y => y.Code == x.CódigoÁreaFuncional) != null ? AllAreas.FirstOrDefault(y => y.Code == x.CódigoÁreaFuncional).Name : "";
+                Contrato.CodCresp = x.CódigoCentroResponsabilidade;
+                Contrato.NomeCresp = !string.IsNullOrEmpty(x.CódigoCentroResponsabilidade) && AllCresps.FirstOrDefault(y => y.Code == x.CódigoCentroResponsabilidade) != null ? AllCresps.FirstOrDefault(y => y.Code ==  x.CódigoCentroResponsabilidade).Name : "";
+
+                result.Add(Contrato);
+            });
+
+
+
+
+            //ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x, _config.NAVDatabaseName, _config.NAVCompanyName)));
+
+            //result.ForEach(x => { x.StatusDescription = status.Where(y => y.Id == x.Status).Select(y => y.Value).FirstOrDefault(); });
+
+            return Json(result);
+        }
 
         public JsonResult GetPriceAgreementLines([FromBody]string Area, DateTime DataFornecedor)
         {
@@ -2587,18 +2830,30 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();
             List<DDMessageString> result = new List<DDMessageString>();
 
-            if (!string.IsNullOrEmpty(areaCode))
-                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).ToList();
-            else
-                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
-
-            if (AllCentros != null && AllCentros.Count > 0)
+            AcessosUtilizador UserAcess = DBUserAccesses.GetById(User.Identity.Name, (int)Enumerations.Features.Viaturas);
+            if (UserAcess != null && UserAcess.VerTudo == true)
             {
-                result = AllCentros.Select(x => new DDMessageString()
+                result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Select(x => new DDMessageString()
                 {
                     id = x.Code,
                     value = x.Name
                 }).ToList();
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(areaCode))
+                    AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).ToList();
+                else
+                    AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+
+                if (AllCentros != null && AllCentros.Count > 0)
+                {
+                    result = AllCentros.Select(x => new DDMessageString()
+                    {
+                        id = x.Code,
+                        value = x.Name
+                    }).ToList();
+                }
             }
 
             return Json(result.OrderBy(x => x.value));
@@ -3587,6 +3842,17 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = EnumerablesFixed.DEV_Estados;
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetVisitasEstados()
+        {
+            List<DDMessage> result = DBVisitasEstados.GetAll().Select(x => new DDMessage()
+            {
+                id = x.CodEstado,
+                value = x.Estado
+            }).ToList();
+            return Json(result);
+        }
     }
 
 
@@ -3608,6 +3874,16 @@ namespace Hydra.Such.Portal.Controllers
         public string value { get; set; }
         public string extra { get; set; }
         public string extra2 { get; set; }
+    }
+
+    public class DDMessageRelated4
+    {
+        public string id { get; set; }
+        public string value { get; set; }
+        public string extra1 { get; set; }
+        public string extra2 { get; set; }
+        public string extra3 { get; set; }
+        public string extra4 { get; set; }
     }
 
     public class DDMessageRelatedInt

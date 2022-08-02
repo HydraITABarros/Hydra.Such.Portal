@@ -78,7 +78,7 @@ namespace Hydra.Such.Data.Database
                         foreach (SqlParameter item in parameters)
                         {
                             command.Parameters.Add(item.ParameterName, System.Data.SqlDbType.NVarChar);
-                            command.Parameters[item.ParameterName].Value = item.Value == null ? "" : item.Value;
+                            command.Parameters[item.ParameterName].Value = item.Value ?? "";
                         }
 
                         result = command.ExecuteNonQuery();
@@ -87,6 +87,10 @@ namespace Hydra.Such.Data.Database
             }
             catch (Exception ex)
             {
+                if (ex != null)
+                {
+
+                }
                 return null;
             }
             return result;

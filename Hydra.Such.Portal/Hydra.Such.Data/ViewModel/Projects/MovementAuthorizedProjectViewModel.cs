@@ -21,7 +21,8 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string FunctionalAreaCode { get; set; }
         public string ResponsabilityCenterCode { get; set; }
         public string CodContract { get; set; }
-        public int CodServiceGroup { get; set; }
+        //public int CodServiceGroup { get; set; }
+        public string CodServiceGroup { get; set; }
         public string CodServClient { get; set; }
         public string DescServClient { get; set; }
         public string NumGuideResiduesGar { get; set; }

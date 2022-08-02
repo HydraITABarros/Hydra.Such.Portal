@@ -35,10 +35,10 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@RequisitionNo", requisitionNo),
                         new SqlParameter("@From", from),
                         new SqlParameter("@To", to),
-                        new SqlParameter("@No_FilterExpression", No_FilterExpression )
+                        new SqlParameter("@NoLikeExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @No_FilterExpression", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @NoLikeExpression", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -99,10 +99,10 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@RequisitionNo", requisitionNo),
                         new SqlParameter("@From", from),
                         new SqlParameter("@To", to),
-                        new SqlParameter("@No_FilterExpression", No_FilterExpression )
+                        new SqlParameter("@NoLikeExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList_Archive @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @No_FilterExpression", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList_Archive @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @NoLikeExpression", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -114,6 +114,7 @@ namespace Hydra.Such.Data.Logic
                             result.Add(new EncomendasViewModel()
                             {
                                 No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                                Version = temp.Version,
                                 PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
                                 PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
                                 YourReference = temp.YourReference.Equals(DBNull.Value) ? "" : (string)temp.YourReference,
@@ -141,7 +142,44 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static EncomendasViewModel GetDetailsByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression)
+        public static List<EncomendasViewModel> AllEncomendasAndArchive(string NAVDatabaseName, string NAVCompanyName, string No_FilterExpression, string from = null, string to = null)
+        {
+            try
+            {
+                List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@From", from),
+                        new SqlParameter("@To", to),
+                        new SqlParameter("@NoLikeExpression", No_FilterExpression )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasListOcorrencias @DBName, @CompanyName, @From, @To, @NoLikeExpression", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new EncomendasViewModel()
+                        {
+                            No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                            PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
+                            PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static EncomendasViewModel GetDetailsByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression, int Version = 0)
         {
             try
             {
@@ -152,10 +190,11 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@No", No ),
+                        new SqlParameter("@Version", Version ),
                         new SqlParameter("@No_FilterExpression", No_FilterExpression )
                     };
 
-                    dynamic data = ctx.execStoredProcedure("exec NAV2017EncomendasDetails @DBName, @CompanyName, @No", parameters).FirstOrDefault();
+                    dynamic data = ctx.execStoredProcedure("exec NAV2017EncomendasDetails @DBName, @CompanyName, @No, @Version", parameters).FirstOrDefault();
 
                     result = new EncomendasViewModel()
                     {
@@ -201,7 +240,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<EncomendasLinhasViewModel> ListLinesByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression)
+        public static List<EncomendasLinhasViewModel> ListLinesByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression, int Version = 0)
         {
             try
             {
@@ -212,10 +251,11 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@No", No ),
+                        new SqlParameter("@Version", Version),
                         new SqlParameter("@No_FilterExpression", No_FilterExpression )
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasLinhasList @DBName, @CompanyName, @No", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasLinhasList @DBName, @CompanyName, @No, @Version", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -286,5 +326,37 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<EncomendasViewModel> EncomendasNoDocExterno(string NAVDatabaseName, string NAVCompanyName, string EncomendaNo)
+        {
+            try
+            {
+                List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@EncomendaNo", EncomendaNo )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasNoDocExterno @DBName, @CompanyName, @EncomendaNo", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new EncomendasViewModel()
+                        {
+                            VendorShipmentNo = temp.NoDocExterno.Equals(DBNull.Value) ? "" : (string)temp.NoDocExterno,
+                            OrderDate = (DateTime)temp.DataRegisto
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

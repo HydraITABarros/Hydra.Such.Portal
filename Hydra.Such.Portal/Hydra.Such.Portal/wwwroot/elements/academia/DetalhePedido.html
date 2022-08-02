@@ -143,9 +143,10 @@
                 text-decoration: none;
                 text-shadow: 0px 1px 0px #611827;
             }
+
                 .suchdropdown.disabled {
                     cursor: not-allowed;
-                    pointer-events:none;
+                    pointer-events: none;
                 }
 
             .suchdropdown-menu {
@@ -176,7 +177,7 @@
                 /*font-size: 20px;*/
             }
 
-            
+
 
             /*DETALHES.begin*/
             #gridAccoes {
@@ -379,6 +380,16 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!-- VerificarInscricaoEmAccaoFormacao -->
+        <iron-ajax url="/Academia/VerificarPedidoParaAccaoFormacao"
+                   last-response="{{ idPedidoRegistado }}"
+                   method="post"
+                   handle-as="json"
+                   id="verificacao_existencia_pedido_page_ajax"
+                   on-response="_verificacaoExistenciaPedidoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Academia/RegistaParecerDotacaoOrcamental"
                    last-response="{{parecerRegistado}}"
                    method="post"
@@ -439,9 +450,9 @@
                                                 <such-selectbox id="idEmpregadoCbox"
                                                                 name="idEmpregadoCbox"
                                                                 label="Nº Mecanográfico"
-                                                                on-value-changed="_setEmployeeDetails"                                                                
+                                                                on-value-changed="_setEmployeeDetails"
                                                                 value="{{data.idEmpregado}}"
-                                                                items="[[employeeList]]"                                                                
+                                                                items="[[employeeList]]"
                                                                 text-path="no"
                                                                 value-path="no"
                                                                 fields='[{"field":"no", "name":"No. Mecanográfico"},{"field":"name", "name":"Nome"},{"field":"funcao", "name":"Função"},{"field":"areaNav2017", "name":"Area"},{"field":"crespNav2017", "name":"CResp"},{"field":"regiaoNav2017", "name":"Região"}]'
@@ -580,7 +591,7 @@
                                                 <vaadin-text-field id="dataSubmissaoTxt" name="dataSubmissaoTxt" label="Data Submissão" value="{{ data.dataSubmissaoTxt }}" disabled></vaadin-text-field>
                                             </div>
                                             <div class="col-md-7">
-                                                <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O(A) Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
                                     </div>
@@ -610,7 +621,7 @@
                                             <div class="panel panel-default" style="border:0">
                                                 <div class="panel-body">
                                                     <div class="row break_clear">
-                                                        <div class="col-xs-6" style="padding:3px">
+                                                        <div class="col-xs-4" style="padding:3px">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading" style="font-weight:bold">Aprovação Chefia</div>
                                                                 <div class="panel-body">
@@ -618,12 +629,25 @@
                                                                         <vaadin-text-field id="dataAprovacaoChefiaTxt" name="dataAprovacaoChefiaTxt" label="Data Aprovação" value="{{ data.dataAprovacaoChefiaTxt }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                     <div class="col-xs-8">
-                                                                        <vaadin-text-field id="utilizadorAprovacaoChefia" name="utilizadorAprovacaoChefia" label="O Responsável" value="{{ data.utilizadorAprovacaoChefia }}" disabled></vaadin-text-field>
+                                                                        <vaadin-text-field id="utilizadorAprovacaoChefia" name="utilizadorAprovacaoChefia" label="O(A) Responsável" value="{{ data.utilizadorAprovacaoChefia }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xs-6" style="padding:3px">
+                                                        <div class="col-xs-4" style="padding:3px">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" style="font-weight:bold">Aprovação Coordenação</div>
+                                                                <div class="panel-body">
+                                                                    <div class="col-xs-4">
+                                                                        <vaadin-text-field id="dataAprovacaoCoordenacaoTxt" name="dataAprovacaoCoordenacaoTxt" label="Data Aprovação" value="{{ data.dataAprovacaoCoordenacaoTxt }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                    <div class="col-xs-8">
+                                                                        <vaadin-text-field id="utilizadorAprovacaoCoordenacao" name="utilizadorAprovacaoCoordenacao" label="O(A) Coordenador(a)" value="{{ data.utilizadorAprovacaoCoordenacao }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-4" style="padding:3px">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading" style="font-weight:bold">Aprovação Direcção</div>
                                                                 <div class="panel-body">
@@ -631,7 +655,7 @@
                                                                         <vaadin-text-field id="dataAprovacaoDireccaoTxt" name="dataAprovacaoDireccaoTxt" label="Data Aprovação" value="{{ data.dataAprovacaoDireccaoTxt }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                     <div class="col-xs-8">
-                                                                        <vaadin-text-field id="utilizadorAprovacaoDireccao" name="utilizadorAprovacaoDireccao" label="O Director da UP/AAS" value="{{ data.utilizadorAprovacaoDireccao }}" disabled></vaadin-text-field>
+                                                                        <vaadin-text-field id="utilizadorAprovacaoDireccao" name="utilizadorAprovacaoDireccao" label="A Direcção da UP/AAS" value="{{ data.utilizadorAprovacaoDireccao }}" disabled></vaadin-text-field>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -799,49 +823,49 @@
                             </paper-collapse-item>
                         </div>
 
-                        <!-- VIII Comentários /!\ Apenas deverá estar visivel para a Academia e quando o estado >= 3-->
+                        <!-- VIII Comentários /!\ Apenas deverá estar visivel para a Academia e quando o estado >= 4-->
                         <div id="comentariosSection" class="panel panel-default">
                             <paper-collapse-item header="VIII - Comentários">
                                 <div class="panel-body">
-                                      <div class="break_clear">
-                                          <div class="row break_clear">
-                                              <div class="col-md-10">
-                                                  <such-textarea id="textoComentario" name="textoComentario" label="Comentário" rows="3" value="{{ txtComentario }}"></such-textarea>
-                                              </div>
-                                              <div class="col-md-2">
-                                                  <br />
-                                                  <paper-button raised id="btnInsereComentario" class="btn--confirm pull-left" on-tap="_criaComentario"><i class="fa fa-level-up" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
-                                              </div>
-                                          </div>
-                                          <div class="row break_clear">
-                                              <vaadin-grid id="gridComentarios" aria-label="gridComentarios" items="[[data.comentariosPedido]]" class="grid" multi-sort="true">
-                                                  <vaadin-grid-column resizable width="10%">
-                                                      <template class="header">
-                                                          <vaadin-grid-sorter path="dataHoraComentario">Data</vaadin-grid-sorter>
-                                                      </template>
-                                                      <template>
-                                                          {{ item.dataHoraComentario}}
-                                                      </template>
-                                                  </vaadin-grid-column>
-                                                  <vaadin-grid-column resizable width="15%">
-                                                      <template class="header">
-                                                          <vaadin-grid-sorter path="utilizadorCriacao">Utilizador</vaadin-grid-sorter>
-                                                      </template>
-                                                      <template>
-                                                          {{ item.utilizadorCriacao }}
-                                                      </template>
-                                                  </vaadin-grid-column>
-                                                  <vaadin-grid-column width="75%">
-                                                      <template class="header">
-                                                          <vaadin-grid-sorter>Comentário</vaadin-grid-sorter>
-                                                      </template>
-                                                      <template>
-                                                          <such-textarea id="textoComentarioGrid" name="textoComentarioGrid" rows="3" value="{{item.textoComentario}}" disabled style="opacity:1"></such-textarea>
-                                                      </template>
-                                                  </vaadin-grid-column>
-                                              </vaadin-grid>
-                                          </div>
-                                      </div>
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-10">
+                                                <such-textarea id="textoComentario" name="textoComentario" label="Comentário" rows="3" value="{{ txtComentario }}"></such-textarea>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <br />
+                                                <paper-button raised id="btnInsereComentario" class="btn--confirm pull-left" on-tap="_criaComentario"><i class="fa fa-level-up" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <vaadin-grid id="gridComentarios" aria-label="gridComentarios" items="[[data.comentariosPedido]]" class="grid" multi-sort="true">
+                                                <vaadin-grid-column resizable width="10%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataHoraComentario">Data</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.dataHoraComentario}}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column resizable width="15%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizadorCriacao">Utilizador</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.utilizadorCriacao }}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="75%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter>Comentário</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        <such-textarea id="textoComentarioGrid" name="textoComentarioGrid" rows="3" value="{{item.textoComentario}}" disabled style="opacity:1"></such-textarea>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
                                 </div>
                             </paper-collapse-item>
                         </div>
@@ -863,14 +887,6 @@
                 <template class="row-details">
                     <div class="details">
                         <vaadin-grid name="gridAccoes" aria-label="gridAccoes" id="gridAccoes" items="[[temaDetail.accoes]]" active-item="{{activeCourse}}" multi-sort="true">
-                            <!--<vaadin-grid-column width="8%">
-                            <template class="header">
-                                <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                [[item.codigoInterno]]
-                            </template>
-                        </vaadin-grid-column>-->
                             <vaadin-grid-column resizable width="40%">
                                 <template class="header">
                                     <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
@@ -993,6 +1009,11 @@
                         value: false
                     },
 
+                    _iscoordenador: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     _isdirector: {
                         type: Boolean,
                         value: false
@@ -1047,6 +1068,7 @@
                         type: Boolean,
                         value: false
                     },
+
 
                     _msg: {
                         type: String,
@@ -1154,7 +1176,7 @@
 
                         this._url = window.location.href;
 
-                        if (this.data.estado == 0) {
+                        if (this.data.estado == 0 || this._istrainingmanager) {
                             this.$.page_catalogo_ajax.body = JSON.stringify();
                             this.$.page_catalogo_ajax.generateRequest();
                             this.$.entidades_page_ajax.generateRequest();
@@ -1171,7 +1193,12 @@
                             this.$.idEmpregadoCbox.valueText = this.data.idEmpregado;
 
                             if (this.data.estado == 0) {
-                                this.$.employees_page_ajax.body = JSON.stringify({ "isChief": this._ischief, "isDirector": this._isdirector });
+                                this.$.employees_page_ajax.body = JSON.stringify(
+                                    {
+                                        "isChief": this._ischief,
+                                        "isDirector": this._isdirector,
+                                        "isCoordenador": this._iscoordenador
+                                    });
                                 this.$.employees_page_ajax.generateRequest(); 
                             }                                  
 
@@ -1179,10 +1206,12 @@
                             $(self.$.idEmpregadoCbox).removeClass('hidden');
                         }
 
+
+
                         this.txtComentario = "";
                         $(self.$.comentariosSection).addClass('hidden');
 
-                        if (this._istrainingmanager && this.data.estado >= 3) {
+                        if (this._istrainingmanager && this.data.estado >= 4) {
                             $(self.$.comentariosSection).removeClass('hidden');
                         }
                         
@@ -1203,9 +1232,9 @@
                 },
 
                 _onClickCourse: function (e) {
-                    //if (this.data.estado == 0) {
+                    if (this.data.estado == 0 || (this._istrainingmanager && (this.data.estado == 3 || this.data.estado == 7))) {
                         this.$.selectCourse.open();
-                   // }                                
+                   }                                
                 },
 
                 _catalogoResponse: function (e) {
@@ -1215,7 +1244,7 @@
                 },
 
                 _onClickSchedule: function (e) {
-                    this.courseDescription = this.data.designacaoAccao; 
+                    this.courseDescription = this.data.designacaoAccao;
 
                     this.$.sessoes_page_ajax.body = JSON.stringify({ "idAccao": this.data.idAccaoFormacao });
                     this.$.sessoes_page_ajax.generateRequest();                       
@@ -1248,14 +1277,18 @@
                     if (this.data != null) {
                         var obj = this.data;
 
-                        this.textValidacao = "Opções Validação";
-
-                        if (obj.estado == 1) {
-                            this.textValidacao = "Opções Chefia";
-                        }
-
-                        if (obj.estado == 2) {
-                            this.textValidacao = "Opções Direcção";
+                        switch (obj.estado) {
+                            case 1: this.textValidacao = "Opções Chefia";
+                                break;
+                            case 2: this.textValidacao = "Opções Coordenação";
+                                break;
+                            case 3:
+                            case 5:
+                                this.textValidacao = "Opções Direcção";
+                                break;
+                            case 6: this.textValidacao = "Opções CA";
+                                break;
+                            default: this.textValidacao = "Opções Validação";
                         }
                     }
 
@@ -1449,12 +1482,13 @@
 
                     if (this.data != undefined && this.entidadeList != null) {
                         var _id = this.$.idEntidadeFormadora.value;
-                        var _entity = this.entidadeList.find(_e => _e.idEntidade == _id); 
+                        if (_id != null) {
+                            var _entity = this.entidadeList.find(_e => _e.idEntidade == _id);
 
-                        this.data.idEntidadeFormadora = _entity.idEntidade;
-                        this.data.descricaoEntidadeFormadora = _entity.descricaoEntidade;                        
-                    }
-                    
+                            this.data.idEntidadeFormadora = _entity.idEntidade;
+                            this.data.descricaoEntidadeFormadora = _entity.descricaoEntidade;
+                        }                                              
+                    }                          
                 },
 
                 _deleteAttachment: function (e) {
@@ -1540,14 +1574,33 @@
 
                         this.$.page_update_ajax.body = JSON.stringify(this.data);
                         this.$.page_update_ajax.generateRequest();
+                        setTimeout(function () {
 
+                        }, 1000);
+
+                        this.$.verificacao_existencia_pedido_page_ajax.body = JSON.stringify(
+                                    {
+                                        "idAccao": this.data.idAccaoFormacao,
+                                        "idFormando": this.data.idEmpregado
+                                    });
+                        this.$.verificacao_existencia_pedido_page_ajax.generateRequest();
+                    }
+                },
+
+
+                _verificacaoExistenciaPedidoResponse: function (e) {
+                    debugger;;
+                    if (!this.__isNullOrEmptyString(this.idPedidoRegistado)) {                         
+                        this._openToastError("Já existe, em processamento, um Pedido de Participação em Formação para esta Acção: Pedido nº: " + this.idPedidoRegistado);
+                        return;
+                    } else {
                         var checkResult = this._checkBeforeSubmit(this.data);
                         if (checkResult == 0) {
                             var ajax_request = this.$.transicao_estado_page_ajax;
                             if (this._url == "") {
                                 this._url = window.location.href;
                             }
-                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1, "url":this._url });
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1, "url": this._url });
 
                             var str = "Confirma a submissão do pedido " + this.data.idPedido + " para Aprovação pela Chefia?";
                             this._msg = "Pedido " + this.data.idPedido + " Submetido para Aprovação pela Chefia com sucesso.";
@@ -1575,7 +1628,6 @@
                                     break;
                             }
                         }
-
                     }
                 },
 
@@ -1589,7 +1641,9 @@
                             return;
                         }
 
+                        // Aprovar
                         if (_option.value == 1) {
+                            // O pedido está no estado Submetido
                             if (_data.estado == 1) {
                                 var _execute = false;
                                 if (this._url == "") {
@@ -1609,30 +1663,46 @@
                                 this.$.page_update_ajax.body = JSON.stringify(this.data);
                                 this.$.page_update_ajax.generateRequest();
 
-                                if (this._ischief && !this._isdirector) {
-                                    var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Direcção da UP/AAS?";
-                                    this._msg = "Pedido " + _data.idPedido + " submetido à Direcção da UP/AAS com sucesso.";
+                                var estadoSeguinte = 0;
 
-                                    ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 2, "url": this._url });
-
+                                if (this._isdirector) {
+                                    estadoSeguinte = 4; // Aprovado Direcção
                                     _execute = true;
-                                }
-
-                                if (this._ischief && this._isdirector) {
                                     var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Academia?";
                                     this._msg = "Pedido " + _data.idPedido + " submetido à Academia com sucesso.";
-
-                                    ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 3, "url": this._url });
-
-                                    _execute = true;
+                                } else {
+                                    if (this._iscoordenador) {
+                                        estadoSeguinte = 3; // Aprovado Coordenação
+                                        _execute = true;
+                                        var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Direcção do SP/SAG?";
+                                        this._msg = "Pedido " + _data.idPedido + " submetido à Direcção do SP/SAG com sucesso.";
+                                    } else {
+                                        if (this._ischief) {
+                                            estadoSeguinte = 2; // Aprovado Chefia
+                                            _execute = true;
+                                            var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Coordenação?";
+                                            this._msg = "Pedido " + _data.idPedido + " submetido à Coordenação com sucesso.";
+                                        }
+                                    }
                                 }
 
-                                if (_execute) {
-                                    this._confirmAndExecuteActionToast(str, ajax_request);
+                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": estadoSeguinte, "url": this._url });
+
+                                if (estadoSeguinte >= 2 && estadoSeguinte <= 4) {
+                                    if (_execute) {
+                                        this._confirmAndExecuteActionToast(str, ajax_request);
+                                    }
                                 }
+                               
 
                             } 
-                            if (_data.estado == 4) {
+
+                            //  O Pedido está no estado Devolvido Direcção
+                            if (_data.estado == 5) {
+                                if (!this._isdirector) {
+                                    this._openToastError("Não tem permissões para efectuar esta operação: deverá ter perfil de Direcção");
+                                    return;
+                                }
                                 var ajax_request = this.$.transicao_estado_page_ajax;
                                 this.doNotShowMsg = true;
 
@@ -1642,11 +1712,12 @@
                                 var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Academia?";
                                 this._msg = "Pedido " + _data.idPedido + " submetido à Academia com sucesso.";
 
-                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 3, "url": this._url });
+                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 4, "url": this._url });
                                 this._confirmAndExecuteActionToast(str, ajax_request);
                             }
                         }
 
+                        // Rejeitar
                         if (_option.value == 2) {
                             var ajax_request = this.$.transicao_estado_page_ajax;
                             var str = "Confirma o cancelamento do pedido " + _data.idPedido + "?";
@@ -1696,7 +1767,7 @@
                             var str = "Confirma o parecer de dotação orçamental do pedido " + _data.idPedido + "?";                          
 
                             var ajax_request = this.$.regista_parecerdotacao_page_ajax;
-                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "idAlteracao": 6 });
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "idAlteracao": 8 });
 
                             this._confirmAndExecuteActionToast(str, ajax_request);                                                             
                         }
@@ -1873,8 +1944,8 @@
                         var self = this;
 
                         this._openI = true;
-                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2 || data.estado == 4);
-                        this._openIV = this._istrainingmanager && (data.estado == 3 || data.estado == 7);
+                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2 || data.estado == 5);
+                        this._openIV = this._istrainingmanager && (data.estado == 4 || data.estado == 7);
 
                         $(self.$.menuConsAdmin).addClass('hidden');  
 
@@ -1886,7 +1957,7 @@
 
                         $(self.$.idEmpregadoCbox).addClass('hidden');
                         $(self.$.btnSubmitPedido).addClass('disabled');
-
+                        debugger;;
                         if (data.idEmpregado == this._employeeno) {                            
                             $(self.$.menuValidacao).addClass('disabled'); 
                         }
@@ -1902,23 +1973,41 @@
                             self.$.idEmpregadoCbox.disabled = true;
                             self.$.projectoEmpregado.disabled = true;
                             self.$.projectoEmpregadoCbox.disabled = true;
-                            self.$.designacaoAccao.disabled = true;
-                            self.$.horario.disabled = true;
-                            self.$.idEntidadeFormadora.disabled = true;
-                            self.$.dataInicio.disabled = true;
-                            self.$.dataFim.disabled = true;
-                            self.$.numeroTotalHoras.disabled = true;
-                            self.$.custoInscricao.disabled = true;
-                            self.$.valorIva.disabled = true;
-                            self.$.custoDeslocacoes.disabled = true;
-                            self.$.custoEstadia.disabled = true;
+                            if (!this._istrainingmanager) {
+                                self.$.designacaoAccao.disabled = true;
+                                self.$.horario.disabled = true;
+                                self.$.idEntidadeFormadora.disabled = true;
+                                self.$.dataInicio.disabled = true;
+                                self.$.dataFim.disabled = true;
+                                self.$.numeroTotalHoras.disabled = true;
+                                self.$.custoInscricao.disabled = true;
+                                self.$.valorIva.disabled = true;
+                                self.$.custoDeslocacoes.disabled = true;
+                                self.$.custoEstadia.disabled = true;
+                            } else {
+                                if (data.estado > 4 && data.estado != 7) {
+                                    self.$.designacaoAccao.disabled = true;
+                                    self.$.horario.disabled = true;
+                                    self.$.idEntidadeFormadora.disabled = true;
+                                    self.$.dataInicio.disabled = true;
+                                    self.$.dataFim.disabled = true;
+                                    self.$.numeroTotalHoras.disabled = true;
+                                    self.$.custoInscricao.disabled = true;
+                                    self.$.valorIva.disabled = true;
+                                    self.$.custoDeslocacoes.disabled = true;
+                                    self.$.custoEstadia.disabled = true;
+                                }
+                            }
+                            
                             self.$.descricaoConhecimentos.disabled = true;
                             self.$.planeada.disabled = true;
                             self.$.cursoPlanoFormacao.disabled = true;
                             $(self.$.btnSubmitPedido).addClass('disabled');    
                         }
 
-                        if (this.data.estado > 1 && this.data.estado != 4) {
+                        debugger;;
+                        if (this.data.estado == 0 || (this.data.estado > 1 && this.data.estado > 5)) {
+                            debugger;;
                             self.$.fundamentacaoChefia.disabled = true;
                             $(self.$.menuValidacao).addClass('disabled');
                         }
@@ -1927,12 +2016,12 @@
                             $(self.$.btnSubmitPedido).removeClass('disabled');
                         }
 
-                        if (this.data.estado != 3 || !this._istrainingmanager) {
+                        if (this.data.estado != 4 || !this._istrainingmanager) {
                             $(self.$.menuParecerAcademia).addClass('disabled');
                             $(self.$.btnSubmeteCA).addClass('disabled');
                             self.$.temDotacaoOrcamental.disabled = true;
                             self.$.parecerDotacaoAcademia.disabled = true;
-                            self.$.parecerAcademia.disabled = true;
+                            self.$.parecerAcademia.disabled = true;                           
                         }
                     }
                 },

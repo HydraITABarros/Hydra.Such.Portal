@@ -1,0 +1,2352 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<dom-module id="x-fornecedorquestionariodetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            .break_clear {
+                margin-top: 15px;
+            }
+
+            a.disabled {
+                pointer-events: none;
+                cursor: default;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    margin-top: -1px;
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                    border-top:  solid #ddd 1px;
+                };
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <!-- CUSTOMER CRUDS -->
+        <iron-ajax url="/Fornecedores/GetQuestionarioDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/GetQuestionarioDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databoundHistorico_ajax"
+                   on-response="_responseProcessor_Historico"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/VerificarNovoQuestionario"
+                   last-response="{{novoQuestionario}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_VerificarNovoQuestionario_ajax"
+                   on-response="_responseProcessor_NovoQuestionario"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/CreateQuestionario"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateQuestionario_ajax"
+                   on-response="_responseProcessor_CreateQuestionario"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/GetQuestionarioHistorico"
+                   last-response="{{datahistorico}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetHistorico_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Fornecedores/DownloadQuestionarioAnexo"
+                   last-response="{{downloadanexo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DownloadAnexo_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" disabled="{{ !_permissions.update }}"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_gravar" disabled="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i> Guardar</paper-button>
+            <!--<paper-button class="tablinks" on-tap="_downloadAnexo"><i class="fa fa-download" aria-hidden="true"></i> Anexo</paper-button>-->
+            <a id="lnk_anexo" href="/Fornecedores/DownloadQuestionarioAnexo/{{data.anexo.codigo}}/{{data.anexo.versao}}/{{data.anexo.urL_Anexo}}" target="_blank"><i class="fa fa-download" aria-hidden="true"></i> Anexo</a>
+            <paper-button id="btn_Historico" class="tablinks" on-tap="_openDlgHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
+        </div>
+
+        <div class="row break_clear">
+            <!--<div class="col-lg-1">
+            <img src="/images/SUCH_Logo_Horizontal.jpg" alt="SUCH" width="100%" height="100%" />
+        </div>-->
+            <div class="col-lg-12">
+                <!--Geral-->
+                <div class="col-xs-12">
+                    <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                        <paper-tab>AVALIAÇÃO DESEMPENHO AMBIENTAL</paper-tab>
+                    </paper-tabs>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelEmpresa" style="font-family:Calibri; font-weight:bold;">Empresa / Instituição:</label>
+            </div>
+            <div class="col-lg-11" align="left">
+                <vaadin-text-field id="fornecedor" name="fornecedor" value="{{data.fornecedor}}" disabled></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelActividade" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Actividade:</label>
+            </div>
+            <div class="col-lg-11" align="left">
+                <vaadin-text-field id="actividade" name="actividade" value="{{data.actividade}}" disabled="{{ !_permissions.update }}" required error-message="O campo Actividade é de preenchimento obrigatório."></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelResponsavel" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Responsável:</label>
+            </div>
+            <div class="col-lg-5" align="left">
+                <vaadin-text-field id="responsavel" name="responsavel" value="{{data.responsavel}}" disabled="{{ !_permissions.update }}" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
+            </div>
+            <div class="col-lg-1">
+                <label id="labelFuncao" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Função:</label>
+            </div>
+            <div class="col-lg-5" align="left">
+                <vaadin-text-field id="funcao" name="funcao" value="{{data.funcao}}" disabled="{{ !_permissions.update }}" required error-message="O campo Função é de preenchimento obrigatório."></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-1">
+                <label id="labelTelefone" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Telf:</label>
+            </div>
+            <div class="col-lg-2" align="left">
+                <vaadin-text-field id="telefone" name="telefone" value="{{data.telefone}}" disabled="{{ !_permissions.update }}" required error-message="O campo Telef. é de preenchimento obrigatório."></vaadin-text-field>
+            </div>
+            <div class="col-lg-1">
+                <label id="labelEMail" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">e-mail:</label>
+            </div>
+            <div class="col-lg-2" align="left">
+                <vaadin-text-field id="email" name="email" value="{{data.email}}" disabled="{{ !_permissions.update }}" required error-message="O campo e-mail é de preenchimento obrigatório."></vaadin-text-field>
+            </div>
+            <div class="col-lg-2">
+                <label id="labelProcedimento" style="padding-top: 15px; font-family:Calibri; font-weight:bold;">Procedimento n. (se aplicável):</label>
+            </div>
+            <div class="col-lg-4" align="left">
+                <vaadin-text-field id="procedimento" name="procedimento" value="{{data.procedimento}}" disabled="{{ !_permissions.update }}" required error-message="O campo Procedimento n. (se aplicável) é de preenchimento obrigatório."></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="center">
+                <label id="labelTema" style="font-family:Calibri; font-weight:bold; color:blue">Tema</label>
+            </div>
+            <div class="col-lg-5" align="center">
+                <label id="labelQuestao" style="font-family:Calibri; font-weight:bold; color:blue">Questão</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-2" align="center">
+                    <label id="labelSim" style="font-family:Calibri; font-weight:bold; color:blue; padding-right:15px">Sim</label>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <label id="labelNao" style="font-family:Calibri; font-weight:bold; color:blue; padding-right:15px">Não</label>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <label id="labelNA" style="font-family:Calibri; font-weight:bold; color:blue; padding-right:15px">NA</label>
+                </div>
+                <div class="col-lg-6" align="center">
+                    <label id="labelObservacoes" style="font-family:Calibri; font-weight:bold; color:blue">Observações</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema1" style="font-family:Calibri; font-weight:bold">1. Sistema de Gestão de Ambiental</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao11" style="font-family:Calibri; font-weight:normal">Possui um Sistema de Gestão Ambiental certificado?</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-2" align="center">
+                    <vaadin-checkbox id="resposta_11_Sim" name="resposta_11_Sim" checked="{{data.resposta_11_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta11Sim"></vaadin-checkbox>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <vaadin-checkbox id="resposta_11_Nao" name="resposta_11_Nao" checked="{{data.resposta_11_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta11Nao"></vaadin-checkbox>
+                </div>
+                <div class="col-lg-2" align="center">
+                    <vaadin-checkbox id="resposta_11_NA" name="resposta_11_NA" checked="{{data.resposta_11_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta11NA"></vaadin-checkbox>
+                </div>
+                <div class="col-lg-6">
+                    <vaadin-text-field id="resposta_11_Texto" name="resposta_11_Texto" value="{{data.resposta_11_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao12" style="font-family:Calibri; font-weight:normal">Qual é o referencial?</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <vaadin-text-field id="resposta_12_Texto" name="resposta_12_Texto" value="{{data.resposta_12_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2" align="left">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao13" style="font-family:Calibri; font-weight:normal">Nº Certificado</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <vaadin-text-field id="resposta_13_Texto" name="resposta_13_Texto" value="{{data.resposta_13_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear" align="left">
+            <label id="labelNota1" style="font-family:Calibri; font-weight:bold; color:blue; padding-left:15px">Caso tenha respondido afirmativamente ao ponto 1 não é necessário preencher os pontos seguintes do questionário</label>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema2" style="font-family:Calibri; font-weight:bold">2. Resíduos</label>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao21" style="font-family:Calibri; font-weight:normal">Promove a separação dos resíduos que produz?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao22" style="font-family:Calibri; font-weight:normal">Envia os Resíduos para gestores licenciados?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao23" style="font-family:Calibri; font-weight:normal">Qual o seu nº APA?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_21_Sim" name="resposta_21_Sim" checked="{{data.resposta_21_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta21Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_21_Nao" name="resposta_21_Nao" checked="{{data.resposta_21_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta21Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_21_NA" name="resposta_21_NA" checked="{{data.resposta_21_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta21NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_22_Sim" name="resposta_22_Sim" checked="{{data.resposta_22_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta22Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_22_Nao" name="resposta_22_Nao" checked="{{data.resposta_22_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta22Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_22_NA" name="resposta_22_NA" checked="{{data.resposta_22_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta22NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-12" align="left">
+                        <vaadin-text-field id="resposta_23_Texto" name="resposta_23_Texto" value="{{data.resposta_23_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_2_Texto" name="resposta_2_Texto" value="{{data.resposta_2_Texto}}" disabled="{{ !_permissions.update }}" rows="3" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema3" style="font-family:Calibri; font-weight:bold">3. Emissões para a atmosfera</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao31" style="font-family:Calibri; font-weight:normal">Possui fontes fixas de emissão e efectua a caracterização das emissões gasosas?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao32" style="font-family:Calibri; font-weight:normal">Nº de excedências/ano dos Limites de Emissão com comunicação à APA?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_31_Sim" name="resposta_31_Sim" checked="{{data.resposta_31_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta31Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_31_Nao" name="resposta_31_Nao" checked="{{data.resposta_31_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta31Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_31_NA" name="resposta_31_NA" checked="{{data.resposta_31_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta31NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <vaadin-text-field id="resposta_32_Texto" name="resposta_32_Texto" value="{{data.resposta_32_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100" on-value-changed="_resposta32Texto"></vaadin-text-field>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_32_NA" name="resposta_32_NA" checked="{{data.resposta_32_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta32NA" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_3_Texto" name="resposta_3_Texto" value="{{data.resposta_3_Texto}}" disabled="{{ !_permissions.update }}" rows="2" maxlength="100"> </such-textarea>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema4" style="font-family:Calibri; font-weight:bold">4. Águas residuais</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao41" style="font-family:Calibri; font-weight:normal">Produz águas residuais e possui autorização para descarga?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao42" style="font-family:Calibri; font-weight:normal">Possui ETAR?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao43" style="font-family:Calibri; font-weight:normal">Tipo de tratamento?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_41_Sim" name="resposta_41_Sim" checked="{{data.resposta_41_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta41Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_41_Nao" name="resposta_41_Nao" checked="{{data.resposta_41_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta41Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_41_NA" name="resposta_41_NA" checked="{{data.resposta_41_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta41NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_42_Sim" name="resposta_42_Sim" checked="{{data.resposta_42_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta42Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_42_Nao" name="resposta_42_Nao" checked="{{data.resposta_42_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta42Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_42_NA" name="resposta_42_NA" checked="{{data.resposta_42_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta42NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-12" align="left">
+                        <vaadin-text-field id="resposta_43_Texto" name="resposta_43_Texto" value="{{data.resposta_43_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_4_Texto" name="resposta_4_Texto" value="{{data.resposta_4_Texto}}" disabled="{{ !_permissions.update }}" rows="3" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema5" style="font-family:Calibri; font-weight:bold">5. Ruído para o ambiente</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao51" style="font-family:Calibri; font-weight:normal">Monitoriza o ruído produzido para o exterior?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao52" style="font-family:Calibri; font-weight:normal">Cumpre os Valores Limite?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_51_Sim" name="resposta_51_Sim" checked="{{data.resposta_51_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta51Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_51_Nao" name="resposta_51_Nao" checked="{{data.resposta_51_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta51Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_51_NA" name="resposta_51_NA" checked="{{data.resposta_51_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta51NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_52_Sim" name="resposta_52_Sim" checked="{{data.resposta_52_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta52Sim" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_52_Nao" name="resposta_52_Nao" checked="{{data.resposta_52_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta52Nao" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_52_NA" name="resposta_52_NA" checked="{{data.resposta_52_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta52NA" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_5_Texto" name="resposta_5_Texto" value="{{data.resposta_5_Texto}}" disabled="{{ !_permissions.update }}" rows="2" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema6" style="font-family:Calibri; font-weight:bold">6. Consumo de água</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao61" style="font-family:Calibri; font-weight:normal">Consome água da rede pública no seu processo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao62" style="font-family:Calibri; font-weight:normal">Controla o seu consumo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao63" style="font-family:Calibri; font-weight:normal">Possui furo de captação?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao64" style="font-family:Calibri; font-weight:normal">Controla o seu consumo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao65" style="font-family:Calibri; font-weight:normal">Implementa acções de melhoria para redução do consumo?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_61_Sim" name="resposta_61_Sim" checked="{{data.resposta_61_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta61Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_61_Nao" name="resposta_61_Nao" checked="{{data.resposta_61_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta61Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_61_NA" name="resposta_61_NA" checked="{{data.resposta_61_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta61NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_62_Sim" name="resposta_62_Sim" checked="{{data.resposta_62_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta62Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_62_Nao" name="resposta_62_Nao" checked="{{data.resposta_62_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta62Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_62_NA" name="resposta_62_NA" checked="{{data.resposta_62_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta62NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_63_Sim" name="resposta_63_Sim" checked="{{data.resposta_63_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta63Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_63_Nao" name="resposta_63_Nao" checked="{{data.resposta_63_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta63Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_63_NA" name="resposta_63_NA" checked="{{data.resposta_63_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta63NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Sim" name="resposta_64_Sim" checked="{{data.resposta_64_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta64Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_Nao" name="resposta_64_Nao" checked="{{data.resposta_64_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta64Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_64_NA" name="resposta_64_NA" checked="{{data.resposta_64_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta64NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Sim" name="resposta_65_Sim" checked="{{data.resposta_65_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta65Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_Nao" name="resposta_65_Nao" checked="{{data.resposta_65_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta65Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_65_NA" name="resposta_65_NA" checked="{{data.resposta_65_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta65NA"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_6_Texto" name="resposta_6_Texto" value="{{data.resposta_6_Texto}}" disabled="{{ !_permissions.update }}" rows="5" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema7" style="font-family:Calibri; font-weight:bold">7. Consumo de combustível (aplicável exclusivamente a transportadores)</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao71" style="font-family:Calibri; font-weight:normal">A frota automóvel possui menos de 10 anos?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao72" style="font-family:Calibri; font-weight:normal">Existe recurso a combustíveis mais limpos?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_71_Sim" name="resposta_71_Sim" checked="{{data.resposta_71_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta71Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_71_Nao" name="resposta_71_Nao" checked="{{data.resposta_71_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta71Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_71_NA" name="resposta_71_NA" checked="{{data.resposta_71_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta71NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_72_Sim" name="resposta_72_Sim" checked="{{data.resposta_72_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta72Sim" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_72_Nao" name="resposta_72_Nao" checked="{{data.resposta_72_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta72Nao" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_72_NA" name="resposta_72_NA" checked="{{data.resposta_72_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta72NA" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_7_Texto" name="resposta_7_Texto" value="{{data.resposta_7_Texto}}" disabled="{{ !_permissions.update }}" rows="2" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema8" style="font-family:Calibri; font-weight:bold">8. Consumo de energia</label>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao81" style="font-family:Calibri; font-weight:normal">Consome energia e controla o seu consumo?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao82" style="font-family:Calibri; font-weight:normal">Existe recurso a energias renováveis?</label>
+                </div>
+
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao83" style="font-family:Calibri; font-weight:normal">Implementa acções de melhoria para redução do consumo?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_81_Sim" name="resposta_81_Sim" checked="{{data.resposta_81_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta81Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_81_Nao" name="resposta_81_Nao" checked="{{data.resposta_81_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta81Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_81_NA" name="resposta_81_NA" checked="{{data.resposta_81_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta81NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_82_Sim" name="resposta_82_Sim" checked="{{data.resposta_82_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta82Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_82_Nao" name="resposta_82_Nao" checked="{{data.resposta_82_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta82Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_82_NA" name="resposta_82_NA" checked="{{data.resposta_82_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta82NA"></vaadin-checkbox>
+                    </div>
+
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Sim" name="resposta_83_Sim" checked="{{data.resposta_83_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta83Sim"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_Nao" name="resposta_83_Nao" checked="{{data.resposta_83_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta83Nao"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_83_NA" name="resposta_83_NA" checked="{{data.resposta_83_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta83NA"></vaadin-checkbox>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <such-textarea id="resposta_8_Texto" name="resposta_8_Texto" value="{{data.resposta_8_Texto}}" disabled="{{ !_permissions.update }}" rows="3" maxlength="100"> </such-textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema9" style="font-family:Calibri; font-weight:bold">9. Formação</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao91" style="font-family:Calibri; font-weight:normal">Promove a formação/sensibilização ambiental dos seus colaboradores?</label>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_91_Sim" name="resposta_91_Sim" checked="{{data.resposta_91_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta91Sim" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_91_Nao" name="resposta_91_Nao" checked="{{data.resposta_91_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta91Nao" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_91_NA" name="resposta_91_NA" checked="{{data.resposta_91_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta91NA" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <vaadin-text-field id="resposta_9_Texto" name="resposta_9_Texto" value="{{data.resposta_9_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-lg-2" align="left">
+                <label id="labelTema10" style="font-family:Calibri; font-weight:bold">10. Qualidade e Ambiente</label>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao101" style="font-family:Calibri; font-weight:normal">Tem Seguro de Responsabilidade Ambiental/Garantia Bancária? Em caso afirmativo solicitamos envie cópia.</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_101_Sim" name="resposta_101_Sim" checked="{{data.resposta_101_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta101Sim" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_101_Nao" name="resposta_101_Nao" checked="{{data.resposta_101_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta101Nao" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_101_NA" name="resposta_101_NA" checked="{{data.resposta_101_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta101NA" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6" align="left">
+                    <vaadin-text-field id="resposta_101_Texto" name="resposta_101_Texto" value="{{data.resposta_101_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao102" style="font-family:Calibri; font-weight:normal">Existe algum responsável pela Área da Qualidade e Ambiente?</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-6">
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_102_Sim" name="resposta_102_Sim" checked="{{data.resposta_102_Sim}}" disabled="{{ !_permissions.update }}" on-click="_resposta102Sim" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_102_Nao" name="resposta_102_Nao" checked="{{data.resposta_102_Nao}}" disabled="{{ !_permissions.update }}" on-click="_resposta102Nao" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                    <div class="col-lg-4" align="center">
+                        <vaadin-checkbox id="resposta_102_NA" name="resposta_102_NA" checked="{{data.resposta_102_NA}}" disabled="{{ !_permissions.update }}" on-click="_resposta102NA" style="padding-top:10px"></vaadin-checkbox>
+                    </div>
+                </div>
+                <div class="col-lg-6" align="left">
+                    <vaadin-text-field id="resposta_102_Texto" name="resposta_102_Texto" value="{{data.resposta_102_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <label id="labelQuestao103" style="font-family:Calibri; font-weight:normal">Em caso afirmativo indique nome e contato</label>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-12" align="left">
+                    <vaadin-text-field id="resposta_103_Texto" name="resposta_103_Texto" value="{{data.resposta_103_Texto}}" disabled="{{ !_permissions.update }}" maxlength="100"></vaadin-text-field>
+                </div>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+
+        <div class="row">
+            <div class="col-lg-1" align="center">
+                <img src="/images/201801-P01.png" alt="20180-P01" width="20%" height="20%" />
+            </div>
+            <div class="col-lg-11">
+                <div class="col-lg-12">
+                    <label id="labelLegenda1" style="font-family:Calibri; font-weight:bold">Legenda:</label>
+                </div>
+                <div class="col-lg-12">
+                    <label id="labelLegendaNA" style="font-family:Calibri; font-weight:lighter; font-size:smaller">NA - Não aplicável</label>
+                </div>
+                <div class="col-lg-12">
+                    <label id="labelLegendaAPA" style="font-family:Calibri; font-weight:lighter; font-size:smaller">APA - Agência Portuguesa do Ambiente</label>
+                </div>
+                <div class="col-lg-12">
+                    <label id="labelLegendaETAR" style="font-family:Calibri; font-weight:lighter; font-size:smaller">ETAR - Estação de Tratamento de Águas Resíduais</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-3">
+            </div>
+        </div>
+
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+        <div class="row break_clear">
+        </div>
+
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5">
+                <div class="col-lg-2">
+                    <label id="labelResponsavelFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Responsável:</label>
+                </div>
+                <div class="col-lg-10">
+                    <vaadin-text-field id="final_Responsavel" name="final_Responsavel" value="{{data.final_Responsavel}}" disabled="{{ !_permissions.update }}" maxlength="50" required error-message="O campo Responsável é de preenchimento obrigatório."></vaadin-text-field>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="col-lg-2">
+                    <label id="labelDataFinal" style="padding-top: 15px; font-family:Calibri; font-weight:bold">Data:</label>
+                </div>
+                <div class="col-lg-6">
+                    <vaadin-date-picker id="final_Data" name="final_Data" value="{{data.final_Data_Texto}}" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório."></vaadin-date-picker>
+                </div>
+                <div class="col-lg-6">
+                </div>
+            </div>
+        </div>
+
+        <paper-dialog id="dlgAnexo" class="dialgoBox" modal style="height:250px; width:550px;">
+            <div class="row break_clear">
+                <h2>Anexar ficheiro</h2>
+            </div>
+
+            <div class="row break_clear">
+                <vaadin-upload id="sendToQuestionario_Anexo"
+                               target="/Fornecedores/UploadQuestionarioAnexo/{{_codigo}}/{{_versao}}/{{_id_fornecedor}}"
+                               method="POST"
+                               headers="{'Accept': 'application/json'}"
+                               timeout=15000
+                               max-files="1">
+                    <span slot="drop-label">Coloque o anexo aqui......</span>
+                </vaadin-upload>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" id="btnCriarQuestionario" on-tap="_btnCriarQuestionario"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" id="btnFecharQuestionario" on-tap="_closeDlgAnexo"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="dlgHistorico" class="dialgoBox" modal style="height:550px; width:550px;">
+            <div class="row break_clear">
+                <h2>Histórico</h2>
+            </div>
+
+            <div class="row break_clear">
+                <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[datahistorico]]" class="grid" active-item="{{activeItemHistorico}}" multi-sort="true">
+                    <vaadin-grid-column width="150px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="versao">Versão</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="versao" value="[[filter.versao]]" />
+                        </template>
+                        <template>
+                            {{item.versao}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="150px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="utilizador_Criacao_Texto">Criador</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="utilizador_Criacao_Texto" value="[[filter.utilizador_Criacao_Texto]]" />
+                        </template>
+                        <template>
+                            {{item.utilizador_Criacao_Texto}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="150px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataHora_Criacao_Texto">Data de Criação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataHora_Criacao_Texto" value="[[filter.dataHora_Criacao_Texto]]" />
+                        </template>
+                        <template>
+                            {{item.dataHora_Criacao_Texto}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" id="btnFecharHistorico" on-tap="_closeDlgHistorico"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
+
+
+
+
+
+
+
+
+
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-fornecedorquestionariodetails',
+                properties: {
+                    _codigo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _versao: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _id_fornecedor: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItemHistorico: {
+                        observer: '_rowSelectedHistorico'
+                    },
+                },
+
+                ready: function () {
+                    var _this = this;
+
+                    if (this.$.sendToQuestionario_Anexo != null) {
+                        this.$.sendToQuestionario_Anexo.addEventListener('upload-response', function (e) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results != null && results != "") {
+                                _this.data.nomeAnexo = results;
+                            }
+                            else {
+                                var msg = document.querySelector("x-fornecedorquestionariodetails");
+                                msg._showErrorMessage("Não é permitido adicionar este tipo de ficheiro.");
+                            }
+                        });
+                    }
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": this._versao, "ID_Fornecedor": this._id_fornecedor });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _responseProcessor: function () {
+                    this._Edit();
+
+                    if (this._permissions.update == false) {
+                        $(this.$.lnk_anexo).addClass('disabled');
+                    }
+                    if (this._versao == 0) {
+                        $(this.$.lnk_anexo).addClass('disabled');
+                    }
+                    if (parseInt(this._versao) <= 1) {
+                        $(this.$.btn_Historico).addClass('disabled');
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _EnableCheckBox: function (e, disabled) {
+                    e.disabled = !disabled;
+                },
+                _CleanCheckBox: function (e) {
+                    e.checked = false;
+                },
+
+                _EnableTextBox: function (e, disabled) {
+                    e.disabled = !disabled;
+                },
+                _CleanTextBox: function (e) {
+                    e.value = "";
+                },
+
+                _Edit: function () {
+                    this._EnableTextBox(this.$.actividade, true);
+                    this._EnableTextBox(this.$.responsavel, true);
+                    this._EnableTextBox(this.$.funcao, true);
+                    this._EnableTextBox(this.$.telefone, true);
+                    this._EnableTextBox(this.$.email, true);
+                    this._EnableTextBox(this.$.procedimento, true);
+
+                    this._EnableCheckBox(this.$.resposta_11_Sim, true);
+                    this._EnableCheckBox(this.$.resposta_11_Nao, true);
+                    this._EnableCheckBox(this.$.resposta_11_NA, true);
+                    this._EnableTextBox(this.$.resposta_11_Texto, true);
+                    if (this.data.resposta_11_Sim == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, true);
+                        this._EnableTextBox(this.$.resposta_13_Texto, true);
+                    }
+                    if (this.data.resposta_11_Nao == true || this.data.resposta_11_NA == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, false);
+                        this._EnableTextBox(this.$.resposta_13_Texto, false);
+                    }
+
+                    if (this.data.resposta_11_Sim == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_21_NA, false);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_22_NA, false);
+                        this._EnableTextBox(this.$.resposta_23_Texto, false);
+                        this._EnableTextBox(this.$.resposta_2_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_31_NA, false);
+                        this._EnableTextBox(this.$.resposta_32_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false);
+                        this._EnableTextBox(this.$.resposta_3_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_41_NA, false);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_42_NA, false);
+                        this._EnableTextBox(this.$.resposta_43_Texto, false);
+                        this._EnableTextBox(this.$.resposta_4_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_51_NA, false);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_52_NA, false);
+                        this._EnableTextBox(this.$.resposta_5_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_61_NA, false);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_62_NA, false);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_63_NA, false);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_64_NA, false);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_65_NA, false);
+                        this._EnableTextBox(this.$.resposta_6_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_71_NA, false);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_72_NA, false);
+                        this._EnableTextBox(this.$.resposta_7_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_81_NA, false);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_82_NA, false);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_83_NA, false);
+                        this._EnableTextBox(this.$.resposta_8_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_91_NA, false);
+                        this._EnableTextBox(this.$.resposta_9_Texto, false);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_101_NA, false);
+                        this._EnableTextBox(this.$.resposta_101_Texto, false);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, false);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, false);
+                        this._EnableCheckBox(this.$.resposta_102_NA, false);
+                        this._EnableTextBox(this.$.resposta_102_Texto, false);
+                        this._EnableTextBox(this.$.resposta_103_Texto, false);
+                    }
+                    if (this.data.resposta_11_Nao == true || this.data.resposta_11_NA == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_21_NA, true);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_22_NA, true);
+                        if (this.data.resposta_22_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        }
+                        if (this.data.resposta_22_Nao == true || this.data.resposta_22_NA == true) {
+                            this._EnableTextBox(this.$.resposta_23_Texto, false);
+                        }
+                        this._EnableTextBox(this.$.resposta_2_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_31_NA, true);
+                        if (this.data.resposta_31_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_32_Texto, true);
+                            this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        }
+                        if (this.data.resposta_31_Nao == true || this.data.resposta_31_NA == true) {
+                            this._EnableTextBox(this.$.resposta_32_Texto, false);
+                            this._EnableCheckBox(this.$.resposta_32_NA, false);
+                        }
+                        this._EnableTextBox(this.$.resposta_3_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_41_NA, true);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_42_NA, true);
+                        if (this.data.resposta_42_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        }
+                        if (this.data.resposta_42_Nao == true || this.data.resposta_42_NA == true) {
+                            this._EnableTextBox(this.$.resposta_43_Texto, false);
+                        }
+                        this._EnableTextBox(this.$.resposta_4_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_51_NA, true);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_52_NA, true);
+                        this._EnableTextBox(this.$.resposta_5_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_61_NA, true);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_62_NA, true);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_63_NA, true);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_64_NA, true);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_65_NA, true);
+                        this._EnableTextBox(this.$.resposta_6_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_71_NA, true);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_72_NA, true);
+                        this._EnableTextBox(this.$.resposta_7_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_81_NA, true);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_82_NA, true);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_83_NA, true);
+                        this._EnableTextBox(this.$.resposta_8_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_91_NA, true);
+                        this._EnableTextBox(this.$.resposta_9_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_101_NA, true);
+                        this._EnableTextBox(this.$.resposta_101_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_102_NA, true);
+                        this._EnableTextBox(this.$.resposta_102_Texto, true);
+                        if (this.data.resposta_102_Sim == true) {
+                            this._EnableTextBox(this.$.resposta_103_Texto, true);
+                        }
+                        if (this.data.resposta_102_Nao == true || this.data.resposta_102_NA == true) {
+                            this._EnableTextBox(this.$.resposta_103_Texto, false);
+                        }
+                    }
+
+                    this._EnableTextBox(this.$.final_Responsavel, true);
+                    this._EnableTextBox(this.$.final_Data, true);
+                },
+
+                _ReadOnly: function () {
+                    this._EnableTextBox(this.$.actividade, false);
+                    this._EnableTextBox(this.$.responsavel, false);
+                    this._EnableTextBox(this.$.funcao, false);
+                    this._EnableTextBox(this.$.telefone, false);
+                    this._EnableTextBox(this.$.email, false);
+                    this._EnableTextBox(this.$.procedimento, false);
+
+                    this._EnableCheckBox(this.$.resposta_11_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_11_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_11_NA, false);
+                    this._EnableTextBox(this.$.resposta_11_Texto, false);
+                    this._EnableTextBox(this.$.resposta_12_Texto, false);
+                    this._EnableTextBox(this.$.resposta_13_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_21_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_21_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_21_NA, false);
+                    this._EnableCheckBox(this.$.resposta_22_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_22_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_22_NA, false);
+                    this._EnableTextBox(this.$.resposta_23_Texto, false);
+                    this._EnableTextBox(this.$.resposta_2_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_31_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_31_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_31_NA, false);
+                    this._EnableTextBox(this.$.resposta_32_Texto, false);
+                    this._EnableCheckBox(this.$.resposta_32_NA, false);
+                    this._EnableTextBox(this.$.resposta_3_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_41_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_41_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_41_NA, false);
+                    this._EnableCheckBox(this.$.resposta_42_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_42_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_42_NA, false);
+                    this._EnableTextBox(this.$.resposta_43_Texto, false);
+                    this._EnableTextBox(this.$.resposta_4_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_51_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_51_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_51_NA, false);
+                    this._EnableCheckBox(this.$.resposta_52_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_52_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_52_NA, false);
+                    this._EnableTextBox(this.$.resposta_5_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_61_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_61_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_61_NA, false);
+                    this._EnableCheckBox(this.$.resposta_62_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_62_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_62_NA, false);
+                    this._EnableCheckBox(this.$.resposta_63_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_63_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_63_NA, false);
+                    this._EnableCheckBox(this.$.resposta_64_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_64_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_64_NA, false);
+                    this._EnableCheckBox(this.$.resposta_65_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_65_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_65_NA, false);
+                    this._EnableTextBox(this.$.resposta_6_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_71_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_71_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_71_NA, false);
+                    this._EnableCheckBox(this.$.resposta_72_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_72_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_72_NA, false);
+                    this._EnableTextBox(this.$.resposta_7_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_81_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_81_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_81_NA, false);
+                    this._EnableCheckBox(this.$.resposta_82_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_82_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_82_NA, false);
+                    this._EnableCheckBox(this.$.resposta_83_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_83_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_83_NA, false);
+                    this._EnableTextBox(this.$.resposta_8_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_91_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_91_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_91_NA, false);
+                    this._EnableTextBox(this.$.resposta_9_Texto, false);
+
+                    this._EnableCheckBox(this.$.resposta_101_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_101_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_101_NA, false);
+                    this._EnableTextBox(this.$.resposta_101_Texto, false);
+                    this._EnableCheckBox(this.$.resposta_102_Sim, false);
+                    this._EnableCheckBox(this.$.resposta_102_Nao, false);
+                    this._EnableCheckBox(this.$.resposta_102_NA, false);
+                    this._EnableTextBox(this.$.resposta_102_Texto, false);
+                    this._EnableTextBox(this.$.resposta_103_Texto, false);
+
+                    this._EnableTextBox(this.$.final_Responsavel, false);
+                    this._EnableTextBox(this.$.final_Data, false);
+                },
+
+                _resposta11Sim: function () {
+                    if (!this.data.resposta_11_Sim == true) {
+                        this._CleanCheckBox(this.$.resposta_11_Nao);
+                        this._CleanCheckBox(this.$.resposta_11_NA);
+                    }
+
+                    if (!this.data.resposta_11_Sim == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, true);
+                        this._EnableTextBox(this.$.resposta_13_Texto, true);
+                    }
+
+                    if (!this.data.resposta_11_Sim == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, false); this._CleanCheckBox(this.$.resposta_21_Sim);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, false); this._CleanCheckBox(this.$.resposta_21_Nao);
+                        this._EnableCheckBox(this.$.resposta_21_NA, false); this._CleanCheckBox(this.$.resposta_21_NA);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, false); this._CleanCheckBox(this.$.resposta_22_Sim);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, false); this._CleanCheckBox(this.$.resposta_22_Nao);
+                        this._EnableCheckBox(this.$.resposta_22_NA, false); this._CleanCheckBox(this.$.resposta_22_NA);
+                        this._EnableTextBox(this.$.resposta_23_Texto, false); this._CleanTextBox(this.$.resposta_23_Texto);
+                        this._EnableTextBox(this.$.resposta_2_Texto, false); this._CleanTextBox(this.$.resposta_2_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, false); this._CleanCheckBox(this.$.resposta_31_Sim);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, false); this._CleanCheckBox(this.$.resposta_31_Nao);
+                        this._EnableCheckBox(this.$.resposta_31_NA, false); this._CleanCheckBox(this.$.resposta_31_NA);
+                        this._EnableTextBox(this.$.resposta_32_Texto, false); this._CleanTextBox(this.$.resposta_32_Texto);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false); this._CleanCheckBox(this.$.resposta_32_NA);
+                        this._EnableTextBox(this.$.resposta_3_Texto, false); this._CleanTextBox(this.$.resposta_3_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, false); this._CleanCheckBox(this.$.resposta_41_Sim);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, false); this._CleanCheckBox(this.$.resposta_41_Nao);
+                        this._EnableCheckBox(this.$.resposta_41_NA, false); this._CleanCheckBox(this.$.resposta_41_NA);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, false); this._CleanCheckBox(this.$.resposta_42_Sim);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, false); this._CleanCheckBox(this.$.resposta_42_Nao);
+                        this._EnableCheckBox(this.$.resposta_42_NA, false); this._CleanCheckBox(this.$.resposta_42_NA);
+                        this._EnableTextBox(this.$.resposta_43_Texto, false); this._CleanTextBox(this.$.resposta_43_Texto);
+                        this._EnableTextBox(this.$.resposta_4_Texto, false); this._CleanTextBox(this.$.resposta_4_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, false); this._CleanCheckBox(this.$.resposta_51_Sim);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, false); this._CleanCheckBox(this.$.resposta_51_Nao);
+                        this._EnableCheckBox(this.$.resposta_51_NA, false); this._CleanCheckBox(this.$.resposta_51_NA);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, false); this._CleanCheckBox(this.$.resposta_52_Sim);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, false); this._CleanCheckBox(this.$.resposta_52_Nao);
+                        this._EnableCheckBox(this.$.resposta_52_NA, false); this._CleanCheckBox(this.$.resposta_52_NA);
+                        this._EnableTextBox(this.$.resposta_5_Texto, false); this._CleanTextBox(this.$.resposta_5_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, false); this._CleanCheckBox(this.$.resposta_61_Sim);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, false); this._CleanCheckBox(this.$.resposta_61_Nao);
+                        this._EnableCheckBox(this.$.resposta_61_NA, false); this._CleanCheckBox(this.$.resposta_61_NA);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, false); this._CleanCheckBox(this.$.resposta_62_Sim);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, false); this._CleanCheckBox(this.$.resposta_62_Nao);
+                        this._EnableCheckBox(this.$.resposta_62_NA, false); this._CleanCheckBox(this.$.resposta_62_NA);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, false); this._CleanCheckBox(this.$.resposta_63_Sim);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, false); this._CleanCheckBox(this.$.resposta_63_Nao);
+                        this._EnableCheckBox(this.$.resposta_63_NA, false); this._CleanCheckBox(this.$.resposta_63_NA);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, false); this._CleanCheckBox(this.$.resposta_64_Sim);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, false); this._CleanCheckBox(this.$.resposta_64_Nao);
+                        this._EnableCheckBox(this.$.resposta_64_NA, false); this._CleanCheckBox(this.$.resposta_64_NA);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, false); this._CleanCheckBox(this.$.resposta_65_Sim);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, false); this._CleanCheckBox(this.$.resposta_65_Nao);
+                        this._EnableCheckBox(this.$.resposta_65_NA, false); this._CleanCheckBox(this.$.resposta_65_NA);
+                        this._EnableTextBox(this.$.resposta_6_Texto, false); this._CleanTextBox(this.$.resposta_6_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, false); this._CleanCheckBox(this.$.resposta_71_Sim);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, false); this._CleanCheckBox(this.$.resposta_71_Nao);
+                        this._EnableCheckBox(this.$.resposta_71_NA, false); this._CleanCheckBox(this.$.resposta_71_NA);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, false); this._CleanCheckBox(this.$.resposta_72_Sim);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, false); this._CleanCheckBox(this.$.resposta_72_Nao);
+                        this._EnableCheckBox(this.$.resposta_72_NA, false); this._CleanCheckBox(this.$.resposta_72_NA);
+                        this._EnableTextBox(this.$.resposta_7_Texto, false); this._CleanTextBox(this.$.resposta_7_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, false); this._CleanCheckBox(this.$.resposta_81_Sim);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, false); this._CleanCheckBox(this.$.resposta_81_Nao);
+                        this._EnableCheckBox(this.$.resposta_81_NA, false); this._CleanCheckBox(this.$.resposta_81_NA);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, false); this._CleanCheckBox(this.$.resposta_82_Sim);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, false); this._CleanCheckBox(this.$.resposta_82_Nao);
+                        this._EnableCheckBox(this.$.resposta_82_NA, false); this._CleanCheckBox(this.$.resposta_82_NA);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, false); this._CleanCheckBox(this.$.resposta_83_Sim);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, false); this._CleanCheckBox(this.$.resposta_83_Nao);
+                        this._EnableCheckBox(this.$.resposta_83_NA, false); this._CleanCheckBox(this.$.resposta_83_NA);
+                        this._EnableTextBox(this.$.resposta_8_Texto, false); this._CleanTextBox(this.$.resposta_8_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, false); this._CleanCheckBox(this.$.resposta_91_Sim);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, false); this._CleanCheckBox(this.$.resposta_91_Nao);
+                        this._EnableCheckBox(this.$.resposta_91_NA, false); this._CleanCheckBox(this.$.resposta_91_NA);
+                        this._EnableTextBox(this.$.resposta_9_Texto, false); this._CleanTextBox(this.$.resposta_9_Texto);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, false); this._CleanCheckBox(this.$.resposta_101_Sim);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, false); this._CleanCheckBox(this.$.resposta_101_Nao);
+                        this._EnableCheckBox(this.$.resposta_101_NA, false); this._CleanCheckBox(this.$.resposta_101_NA);
+                        this._EnableTextBox(this.$.resposta_101_Texto, false); this._CleanTextBox(this.$.resposta_101_Texto);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, false); this._CleanCheckBox(this.$.resposta_102_Sim);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, false); this._CleanCheckBox(this.$.resposta_102_Nao);
+                        this._EnableCheckBox(this.$.resposta_102_NA, false); this._CleanCheckBox(this.$.resposta_102_NA);
+                        this._EnableTextBox(this.$.resposta_102_Texto, false); this._CleanTextBox(this.$.resposta_102_Texto);
+                        this._EnableTextBox(this.$.resposta_103_Texto, false); this._CleanTextBox(this.$.resposta_103_Texto);
+                    }
+                },
+                _resposta11Nao: function () {
+                    if (!this.data.resposta_11_Nao == true) {
+                        this._CleanCheckBox(this.$.resposta_11_Sim);
+                        this._CleanCheckBox(this.$.resposta_11_NA);
+                    }
+
+                    if (!this.data.resposta_11_Nao == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, false); this._CleanTextBox(this.$.resposta_12_Texto);
+                        this._EnableTextBox(this.$.resposta_13_Texto, false); this._CleanTextBox(this.$.resposta_13_Texto);
+                    }
+
+                    if (!this.data.resposta_11_Nao == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_21_NA, true);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_22_NA, true);
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        this._EnableTextBox(this.$.resposta_2_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_31_NA, true);
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        this._EnableTextBox(this.$.resposta_3_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_41_NA, true);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_42_NA, true);
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        this._EnableTextBox(this.$.resposta_4_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_51_NA, true);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_52_NA, true);
+                        this._EnableTextBox(this.$.resposta_5_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_61_NA, true);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_62_NA, true);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_63_NA, true);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_64_NA, true);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_65_NA, true);
+                        this._EnableTextBox(this.$.resposta_6_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_71_NA, true);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_72_NA, true);
+                        this._EnableTextBox(this.$.resposta_7_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_81_NA, true);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_82_NA, true);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_83_NA, true);
+                        this._EnableTextBox(this.$.resposta_8_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_91_NA, true);
+                        this._EnableTextBox(this.$.resposta_9_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_101_NA, true);
+                        this._EnableTextBox(this.$.resposta_101_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_102_NA, true);
+                        this._EnableTextBox(this.$.resposta_102_Texto, true);
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
+                    }
+                },
+                _resposta11NA: function () {
+                    if (!this.data.resposta_11_NA == true) {
+                        this._CleanCheckBox(this.$.resposta_11_Sim);
+                        this._CleanCheckBox(this.$.resposta_11_Nao);
+                    }
+
+                    if (!this.data.resposta_11_NA == true) {
+                        this._EnableTextBox(this.$.resposta_12_Texto, false); this._CleanTextBox(this.$.resposta_12_Texto);
+                        this._EnableTextBox(this.$.resposta_13_Texto, false); this._CleanTextBox(this.$.resposta_13_Texto);
+                    }
+
+                    if (!this.data.resposta_11_NA == true) {
+                        this._EnableCheckBox(this.$.resposta_21_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_21_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_21_NA, true);
+                        this._EnableCheckBox(this.$.resposta_22_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_22_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_22_NA, true);
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                        this._EnableTextBox(this.$.resposta_2_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_31_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_31_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_31_NA, true);
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                        this._EnableTextBox(this.$.resposta_3_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_41_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_41_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_41_NA, true);
+                        this._EnableCheckBox(this.$.resposta_42_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_42_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_42_NA, true);
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                        this._EnableTextBox(this.$.resposta_4_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_51_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_51_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_51_NA, true);
+                        this._EnableCheckBox(this.$.resposta_52_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_52_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_52_NA, true);
+                        this._EnableTextBox(this.$.resposta_5_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_61_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_61_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_61_NA, true);
+                        this._EnableCheckBox(this.$.resposta_62_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_62_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_62_NA, true);
+                        this._EnableCheckBox(this.$.resposta_63_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_63_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_63_NA, true);
+                        this._EnableCheckBox(this.$.resposta_64_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_64_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_64_NA, true);
+                        this._EnableCheckBox(this.$.resposta_65_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_65_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_65_NA, true);
+                        this._EnableTextBox(this.$.resposta_6_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_71_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_71_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_71_NA, true);
+                        this._EnableCheckBox(this.$.resposta_72_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_72_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_72_NA, true);
+                        this._EnableTextBox(this.$.resposta_7_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_81_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_81_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_81_NA, true);
+                        this._EnableCheckBox(this.$.resposta_82_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_82_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_82_NA, true);
+                        this._EnableCheckBox(this.$.resposta_83_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_83_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_83_NA, true);
+                        this._EnableTextBox(this.$.resposta_8_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_91_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_91_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_91_NA, true);
+                        this._EnableTextBox(this.$.resposta_9_Texto, true);
+
+                        this._EnableCheckBox(this.$.resposta_101_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_101_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_101_NA, true);
+                        this._EnableTextBox(this.$.resposta_101_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_102_Sim, true);
+                        this._EnableCheckBox(this.$.resposta_102_Nao, true);
+                        this._EnableCheckBox(this.$.resposta_102_NA, true);
+                        this._EnableTextBox(this.$.resposta_102_Texto, true);
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
+                    }
+                },
+
+                _resposta21Sim: function () {
+                    if (!this.$.resposta_21_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_21_Nao);
+                        this._CleanCheckBox(this.$.resposta_21_NA);
+                    }
+                },
+                _resposta21Nao: function () {
+                    if (!this.$.resposta_21_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_21_Sim);
+                        this._CleanCheckBox(this.$.resposta_21_NA);
+                    }
+                },
+                _resposta21NA: function () {
+                    if (!this.$.resposta_21_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_21_Sim);
+                        this._CleanCheckBox(this.$.resposta_21_Nao);
+                    }
+                },
+                _resposta22Sim: function () {
+                    if (!this.$.resposta_22_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_22_Nao);
+                        this._CleanCheckBox(this.$.resposta_22_NA);
+
+                        this._EnableTextBox(this.$.resposta_23_Texto, true);
+                    }
+                },
+                _resposta22Nao: function () {
+                    if (!this.$.resposta_22_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_22_Sim);
+                        this._CleanCheckBox(this.$.resposta_22_NA);
+
+                        this._EnableTextBox(this.$.resposta_23_Texto, false); this._CleanTextBox(this.$.resposta_23_Texto);
+                    }
+                },
+                _resposta22NA: function () {
+                    if (!this.$.resposta_22_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_22_Sim);
+                        this._CleanCheckBox(this.$.resposta_22_Nao);
+
+                        this._EnableTextBox(this.$.resposta_23_Texto, false); this._CleanTextBox(this.$.resposta_23_Texto);
+                    }
+                },
+
+                _resposta31Sim: function () {
+                    if (!this.$.resposta_31_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_31_Nao);
+                        this._CleanCheckBox(this.$.resposta_31_NA);
+
+                        this._EnableTextBox(this.$.resposta_32_Texto, true);
+                        this._EnableCheckBox(this.$.resposta_32_NA, true);
+                    }
+                },
+                _resposta31Nao: function () {
+                    if (!this.$.resposta_31_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_31_Sim);
+                        this._CleanCheckBox(this.$.resposta_31_NA);
+
+                        this._EnableTextBox(this.$.resposta_32_Texto, false); this._CleanTextBox(this.$.resposta_32_Texto);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false); this._CleanCheckBox(this.$.resposta_32_NA);
+                    }
+                },
+                _resposta31NA: function () {
+                    if (!this.$.resposta_31_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_31_Sim);
+                        this._CleanCheckBox(this.$.resposta_31_Nao);
+
+                        this._EnableTextBox(this.$.resposta_32_Texto, false); this._CleanTextBox(this.$.resposta_32_Texto);
+                        this._EnableCheckBox(this.$.resposta_32_NA, false); this._CleanCheckBox(this.$.resposta_32_NA);
+                    }
+                },
+                _resposta32Texto: function () {
+                    if (this.$.resposta_32_Texto.value != "") {
+                        this._CleanCheckBox(this.$.resposta_32_NA);
+                    }
+                },
+                _resposta32NA: function () {
+                    if (!this.$.resposta_32_NA.checked == true) {
+                        this._CleanTextBox(this.$.resposta_32_Texto);
+                    }
+                },
+
+                _resposta41Sim: function () {
+                    if (!this.$.resposta_41_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_41_Nao);
+                        this._CleanCheckBox(this.$.resposta_41_NA);
+                    }
+                },
+                _resposta41Nao: function () {
+                    if (!this.$.resposta_41_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_41_Sim);
+                        this._CleanCheckBox(this.$.resposta_41_NA);
+                    }
+                },
+                _resposta41NA: function () {
+                    if (!this.$.resposta_41_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_41_Sim);
+                        this._CleanCheckBox(this.$.resposta_41_Nao);
+                    }
+                },
+                _resposta42Sim: function () {
+                    if (!this.$.resposta_42_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_42_Nao);
+                        this._CleanCheckBox(this.$.resposta_42_NA);
+
+                        this._EnableTextBox(this.$.resposta_43_Texto, true);
+                    }
+                },
+                _resposta42Nao: function () {
+                    if (!this.$.resposta_42_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_42_Sim);
+                        this._CleanCheckBox(this.$.resposta_42_NA);
+
+                        this._EnableTextBox(this.$.resposta_43_Texto, false); this._CleanTextBox(this.$.resposta_43_Texto);
+                    }
+                },
+                _resposta42NA: function () {
+                    if (!this.$.resposta_42_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_42_Sim);
+                        this._CleanCheckBox(this.$.resposta_42_Nao);
+
+                        this._EnableTextBox(this.$.resposta_43_Texto, false); this._CleanTextBox(this.$.resposta_43_Texto);
+                    }
+                },
+
+                _resposta51Sim: function () {
+                    if (!this.$.resposta_51_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_51_Nao);
+                        this._CleanCheckBox(this.$.resposta_51_NA);
+                    }
+                },
+                _resposta51Nao: function () {
+                    if (!this.$.resposta_51_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_51_Sim);
+                        this._CleanCheckBox(this.$.resposta_51_NA);
+                    }
+                },
+                _resposta51NA: function () {
+                    if (!this.$.resposta_51_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_51_Sim);
+                        this._CleanCheckBox(this.$.resposta_51_Nao);
+                    }
+                },
+                _resposta52Sim: function () {
+                    if (!this.$.resposta_52_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_52_Nao);
+                        this._CleanCheckBox(this.$.resposta_52_NA);
+                    }
+                },
+                _resposta52Nao: function () {
+                    if (!this.$.resposta_52_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_52_Sim);
+                        this._CleanCheckBox(this.$.resposta_52_NA);
+                    }
+                },
+                _resposta52NA: function () {
+                    if (!this.$.resposta_52_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_52_Sim);
+                        this._CleanCheckBox(this.$.resposta_52_Nao);
+                    }
+                },
+
+                _resposta61Sim: function () {
+                    if (!this.$.resposta_61_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_61_Nao);
+                        this._CleanCheckBox(this.$.resposta_61_NA);
+                    }
+                },
+                _resposta61Nao: function () {
+                    if (!this.$.resposta_61_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_61_Sim);
+                        this._CleanCheckBox(this.$.resposta_61_NA);
+                    }
+                },
+                _resposta61NA: function () {
+                    if (!this.$.resposta_61_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_61_Sim);
+                        this._CleanCheckBox(this.$.resposta_61_Nao);
+                    }
+                },
+                _resposta62Sim: function () {
+                    if (!this.$.resposta_62_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_62_Nao);
+                        this._CleanCheckBox(this.$.resposta_62_NA);
+                    }
+                },
+                _resposta62Nao: function () {
+                    if (!this.$.resposta_62_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_62_Sim);
+                        this._CleanCheckBox(this.$.resposta_62_NA);
+                    }
+                },
+                _resposta62NA: function () {
+                    if (!this.$.resposta_62_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_62_Sim);
+                        this._CleanCheckBox(this.$.resposta_62_Nao);
+                    }
+                },
+                _resposta63Sim: function () {
+                    if (!this.$.resposta_63_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_63_Nao);
+                        this._CleanCheckBox(this.$.resposta_63_NA);
+                    }
+                },
+                _resposta63Nao: function () {
+                    if (!this.$.resposta_63_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_63_Sim);
+                        this._CleanCheckBox(this.$.resposta_63_NA);
+                    }
+                },
+                _resposta63NA: function () {
+                    if (!this.$.resposta_63_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_63_Sim);
+                        this._CleanCheckBox(this.$.resposta_63_Nao);
+                    }
+                },
+                _resposta64Sim: function () {
+                    if (!this.$.resposta_64_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_64_Nao);
+                        this._CleanCheckBox(this.$.resposta_64_NA);
+                    }
+                },
+                _resposta64Nao: function () {
+                    if (!this.$.resposta_64_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_64_Sim);
+                        this._CleanCheckBox(this.$.resposta_64_NA);
+                    }
+                },
+                _resposta64NA: function () {
+                    if (!this.$.resposta_64_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_64_Sim);
+                        this._CleanCheckBox(this.$.resposta_64_Nao);
+                    }
+                },
+                _resposta65Sim: function () {
+                    if (!this.$.resposta_65_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_65_Nao);
+                        this._CleanCheckBox(this.$.resposta_65_NA);
+                    }
+                },
+                _resposta65Nao: function () {
+                    if (!this.$.resposta_65_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_65_Sim);
+                        this._CleanCheckBox(this.$.resposta_65_NA);
+                    }
+                },
+                _resposta65NA: function () {
+                    if (!this.$.resposta_65_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_65_Sim);
+                        this._CleanCheckBox(this.$.resposta_65_Nao);
+                    }
+                },
+
+                _resposta71Sim: function () {
+                    if (!this.$.resposta_71_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_71_Nao);
+                        this._CleanCheckBox(this.$.resposta_71_NA);
+                    }
+                },
+                _resposta71Nao: function () {
+                    if (!this.$.resposta_71_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_71_Sim);
+                        this._CleanCheckBox(this.$.resposta_71_NA);
+                    }
+                },
+                _resposta71NA: function () {
+                    if (!this.$.resposta_71_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_71_Sim);
+                        this._CleanCheckBox(this.$.resposta_71_Nao);
+                    }
+                },
+                _resposta72Sim: function () {
+                    if (!this.$.resposta_72_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_72_Nao);
+                        this._CleanCheckBox(this.$.resposta_72_NA);
+                    }
+                },
+                _resposta72Nao: function () {
+                    if (!this.$.resposta_72_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_72_Sim);
+                        this._CleanCheckBox(this.$.resposta_72_NA);
+                    }
+                },
+                _resposta72NA: function () {
+                    if (!this.$.resposta_72_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_72_Sim);
+                        this._CleanCheckBox(this.$.resposta_72_Nao);
+                    }
+                },
+
+                _resposta81Sim: function () {
+                    if (!this.$.resposta_81_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_81_Nao);
+                        this._CleanCheckBox(this.$.resposta_81_NA);
+                    }
+                },
+                _resposta81Nao: function () {
+                    if (!this.$.resposta_81_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_81_Sim);
+                        this._CleanCheckBox(this.$.resposta_81_NA);
+                    }
+                },
+                _resposta81NA: function () {
+                    if (!this.$.resposta_81_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_81_Sim);
+                        this._CleanCheckBox(this.$.resposta_81_Nao);
+                    }
+                },
+                _resposta82Sim: function () {
+                    if (!this.$.resposta_82_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_82_Nao);
+                        this._CleanCheckBox(this.$.resposta_82_NA);
+                    }
+                },
+                _resposta82Nao: function () {
+                    if (!this.$.resposta_82_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_82_Sim);
+                        this._CleanCheckBox(this.$.resposta_82_NA);
+                    }
+                },
+                _resposta82NA: function () {
+                    if (!this.$.resposta_82_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_82_Sim);
+                        this._CleanCheckBox(this.$.resposta_82_Nao);
+                    }
+                },
+                _resposta83Sim: function () {
+                    if (!this.$.resposta_83_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_83_Nao);
+                        this._CleanCheckBox(this.$.resposta_83_NA);
+                    }
+                },
+                _resposta83Nao: function () {
+                    if (!this.$.resposta_83_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_83_Sim);
+                        this._CleanCheckBox(this.$.resposta_83_NA);
+                    }
+                },
+                _resposta83NA: function () {
+                    if (!this.$.resposta_83_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_83_Sim);
+                        this._CleanCheckBox(this.$.resposta_83_Nao);
+                    }
+                },
+
+                _resposta91Sim: function () {
+                    if (!this.$.resposta_91_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_91_Nao);
+                        this._CleanCheckBox(this.$.resposta_91_NA);
+                    }
+                },
+                _resposta91Nao: function () {
+                    if (!this.$.resposta_91_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_91_Sim);
+                        this._CleanCheckBox(this.$.resposta_91_NA);
+                    }
+                },
+                _resposta91NA: function () {
+                    if (!this.$.resposta_91_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_91_Sim);
+                        this._CleanCheckBox(this.$.resposta_91_Nao);
+                    }
+                },
+
+                _resposta101Sim: function () {
+                    if (!this.$.resposta_101_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_101_Nao);
+                        this._CleanCheckBox(this.$.resposta_101_NA);
+                    }
+                },
+                _resposta101Nao: function () {
+                    if (!this.$.resposta_101_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_101_Sim);
+                        this._CleanCheckBox(this.$.resposta_101_NA);
+                    }
+                },
+                _resposta101NA: function () {
+                    if (!this.$.resposta_101_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_101_Sim);
+                        this._CleanCheckBox(this.$.resposta_101_Nao);
+                    }
+                },
+                _resposta102Sim: function () {
+                    if (!this.$.resposta_102_Sim.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_102_Nao);
+                        this._CleanCheckBox(this.$.resposta_102_NA);
+
+                        this._EnableTextBox(this.$.resposta_103_Texto, true);
+                    }
+                },
+                _resposta102Nao: function () {
+                    if (!this.$.resposta_102_Nao.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_102_Sim);
+                        this._CleanCheckBox(this.$.resposta_102_NA);
+
+                        this._EnableTextBox(this.$.resposta_103_Texto, false); this._CleanTextBox(this.$.resposta_103_Texto);
+                    }
+                },
+                _resposta102NA: function () {
+                    if (!this.$.resposta_102_NA.checked == true) {
+                        this._CleanCheckBox(this.$.resposta_102_Sim);
+                        this._CleanCheckBox(this.$.resposta_102_Nao);
+
+                        this._EnableTextBox(this.$.resposta_103_Texto, false); this._CleanTextBox(this.$.resposta_103_Texto);
+                    }
+                },
+
+                _gravar: function () {
+                    if (!this.$.actividade.validate() || this.$.actividade.value == "") {
+                        this._showErrorMessage('O campo Actividade é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.responsavel.validate() || this.$.responsavel.value == "") {
+                        this._showErrorMessage('O campo Responsável é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.funcao.validate() || this.$.funcao.value == "") {
+                        this._showErrorMessage('O campo Função é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.telefone.validate() || this.$.telefone.value == "") {
+                        this._showErrorMessage('O campo Telf. é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.email.validate() || this.$.email.value == "") {
+                        this._showErrorMessage('O campo e-mail é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.procedimento.validate() || this.$.procedimento.value == "") {
+                        this._showErrorMessage('O campo Procedimento n. (se aplicável) é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if ((this.$.resposta_11_Sim.checked == null || this.$.resposta_11_Sim.checked == false) &&
+                        (this.$.resposta_11_Nao.checked == null || this.$.resposta_11_Nao.checked == false) &&
+                        (this.$.resposta_11_NA.checked == null || this.$.resposta_11_NA.checked == false)) {
+                        this._showErrorMessage('É obrigatório responder à questão 1.1');
+                        return;
+                    }
+                    if ((this.$.resposta_11_Sim.checked != null && this.$.resposta_11_Sim.checked == true) &&
+                        (this.$.resposta_12_Texto.value == null || this.$.resposta_12_Texto.value == "")) {
+                        this._showErrorMessage('É obrigatório responder à questão 1.2');
+                        return;
+                    }
+                    if ((this.$.resposta_11_Sim.checked != null && this.$.resposta_11_Sim.checked == true) &&
+                        (this.$.resposta_13_Texto.value == null || this.$.resposta_13_Texto.value == "")) {
+                        this._showErrorMessage('É obrigatório responder à questão 1.3');
+                        return;
+                    }
+                    if (this.$.resposta_11_Nao.checked == true || this.$.resposta_11_NA.checked == true) {
+                        if ((this.$.resposta_21_Sim.checked == null || this.$.resposta_21_Sim.checked == false) &&
+                            (this.$.resposta_21_Nao.checked == null || this.$.resposta_21_Nao.checked == false) &&
+                            (this.$.resposta_21_NA.checked == null || this.$.resposta_21_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 2.1');
+                            return;
+                        }
+                        if ((this.$.resposta_22_Sim.checked == null || this.$.resposta_22_Sim.checked == false) &&
+                            (this.$.resposta_22_Nao.checked == null || this.$.resposta_22_Nao.checked == false) &&
+                            (this.$.resposta_22_NA.checked == null || this.$.resposta_22_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 2.2');
+                            return;
+                        }
+                        if ((this.$.resposta_22_Sim.checked != null && this.$.resposta_22_Sim.checked == true) &&
+                            (this.$.resposta_23_Texto.value == null || this.$.resposta_23_Texto.value == "")) {
+                            this._showErrorMessage('É obrigatório responder à questão 2.3');
+                            return;
+                        }
+
+                        if ((this.$.resposta_31_Sim.checked == null || this.$.resposta_31_Sim.checked == false) &&
+                            (this.$.resposta_31_Nao.checked == null || this.$.resposta_31_Nao.checked == false) &&
+                            (this.$.resposta_31_NA.checked == null || this.$.resposta_31_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 3.1');
+                            return;
+                        }
+                        if ((this.$.resposta_31_Sim.checked != null && this.$.resposta_31_Sim.checked == true) &&
+                            (this.$.resposta_32_Texto.value == null || this.$.resposta_32_Texto.value == "") &&
+                            (this.$.resposta_32_NA.checked == null || this.$.resposta_32_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 3.2');
+                            return;
+                        }
+
+                        if ((this.$.resposta_41_Sim.checked == null || this.$.resposta_41_Sim.checked == false) &&
+                            (this.$.resposta_41_Nao.checked == null || this.$.resposta_41_Nao.checked == false) &&
+                            (this.$.resposta_41_NA.checked == null || this.$.resposta_41_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 4.1');
+                            return;
+                        }
+                        if ((this.$.resposta_42_Sim.checked == null || this.$.resposta_42_Sim.checked == false) &&
+                            (this.$.resposta_42_Nao.checked == null || this.$.resposta_42_Nao.checked == false) &&
+                            (this.$.resposta_42_NA.checked == null || this.$.resposta_42_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 4.2');
+                            return;
+                        }
+                        debugger;
+                        if ((this.$.resposta_42_Sim.checked != null && this.$.resposta_42_Sim.checked == true) &&
+                            (this.$.resposta_43_Texto.value == null || this.$.resposta_43_Texto.value == "")) {
+                            this._showErrorMessage('É obrigatório responder à questão 4.3');
+                            return;
+                        }
+
+                        if ((this.$.resposta_51_Sim.checked == null || this.$.resposta_51_Sim.checked == false) &&
+                            (this.$.resposta_51_Nao.checked == null || this.$.resposta_51_Nao.checked == false) &&
+                            (this.$.resposta_51_NA.checked == null || this.$.resposta_51_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 5.1');
+                            return;
+                        }
+                        if ((this.$.resposta_52_Sim.checked == null || this.$.resposta_52_Sim.checked == false) &&
+                            (this.$.resposta_52_Nao.checked == null || this.$.resposta_52_Nao.checked == false) &&
+                            (this.$.resposta_52_NA.checked == null || this.$.resposta_52_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 5.2');
+                            return;
+                        }
+
+                        if ((this.$.resposta_61_Sim.checked == null || this.$.resposta_61_Sim.checked == false) &&
+                            (this.$.resposta_61_Nao.checked == null || this.$.resposta_61_Nao.checked == false) &&
+                            (this.$.resposta_61_NA.checked == null || this.$.resposta_61_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.1');
+                            return;
+                        }
+                        if ((this.$.resposta_62_Sim.checked == null || this.$.resposta_62_Sim.checked == false) &&
+                            (this.$.resposta_62_Nao.checked == null || this.$.resposta_62_Nao.checked == false) &&
+                            (this.$.resposta_62_NA.checked == null || this.$.resposta_62_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.2');
+                            return;
+                        }
+                        if ((this.$.resposta_63_Sim.checked == null || this.$.resposta_63_Sim.checked == false) &&
+                            (this.$.resposta_63_Nao.checked == null || this.$.resposta_63_Nao.checked == false) &&
+                            (this.$.resposta_63_NA.checked == null || this.$.resposta_63_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.3');
+                            return;
+                        }
+                        if ((this.$.resposta_64_Sim.checked == null || this.$.resposta_64_Sim.checked == false) &&
+                            (this.$.resposta_64_Nao.checked == null || this.$.resposta_64_Nao.checked == false) &&
+                            (this.$.resposta_64_NA.checked == null || this.$.resposta_64_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.4');
+                            return;
+                        }
+                        if ((this.$.resposta_65_Sim.checked == null || this.$.resposta_65_Sim.checked == false) &&
+                            (this.$.resposta_65_Nao.checked == null || this.$.resposta_65_Nao.checked == false) &&
+                            (this.$.resposta_65_NA.checked == null || this.$.resposta_65_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 6.5');
+                            return;
+                        }
+
+                        if ((this.$.resposta_71_Sim.checked == null || this.$.resposta_71_Sim.checked == false) &&
+                            (this.$.resposta_71_Nao.checked == null || this.$.resposta_71_Nao.checked == false) &&
+                            (this.$.resposta_71_NA.checked == null || this.$.resposta_71_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 7.1');
+                            return;
+                        }
+                        if ((this.$.resposta_72_Sim.checked == null || this.$.resposta_72_Sim.checked == false) &&
+                            (this.$.resposta_72_Nao.checked == null || this.$.resposta_72_Nao.checked == false) &&
+                            (this.$.resposta_72_NA.checked == null || this.$.resposta_72_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 7.2');
+                            return;
+                        }
+
+                        if ((this.$.resposta_81_Sim.checked == null || this.$.resposta_81_Sim.checked == false) &&
+                            (this.$.resposta_81_Nao.checked == null || this.$.resposta_81_Nao.checked == false) &&
+                            (this.$.resposta_81_NA.checked == null || this.$.resposta_81_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 8.1');
+                            return;
+                        }
+                        if ((this.$.resposta_82_Sim.checked == null || this.$.resposta_82_Sim.checked == false) &&
+                            (this.$.resposta_82_Nao.checked == null || this.$.resposta_82_Nao.checked == false) &&
+                            (this.$.resposta_82_NA.checked == null || this.$.resposta_82_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 8.2');
+                            return;
+                        }
+                        if ((this.$.resposta_83_Sim.checked == null || this.$.resposta_83_Sim.checked == false) &&
+                            (this.$.resposta_83_Nao.checked == null || this.$.resposta_83_Nao.checked == false) &&
+                            (this.$.resposta_83_NA.checked == null || this.$.resposta_83_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 8.3');
+                            return;
+                        }
+
+                        if ((this.$.resposta_91_Sim.checked == null || this.$.resposta_91_Sim.checked == false) &&
+                            (this.$.resposta_91_Nao.checked == null || this.$.resposta_91_Nao.checked == false) &&
+                            (this.$.resposta_91_NA.checked == null || this.$.resposta_91_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 9.1');
+                            return;
+                        }
+
+                        if ((this.$.resposta_101_Sim.checked == null || this.$.resposta_101_Sim.checked == false) &&
+                            (this.$.resposta_101_Nao.checked == null || this.$.resposta_101_Nao.checked == false) &&
+                            (this.$.resposta_101_NA.checked == null || this.$.resposta_101_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 10.1');
+                            return;
+                        }
+                        if ((this.$.resposta_102_Sim.checked == null || this.$.resposta_102_Sim.checked == false) &&
+                            (this.$.resposta_102_Nao.checked == null || this.$.resposta_102_Nao.checked == false) &&
+                            (this.$.resposta_102_NA.checked == null || this.$.resposta_102_NA.checked == false)) {
+                            this._showErrorMessage('É obrigatório responder à questão 10.2');
+                            return;
+                        }
+                        if ((this.$.resposta_102_Sim.checked != null && this.$.resposta_102_Sim.checked == true) &&
+                            (this.$.resposta_103_Texto.value == null || this.$.resposta_103_texto.value == "")) {
+                            this._showErrorMessage('É obrigatório responder à questão 10.3');
+                            return;
+                        }
+                    }
+                    if (!this.$.final_Responsavel.validate() || this.$.final_Responsavel.value == "") {
+                        this._showErrorMessage('O campo Responsável é de preenchimento obrigatório.');
+                        return;
+                    }
+                    if (!this.$.final_Data.validate() || this.$.final_Data.value == "") {
+                        this._showErrorMessage('O campo Data é de preenchimento obrigatório.');
+                        return;
+                    }
+
+                    this.$.page_VerificarNovoQuestionario_ajax.body = JSON.stringify(this.data);
+                    this.$.page_VerificarNovoQuestionario_ajax.generateRequest();
+                },
+
+                _responseProcessor_NovoQuestionario: function () {
+                    if (this.novoQuestionario.nova_Versao == true) {
+                        this._versao = String(parseInt(this._versao) + 1);
+                        this.$.dlgAnexo.open();
+                    }
+
+                    if (this.novoQuestionario.nova_Versao == false) {
+                        this._showMessage('Não houve alterações na Avaliação de Desempenho.');
+                    }
+                },
+
+                _responseProcessor_CreateQuestionario: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this.$.dlgAnexo.close();
+
+                        this._showMessage(this.data.eMessage);
+                        $(this.$.lnk_anexo).removeClass('disabled');
+                        if (parseInt(this._versao) > 1) {
+                            $(this.$.btn_Historico).removeClass('disabled');
+                        }
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": this._versao, "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _responseProcessor_UpdateQuestionario: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._showMessage(this.data.eMessage);
+                    }
+                    else {
+                        this._showErrorMessage(this.data.eMessage);
+                    }
+                },
+
+                _openDlgAnexo: function () {
+                    this.$.dlgAnexo.open();
+                },
+                _closeDlgAnexo: function () {
+                    this._versao = String(parseInt(this._versao) - 1);
+                    this.$.dlgAnexo.close();
+                },
+
+                _openDlgHistorico: function () {
+                    if ((parseInt(this._versao) > 1)) {
+                        this.$.page_GetHistorico_ajax.body = JSON.stringify({ "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_GetHistorico_ajax.generateRequest();
+                        this.$.dlgHistorico.open();
+                    }
+                },
+                _closeDlgHistorico: function () {
+                    this.$.dlgHistorico.close();
+                },
+
+                _rowSelectedHistorico: function (item) {
+                    if (item != null) {
+                        this.$.dlgHistorico.close();
+
+                        this.$.page_databoundHistorico_ajax.body = JSON.stringify({ "Codigo": this._codigo, "Versao_Texto": item.versao, "ID_Fornecedor": this._id_fornecedor });
+                        this.$.page_databoundHistorico_ajax.generateRequest();
+                    }
+                },
+
+                _downloadAnexo: function () {
+                    this.$.page_DownloadAnexo_ajax.body = JSON.stringify({ "Codigo": this.data.codigo, "ID_Fornecedor": this.data.iD_Fornecedor, "Versao": this.data.versao });
+                    this.$.page_DownloadAnexo_ajax.generateRequest();
+                },
+
+                _btnCriarQuestionario: function () {
+                    if (this.novoQuestionario.nova_Versao == true) {
+                        if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "") {
+                            this._showErrorMessage("É obrigatório anexar um ficheiro à Avaliação de Desempenho Ambiental do Fornecedor.");
+                        }
+                        else {
+                            this.$.page_CreateQuestionario_ajax.body = JSON.stringify(this.data);
+                            this.$.page_CreateQuestionario_ajax.generateRequest();
+                        }
+                    }
+                },
+
+                _responseProcessor_Historico: function () {
+                    this._ReadOnly();
+                },
+
+
+            });
+        });
+
+    </script>
+
+</dom-module>
+
+

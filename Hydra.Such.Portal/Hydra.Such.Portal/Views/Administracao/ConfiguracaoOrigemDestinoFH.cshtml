@@ -135,8 +135,12 @@
                             <vaadin-text-field id="codigo" label="Código" disabled="{{ _permissionsCreate }}" maxlength="20"></vaadin-text-field>
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-sm-4">
                             <vaadin-text-field id="descricao" label="Descrição" disabled="{{ _permissionsCreate }}" maxlength="200"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga">
+                            <vaadin-checkbox checked="{{chkRegiaoAutonoma}}" id="regiaoAutonoma" name="regiaoAutonoma" disabled="{{ _permissionsCreate }}">Região Autônoma</vaadin-checkbox>
                         </div>
 
                         <div class="col-sm-2 alignPoga">
@@ -171,7 +175,19 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="50px">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoautonoma">Região Autônoma</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoautonoma" />
+                </template>
+                <template>
+                    <center>
+                        <vaadin-checkbox id="tabregiaoautonoma" name="tabregiaoautonoma" checked="{{item.regiaoAutonoma}}" disabled="{{ _permissionsUpdate }}"></vaadin-checkbox>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="50px">
                 <template class="header">
                 </template>
                 <template>
@@ -279,7 +295,8 @@
                         this.$.ajax_create.body = JSON.stringify(
                             {
                                 codigo: this.$.codigo.value,
-                                descricao: this.$.descricao.value
+                                descricao: this.$.descricao.value,
+                                regiaoAutonoma: this.$.regiaoAutonoma.checked
                             }
                         );
                         this.$.ajax_create.generateRequest();

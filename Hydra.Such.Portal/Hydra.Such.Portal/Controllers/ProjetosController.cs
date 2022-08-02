@@ -37,6 +37,7 @@ using Hydra.Such.Data.ViewModel.ProjectView;
 using System.ServiceModel;
 using Hydra.Such.Data.ViewModel.Contracts;
 using Hydra.Such.Data.ViewModel.Encomendas;
+using System.Threading;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -234,6 +235,21 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+
+        //[HttpPost]
+        //public JsonResult TESTE([FromBody] JObject requestParams)
+        //{
+        //    decimal result = decimal.Zero;
+
+        //    result = Math.Round((decimal)1.002, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.005, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.003, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.055, 2, MidpointRounding.AwayFromZero);
+        //    result = Math.Round((decimal)1.0352, 2, MidpointRounding.AwayFromZero);
+
+        //    return Json(null);
+        //}
         #endregion
 
         #region Details
@@ -476,7 +492,7 @@ namespace Hydra.Such.Portal.Controllers
                         dpLine.Type = line.Type;
                         dpLine.Code = line.Code;
                         dpLine.Description = line.Description;
-                        dpLine.Quantity = line.Quantity.HasValue ? Math.Round((decimal)line.Quantity, 2) : decimal.Zero;
+                        dpLine.Quantity = line.Quantity.HasValue ? Math.Round((decimal)line.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                         dpLine.MeasurementUnitCode = line.CodeMeasureUnit;
                         dpLine.LocationCode = "";
                         dpLine.ProjectContabGroup = "PROJETO";
@@ -486,8 +502,8 @@ namespace Hydra.Such.Portal.Controllers
                         dpLine.User = User.Identity.Name;
                         //dpLine.UnitCost = Resource.UnitCost; //???
                         //dpLine.TotalCost = line.Quantity * Resource.UnitCost; //???
-                        dpLine.UnitPrice = line.UnitPrice.HasValue ? Math.Round((decimal)line.UnitPrice, 4) : decimal.Zero;
-                        dpLine.TotalPrice = line.Quantity.HasValue && line.UnitPrice.HasValue ? Math.Round((decimal)(line.Quantity * line.UnitPrice), 2) : decimal.Zero;
+                        dpLine.UnitPrice = line.UnitPrice.HasValue ? Math.Round((decimal)line.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        dpLine.TotalPrice = line.Quantity.HasValue && line.UnitPrice.HasValue ? Math.Round((decimal)(line.Quantity * line.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                         dpLine.Billable = line.Billable;
                         dpLine.ResidueGuideNo = "";
                         dpLine.ExternalGuideNo = "";
@@ -582,7 +598,7 @@ namespace Hydra.Such.Portal.Controllers
                                             Tipo = x.Type,
                                             Código = x.Code,
                                             Descrição = x.Description,
-                                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero,
+                                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                             CódUnidadeMedida = x.MeasurementUnitCode,
                                             CódLocalização = x.LocationCode,
                                             GrupoContabProjeto = x.ProjectContabGroup,
@@ -590,10 +606,10 @@ namespace Hydra.Such.Portal.Controllers
                                             CódigoÁreaFuncional = x.FunctionalAreaCode,
                                             CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                                             Utilizador = User.Identity.Name,
-                                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero,
-                                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero, //x.CustoTotal,
-                                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) :decimal.Zero,
-                                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero, //x.PreçoTotal,
+                                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                                             Faturável = x.Billable,
                                             Registado = true,
                                             Faturada = false,
@@ -1083,6 +1099,14 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (data.Status == (EstadoProjecto)0) //PENDENTE
                         {
+                            Projetos ProjectDB = DBProjects.GetById(data.ProjectNo);
+                            if (ProjectDB.Estado != data.Status)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Não é possível Guardar o Projeto pois o mesmo encontra-se num estado diferente na Base de Dados.";
+                                return Json(data);
+                            }
+
                             Projetos cProject = DBProjects.ParseToDB(data);
                             cProject.UtilizadorModificação = User.Identity.Name;
                             cProject.DataHoraModificação = DateTime.Now;
@@ -1735,7 +1759,7 @@ namespace Hydra.Such.Portal.Controllers
                             UtilizadorModificação = User.Identity.Name,
                             FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
                             FechoAutomatico = data.FechoAutomatico,
-                            
+
                         };
 
                         //Create Project On Database
@@ -1898,7 +1922,7 @@ namespace Hydra.Such.Portal.Controllers
                     Type = x.Tipo,
                     Code = x.Código,
                     Description = x.Descrição,
-                    Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) :decimal.Zero,
+                    Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                     MeasurementUnitCode = x.CódUnidadeMedida,
                     LocationCode = x.CódLocalização,
                     ProjectContabGroup = x.GrupoContabProjeto,
@@ -1906,10 +1930,10 @@ namespace Hydra.Such.Portal.Controllers
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
-                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
                     Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
@@ -1942,7 +1966,7 @@ namespace Hydra.Such.Portal.Controllers
                     Type = x.Tipo,
                     Code = x.Código,
                     Description = x.Descrição,
-                    Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) : decimal.Zero,
+                    Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                     MeasurementUnitCode = x.CódUnidadeMedida,
                     LocationCode = x.CódLocalização,
                     ProjectContabGroup = x.GrupoContabProjeto,
@@ -1950,10 +1974,10 @@ namespace Hydra.Such.Portal.Controllers
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
-                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) :decimal.Zero,
-                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
                     Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
@@ -2126,7 +2150,7 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.Tipo = x.Type;
                         newdp.Código = x.Code;
                         newdp.Descrição = x.Description;
-                        newdp.Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero;
+                        newdp.Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                         newdp.CódUnidadeMedida = x.MeasurementUnitCode;
                         newdp.CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode;
                         newdp.GrupoContabProjeto = x.ProjectContabGroup;
@@ -2134,10 +2158,10 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
                         newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
                         newdp.Utilizador = User.Identity.Name;
-                        newdp.CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero;
-                        newdp.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero; //x.TotalCost;
-                        newdp.PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero;
-                        newdp.PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero; //x.TotalPrice;
+                        newdp.CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero; //x.TotalCost;
+                        newdp.PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero; //x.TotalPrice;
                         newdp.Faturável = x.Billable;
                         newdp.Registado = false;
                         newdp.FaturaANºCliente = x.InvoiceToClientNo;
@@ -2168,7 +2192,7 @@ namespace Hydra.Such.Portal.Controllers
                             Tipo = x.Type,
                             Código = x.Code,
                             Descrição = x.Description,
-                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero,
+                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                             CódUnidadeMedida = x.MeasurementUnitCode,
                             CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode,
                             GrupoContabProjeto = x.ProjectContabGroup,
@@ -2176,10 +2200,10 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoÁreaFuncional = x.FunctionalAreaCode,
                             CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                             Utilizador = User.Identity.Name,
-                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero,
-                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero, //x.TotalCost,
-                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero,
-                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero, //x.TotalPrice,
+                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalCost,
+                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalPrice,
                             Faturável = x.Billable,
                             Registado = false,
                             FaturaANºCliente = x.InvoiceToClientNo,
@@ -2194,7 +2218,7 @@ namespace Hydra.Such.Portal.Controllers
                             PréRegisto = false,
                             TaxaIVA = IVA
 
-                    };
+                        };
 
                         newdp.Faturada = false;
                         newdp.DataHoraCriação = DateTime.Now;
@@ -2264,7 +2288,7 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.Tipo = x.Type;
                         newdp.Código = x.Code;
                         newdp.Descrição = x.Description;
-                        newdp.Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity ,2) : decimal.Zero;
+                        newdp.Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                         newdp.CódUnidadeMedida = x.MeasurementUnitCode;
                         newdp.CódLocalização = x.LocationCode;
                         newdp.GrupoContabProjeto = x.ProjectContabGroup;
@@ -2272,10 +2296,10 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
                         newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
                         newdp.Utilizador = userName;
-                        newdp.CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero;
-                        newdp.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero; // x.TotalCost;
-                        newdp.PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero;
-                        newdp.PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero; //x.TotalPrice;
+                        newdp.CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero; // x.TotalCost;
+                        newdp.PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero; //x.TotalPrice;
                         newdp.Faturável = x.Billable;
                         newdp.Registado = false;
                         newdp.FaturaANºCliente = x.InvoiceToClientNo;
@@ -2303,7 +2327,7 @@ namespace Hydra.Such.Portal.Controllers
                             Tipo = x.Type,
                             Código = x.Code,
                             Descrição = x.Description,
-                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero,
+                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                             CódUnidadeMedida = x.MeasurementUnitCode,
                             CódLocalização = x.LocationCode,
                             GrupoContabProjeto = x.ProjectContabGroup,
@@ -2311,10 +2335,10 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoÁreaFuncional = x.FunctionalAreaCode,
                             CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                             Utilizador = userName,
-                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero,
-                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero, //x.TotalCost,
-                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero,
-                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero, //x.TotalPrice,
+                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalCost,
+                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalPrice,
                             Faturável = x.Billable,
                             Registado = false,
                             FaturaANºCliente = x.InvoiceToClientNo,
@@ -2397,7 +2421,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {
-                                            pjD.UnitCost = lc.PreçoUnitário.HasValue ? Math.Round((decimal)lc.PreçoUnitário, 4) : decimal.Zero;
+                                            pjD.UnitCost = lc.PreçoUnitário.HasValue ? Math.Round((decimal)lc.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
                                             newUnitCost = true;
                                         }
                                     }
@@ -2434,7 +2458,7 @@ namespace Hydra.Such.Portal.Controllers
                                             Tipo = pjD.Type,
                                             Código = pjD.Code,
                                             Descrição = pjD.Description,
-                                            Quantidade = pjD.Quantity.HasValue ? Math.Round((decimal)pjD.Quantity, 2) : decimal.Zero,
+                                            Quantidade = pjD.Quantity.HasValue ? Math.Round((decimal)pjD.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                             CódUnidadeMedida = pjD.MeasurementUnitCode,
                                             CódLocalização = null, // pjD.LocationCode, Pedido do Marco Marcelo Dia 15/11/2019
                                             GrupoContabProjeto = pjD.ProjectContabGroup,
@@ -2442,10 +2466,10 @@ namespace Hydra.Such.Portal.Controllers
                                             CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
                                             CódigoCentroResponsabilidade = projecto.CódigoCentroResponsabilidade,
                                             Utilizador = User.Identity.Name,
-                                            CustoUnitário = pjD.UnitCost.HasValue ? Math.Round((decimal)pjD.UnitCost, 4) : decimal.Zero,
-                                            CustoTotal = pjD.Quantity.HasValue && pjD.UnitCost.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitCost), 2) : decimal.Zero, //pjD.TotalCost,
-                                            PreçoUnitário = pjD.UnitPrice.HasValue ? Math.Round((decimal)pjD.UnitPrice, 4) : decimal.Zero,
-                                            PreçoTotal = pjD.Quantity.HasValue && pjD.UnitPrice.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitPrice), 2) : decimal.Zero, //pjD.TotalPrice,
+                                            CustoUnitário = pjD.UnitCost.HasValue ? Math.Round((decimal)pjD.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                            CustoTotal = pjD.Quantity.HasValue && pjD.UnitCost.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //pjD.TotalCost,
+                                            PreçoUnitário = pjD.UnitPrice.HasValue ? Math.Round((decimal)pjD.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                            PreçoTotal = pjD.Quantity.HasValue && pjD.UnitPrice.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //pjD.TotalPrice,
                                             Faturável = true,
                                             Registado = false,
                                             FaturaANºCliente = projecto.NºCliente,
@@ -2563,7 +2587,7 @@ namespace Hydra.Such.Portal.Controllers
                             Tipo = x.Type,
                             Código = x.Code,
                             Descrição = x.Description,
-                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero,
+                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                             CódUnidadeMedida = x.MeasurementUnitCode,
                             CódLocalização = null, // x.LocationCode, Pedido do Marco Marcelo Dia 15/11/2019
                             GrupoContabProjeto = x.ProjectContabGroup,
@@ -2571,10 +2595,10 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
                             CódigoCentroResponsabilidade = projecto.CódigoCentroResponsabilidade,
                             Utilizador = User.Identity.Name,
-                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero,
-                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero, //x.TotalCost,
-                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero,
-                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero, //x.TotalPrice,
+                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalCost,
+                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalPrice,
                             Faturável = true,
                             Registado = false,
                             FaturaANºCliente = projecto.NºCliente,
@@ -2709,10 +2733,10 @@ namespace Hydra.Such.Portal.Controllers
                         dp.ForEach(x =>
                         {
                             if (x != null && Parametro != null && Convert.ToDateTime(Parametro.Valor) > Convert.ToDateTime(x.Date))
-                                {
-                                    result.eReasonCode = 6;
-                                    result.eMessage = "Não é possivel Registar, por existir pelo menos uma linha no diário onde a Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
-                                }
+                            {
+                                result.eReasonCode = 6;
+                                result.eMessage = "Não é possivel Registar, por existir pelo menos uma linha no diário onde a Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                            }
                         });
                         if (result.eReasonCode == 6)
                             return Json(result);
@@ -2771,7 +2795,7 @@ namespace Hydra.Such.Portal.Controllers
                                         Tipo = newdp.Tipo,
                                         Código = newdp.Código,
                                         Descrição = newdp.Descrição,
-                                        Quantidade = newdp.Quantidade.HasValue ? Math.Round((decimal)newdp.Quantidade, 2) : decimal.Zero,
+                                        Quantidade = newdp.Quantidade.HasValue ? Math.Round((decimal)newdp.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                         CódUnidadeMedida = newdp.CódUnidadeMedida,
                                         CódLocalização = newdp.CódLocalização,
                                         GrupoContabProjeto = newdp.GrupoContabProjeto,
@@ -2779,10 +2803,10 @@ namespace Hydra.Such.Portal.Controllers
                                         CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
                                         CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
                                         Utilizador = User.Identity.Name,
-                                        CustoUnitário = newdp.CustoUnitário.HasValue ? Math.Round((decimal)newdp.CustoUnitário, 4) : decimal.Zero,
-                                        CustoTotal = newdp.Quantidade.HasValue && newdp.CustoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.CustoUnitário), 2) : decimal.Zero, //newdp.CustoTotal,
-                                        PreçoUnitário = newdp.PreçoUnitário.HasValue ? Math.Round((decimal)newdp.PreçoUnitário, 4) : decimal.Zero,
-                                        PreçoTotal = newdp.Quantidade.HasValue && newdp.PreçoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.PreçoUnitário), 2) : decimal.Zero, //newdp.PreçoTotal,
+                                        CustoUnitário = newdp.CustoUnitário.HasValue ? Math.Round((decimal)newdp.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                        CustoTotal = newdp.Quantidade.HasValue && newdp.CustoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //newdp.CustoTotal,
+                                        PreçoUnitário = newdp.PreçoUnitário.HasValue ? Math.Round((decimal)newdp.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                        PreçoTotal = newdp.Quantidade.HasValue && newdp.PreçoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //newdp.PreçoTotal,
                                         Faturável = newdp.Faturável,
                                         Registado = true,
                                         Faturada = false,
@@ -2858,7 +2882,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Tipo = newdp.Tipo,
                                 Código = newdp.Código,
                                 Descrição = newdp.Descrição,
-                                Quantidade = newdp.Quantidade.HasValue ? Math.Round((decimal)newdp.Quantidade, 2) : decimal.Zero,
+                                Quantidade = newdp.Quantidade.HasValue ? Math.Round((decimal)newdp.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                 CódUnidadeMedida = newdp.CódUnidadeMedida,
                                 CódLocalização = newdp.CódLocalização,
                                 GrupoContabProjeto = newdp.GrupoContabProjeto,
@@ -2866,10 +2890,10 @@ namespace Hydra.Such.Portal.Controllers
                                 CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
                                 CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
                                 Utilizador = userName,
-                                CustoUnitário = newdp.CustoUnitário.HasValue ? Math.Round((decimal)newdp.CustoUnitário, 4) : decimal.Zero,
-                                CustoTotal = newdp.Quantidade.HasValue && newdp.CustoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.CustoUnitário), 2) : decimal.Zero,
-                                PreçoUnitário = newdp.PreçoUnitário.HasValue ? Math.Round((decimal)newdp.PreçoUnitário, 4) : decimal.Zero,
-                                PreçoTotal = newdp.Quantidade.HasValue && newdp.PreçoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.PreçoUnitário), 2) : decimal.Zero,
+                                CustoUnitário = newdp.CustoUnitário.HasValue ? Math.Round((decimal)newdp.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                CustoTotal = newdp.Quantidade.HasValue && newdp.CustoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                PreçoUnitário = newdp.PreçoUnitário.HasValue ? Math.Round((decimal)newdp.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                PreçoTotal = newdp.Quantidade.HasValue && newdp.PreçoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                 Faturável = newdp.Faturável,
                                 Registado = true,
                                 Faturada = false,
@@ -3046,9 +3070,9 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.Code = item.Resource;
                         newRow.Description = item.ResourceDescription;
                         newRow.MeasurementUnitCode = item.UnitMeasure;
-                        newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4) : decimal.Zero;
-                        newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4) : decimal.Zero;
-                        if (item.Quantidade.HasValue && item.Quantidade > 0) newRow.Quantity = Math.Round((decimal)item.Quantidade, 4);
+                        newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        if (item.Quantidade.HasValue && item.Quantidade > 0) newRow.Quantity = Math.Round((decimal)item.Quantidade, 4, MidpointRounding.AwayFromZero);
                         newRow.Billable = true;
                         newRow.ProjectContabGroup = proj.GrupoContabObra;
                         newRow.MovementType = 1;
@@ -3175,18 +3199,18 @@ namespace Hydra.Such.Portal.Controllers
                         Code = x.Código,
                         Description = x.Descrição,
                         CodigoTipoTrabalho = x.CodigoTipoTrabalho,
-                        Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) : decimal.Zero,
-                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "": "Informação indisponível" : "",
+                        Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
+                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "Informação indisponível" : "",
                         LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "Informação indisponível" : "",
                         ProjectContabGroup = x.GrupoContabProjeto,
                         RegionCode = x.CódigoRegião,
                         FunctionalAreaCode = x.CódigoÁreaFuncional,
                         ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                         User = x.Utilizador,
-                        UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                        TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                        UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                        TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                        UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                        TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                        UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                        TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                         Billable = x.Faturável,
                         BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
                         ResidueGuideNo = x.NºGuiaResíduos,
@@ -3236,7 +3260,7 @@ namespace Hydra.Such.Portal.Controllers
                         InvoiceGroup = x.GrupoFatura,
                         InvoiceGroupDescription = x.GrupoFaturaDescricao,
                         AuthorizedBy = x.AutorizadoPor,
-                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList  != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "Informação indisponível" : "",
+                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "Informação indisponível" : "",
                         MealTypeDescription = x.TipoRefeição != null ? MealList != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "Informação indisponível" : "",
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
@@ -3265,7 +3289,7 @@ namespace Hydra.Such.Portal.Controllers
                         Code = x.Código,
                         Description = x.Descrição,
                         CodigoTipoTrabalho = x.CodigoTipoTrabalho,
-                        Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) : decimal.Zero,
+                        Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                         MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "Informação indisponível" : "",
                         LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "Informação indisponível" : "",
                         ProjectContabGroup = x.GrupoContabProjeto,
@@ -3273,10 +3297,10 @@ namespace Hydra.Such.Portal.Controllers
                         FunctionalAreaCode = x.CódigoÁreaFuncional,
                         ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                         User = x.Utilizador,
-                        UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                        TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                        UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) :decimal.Zero,
-                        TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                        UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                        TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                        UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                        TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                         Billable = x.Faturável,
                         BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
                         ResidueGuideNo = x.NºGuiaResíduos,
@@ -3379,7 +3403,7 @@ namespace Hydra.Such.Portal.Controllers
                 Code = x.Código,
                 Description = x.Descrição,
                 CodigoTipoTrabalho = x.CodigoTipoTrabalho,
-                Quantity = InverterSinal == false ? x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) : decimal.Zero : x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade * -1, 2) : decimal.Zero,
+                Quantity = InverterSinal == false ? x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero : x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade * -1, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                 MeasurementUnitCode = x.CódUnidadeMedida,
                 LocationCode = x.CódLocalização,
                 ProjectContabGroup = x.GrupoContabProjeto,
@@ -3387,10 +3411,10 @@ namespace Hydra.Such.Portal.Controllers
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                 User = x.Utilizador,
-                UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                TotalCost = InverterSinal == false ? x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero : x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) * -1 : decimal.Zero,
-                UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                TotalPrice = InverterSinal == false ? x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero : x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) * -1 : decimal.Zero,
+                UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                TotalCost = InverterSinal == false ? x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero : x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) * -1 : decimal.Zero,
+                UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                TotalPrice = InverterSinal == false ? x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero : x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) * -1 : decimal.Zero,
                 Billable = x.Faturável,
                 Registered = x.Registado,
                 DocumentNo = x.NºDocumento,
@@ -3430,10 +3454,12 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult AutorizacaoFaturacao(String id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AutorizaçãoFaturação);
+            ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.projectNo = id;
                 ViewBag.UPermissions = UPerm;
+                ViewBag.EditarPrecoUnitario = Utilizador.EditarPrecoUnitario.HasValue ? Utilizador.EditarPrecoUnitario.Value : false;
                 return View();
             }
             else
@@ -3507,12 +3533,12 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (mov.MovementType == 3)
                     {
-                        mov.Quantity = Math.Abs(mov.Quantity.HasValue ? Math.Round((decimal)mov.Quantity, 2) : decimal.Zero) * (-1);
+                        mov.Quantity = Math.Abs(mov.Quantity.HasValue ? Math.Round((decimal)mov.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero) * (-1);
                     }
 
                     if (!String.IsNullOrEmpty(mov.Currency))
                     {
-                        mov.UnitPrice = mov.UnitValueToInvoice.HasValue ? Math.Round((decimal)mov.UnitValueToInvoice, 4) : decimal.Zero;
+                        mov.UnitPrice = mov.UnitValueToInvoice.HasValue ? Math.Round((decimal)mov.UnitValueToInvoice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
                     }
 
                     if (!string.IsNullOrEmpty(mov.ServiceClientCode))
@@ -3736,10 +3762,10 @@ namespace Hydra.Such.Portal.Controllers
                             DataPrestacaoServico = serviceDate > DateTime.MinValue ? serviceDate : (DateTime?)null,
                             DataPrestacaoServicoFim = serviceDateFim > DateTime.MinValue ? serviceDateFim : (DateTime?)null,
                             CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : "",
-                            ValorAutorizado = Math.Round((decimal)authorizationTotal, 2),
+                            ValorAutorizado = Math.Round((decimal)authorizationTotal, 2, MidpointRounding.AwayFromZero),
                             GrupoContabilisticoProjeto = project.TipoGrupoContabProjeto.HasValue ? project.TipoGrupoContabProjeto.ToString() : string.Empty,
                             NoFaturaRelacionada = !string.IsNullOrEmpty(noFaturaRelacionada) ? noFaturaRelacionada : string.Empty
-                    };
+                        };
 
                         //Atualizar apenas os campos relativos à autorização. Nos movimentos de projeto atualizar apenas os necessários à listagem/apresentação
                         List<MovimentosProjectoAutorizados> authorizedProjMovements = new List<MovimentosProjectoAutorizados>();
@@ -3778,10 +3804,10 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.Tipo = x.Type ?? 0;
                             authorizedProjMovement.Codigo = x.Code;
                             authorizedProjMovement.Descricao = x.Description;
-                            authorizedProjMovement.Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero; //?? 0;
+                            authorizedProjMovement.Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero; //?? 0;
                             authorizedProjMovement.CodUnidadeMedida = x.MeasurementUnitCode;
-                            authorizedProjMovement.PrecoVenda = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero; // ?? 0;
-                            authorizedProjMovement.PrecoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero; // ?? 0; //x.TotalPrice;
+                            authorizedProjMovement.PrecoVenda = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero; // ?? 0;
+                            authorizedProjMovement.PrecoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero; // ?? 0; //x.TotalPrice;
                             authorizedProjMovement.CodProjeto = x.ProjectNo;
                             authorizedProjMovement.CodRegiao = x.RegionCode;
                             authorizedProjMovement.CodAreaFuncional = x.FunctionalAreaCode;
@@ -3794,8 +3820,8 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovement.TipoRefeicao = x.MealType ?? 0;
                             authorizedProjMovement.TipoRecurso = x.ResourceType ?? 0;
                             authorizedProjMovement.NumDocumento = x.DocumentNo;
-                            authorizedProjMovement.PrecoCusto = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero;
-                            authorizedProjMovement.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero; // ?? 0; //x.TotalCost;
+                            authorizedProjMovement.PrecoCusto = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                            authorizedProjMovement.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero; // ?? 0; //x.TotalCost;
                             authorizedProjMovement.CodCliente = x.InvoiceToClientNo;
                             authorizedProjMovement.GrupoFactura = invoiceGroup;
 
@@ -3814,6 +3840,8 @@ namespace Hydra.Such.Portal.Controllers
                             authorizedProjMovements.Add(authorizedProjMovement);
                             // END RUI
                         });
+
+                        authorizedProject.ValorAutorizado = Math.Round(authorizedProjMovements.Sum(x => x.PrecoTotal), 2, MidpointRounding.AwayFromZero);
 
                         ctx.ProjectosAutorizados.Add(authorizedProject);
                         try
@@ -3913,7 +3941,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (serviceDateValue != null)
                     DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
 
-                DateTime serviceDateFim;
+                DateTime serviceDateFim = DateTime.MinValue;
                 JValue serviceDateFimValue = requestParams["serviceDateFim"] as JValue;
                 if (serviceDateFimValue != null)
                     DateTime.TryParse((string)serviceDateFimValue.Value, out serviceDateFim);
@@ -4069,9 +4097,9 @@ namespace Hydra.Such.Portal.Controllers
 
                         ProjetosAutorizadosIguais = ProjetosAutorizados.Where(x => x.CodProjeto == projectNo &&
                         x.CodCliente == project.NºCliente &&
-                        x.ValorAutorizado == Math.Round((decimal)authorizationTotal, 2) &&
+                        x.ValorAutorizado == Math.Round((decimal)authorizationTotal, 2, MidpointRounding.AwayFromZero) &&
                         x.DataServPrestado == billingPeriod &&
-                        x.PedidoCliente == customerRequestNo 
+                        x.PedidoCliente == customerRequestNo
                         && x.DataPedido == (customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null)).ToList();
 
                         if (ProjetosAutorizadosIguais != null && ProjetosAutorizadosIguais.Count > 0)
@@ -4083,15 +4111,29 @@ namespace Hydra.Such.Portal.Controllers
                     if (contract != null)
                     {
                         //Validar se o contrato indicado no projeto está vigente
-                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue && 
+                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue &&
                             (DateTime.Now < contract.DataInicial.Value || DateTime.Now > contract.DataFimContrato.Value))
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Contrato não está vigente."));
                         }
                         //Validar se o compromisso é o que está no contrato                
+                        //contract.NºCompromisso = !string.IsNullOrEmpty(contract.NºCompromisso) ? contract.NºCompromisso : "";
+                        //if (commitmentNumber != contract.NºCompromisso)
                         commitmentNumber = !string.IsNullOrEmpty(commitmentNumber) ? commitmentNumber : "";
-                        contract.NºCompromisso = !string.IsNullOrEmpty(contract.NºCompromisso) ? contract.NºCompromisso : "";
-                        if (commitmentNumber != contract.NºCompromisso)
+                        List<RequisiçõesClienteContrato> AllRequisicoes = new List<RequisiçõesClienteContrato>();
+                        RequisiçõesClienteContrato Requisicao = new RequisiçõesClienteContrato();
+                        string REQCompromisso = string.Empty;
+                        AllRequisicoes = DBContractClientRequisition.GetByContract(project.NºContrato);
+                        if (AllRequisicoes != null && AllRequisicoes.Count > 0)
+                        {
+                            Requisicao = AllRequisicoes.FirstOrDefault(x => (x.DataInícioCompromisso <= serviceDateFim && x.DataFimCompromisso >= serviceDateFim) && x.NºProjeto == project.NºProjeto);
+                            if (Requisicao == null)
+                            {
+                                Requisicao = AllRequisicoes.FirstOrDefault(x => (x.DataInícioCompromisso <= serviceDateFim && x.DataFimCompromisso >= serviceDateFim) && string.IsNullOrEmpty(x.NºProjeto));
+                            }
+                            REQCompromisso = Requisicao != null && !string.IsNullOrEmpty(Requisicao.NºCompromisso) ? Requisicao.NºCompromisso : "";
+                        }
+                        if (commitmentNumber != REQCompromisso)
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
                         }
@@ -4291,12 +4333,12 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (lst.MovementType == 3)
                         {
-                            lst.Quantity = Math.Abs(lst.Quantity.HasValue ? Math.Round((decimal)lst.Quantity, 2) : decimal.Zero) * (-1);
+                            lst.Quantity = Math.Abs(lst.Quantity.HasValue ? Math.Round((decimal)lst.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero) * (-1);
                         }
 
                         if (!String.IsNullOrEmpty(lst.Currency))
                         {
-                            lst.UnitPrice = lst.UnitValueToInvoice.HasValue ? Math.Round((decimal)lst.UnitValueToInvoice, 4) : decimal.Zero;
+                            lst.UnitPrice = lst.UnitValueToInvoice.HasValue ? Math.Round((decimal)lst.UnitValueToInvoice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
                         }
                         var customer = ClientList.Where(x => x.No_ == lst.InvoiceToClientNo).FirstOrDefault();
                         lst.ClientName = customer != null ? customer.Name : string.Empty;
@@ -4558,8 +4600,9 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        //FATURAR
         [HttpPost]
-        public JsonResult CreateBillingDocuments([FromBody] List<AuthorizedProjectViewModel> authProjectMovements, string OptionInvoice, string dataFormulario)
+        public JsonResult CreateBillingDocuments([FromBody] List<AuthorizedProjectViewModel> authProjectMovements, string OptionInvoice, string dataFormulario, bool agrupar)
         {
             string execDetails = string.Empty;
             string errorMessage = string.Empty;
@@ -4649,9 +4692,9 @@ namespace Hydra.Such.Portal.Controllers
                             wSJobJournalLine.FunctionAreaCode20 = string.Empty;
                             wSJobJournalLine.ResponsabilityCenterCode20 = string.Empty;
                             wSJobJournalLine.Unit_Cost = movimento.CustoUnitário.HasValue ? (decimal)movimento.CustoUnitário : decimal.Zero;
-                            wSJobJournalLine.Total_Cost = movimento.Quantidade.HasValue && movimento.CustoUnitário.HasValue ? Math.Round(((decimal)movimento.Quantidade * (decimal)movimento.CustoUnitário), 2) : decimal.Zero;
+                            wSJobJournalLine.Total_Cost = movimento.Quantidade.HasValue && movimento.CustoUnitário.HasValue ? Math.Round(((decimal)movimento.Quantidade * (decimal)movimento.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                             wSJobJournalLine.Unit_Price = movimento.PreçoUnitário.HasValue ? (decimal)movimento.PreçoUnitário : decimal.Zero;
-                            wSJobJournalLine.Total_Price = movimento.Quantidade.HasValue && movimento.PreçoUnitário .HasValue ? Math.Round(((decimal)movimento.Quantidade * (decimal)movimento.PreçoUnitário), 2) : decimal.Zero;
+                            wSJobJournalLine.Total_Price = movimento.Quantidade.HasValue && movimento.PreçoUnitário.HasValue ? Math.Round(((decimal)movimento.Quantidade * (decimal)movimento.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                             wSJobJournalLine.Unit_CostSpecified = true;
                             wSJobJournalLine.Unit_PriceSpecified = true;
                             switch (movimento.Faturável.ToString())
@@ -4839,70 +4882,216 @@ namespace Hydra.Such.Portal.Controllers
 
                 List<NAVClientsViewModel> customers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, customersIds);
 
-                var groupedbyclient = data.GroupBy(x => new
+                List<AuthorizedCustomerBilling> groupedbyclient = new List<AuthorizedCustomerBilling>();
+                if (agrupar == true)
                 {
-                    x.InvoiceToClientNo,
-                    x.Date,
-                    x.DateFim,
-                    x.CommitmentNumber,
-                    x.ClientRequest
-                },
-                    x => x,
-                    (key, items) => new AuthorizedCustomerBilling
+                    groupedbyclient = data.GroupBy(x => new
                     {
-                        InvoiceToClientNo = key.InvoiceToClientNo,
-                        Date = key.Date,
-                        DateFim = key.DateFim,
-                        CommitmentNumber = key.CommitmentNumber,
-                        ClientRequest = key.ClientRequest,
+                        x.InvoiceToClientNo
+                        //x.Date,
+                        //x.DateFim,
+                        //x.CommitmentNumber,
+                        //x.ClientRequest
+                    },
+                        x => x,
+                        (key, items) => new AuthorizedCustomerBilling
+                        {
+                            //InvoiceToClientNo = key.InvoiceToClientNo,
+                            //Date = key.Date,
+                            //DateFim = key.DateFim,
+                            //CommitmentNumber = key.CommitmentNumber,
+                            //ClientRequest = key.ClientRequest,
 
-                        ClientVATReg = customers.FirstOrDefault(x => x.No_ == key.InvoiceToClientNo)?.VATRegistrationNo_,// DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
-                        ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
-                        Currency = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.Currency,
-                        LocationCode = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.LocationCode,
-                        MovementType = Convert.ToInt32(OptionInvoice),
-                        CreateUser = User.Identity.Name,
+                            InvoiceToClientNo = key.InvoiceToClientNo,
 
-                        Items = items.ToList(),
+                            Date = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.Date,
+                            DateFim = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.DateFim,
+                            CommitmentNumber = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber,
+                            ClientRequest = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest,
 
-                        //##################################    Obter de projetos autorizados
-                        CodMetodoPagamento = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.CodMetodoPagamento,
-                        CodTermosPagamento = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.CodTermosPagamento,
-                        Comments = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.Observacoes,
-                        ServiceDate = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.DataServPrestado,
-                        RegionCode = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.CodRegiao,
-                        FunctionalAreaCode = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.CodAreaFuncional,
-                        ResponsabilityCenterCode = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
-                                                 y.DataPrestacaoServico == key.Date &&
-                                                 y.NumCompromisso == key.CommitmentNumber &&
-                                                 y.PedidoCliente == key.ClientRequest)?.CodCentroResponsabilidade,
-                    })
-                .ToList();
+                            ClientVATReg = customers.FirstOrDefault(x => x.No_ == key.InvoiceToClientNo)?.VATRegistrationNo_,// DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                            ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
+                            Currency = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.Currency,
+                            LocationCode = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.LocationCode,
+                            MovementType = Convert.ToInt32(OptionInvoice),
+                            CreateUser = User.Identity.Name,
+
+                            Items = items.ToList(),
+
+                            //##################################    Obter de projetos autorizados
+                            CodMetodoPagamento = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.CodMetodoPagamento,
+                            CodTermosPagamento = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.CodTermosPagamento,
+                            Comments = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.Observacoes,
+                            ServiceDate = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.DataServPrestado,
+                            RegionCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.CodRegiao,
+                            FunctionalAreaCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.CodAreaFuncional,
+                            ResponsabilityCenterCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == key.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == key.InvoiceToClientNo)?.ClientRequest)?.CodCentroResponsabilidade,
+                        })
+                    .ToList();
+                }
+                else
+                {
+                    groupedbyclient = data.GroupBy(x => new
+                    {
+                        x.ProjectNo
+                        //x.Date,
+                        //x.DateFim,
+                        //x.CommitmentNumber,
+                        //x.ClientRequest
+                    },
+                        x => x,
+                        (key, items) => new AuthorizedCustomerBilling
+                        {
+                            //InvoiceToClientNo = key.InvoiceToClientNo,
+                            //Date = key.Date,
+                            //DateFim = key.DateFim,
+                            //CommitmentNumber = key.CommitmentNumber,
+                            //ClientRequest = key.ClientRequest,
+
+                            InvoiceToClientNo = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.InvoiceToClientNo,
+
+                            Date = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.Date,
+                            DateFim = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.DateFim,
+                            CommitmentNumber = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.CommitmentNumber,
+                            ClientRequest = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.ClientRequest,
+
+                            ClientVATReg = customers.FirstOrDefault(x => x.No_ == items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.VATRegistrationNo_,// DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
+                            ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
+                            Currency = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.Currency,
+                            LocationCode = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.LocationCode,
+                            MovementType = Convert.ToInt32(OptionInvoice),
+                            CreateUser = User.Identity.Name,
+
+                            Items = items.ToList(),
+
+                            //##################################    Obter de projetos autorizados
+                            CodMetodoPagamento = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodMetodoPagamento,
+                            CodTermosPagamento = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodTermosPagamento,
+                            Comments = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.Observacoes,
+                            ServiceDate = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.DataServPrestado,
+                            RegionCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodRegiao,
+                            FunctionalAreaCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodAreaFuncional,
+                            ResponsabilityCenterCode = authProjectMovements
+                                .FirstOrDefault(y => y.CodCliente == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo &&
+                                                     y.DataPrestacaoServico == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.Date &&
+                                                     y.NumCompromisso == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.CommitmentNumber &&
+                                                     y.PedidoCliente == items.FirstOrDefault(z => z.InvoiceToClientNo == items.FirstOrDefault(w => w.ProjectNo == key.ProjectNo)?.InvoiceToClientNo)?.ClientRequest)?.CodCentroResponsabilidade,
+                        })
+                    .ToList();
+                    
+                    //data.ForEach(x =>
+                    //{
+                    //    AuthorizedCustomerBilling Autorizacao = new AuthorizedCustomerBilling();
+
+                    //    Autorizacao.InvoiceToClientNo = x.InvoiceToClientNo;
+
+                    //    Autorizacao.Date = x.Date;
+                    //    Autorizacao.DateFim = x.DateFim;
+                    //    Autorizacao.CommitmentNumber = x.CommitmentNumber;
+                    //    Autorizacao.ClientRequest = x.ClientRequest;
+
+                    //    Autorizacao.ClientVATReg = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo)?.VATRegistrationNo_;
+                    //    Autorizacao.ContractNo = projectsDetails.Select(y => y.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y));
+                    //    Autorizacao.Currency = x.Currency;
+                    //    Autorizacao.LocationCode = x.LocationCode;
+                    //    Autorizacao.MovementType = Convert.ToInt32(OptionInvoice);
+                    //    Autorizacao.CreateUser = User.Identity.Name;
+
+                    //    Autorizacao.Items = data.Where(y => y.InvoiceToClientNo == x.InvoiceToClientNo).ToList();
+
+                    //    //##################################    Obter de projetos autorizados
+                    //    Autorizacao.CodMetodoPagamento = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest).CodMetodoPagamento;
+                    //    Autorizacao.CodTermosPagamento = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodTermosPagamento;
+                    //    Autorizacao.Comments = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.Observacoes;
+                    //    Autorizacao.ServiceDate = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.DataServPrestado;
+                    //    Autorizacao.RegionCode = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodRegiao;
+                    //    Autorizacao.FunctionalAreaCode = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodAreaFuncional;
+                    //    Autorizacao.ResponsabilityCenterCode = authProjectMovements
+                    //        .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                    //                                y.DataPrestacaoServico == x.Date &&
+                    //                                y.NumCompromisso == x.CommitmentNumber &&
+                    //                                y.PedidoCliente == x.ClientRequest)?.CodCentroResponsabilidade;
+
+                    //    groupedbyclient.Add(Autorizacao);
+                    //});
+                }
+
 
                 bool allMealTypesAreValid = true;
 
@@ -5132,6 +5321,8 @@ namespace Hydra.Such.Portal.Controllers
                                                     wasteLineToAdd.ContractNo = projectsDetails
                                                                 .Select(y => new { ProjectNo = y.NºProjeto, ContractNo = y.NºContrato })
                                                                 .FirstOrDefault(y => y.ProjectNo == resourceFirstLine.ProjectNo)?.ContractNo;
+                                                    wasteLineToAdd.Date = data.FirstOrDefault().Date;
+                                                    wasteLineToAdd.DateFim = data.FirstOrDefault().DateFim;
 
                                                     header.Items.Add(wasteLineToAdd);
                                                 }
@@ -5204,7 +5395,6 @@ namespace Hydra.Such.Portal.Controllers
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> TCreatePreInvoiceLine = WSPreInvoiceLine.CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
                                     TCreatePreInvoiceLine.Wait();
 
-
                                     if (TCreatePreInvoiceLine.IsCompletedSuccessfully)
                                     {
                                         execDetails += " Linhas criadas com sucesso.";
@@ -5254,7 +5444,7 @@ namespace Hydra.Such.Portal.Controllers
                                     //assume-se que o mesmo foi executado com sucesso.
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
-                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()) || errorMessage.ToLower().Contains("request channel timed out".ToLower()))
                                     {
                                         errorMessage = "";
 
@@ -5581,16 +5771,16 @@ namespace Hydra.Such.Portal.Controllers
                                     var selectedWasteResources = Resourceslines.Where(x => x.WasteRate == 1 && selectedResources.Contains(x.Code));
                                     foreach (var item in selectedWasteResources)
                                     {
-                                        decimal? quantity = linesList.Where(x => x.Code == item.Code).Sum(x => x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero);
+                                        decimal? quantity = linesList.Where(x => x.Code == item.Code).Sum(x => x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero);
 
                                         var wasteFamilyResources = wr.Where(x => x.FamiliaRecurso == item.ResourceGroup).ToList();
                                         wasteFamilyResources.ForEach(x =>
                                         {
                                             SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
-                                            wasteLineToAdd.Quantity = quantity.HasValue ? Math.Round((decimal)quantity, 2) : decimal.Zero; // ?? 0;
+                                            wasteLineToAdd.Quantity = quantity.HasValue ? Math.Round((decimal)quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero; // ?? 0;
                                             wasteLineToAdd.Code = item.Code;
                                             wasteLineToAdd.Description = item.Name;
-                                            wasteLineToAdd.UnitPrice = Math.Round((decimal)item.UnitPrice, 4);
+                                            wasteLineToAdd.UnitPrice = Math.Round((decimal)item.UnitPrice, 4, MidpointRounding.AwayFromZero);
                                             linesList.Add(wasteLineToAdd);
                                         });
                                     }
@@ -5714,7 +5904,7 @@ namespace Hydra.Such.Portal.Controllers
                     TypeText = x.Tipo.HasValue ? AllTipos.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? AllTipos.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
                     Code = x.Código,
                     Description = x.Descrição,
-                    Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2) : decimal.Zero,
+                    Quantity = x.Quantidade.HasValue ? Math.Round((decimal)x.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                     MeasurementUnitCode = x.CódUnidadeMedida,
                     MeasurementUnitCodeText = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? AllUnidadesMedida.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? AllUnidadesMedida.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
                     LocationCode = x.CódLocalização,
@@ -5727,10 +5917,10 @@ namespace Hydra.Such.Portal.Controllers
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     ResponsabilityCenterCodeText = !string.IsNullOrEmpty(x.CódigoCentroResponsabilidade) ? AllCresps.Where(y => y.Code == x.CódigoCentroResponsabilidade).FirstOrDefault() != null ? AllCresps.Where(y => y.Code == x.CódigoCentroResponsabilidade).FirstOrDefault().Name : "" : "",
                     User = x.Utilizador,
-                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                     Billable = x.Faturável,
                     BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
                     Registered = x.Registado,
@@ -5862,7 +6052,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         if (pjD.ServiceClientCode == lc.CódServiçoCliente && newUnitCost == false)
                                         {
-                                            pjD.UnitCost = lc.PreçoUnitário.HasValue ? Math.Round((decimal)lc.PreçoUnitário, 4) : decimal.Zero;
+                                            pjD.UnitCost = lc.PreçoUnitário.HasValue ? Math.Round((decimal)lc.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
                                             newUnitCost = true;
                                         }
                                     }
@@ -5878,7 +6068,7 @@ namespace Hydra.Such.Portal.Controllers
                                             Tipo = pjD.Type,
                                             Código = pjD.Code,
                                             Descrição = pjD.Description,
-                                            Quantidade = pjD.Quantity.HasValue ? Math.Round((decimal)pjD.Quantity, 2) : decimal.Zero,
+                                            Quantidade = pjD.Quantity.HasValue ? Math.Round((decimal)pjD.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                             //Quantidade = pjD.Quantity,
                                             CódUnidadeMedida = pjD.MeasurementUnitCode,
                                             CódLocalização = pjD.LocationCode,
@@ -5887,10 +6077,10 @@ namespace Hydra.Such.Portal.Controllers
                                             CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
                                             CódigoCentroResponsabilidade = projecto.CódigoCentroResponsabilidade,
                                             Utilizador = User.Identity.Name,
-                                            CustoUnitário = pjD.UnitCost.HasValue ? Math.Round((decimal)pjD.UnitCost, 4) : decimal.Zero,
-                                            CustoTotal = pjD.Quantity.HasValue && pjD.UnitCost.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitCost), 2) : decimal.Zero, //pjD.TotalCost,
-                                            PreçoUnitário = pjD.UnitPrice.HasValue ? Math.Round((decimal)pjD.UnitPrice, 4) : decimal.Zero,
-                                            PreçoTotal = pjD.Quantity.HasValue && pjD.UnitPrice.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitPrice), 2) : decimal.Zero, //pjD.TotalPrice,
+                                            CustoUnitário = pjD.UnitCost.HasValue ? Math.Round((decimal)pjD.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                            CustoTotal = pjD.Quantity.HasValue && pjD.UnitCost.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //pjD.TotalCost,
+                                            PreçoUnitário = pjD.UnitPrice.HasValue ? Math.Round((decimal)pjD.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                            PreçoTotal = pjD.Quantity.HasValue && pjD.UnitPrice.HasValue ? Math.Round((decimal)(pjD.Quantity * pjD.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //pjD.TotalPrice,
                                             //CustoUnitário = pjD.UnitCost,
                                             //CustoTotal = pjD.TotalCost,
                                             //PreçoUnitário = pjD.UnitPrice,
@@ -5982,7 +6172,7 @@ namespace Hydra.Such.Portal.Controllers
                             Tipo = x.Type,
                             Código = x.Code,
                             Descrição = x.Description,
-                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero,
+                            Quantidade = x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                             //Quantidade = x.Quantity,
                             CódUnidadeMedida = x.MeasurementUnitCode,
                             CódLocalização = x.LocationCode,
@@ -5991,10 +6181,10 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
                             CódigoCentroResponsabilidade = projecto.CódigoCentroResponsabilidade,
                             Utilizador = User.Identity.Name,
-                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero,
-                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero, //x.TotalCost,
-                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero,
-                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero, //x.TotalPrice,
+                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalCost,
+                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.TotalPrice,
                             //CustoUnitário = x.UnitCost,
                             //CustoTotal = x.TotalCost,
                             //PreçoUnitário = x.UnitPrice,
@@ -6063,10 +6253,10 @@ namespace Hydra.Such.Portal.Controllers
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
-                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
                     Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
@@ -6101,10 +6291,10 @@ namespace Hydra.Such.Portal.Controllers
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                     User = x.Utilizador,
-                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4) : decimal.Zero,
-                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2) : decimal.Zero, //x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
-                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2) : decimal.Zero, //x.PreçoTotal,
+                    UnitCost = x.CustoUnitário.HasValue ? Math.Round((decimal)x.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalCost = x.Quantidade.HasValue && x.CustoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.CustoTotal,
+                    UnitPrice = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                    TotalPrice = x.Quantidade.HasValue && x.PreçoUnitário.HasValue ? Math.Round((decimal)(x.Quantidade * x.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero, //x.PreçoTotal,
                     Billable = x.Faturável,
                     Registered = x.Registado,
                     Billed = x.Faturada.HasValue ? x.Faturada.Value : false,
@@ -6190,10 +6380,10 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
                         newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
                         newdp.Utilizador = User.Identity.Name;
-                        newdp.CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero;
-                        newdp.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero;
-                        newdp.PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero;
-                        newdp.PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero;
+                        newdp.CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newdp.PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                         newdp.Faturável = x.Billable;
                         newdp.Registado = false;
                         newdp.FaturaANºCliente = x.InvoiceToClientNo;
@@ -6231,10 +6421,10 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoÁreaFuncional = x.FunctionalAreaCode,
                             CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                             Utilizador = User.Identity.Name,
-                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4) : decimal.Zero,
-                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2) : decimal.Zero,
-                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4) : decimal.Zero,
-                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2) : decimal.Zero,
+                            CustoUnitário = x.UnitCost.HasValue ? Math.Round((decimal)x.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            CustoTotal = x.Quantity.HasValue && x.UnitCost.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            PreçoUnitário = x.UnitPrice.HasValue ? Math.Round((decimal)x.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                            PreçoTotal = x.Quantity.HasValue && x.UnitPrice.HasValue ? Math.Round((decimal)(x.Quantity * x.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                             Faturável = x.Billable,
                             Registado = false,
                             FaturaANºCliente = x.InvoiceToClientNo,
@@ -6307,7 +6497,7 @@ namespace Hydra.Such.Portal.Controllers
                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
                                Utilizador = User.Identity.Name,
-                               PreçoUnitário = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
+                               PreçoUnitário = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
                                Faturável = x.Faturável,
                                Registado = false,
                                PréRegisto = true,
@@ -6333,7 +6523,7 @@ namespace Hydra.Such.Portal.Controllers
                                CódigoÁreaFuncional = x.CódigoÁreaFuncional,
                                CódigoCentroResponsabilidade = x.CódigoCentroResponsabilidade,
                                Utilizador = User.Identity.Name,
-                               PreçoUnitário = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4) : decimal.Zero,
+                               PreçoUnitário = x.PreçoUnitário.HasValue ? Math.Round((decimal)x.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
                                Faturável = x.Faturável,
                                Registado = false,
                                PréRegisto = true,
@@ -6435,7 +6625,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Tipo = newdp.Tipo,
                                     Código = newdp.Código,
                                     Descrição = newdp.Descrição,
-                                    Quantidade = newdp.Quantidade.HasValue ? Math.Round((decimal)newdp.Quantidade, 2) : decimal.Zero,
+                                    Quantidade = newdp.Quantidade.HasValue ? Math.Round((decimal)newdp.Quantidade, 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                     CódUnidadeMedida = newdp.CódUnidadeMedida,
                                     CódLocalização = newdp.CódLocalização,
                                     GrupoContabProjeto = newdp.GrupoContabProjeto,
@@ -6443,10 +6633,10 @@ namespace Hydra.Such.Portal.Controllers
                                     CódigoÁreaFuncional = newdp.CódigoÁreaFuncional,
                                     CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
                                     Utilizador = User.Identity.Name,
-                                    CustoUnitário = newdp.CustoUnitário.HasValue ? Math.Round((decimal)newdp.CustoUnitário, 4) : decimal.Zero,
-                                    CustoTotal = newdp.Quantidade.HasValue && newdp.CustoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.CustoUnitário), 2) : decimal.Zero,
-                                    PreçoUnitário = newdp.PreçoUnitário.HasValue ? Math.Round((decimal)newdp.PreçoUnitário, 4) : decimal.Zero,
-                                    PreçoTotal = newdp.Quantidade.HasValue && newdp.PreçoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.PreçoUnitário), 2) : decimal.Zero,
+                                    CustoUnitário = newdp.CustoUnitário.HasValue ? Math.Round((decimal)newdp.CustoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                    CustoTotal = newdp.Quantidade.HasValue && newdp.CustoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.CustoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                    PreçoUnitário = newdp.PreçoUnitário.HasValue ? Math.Round((decimal)newdp.PreçoUnitário, 4, MidpointRounding.AwayFromZero) : decimal.Zero,
+                                    PreçoTotal = newdp.Quantidade.HasValue && newdp.PreçoUnitário.HasValue ? Math.Round((decimal)(newdp.Quantidade * newdp.PreçoUnitário), 2, MidpointRounding.AwayFromZero) : decimal.Zero,
                                     Faturável = newdp.Faturável,
                                     Registado = false,
                                     Faturada = false,
@@ -6524,9 +6714,9 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 ProjectDiaryViewModel line = item.Items.First();
                                 line.Date = EndDate;
-                                line.Quantity = item.Items.Sum(x => x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2) : decimal.Zero);
-                                line.TotalCost = line.UnitCost.HasValue && line.Quantity.HasValue ? Math.Round((decimal)(line.UnitCost * line.Quantity), 2) : decimal.Zero;
-                                line.TotalPrice = line.UnitPrice.HasValue && line.Quantity.HasValue ? Math.Round((decimal)(line.UnitPrice * line.Quantity), 2) : decimal.Zero;
+                                line.Quantity = item.Items.Sum(x => x.Quantity.HasValue ? Math.Round((decimal)x.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero);
+                                line.TotalCost = line.UnitCost.HasValue && line.Quantity.HasValue ? Math.Round((decimal)(line.UnitCost * line.Quantity), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
+                                line.TotalPrice = line.UnitPrice.HasValue && line.Quantity.HasValue ? Math.Round((decimal)(line.UnitPrice * line.Quantity), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                                 projectDiaryItems.Add(line);
                             }
                         }
@@ -6564,11 +6754,11 @@ namespace Hydra.Such.Portal.Controllers
                             projectMovement.UtilizadorCriação = User.Identity.Name;
                             projectMovement.DataHoraCriação = DateTime.Now;
                             projectMovement.FaturaçãoAutorizada = false;
-                            projectMovement.CustoUnitário = item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4) : decimal.Zero;
-                            projectMovement.PreçoUnitário = item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4) : decimal.Zero;
-                            projectMovement.Quantidade = item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2) : decimal.Zero;
-                            projectMovement.CustoTotal = item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2) : decimal.Zero; //item.TotalCost;
-                            projectMovement.PreçoTotal = item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2) : decimal.Zero; //item.TotalPrice;
+                            projectMovement.CustoUnitário = item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                            projectMovement.PreçoUnitário = item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                            projectMovement.Quantidade = item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero;
+                            projectMovement.CustoTotal = item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero; //item.TotalCost;
+                            projectMovement.PreçoTotal = item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero; //item.TotalPrice;
 
                             projectMovements.Add(projectMovement);
                         }
@@ -6701,8 +6891,8 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.Code = item.Resource;
                         newRow.Description = item.ResourceDescription;
                         newRow.MeasurementUnitCode = item.UnitMeasure;
-                        newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4) : decimal.Zero;
-                        newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4) : decimal.Zero;
+                        newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                        newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
                         if (item.Quantidade.HasValue && item.Quantidade > 0) newRow.Quantity = item.Quantidade;
                         newRow.Billable = true;
                         newRow.ProjectContabGroup = proj.GrupoContabObra;
@@ -7264,10 +7454,25 @@ namespace Hydra.Such.Portal.Controllers
                     List<Projetos> AllProjects = DBProjects.GetAll();
                     List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
                     List<ClientServicesViewModel> AllServicosCliente = DBClientServices.GetAllClientService("", true);
+                    Projetos Project = new Projetos();
 
                     result.ForEach(x =>
                     {
-                        x.ProjectDescription = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().Descrição : "";
+                        Project = null;
+                        Project = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault();
+                        if (Project != null)
+                        {
+                            x.ProjectDescription = !string.IsNullOrEmpty(Project.Descrição) ? Project.Descrição : "";
+                            x.ContractNo = !string.IsNullOrEmpty(Project.NºContrato) ? Project.NºContrato : "";
+                        }
+                        else
+                        {
+                            x.ProjectDescription = "";
+                            x.ContractNo = "";
+                        }
+
+                        //x.ProjectDescription = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().Descrição : "";
+                        //x.ContractNo = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().NºContrato : "";
                         x.MovementTypeText = x.MovementType != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault() != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault().Value : "" : "";
                         x.TypeText = x.Type != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault() != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault().Value : "" : "";
                         x.BillableText = x.Billable.HasValue ? x.Billable == true ? "Sim" : "Não" : "";
@@ -7678,7 +7883,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             var quantityCell = row.CreateCell(Col);
                             quantityCell.SetCellType(CellType.Numeric);
-                            quantityCell.SetCellValue((double)(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2) : decimal.Zero));
+                            quantityCell.SetCellValue((double)(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero));
 
                             Col = Col + 1;
                         }
@@ -7686,7 +7891,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             var unitCostCell = row.CreateCell(Col);
                             unitCostCell.SetCellType(CellType.Numeric);
-                            unitCostCell.SetCellValue((double)(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4) : decimal.Zero));
+                            unitCostCell.SetCellValue((double)(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
 
                             Col = Col + 1;
                         }
@@ -7694,7 +7899,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             var totalCostCell = row.CreateCell(Col);
                             totalCostCell.SetCellType(CellType.Numeric);
-                            totalCostCell.SetCellValue((double)(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2) : decimal.Zero));
+                            totalCostCell.SetCellValue((double)(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
 
                             Col = Col + 1;
                         }
@@ -7702,7 +7907,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             var unitPriceCell = row.CreateCell(Col);
                             unitPriceCell.SetCellType(CellType.Numeric);
-                            unitPriceCell.SetCellValue((double)(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4) : decimal.Zero));
+                            unitPriceCell.SetCellValue((double)(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
 
                             Col = Col + 1;
                         }
@@ -7710,7 +7915,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             var totalPriceCell = row.CreateCell(Col);
                             totalPriceCell.SetCellType(CellType.Numeric);
-                            totalPriceCell.SetCellValue((double)(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2) : decimal.Zero));
+                            totalPriceCell.SetCellValue((double)(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
 
                             Col = Col + 1;
                         }
@@ -7944,10 +8149,10 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(1).SetCellValue(item.Type.ToString());
                     row.CreateCell(2).SetCellValue(item.Code);
                     row.CreateCell(3).SetCellValue(item.Description);
-                    row.CreateCell(4).SetCellValue((double)Math.Round((decimal)item.Quantity, 2));
+                    row.CreateCell(4).SetCellValue((double)Math.Round((decimal)item.Quantity, 2, MidpointRounding.AwayFromZero));
                     row.CreateCell(5).SetCellValue(item.UnitCode);
-                    row.CreateCell(6).SetCellValue((double)Math.Round((decimal)item.SalesPrice, 4));
-                    row.CreateCell(7).SetCellValue((double)Math.Round((decimal)(item.SalesPrice * item.Quantity), 2));
+                    row.CreateCell(6).SetCellValue((double)Math.Round((decimal)item.SalesPrice, 4, MidpointRounding.AwayFromZero));
+                    row.CreateCell(7).SetCellValue((double)Math.Round((decimal)(item.SalesPrice * item.Quantity), 2, MidpointRounding.AwayFromZero));
                     //row.CreateCell(9).SetCellValue(item.Billable.ToString());
                     row.CreateCell(8).SetCellValue(item.TypeResourse.ToString());
                     row.CreateCell(9).SetCellValue(item.CodServClient);
@@ -7962,8 +8167,8 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(15).SetCellValue(item.TypeMeal.ToString());
                     row.CreateCell(16).SetCellValue(item.NumDocument);
                     //row.CreateCell(22).SetCellValue(item.LocationCode);
-                    row.CreateCell(17).SetCellValue((double)(item.CostPrice.HasValue ? Math.Round((decimal)item.CostPrice, 4) : decimal.Zero));
-                    row.CreateCell(18).SetCellValue((double)(item.CostPrice.HasValue ? Math.Round((decimal)(item.CostPrice * item.Quantity), 2) : decimal.Zero));
+                    row.CreateCell(17).SetCellValue((double)(item.CostPrice.HasValue ? Math.Round((decimal)item.CostPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
+                    row.CreateCell(18).SetCellValue((double)(item.CostPrice.HasValue ? Math.Round((decimal)(item.CostPrice * item.Quantity), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                     row.CreateCell(19).SetCellValue(item.RegionCode);
                     row.CreateCell(20).SetCellValue(item.FunctionalAreaCode);
                     row.CreateCell(21).SetCellValue(item.ResponsabilityCenterCode);
@@ -8275,11 +8480,6 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Serviço Cliente");
                     Col = Col + 1;
                 }
-                if (dp["description"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Descrição");
-                    Col = Col + 1;
-                }
                 if (dp["clientRequest"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Cliente");
@@ -8401,7 +8601,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["measurementUnitCode"]["hidden"].ToString() == "False")
@@ -8446,22 +8646,22 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["billable"]["hidden"].ToString() == "False")
@@ -8617,11 +8817,6 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceClientCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceClientCode);
-                            Col = Col + 1;
-                        }
-                        if (dp["description"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.Description);
                             Col = Col + 1;
                         }
                         if (dp["clientRequest"]["hidden"].ToString() == "False")
@@ -8929,27 +9124,27 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2) : decimal.Zero));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2, MidpointRounding.AwayFromZero) : decimal.Zero));
                             Col = Col + 1;
                         }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")
@@ -9070,9 +9265,10 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
-                if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1;}
+                if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
                 if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Projeto"); Col = Col + 1; }
                 if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
                 if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
                 if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
                 if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
@@ -9122,18 +9318,19 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
                         if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectDescription); Col = Col + 1; }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceToClientNo); Col = Col + 1; }
+                        if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractNo); Col = Col + 1; }
                         if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Date); Col = Col + 1; }
                         if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }
                         if (dp["typeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TypeText); Col = Col + 1; }
                         if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1; }
                         if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
-                        if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
+                        if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.HasValue ? Math.Round((decimal)item.Quantity, 2, MidpointRounding.AwayFromZero).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
                         if (dp["measurementUnitCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MeasurementUnitCode); Col = Col + 1; }
-                        if (dp["unitCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
-                        if (dp["totalCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
-                        if (dp["unitPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
-                        if (dp["totalPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
+                        if (dp["unitCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4, MidpointRounding.AwayFromZero).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
+                        if (dp["totalCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2, MidpointRounding.AwayFromZero).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
+                        if (dp["unitPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4, MidpointRounding.AwayFromZero).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
+                        if (dp["totalPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2, MidpointRounding.AwayFromZero).ToString() : decimal.Zero.ToString()); Col = Col + 1; }
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode); Col = Col + 1; }
@@ -9314,9 +9511,9 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    data.Quantity = data.Quantity.HasValue ? Math.Round((decimal)data.Quantity, 2) : decimal.Zero;
-                    data.UnitPrice = data.UnitPrice.HasValue ? Math.Round((decimal)data.UnitPrice, 4) : decimal.Zero;
-                    data.TotalPrice = data.Quantity.HasValue && data.UnitPrice.HasValue ? Math.Round((decimal)(data.Quantity * data.UnitPrice), 2) : decimal.Zero;
+                    data.Quantity = data.Quantity.HasValue ? Math.Round((decimal)data.Quantity, 2, MidpointRounding.AwayFromZero) : decimal.Zero;
+                    data.UnitPrice = data.UnitPrice.HasValue ? Math.Round((decimal)data.UnitPrice, 4, MidpointRounding.AwayFromZero) : decimal.Zero;
+                    data.TotalPrice = data.Quantity.HasValue && data.UnitPrice.HasValue ? Math.Round((decimal)(data.Quantity * data.UnitPrice), 2, MidpointRounding.AwayFromZero) : decimal.Zero;
                     data.UpdateUser = User.Identity.Name;
                     if (DBProjectMovements.Update(DBProjectMovements.ParseToDB(data)) != null)
                     {

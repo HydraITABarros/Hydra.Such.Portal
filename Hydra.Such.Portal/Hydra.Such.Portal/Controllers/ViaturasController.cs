@@ -230,11 +230,21 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.IDLocalParqueamento != null && x.IDLocalParqueamento > 0) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
                 if (x.IDGestor != null && x.IDGestor > 0) x.Gestor = AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault() != null ? AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault().Gestor : "";
+                LastAfetacao = AllAfetacao.Where(y => y.Matricula == x.Matricula && y.DataInicio <= DateTime.Now.Date && (y.DataFim.HasValue ? y.DataFim : DateTime.Now.Date) >= DateTime.Now.Date).OrderByDescending(z => z.DataInicio).FirstOrDefault();
+                if (LastAfetacao != null)
+                {
+                    x.AfetacaoCodRegiao = LastAfetacao.CodRegiao;
+                    x.AfetacaoCodArea = LastAfetacao.CodAreaFuncional;
+                    x.AfetacaoCodCresp = LastAfetacao.CodCentroResponsabilidade;
+                }
+                LastAfetacao = null;
                 LastAfetacao = AllAfetacao.Where(y => y.Matricula == x.Matricula).OrderByDescending(z => z.DataInicio).FirstOrDefault();
                 if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue && LastAfetacao.DataInicio.HasValue)
                 {
                     if (Convert.ToDateTime(LastAfetacao.DataInicio) <= DateTime.Now.Date && (LastAfetacao.DataFim.HasValue ? Convert.ToDateTime(LastAfetacao.DataFim) : DateTime.Now.Date) >= DateTime.Now.Date)
+                    {
                         x.Afetacao = AllAfetacaoAreaReal.Where(y => y.ID == LastAfetacao.IDAreaReal).FirstOrDefault().AreaReal;
+                    }
                 }
                 else
                 {
@@ -409,7 +419,8 @@ namespace Hydra.Such.Portal.Controllers
                 IDCondutor = AllGestores.Where(x => x.Matricula == data.Matricula && x.IDTipo == 2 && x.DataInicio <= DateTime.Now).FirstOrDefault() != null ? (int)AllGestores.Where(x => x.Matricula == data.Matricula && x.IDTipo == 2 && x.DataInicio <= DateTime.Now).FirstOrDefault().IDGestor : 0;
                 if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
 
-                viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
+                //viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
+                viatura.DataProximaInspecaoTexto = viatura.DataProximaInspecao.HasValue ? viatura.DataProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
 
                 if (viatura.IDEstado != null && viatura.IDEstado > 0) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
                 if (viatura.IDMarca != null && viatura.IDMarca > 0) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
@@ -467,7 +478,7 @@ namespace Hydra.Such.Portal.Controllers
                     DateTime DataMatricula = Convert.ToDateTime(viatura.DataMatricula);
                     DateTime DataIUC = Convert.ToDateTime(DateTime.Now.Year.ToString() + "-" + DataMatricula.Month.ToString() + "-" + DataMatricula.Day.ToString());
 
-                    if (DataIUC.AddDays(-30) <= DateTime.Now.Date && DataIUC >= DateTime.Now.Date)
+                    //if (DataIUC.AddDays(-30) <= DateTime.Now.Date && DataIUC >= DateTime.Now.Date)
                         viatura.IUCate = DataIUC.ToString("yyyy-MM-dd");
                 }
 
@@ -3869,6 +3880,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["afetacaoCodRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Código Região"); Col = Col + 1; }
+                if (dp["afetacaoCodArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Código Área Funcional"); Col = Col + 1; }
+                if (dp["afetacaoCodCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Código Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["afetacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Afetação Área real"); Col = Col + 1; }
                 if (dp["noProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
                 if (dp["projeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto"); Col = Col + 1; }
@@ -3919,6 +3933,9 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodRegiao); Col = Col + 1; }
                         if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
+                        if (dp["afetacaoCodRegiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AfetacaoCodRegiao); Col = Col + 1; }
+                        if (dp["afetacaoCodArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AfetacaoCodArea); Col = Col + 1; }
+                        if (dp["afetacaoCodCresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AfetacaoCodCresp); Col = Col + 1; }
                         if (dp["afetacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Afetacao); Col = Col + 1; }
                         if (dp["noProjeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoProjeto); Col = Col + 1; }
                         if (dp["projeto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Projeto); Col = Col + 1; }

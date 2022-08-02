@@ -146,7 +146,8 @@ namespace Hydra.Such.Data.Logic
                     CMHistoricoToActivo = item.CMHistoricoToActivo,
                     ArquivarREQPendentes = item.ArquivarREQPendentes,
                     CriarMedidasCorretivas = item.CriarMedidasCorretivas,
-                    VerFaturas = item.VerFaturas
+                    VerFaturas = item.VerFaturas,
+                    EditarPrecoUnitario = item.EditarPrecoUnitario
                 };
             }
             return null;
@@ -203,7 +204,8 @@ namespace Hydra.Such.Data.Logic
                     CMHistoricoToActivo = item.CMHistoricoToActivo,
                     ArquivarREQPendentes = item.ArquivarREQPendentes,
                     CriarMedidasCorretivas = item.CriarMedidasCorretivas,
-                    VerFaturas = item.VerFaturas
+                    VerFaturas = item.VerFaturas,
+                    EditarPrecoUnitario = item.EditarPrecoUnitario
                 };
             }
             return null;

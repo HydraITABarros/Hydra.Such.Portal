@@ -176,6 +176,13 @@
                    id="changeStatusChanged_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/UpdateContract"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_updatecontract"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/VerificarPDF"
                    last-response="{{pdf}}"
                    id="ajax_VerificarPDF_ajax"
@@ -515,7 +522,7 @@
                                     </div>
                                     <div class="row break_clear">
                                         <div class="col-md-6 ">
-                                            <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                            <such-textarea rows="5" value="{{data.notes}}" id="mNotes" name="mNotes" label="Notas" disabled="{{ _lockFields }}"> </such-textarea>
                                         </div>
 
                                         <div class="col-md-2">
@@ -1367,7 +1374,7 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
-                                        <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Fáturavel</vaadin-checkbox>
+                                        <vaadin-checkbox checked="{{_CLBillable}}" disabled="{{ _lockFields }}">Faturável</vaadin-checkbox>
                                     </div>
                                     <div class="col-lg-2 alignPoga">
                                         <vaadin-checkbox checked="{{_CLCreateContract}}" disabled="{{ _lockFields }}">Cria Contrato</vaadin-checkbox>
@@ -1531,7 +1538,7 @@
 
                                 <vaadin-grid-column width="10%" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="billable">Fáturavel</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="billable" />
                                     </template>
                                     <template>
@@ -1877,8 +1884,8 @@
 
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="data" />
+                        Data
+                        <vaadin-grid-filter path="data">Data</vaadin-grid-filter>
                     </template>
                     <template>
                         {{item.data}}
@@ -2025,7 +2032,7 @@
 
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo</vaadin-grid-sorter>
                         <vaadin-grid-filter path="dataRegistoDiarioSTR" />
                     </template>
                     <template>
@@ -2356,6 +2363,13 @@
                     this._lockFieldsReqClientes = this._lockFields;
                     if (this._permissionsrequisicoescliente.update == true)
                         this._lockFieldsReqClientes = false;
+
+                    //this._lockFields = true;
+                    //this._contractStatusLocked = true;
+                    //this._lockFieldsReqClientes = true;
+                    //if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
+                    //    this._contractStatusLocked = false;
+                    //}
 
                     if (this._ishistoric == "true") {
                         this._isHistoricDiv = true;
@@ -2788,6 +2802,28 @@
                         this._lockFieldsReqClientes = this._lockFields;
                         if (this._permissionsrequisicoescliente.update == true)
                             this._lockFieldsReqClientes = false;
+
+                        this._lockFields = true;
+                        this._contractStatusLocked = true;
+                        //this._lockFieldsReqClientes = true;
+                        if (this.data.changeStatus == "1") { //ABERTO
+                            if (this._permissions.update == true) {
+                                this._lockFields = false;
+                                this._contractStatusLocked = false;
+                                //this._lockFieldsReqClientes = false;
+                            }
+                            else {
+                                if (this._permissionsrequisicoescliente.update == true) {
+                                    //this._lockFieldsReqClientes = false;
+                                    this._contractStatusLocked = false;
+                                }
+                            }
+                        }
+                        if (this.data.changeStatus == "2") { //BLOQUEADO
+                            if (this._permissions.update == true) { // || this._permissionsrequisicoescliente.update == true) {
+                                this._contractStatusLocked = false;
+                            }
+                        }
                     }
 
                     if (this.data.filed) {
@@ -3867,45 +3903,71 @@
                 },
 
                 _changeStatusChanged: function () {
-                    if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
-                        if (this.$.mChangeStatus.value == "2") {
-                            var faturacaoConsumoOK = true;
-                            if (this._validateData()) {
+                    if (this._permissions.update == true || this._permissionsrequisicoescliente.update == true) {
 
-                                for (i = 0; i < this.dataLines.lines.length; i++) {
-                                    if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
-                                        (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
-                                        (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+                        if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
+                            if (this.$.mChangeStatus.value == "2") {
+                                var faturacaoConsumoOK = true;
+                                if (this._validateData()) {
 
-                                        this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
-                                        return;
+                                    for (i = 0; i < this.dataLines.lines.length; i++) {
+                                        if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
+                                            (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
+                                            (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+
+                                            this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
+                                            return;
+                                        }
+
+                                        if (this.dataLines.lines[i].unitPrice != null && this.dataLines.lines[i].unitPrice < 0) {
+
+                                            this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Preço Unitário inferior a 0.");
+                                            return;
+                                        }
+
+                                        if (this.data.billingType == 2 && (this.dataLines.lines[i].quantity != null && this.dataLines.lines[i].quantity > 0)) {
+                                            faturacaoConsumoOK = false;
+                                        }
                                     }
+                                }
+                                else {
+                                    return;
+                                }
+                            }
 
-                                    if (this.dataLines.lines[i].unitPrice != null && this.dataLines.lines[i].unitPrice < 0) {
+                            if (faturacaoConsumoOK == false) {
+                                this._openToastError("O Contrato é do tipo Faturação Consumo. As Linhas com Quantidade superior a 0, não serão faturadas.");
+                            }
 
-                                        this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Preço Unitário inferior a 0.");
-                                        return;
-                                    }
+                            this.data.changeStatus = this.$.mChangeStatus.value;
 
-                                    if (this.data.billingType == 2 && (this.dataLines.lines[i].quantity != null && this.dataLines.lines[i].quantity > 0)) {
-                                        faturacaoConsumoOK = false;
+                            this._lockFields = true;
+                            //this._contractStatusLocked = true;
+                            this._lockFieldsReqClientes = true;
+                            if (this.data.changeStatus == "1") { //ABERTO
+                                if (this._permissions.update == true) {
+                                    this._lockFields = false;
+                                    //this._contractStatusLocked = false;
+                                    this._lockFieldsReqClientes = false;
+                                }
+                                else {
+                                    if (this._permissionsrequisicoescliente.update == true) {
+                                        this._lockFieldsReqClientes = false;
+                                        //this._contractStatusLocked = false;
                                     }
                                 }
                             }
-                            else {
-                                return;
+                            if (this.data.changeStatus == "2") { //BLOQUEADO
+                                if (this._permissions.update == true) { // || this._permissionsrequisicoescliente.update == true) {
+                                    this._contractStatusLocked = false;
+                                }
                             }
+
+                            this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
+                            this.$.changeStatusChanged_databound_ajax.generateRequest();
+
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
                         }
-
-                        if (faturacaoConsumoOK == false) {
-                            this._openToastError("O Contrato é do tipo Faturação Consumo. As Linhas com Quantidade superior a 0, não serão faturadas.");
-                        }
-
-                        this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
-                        this.$.changeStatusChanged_databound_ajax.generateRequest();
-
-                        this.data.changeStatus = this.$.mChangeStatus.value;
-                        this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
 
@@ -3956,7 +4018,7 @@
                         this.$.dlVerPDF.open();
                     }
                     else {
-                        this._openToastError("Documento não desponível.");
+                        this._openToastError("Documento não disponível.");
                     }
                 },
             });

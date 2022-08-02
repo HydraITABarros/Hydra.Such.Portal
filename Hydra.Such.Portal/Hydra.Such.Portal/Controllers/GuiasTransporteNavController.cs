@@ -390,7 +390,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 var result = createGuiaTask.Result;
 
-                if(result.return_value == "0")
+                if(result.return_value == "0" || createGuiaTask.Result == null)
                 {
                     return Json(null);
                 }

@@ -24,10 +24,14 @@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -44,6 +48,64 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
 
         <iron-ajax url="/GestaoRequisicoes/GetRequisitionsByDimensions" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -69,6 +131,30 @@
                    on-response="_closeRequisitionResponse"
                    content-type="application/json">
         </iron-ajax>
+
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="pesquisaNoRequisicao" name="pesquisaNoRequisicao" label="Filtrar por Nº Requisição:" value="" title="Filtrar por Nº Requisição:"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="pesquisaNoCM" name="pesquisaNoCM" label="Filtrar por Nº Consulta Mercado:" value="" title="Filtrar por Nº Consulta Mercado:"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="pesquisaData" name="pesquisaData" label="Filtrar a partir de:" value="{{ pesquisadate }}" title="Filtrar a partir de:"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga">
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </paper-collapse-item>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -353,6 +439,10 @@
                         type: Array,
                         value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
                     },
+                    pesquisadate: {
+                        type: String,
+                        value: @Html.Raw(Json.Serialize(ViewBag.PesquisaDate)),
+                    },
                     selectedItems: {
                         type: Array,
                     },
@@ -387,11 +477,13 @@
                 ],
 
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
-                    if (!this.Flag) {
-                        this.$.ajax_getgrid.body = JSON.stringify({ "Historic": this._historico });
-                        this.$.ajax_getgrid.generateRequest();
-                    }
-                    this.Flag = true;
+                    this.$.pesquisaData.value = this.pesquisadate;
+
+                    //if (!this.Flag) {
+                    //    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "Historic": this._historico });
+                    //    this.$.ajax_getgrid.generateRequest();
+                    //}
+                    //this.Flag = true;
 
                     /*FILTROS*/
                     window.handleGridListColumnsOrder(this.$.gridrequest, 'gestaorequisicoes-requisitionsbydimensions');
@@ -412,7 +504,7 @@
                     var grid_el = $(this.$.gridrequest);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var height = parentHeight - offsetTop - 150;
                     grid_el.height(height);
                 },
 
@@ -589,7 +681,7 @@
                             this._historico = 0;
                             this._isHistoric = "false";
                         }
-                        this.$.ajax_getgrid.body = JSON.stringify({ "Historic": this._historico });
+                        this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "pesquisaNoCM": this.$.pesquisaNoCM.value, "Historic": this._historico });
                         this.$.ajax_getgrid.generateRequest();
                         this._setButtonTexts();
                     }
@@ -660,6 +752,12 @@
                     }
                 },
 
+                _search: function () {
+                    this.result = null;
+                    this.$.ajax_getgrid.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoRequisicao": this.$.pesquisaNoRequisicao.value, "pesquisaNoCM": this.$.pesquisaNoCM.value, "Historic": this._historico });
+                    this.$.ajax_getgrid.generateRequest();
+                    this.$.gridrequest.clearCache();
+                },
 
 
             });

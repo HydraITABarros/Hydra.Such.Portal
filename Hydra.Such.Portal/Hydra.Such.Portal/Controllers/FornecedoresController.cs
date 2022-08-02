@@ -68,6 +68,34 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult FornecedorQuestionarioDetalhes(string id)
+        {
+            string Codigo = "QUEST_" + id;
+            int Versao = 0;
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FornecedoresAvaliacao);
+            List<QuestionarioFornecedorGestaoAmbiental> AllQuestionarios = DBQuestionarioFornecedorGestaoAmbiental.GetAllByFornecedor(id);
+
+            if (AllQuestionarios != null && AllQuestionarios.Count > 0)
+            {
+                Versao = AllQuestionarios.OrderBy(x => x.Versao).LastOrDefault().Versao;
+            }
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Codigo = Codigo ?? "";
+                ViewBag.Versao = Versao.ToString();
+                ViewBag.ID_Fornecedor = id ?? "";
+                ViewBag.UPermissions = UPerm;
+
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetLisFornecedores([FromBody] JObject requestParams)
         {
@@ -735,11 +763,320 @@ namespace Hydra.Such.Portal.Controllers
             return Json(full_filename);
         }
 
+        [HttpPost]
+        [Route("Fornecedores/UploadQuestionarioAnexo")]
+        [Route("Fornecedores/UploadQuestionarioAnexo/{codigo}/{versao}/{idfornecedor}")]
+        public JsonResult UploadQuestionarioAnexo(string codigo, string versao, string idfornecedor)
+        {
+            string full_filename = string.Empty;
+            try
+            {
+                var files = Request.Form.Files;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+                            filename = MakeValidFileName(filename);
+                            full_filename = codigo + "_" + versao + "_" + filename;
+                            var path = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\Questionarios\\tmp", full_filename);
 
+                            if (System.IO.File.Exists(path))
+                            {
+                                System.IO.File.Delete(path);
+                            }
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+                            }
 
+                            QuestionarioFornecedorGestaoAmbientalAnexos Anexo = new QuestionarioFornecedorGestaoAmbientalAnexos
+                            {
+                                Codigo = codigo,
+                                Versao = int.Parse(versao),
+                                ID_Fornecedor = idfornecedor,
+                                URL_Anexo = filename,
+                                Visivel = false,
+                                Utilizador_Criacao = User.Identity.Name
+                            };
+                            DBQuestionarioFornecedorGestaoAmbientalAnexos.Create(Anexo);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+            return Json(full_filename);
+        }
 
+        [HttpGet]
+        [Route("Fornecedores/DownloadQuestionarioAnexo")]
+        [Route("Fornecedores/DownloadQuestionarioAnexo/{codigo}/{versao}/{filename}")]
+        public FileStreamResult DownloadQuestionarioAnexo(string codigo, string versao, string filename)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(codigo) && !string.IsNullOrEmpty(versao) && !string.IsNullOrEmpty(filename))
+                {
+                    string FullFileName = codigo + "_" + versao + "_" + filename;
 
+                    string sFileName = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\Questionarios", FullFileName);
 
+                    FileStream file = new FileStream(sFileName, FileMode.Open);
+                    string mimeType = GetMimeType(file.Name);
+                    return new FileStreamResult(file, mimeType);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return null;
+        }
+
+        private string GetMimeType(string fileName)
+        {
+            string mimeType = "application/unknown";
+            string ext = System.IO.Path.GetExtension(fileName).ToLower();
+
+            Microsoft.Win32.RegistryKey regKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
+
+            if (regKey != null && regKey.GetValue("Content Type") != null)
+                mimeType = regKey.GetValue("Content Type").ToString();
+            return mimeType;
+        }
+
+        [HttpPost]
+        public JsonResult GetQuestionarioDetails([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                data.Versao = int.Parse(data.Versao_Texto);
+                if (!string.IsNullOrEmpty(data.Codigo) && data.Versao > 0)
+                {
+                    data = DBQuestionarioFornecedorGestaoAmbiental.GetByCodigoAndVersao(data.Codigo, data.Versao).ParseToViewModel();
+                    data.Anexo = DBQuestionarioFornecedorGestaoAmbientalAnexos.GetByCodigoAndVersao(data.Codigo, data.Versao).ParseToViewModel();
+                }
+                else
+                {
+                    NAVFornecedoresViewModel Fornecedor = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, data.ID_Fornecedor).FirstOrDefault();
+
+                    if (Fornecedor != null)
+                    {
+                        data.Fornecedor = Fornecedor.Name;
+                    }
+                }
+
+                return Json(data);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult GetQuestionarioHistorico([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                List<QuestionarioFornecedorGestaoAmbiental> Historico = new List<QuestionarioFornecedorGestaoAmbiental>();
+                List<QuestionarioFornecedorGestaoAmbientalViewModel> HistoricoVM = new List<QuestionarioFornecedorGestaoAmbientalViewModel>();
+                if (!string.IsNullOrEmpty(data.ID_Fornecedor))
+                {
+                    Historico = DBQuestionarioFornecedorGestaoAmbiental.GetAllByFornecedor(data.ID_Fornecedor);
+                    if (Historico != null && Historico.Count > 0)
+                    {
+                        if (Historico != null && Historico.Count > 0)
+                        {
+                            HistoricoVM = Historico.ParseToViewModel().OrderByDescending(x => x.Versao).ToList();
+                            HistoricoVM.RemoveAt(0);
+                        }
+                    }
+                }
+
+                return Json(HistoricoVM);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult VerificarNovoQuestionario([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                data.Nova_Versao = false;
+
+                if (data.Versao == 0)
+                {
+                    data.Nova_Versao = true;
+                }
+                else
+                {
+                    QuestionarioFornecedorGestaoAmbientalViewModel Original = DBQuestionarioFornecedorGestaoAmbiental.GetByCodigoAndVersao(data.Codigo, data.Versao).ParseToViewModel();
+
+                    if (data.ID_Fornecedor != Original.ID_Fornecedor) data.Nova_Versao = true;
+                    if (data.Fornecedor != Original.Fornecedor) data.Nova_Versao = true;
+                    if (data.Actividade != Original.Actividade) data.Nova_Versao = true;
+                    if (data.Responsavel != Original.Responsavel) data.Nova_Versao = true;
+                    if (data.Funcao != Original.Funcao) data.Nova_Versao = true;
+                    if (data.Telefone != Original.Telefone) data.Nova_Versao = true;
+                    if (data.Procedimento != Original.Procedimento) data.Nova_Versao = true;
+                    if (data.Email != Original.Email) data.Nova_Versao = true;
+                    if (data.Resposta_11_Sim != Original.Resposta_11_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_11_Nao != Original.Resposta_11_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_11_NA != Original.Resposta_11_NA) data.Nova_Versao = true;
+                    if (data.Resposta_11_Texto != Original.Resposta_11_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_12_Texto != Original.Resposta_12_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_13_Texto != Original.Resposta_13_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_21_Sim != Original.Resposta_21_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_21_Nao != Original.Resposta_21_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_21_NA != Original.Resposta_21_NA) data.Nova_Versao = true;
+                    if (data.Resposta_22_Sim != Original.Resposta_22_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_22_Nao != Original.Resposta_22_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_22_NA != Original.Resposta_22_NA) data.Nova_Versao = true;
+                    if (data.Resposta_23_Texto != Original.Resposta_23_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_2_Texto != Original.Resposta_2_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_31_Sim != Original.Resposta_31_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_31_Nao != Original.Resposta_31_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_31_NA != Original.Resposta_31_NA) data.Nova_Versao = true;
+                    if (data.Resposta_32_NA != Original.Resposta_32_NA) data.Nova_Versao = true;
+                    if (data.Resposta_32_Texto != Original.Resposta_32_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_3_Texto != Original.Resposta_3_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_41_Sim != Original.Resposta_41_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_41_Nao != Original.Resposta_41_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_41_NA != Original.Resposta_41_NA) data.Nova_Versao = true;
+                    if (data.Resposta_42_Sim != Original.Resposta_42_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_42_Nao != Original.Resposta_42_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_42_NA != Original.Resposta_42_NA) data.Nova_Versao = true;
+                    if (data.Resposta_43_Texto != Original.Resposta_43_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_4_Texto != Original.Resposta_4_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_51_Sim != Original.Resposta_51_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_51_Nao != Original.Resposta_51_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_51_NA != Original.Resposta_51_NA) data.Nova_Versao = true;
+                    if (data.Resposta_52_Sim != Original.Resposta_52_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_52_Nao != Original.Resposta_52_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_52_NA != Original.Resposta_52_NA) data.Nova_Versao = true;
+                    if (data.Resposta_5_Texto != Original.Resposta_5_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_61_Sim != Original.Resposta_61_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_61_Nao != Original.Resposta_61_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_61_NA != Original.Resposta_61_NA) data.Nova_Versao = true;
+                    if (data.Resposta_62_Sim != Original.Resposta_62_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_62_Nao != Original.Resposta_62_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_62_NA != Original.Resposta_62_NA) data.Nova_Versao = true;
+                    if (data.Resposta_63_Sim != Original.Resposta_63_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_63_Nao != Original.Resposta_63_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_63_NA != Original.Resposta_63_NA) data.Nova_Versao = true;
+                    if (data.Resposta_64_Sim != Original.Resposta_64_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_64_Nao != Original.Resposta_64_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_64_NA != Original.Resposta_64_NA) data.Nova_Versao = true;
+                    if (data.Resposta_65_Sim != Original.Resposta_65_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_65_Nao != Original.Resposta_65_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_65_NA != Original.Resposta_65_NA) data.Nova_Versao = true;
+                    if (data.Resposta_6_Texto != Original.Resposta_6_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_71_Sim != Original.Resposta_71_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_71_Nao != Original.Resposta_71_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_71_NA != Original.Resposta_71_NA) data.Nova_Versao = true;
+                    if (data.Resposta_72_Sim != Original.Resposta_72_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_72_Nao != Original.Resposta_72_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_72_NA != Original.Resposta_72_NA) data.Nova_Versao = true;
+                    if (data.Resposta_7_Texto != Original.Resposta_7_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_81_Sim != Original.Resposta_81_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_81_Nao != Original.Resposta_81_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_81_NA != Original.Resposta_81_NA) data.Nova_Versao = true;
+                    if (data.Resposta_82_Sim != Original.Resposta_82_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_82_Nao != Original.Resposta_82_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_82_NA != Original.Resposta_82_NA) data.Nova_Versao = true;
+                    if (data.Resposta_83_Sim != Original.Resposta_83_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_83_Nao != Original.Resposta_83_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_83_NA != Original.Resposta_83_NA) data.Nova_Versao = true;
+                    if (data.Resposta_8_Texto != Original.Resposta_8_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_91_Sim != Original.Resposta_91_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_91_Nao != Original.Resposta_91_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_91_NA != Original.Resposta_91_NA) data.Nova_Versao = true;
+                    if (data.Resposta_9_Texto != Original.Resposta_9_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_101_Sim != Original.Resposta_101_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_101_Nao != Original.Resposta_101_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_101_NA != Original.Resposta_101_NA) data.Nova_Versao = true;
+                    if (data.Resposta_101_Texto != Original.Resposta_101_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_102_Sim != Original.Resposta_102_Sim) data.Nova_Versao = true;
+                    if (data.Resposta_102_Nao != Original.Resposta_102_Nao) data.Nova_Versao = true;
+                    if (data.Resposta_102_NA != Original.Resposta_102_NA) data.Nova_Versao = true;
+                    if (data.Resposta_102_Texto != Original.Resposta_102_Texto) data.Nova_Versao = true;
+                    if (data.Resposta_103_Texto != Original.Resposta_103_Texto) data.Nova_Versao = true;
+                    if (data.Final_Responsavel != Original.Final_Responsavel) data.Nova_Versao = true;
+                    if (data.Final_Data_Texto != Original.Final_Data_Texto) data.Nova_Versao = true;
+                }
+
+                return Json(data);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult CreateQuestionario([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                data.Versao = data.Versao + 1;
+                data.Utilizador_Criacao = User.Identity.Name;
+                data.Utilizador_Modificacao = null;
+                data.DataHora_Modificacao = null;
+                if (DBQuestionarioFornecedorGestaoAmbiental.Create(data.ParseToDB()) != null)
+                {
+                    QuestionarioFornecedorGestaoAmbientalAnexos Anexo = DBQuestionarioFornecedorGestaoAmbientalAnexos.GetByCodigoAndVersao(data.Codigo, data.Versao);
+
+                    var sourceFile = _generalConfig.FileUploadFolder + "Fornecedores\\" + "Questionarios\\" + "tmp\\" + Anexo.Codigo + "_" + Anexo.Versao + "_" + Anexo.URL_Anexo;
+                    var destFile = _generalConfig.FileUploadFolder + "Fornecedores\\" + "Questionarios\\" + Anexo.Codigo + "_" + Anexo.Versao + "_" + Anexo.URL_Anexo;
+                    System.IO.File.Move(sourceFile, destFile);
+
+                    Anexo.Visivel = true;
+                    DBQuestionarioFornecedorGestaoAmbientalAnexos.Update(Anexo);
+
+                    data.eReasonCode = 1;
+                    data.eMessage = "Avaliação Desempenho Ambiental criada com sucesso.";
+
+                    return Json(data);
+                }
+            }
+            data.eReasonCode = 2;
+            data.eMessage = "Não foi possivel criar uma nova Avaliação Desempenho Ambiental.";
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateQuestionario([FromBody] QuestionarioFornecedorGestaoAmbientalViewModel data)
+        {
+            if (data != null)
+            {
+                data.Utilizador_Modificacao = User.Identity.Name;
+                if (DBQuestionarioFornecedorGestaoAmbiental.Update(data.ParseToDB()) != null)
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Avaliação Desempenho Ambiental atualizada com sucesso.";
+
+                    return Json(data);
+                }
+            }
+            data.eReasonCode = 2;
+            data.eMessage = "Não foi possivel atualizar a Avaliação Desempenho Ambiental.";
+
+            return Json(data);
+        }
 
 
 

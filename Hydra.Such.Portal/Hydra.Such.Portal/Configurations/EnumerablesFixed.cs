@@ -1190,6 +1190,106 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 20,
                 Value = "20"
+            },
+            new EnumData()
+            {
+                Id = 21,
+                Value = "21"
+            },
+            new EnumData()
+            {
+                Id = 22,
+                Value = "22"
+            },
+            new EnumData()
+            {
+                Id = 23,
+                Value = "23"
+            },
+            new EnumData()
+            {
+                Id = 24,
+                Value = "24"
+            },
+            new EnumData()
+            {
+                Id = 25,
+                Value = "25"
+            },
+            new EnumData()
+            {
+                Id = 26,
+                Value = "26"
+            },
+            new EnumData()
+            {
+                Id = 27,
+                Value = "27"
+            },
+            new EnumData()
+            {
+                Id = 28,
+                Value = "28"
+            },
+            new EnumData()
+            {
+                Id = 29,
+                Value = "29"
+            },
+            new EnumData()
+            {
+                Id = 30,
+                Value = "30"
+            },
+            new EnumData()
+            {
+                Id = 31,
+                Value = "31"
+            },
+            new EnumData()
+            {
+                Id = 32,
+                Value = "32"
+            },
+            new EnumData()
+            {
+                Id = 33,
+                Value = "33"
+            },
+            new EnumData()
+            {
+                Id = 34,
+                Value = "34"
+            },
+            new EnumData()
+            {
+                Id = 35,
+                Value = "35"
+            },
+            new EnumData()
+            {
+                Id = 36,
+                Value = "36"
+            },
+            new EnumData()
+            {
+                Id = 37,
+                Value = "37"
+            },
+            new EnumData()
+            {
+                Id = 38,
+                Value = "38"
+            },
+            new EnumData()
+            {
+                Id = 39,
+                Value = "39"
+            },
+            new EnumData()
+            {
+                Id = 40,
+                Value = "40"
             }
         };
 

@@ -126,6 +126,14 @@
                     <vaadin-text-field id="numeroTotalHoras" name="numeroTotalHoras" label="Nº Horas" value="{{data.numeroTotalHoras}}" disabled="true"></vaadin-text-field>
                 </div>
             </div>
+            <div class="row break_clear">
+                <div class="col-lg-6">
+                    <vaadin-text-field id="entidade" name="entidade" label="Entidade Formadora" value="{{ data.entidade.descricaoEntidade }}" disabled></vaadin-text-field>
+                </div>
+                <div class="col-lg-4">
+                    <vaadin-text-field id="localRealizacao" name="localRealizacao" label="Local Realização" value="{{ data.localRealizacao}}" disabled></vaadin-text-field>
+                </div>
+            </div>
 
             <paper-collapse-group>
                 <paper-collapse-item class="panel-heading" header="Sessões de Formação" opened>
@@ -257,10 +265,10 @@
                             return;
                         }
 
-                        if (_result.eReasonCode == -2) {
-                            this._openToastError("Já existe, em processamento, um Pedido de Participação em Formação para esta Acção: Pedido nº: " + _result.eMessage);
-                            return;
-                        }
+                        //if (_result.eReasonCode == -2) {
+                        //    this._openToastError("Já existe, em processamento, um Pedido de Participação em Formação para esta Acção: Pedido nº: " + _result.eMessage);
+                        //    return;
+                        //}
 
                         if (_result.eReasonCode == -9) {
                             this._openToastError(_result.eMessage);

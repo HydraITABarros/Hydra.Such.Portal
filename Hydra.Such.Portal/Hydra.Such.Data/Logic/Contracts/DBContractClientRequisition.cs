@@ -48,6 +48,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.NoLinha = 0;
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.RequisiçõesClienteContrato.Add(ObjectToCreate);
                     ctx.SaveChanges();
@@ -191,6 +192,7 @@ namespace Hydra.Such.Data.Logic.Contracts
         {
             return new RequisiçõesClienteContrato()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 NºContrato = ObjectToParse.ContractNo,
                 GrupoFatura = ObjectToParse.InvoiceGroup,
                 NºProjeto = ObjectToParse.ProjectNo,
@@ -209,10 +211,23 @@ namespace Hydra.Such.Data.Logic.Contracts
             };
         }
 
+        public static List<RequisiçõesClienteContrato> ParseToDB(List<ContractClientRequisitionViewModel> items)
+        {
+            List<RequisiçõesClienteContrato> parsedItems = new List<RequisiçõesClienteContrato>();
+            if (items != null && items.Count > 0)
+            {
+                items.ForEach(x =>
+                    parsedItems.Add(ParseToDB(x))
+                );
+            }
+            return parsedItems;
+        }
+
         public static ContractClientRequisitionViewModel ParseToViewModel(RequisiçõesClienteContrato ObjectToParse)
         {
             return new ContractClientRequisitionViewModel()
             {
+                NoLinha = ObjectToParse.NoLinha,
                 ContractNo = ObjectToParse.NºContrato,
                 InvoiceGroup = ObjectToParse.GrupoFatura,
                 ProjectNo = ObjectToParse.NºProjeto,
@@ -230,5 +245,6 @@ namespace Hydra.Such.Data.Logic.Contracts
                 UpdateUser = ObjectToParse.UtilizadorModificação
             };
         }
+
     }
 }

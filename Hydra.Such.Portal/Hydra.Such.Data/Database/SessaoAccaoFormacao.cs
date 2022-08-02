@@ -16,6 +16,8 @@ namespace Hydra.Such.Data.Database
         public string HoraFimSessao { get; set; }
         public decimal? DuracaoSessao { get; set; }
 
+        public DateTime? DataHoraActualizacao { get; set; }
+
         [Newtonsoft.Json.JsonIgnore]
         public AccaoFormacao AccaoNavigation { get; set; }
     }

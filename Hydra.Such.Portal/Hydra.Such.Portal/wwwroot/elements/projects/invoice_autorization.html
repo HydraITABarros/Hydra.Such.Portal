@@ -162,6 +162,12 @@
         <iron-ajax url="/PopulateDropdowns/GetServiceGroups" last-response="{{ServiceGroups}}" id="getServiceGroups_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCustomerServices" last-response="{{CustomerServices}}" id="getCustomerServices_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <!--<iron-ajax url="/Projetos/TESTE"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>-->
+
         <iron-ajax url="/Projetos/GetAutorizacaoFaturacao"
                    last-response="{{result}}"
                    method="post"
@@ -481,7 +487,7 @@
                                                 <vaadin-grid-filter path="unitPrice" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" maxlength="18" pattern="[0-9]+([\.\,][0-9]+)?" on-blur="_updateLinhaMovimentoNumerico" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" disabled="{{ !_editarprecounitariovalue }}" maxlength="18" pattern="[0-9]+([\.\,][0-9]+)?" on-blur="_updateLinhaMovimentoNumerico" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -815,16 +821,16 @@
         <paper-dialog id="dlgValidation" modal style="height:300px; width:500px">
             <div class="row break_clear">
                 <!--<div class="col-md-2 ">
-        <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
-    </div>-->
+                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+            </div>-->
                 <div class="col-md-12">
                     <!--<such-selectbox id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada"
-                                    items="[[ListaFaturasRelacionadas]]"
-                                    text-path="no_"
-                                    value-path="no_"
-                                    fields='[{"field":"no_", "name":"Nº Fatura"}, {"field":"projectNo", "name":"Nº Projeto"}, {"field":"documentDate", "name":"Data Documento"}, {"field":"noContrato", "name":"Nº Contrato"}, {"field":"noCompromisso", "name":"Nº Compromisso"}, {"field":"amountIncludingVAT", "name":"Preço c/ IVA"}]'
-                                    required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
-                    </such-selectbox>-->
+                                items="[[ListaFaturasRelacionadas]]"
+                                text-path="no_"
+                                value-path="no_"
+                                fields='[{"field":"no_", "name":"Nº Fatura"}, {"field":"projectNo", "name":"Nº Projeto"}, {"field":"documentDate", "name":"Data Documento"}, {"field":"noContrato", "name":"Nº Contrato"}, {"field":"noCompromisso", "name":"Nº Compromisso"}, {"field":"amountIncludingVAT", "name":"Preço c/ IVA"}]'
+                                required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
+                </such-selectbox>-->
 
                     <vaadin-combo-box id="idListaFaturasRelacionadas" name="idListaFaturasRelacionadas" items="[[ListaFaturasRelacionadas]]" item-value-path="no_" item-label-path="no_" value="{{idFaturaRelacionada}}" label="Nº Fatura Relacionada" required error-message="O Nº Fatura Relacionada é de preenchimento obrigatório">
                         <template>
@@ -1181,6 +1187,15 @@
                         notify: true,
                         value: ""
                     },
+                    _editarprecounitario: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _editarprecounitariovalue: {
+                        type: Boolean,
+                        value: false
+                    },
                     _billable: {
                         type: Boolean,
                         notify: true,
@@ -1285,6 +1300,11 @@
                         _this.fixGridToBottom();
                     });
                     $(window).trigger('resize');
+
+                    this._editarprecounitariovalue = false;
+                    if (this._editarprecounitario == 'true') {
+                        this._editarprecounitariovalue = true;
+                    }
                 },
 
                 _loadData: function () {
@@ -1318,7 +1338,7 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    if (parseFloat(this.$.txtValorAAutorizar.value).toFixed(2) < 0 && this.$.idListaFaturasRelacionadas.value == "") {
+                    if (this.roundHalfUp(this.$.txtValorAAutorizar.value, 2) < 0 && this.$.idListaFaturasRelacionadas.value == "") {
                         this.openToastError("O campo Nº Fatura Relacionada é de preenchimento obrigatório.");
                         return;
                     }
@@ -1335,7 +1355,7 @@
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
-                            "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
+                            "authorizationTotalValue": this.roundHalfUp(this.$.txtValorAAutorizar.value, 2),
                             "projMovements": this.selectedItems,
                             "projObs": this.$.IdObs.value,
                             "noFaturaRelacionada": this.$.idListaFaturasRelacionadas.value
@@ -1423,7 +1443,7 @@
                                             precounitario = items[i].unitPrice;
 
                                         //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
-                                        total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
+                                        total = this.roundHalfUp(total, 2) + this.roundHalfUp((quantidade * precounitario), 2);
                                     }
 
                                     if (items[i].selecionada == true) {
@@ -1438,7 +1458,7 @@
                                 }
                             }
 
-                            //if ((this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) &&
+                            //if ((this._totalToAuthorize < 0 || this.roundHalfUp(total, 2) < 0) &&
                             //    (this.$.txtNoFaturaRelacionada.value == null || this.$.txtNoFaturaRelacionada.value == "")) {
                             //    this.openToastError("Não é possivel Autorizar, por ser obrigatório o preenchimento do campo Nº Fatura Relacionada.");
                             //    this.$.btnConfirm.disabled = false;
@@ -1447,7 +1467,7 @@
 
                             //this.$.idListaFaturasRelacionadas._clearSelection();
                             this.$.idListaFaturasRelacionadas.value = "";
-                            if (this._totalToAuthorize < 0 || this.roundToTwo(total) < 0) {
+                            if (this._totalToAuthorize < 0 || this.roundHalfUp(total, 2) < 0) {
                                 this.$.idListaFaturasRelacionadas.hidden = false;
 
                                 if (items.length > 0) {
@@ -1499,7 +1519,7 @@
                                 this.$.idListaFaturasRelacionadas.hidden = true;
                             }
 
-                            if (this._totalToAuthorize == this.roundToTwo(total)) {
+                            if (this._totalToAuthorize == this.roundHalfUp(total, 2)) {
                                 this.validationMessages = [];
                                 var validationRequest = {
                                     "projectNo": this._projectno,
@@ -1509,7 +1529,7 @@
                                     "customerRequestDate": this._customerRequestDate,
                                     "serviceDate": this.$.dpDataPrestacaoServ.value,
                                     "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
-                                    "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
+                                    "authorizationTotalValue": this.roundHalfUp(this.$.txtValorAAutorizar.value, 2),
                                     "projMovements": this.selectedItems,
                                     "dataServPrestado": this.$.txtDataPrestacaoServ.value,
                                     //"noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value,
@@ -2271,14 +2291,18 @@
                                     precounitario = items[i].unitPrice;
 
                                 //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
-                                total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
+                                total = this.roundHalfUp(total, 2) + this.roundHalfUp((quantidade * precounitario), 2);
                             }
                         }
                     }
                     //this._totalToAuthorize = parseFloat(total).toFixed(2);
-                    this._totalToAuthorize = this.roundToTwo(total);
+                    this._totalToAuthorize = this.roundHalfUp(total, 2);
 
 
+                },
+
+                roundHalfUp: function (value, decimals) {
+                    return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
                 },
 
                 roundToTwo: function (num) {

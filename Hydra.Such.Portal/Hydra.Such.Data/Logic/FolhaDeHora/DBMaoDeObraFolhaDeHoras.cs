@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MãoDeObraFolhaDeHoras.Where(x => x.NºLinha == MaoDeObraNo).FirstOrDefault();
+                    return ctx.MãoDeObraFolhaDeHoras.FirstOrDefault(x => x.NºLinha == MaoDeObraNo);
                 }
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    List<MãoDeObraFolhaDeHoras> result = DBMaoDeObraFolhaDeHoras.GetAll().Where(x => x.NºFolhaDeHoras == FolhaHoraNo).ToList();
+                    List<MãoDeObraFolhaDeHoras> result = ctx.MãoDeObraFolhaDeHoras.Where(x => x.NºFolhaDeHoras == FolhaHoraNo).ToList();
                     if (result != null && result.Count > 0)
                     {
                         result.ForEach(x =>

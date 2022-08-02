@@ -32,7 +32,8 @@ namespace Hydra.Such.Data.Database
         #region SGPPF
         PedidoFormacao = 10,
         TemaFormacao = 11,
-        AccaoFormacao = 12
+        AccaoFormacao = 12,
         #endregion
+        Visitas = 13
     }
 }

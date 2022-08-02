@@ -157,6 +157,7 @@
 
             <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
             <paper-button id="btn_imprimirEFC" class="tablinks" on-tap="_printEFC"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto Fornecedor/Cliente</paper-button>
+            <paper-button id="btn_questionario" class="tablinks" on-tap="_questionario"><i class="fa fa-clipboard" aria-hidden="true"></i> Avaliação Desempenho Ambiental</paper-button>
         </div>
 
         <div class="panel panel-default break_clear">
@@ -517,6 +518,7 @@
                             this.$.dlgFornecedorIBAN.open();
                         }
                     }
+                    $(this.$.btnCreate).removeClass('disabled');
                 },
 
 
@@ -602,6 +604,7 @@
                     } else {
                         this._openToastError(this.data.eMessage);
                     }
+                    $(this.$.btnCreate).removeClass('disabled');
                 },
 
                 _responseValidatorProcessor: function (data) {
@@ -658,6 +661,10 @@
                     }
                 },
 
+                _questionario: function () {
+                    window.location.href = "/Fornecedores/FornecedorQuestionarioDetalhes/" + this.data.no;
+                },
+
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
                     this.$.ToastMessageError.text = message;
@@ -682,6 +689,7 @@
                 },
 
                 _openDlgFornecedorIBAN: function () {
+                    $(this.$.btnCreate).addClass('disabled');
                     this._validateData();
                 },
                 _closeDlgFornecedorIBAN: function () {

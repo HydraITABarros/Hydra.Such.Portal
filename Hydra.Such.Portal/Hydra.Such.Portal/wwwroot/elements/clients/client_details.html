@@ -751,7 +751,7 @@
                                                     </div>
 
                                                     <div class="col-xs-12">
-                                                        <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="editGrid" multi-sort="true" ">
+                                                        <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="editGrid" multi-sort="true">
                                                             <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="customerNo">Nº Cliente</vaadin-grid-sorter>
@@ -2524,7 +2524,7 @@
                         this.$.dlVerPDF.open();
                     }
                     else {
-                        this._openToastError("Documento não desponível.");
+                        this._openToastError("Documento não disponível.");
                     }
                 },
             });
