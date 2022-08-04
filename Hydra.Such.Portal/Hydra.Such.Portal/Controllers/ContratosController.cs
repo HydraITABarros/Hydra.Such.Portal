@@ -6746,6 +6746,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["contractEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Endereço"); Col = Col + 1; }
                 if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
                 if (dp["versionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Versão"); Col = Col + 1; }
+                if (dp["ordenacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Ordenação linhas"); Col = Col + 1; }
                 if (dp["contractoEstado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
                 if (dp["contratoCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Postal"); Col = Col + 1; }
                 if (dp["contratoTipo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Contrato"); Col = Col + 1; }
@@ -6781,6 +6782,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["contractEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractEndereco); Col = Col + 1; }
                         if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractNo); Col = Col + 1; }
                         if (dp["versionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VersionNo); Col = Col + 1; }
+                        if (dp["ordenacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Ordenacao.ToString()); Col = Col + 1; }
                         if (dp["contractoEstado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractoEstado); Col = Col + 1; }
                         if (dp["contratoCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoCodigoPostal); Col = Col + 1; }
                         if (dp["contratoTipo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoTipo); Col = Col + 1; }
