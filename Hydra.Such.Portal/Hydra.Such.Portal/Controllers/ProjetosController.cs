@@ -4983,6 +4983,7 @@ namespace Hydra.Such.Portal.Controllers
                             //CommitmentNumber = key.CommitmentNumber,
                             //ClientRequest = key.ClientRequest,
 
+                            CodProjeto = key.ProjectNo,
                             InvoiceToClientNo = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.InvoiceToClientNo,
 
                             Date = items.FirstOrDefault(y => y.ProjectNo == key.ProjectNo)?.Date,
@@ -5106,10 +5107,12 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Set dimensions
                     var authProj = authProjectMovements
-                            .FirstOrDefault(y => y.CodCliente == x.InvoiceToClientNo &&
+                            .FirstOrDefault(y => y.CodProjeto == x.CodProjeto &&
+                                                 y.CodCliente == x.InvoiceToClientNo &&
                                                  y.DataPrestacaoServico == x.Date &&
                                                  y.NumCompromisso == x.CommitmentNumber &&
                                                  y.PedidoCliente == x.ClientRequest);
+
                     var proj = projectsDetails.FirstOrDefault(y => y.NºProjeto == x.Items.FirstOrDefault()?.ProjectNo);
                     string projectRegion = proj != null ? proj.CódigoRegião : string.Empty;
                     var customer = customers.FirstOrDefault(y => y.No_ == x.InvoiceToClientNo);

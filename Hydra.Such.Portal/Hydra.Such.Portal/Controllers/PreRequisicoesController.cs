@@ -547,6 +547,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
                             CLine.GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto;
                             CLine.TaxaIVA = x.TaxaIVA;
+                            CLine.NoContratoFornecedor = x.NoContratoFornecedor;
 
                             //CLine.LocalCompraDireta = x.ArmazemCDireta;
                             CLine.LocalCompraDireta = x.LocalCode;
@@ -635,7 +636,8 @@ namespace Hydra.Such.Portal.Controllers
                         LocalCompraDireta = LinhaOriginal.LocalCompraDireta,
                         CustoUnitarioComIVA = LinhaOriginal.CustoUnitarioComIVA,
                         GrupoRegistoIVAProduto = LinhaOriginal.GrupoRegistoIVAProduto,
-                        TaxaIVA = LinhaOriginal.TaxaIVA
+                        TaxaIVA = LinhaOriginal.TaxaIVA,
+                        NoContratoFornecedor = LinhaOriginal.NoContratoFornecedor
                     };
 
                     if (DBPreRequesitionLines.Create(LinhaDuplicada) != null)
@@ -1504,7 +1506,8 @@ namespace Hydra.Such.Portal.Controllers
                             NºCliente = x.CustomerNo,
                             NºEncomendaAberto = x.OpenOrderNo,
                             NºLinhaEncomendaAberto = x.OpenOrderLineNo,
-                            LocalCompraDireta = x.LocalCode
+                            LocalCompraDireta = x.LocalCode,
+                            NoContratoFornecedor = x.NoContrato
                         };
 
                         if (string.IsNullOrEmpty(newline.NºProjeto))
@@ -2255,6 +2258,7 @@ namespace Hydra.Such.Portal.Controllers
                                     CenterResponsibilityCode = line.CenterResponsibilityCode,
                                     OpenOrderNo = line.OpenOrderNo,
                                     OpenOrderLineNo = line.OpenOrderLineNo,
+                                    NoContrato = line.NoContratoFornecedor
                                 }).ToList()
                             }).ToList();
 
@@ -2345,6 +2349,7 @@ namespace Hydra.Such.Portal.Controllers
                                     CenterResponsibilityCode = line.CenterResponsibilityCode,
                                     OpenOrderNo = line.OpenOrderNo,
                                     OpenOrderLineNo = line.OpenOrderLineNo,
+                                    NoContrato = line.NoContratoFornecedor
                                 }).ToList()
                             }).ToList();
 
@@ -2671,6 +2676,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 CenterResponsibilityCode = line.CenterResponsibilityCode,
                                                 OpenOrderNo = line.OpenOrderNo,
                                                 OpenOrderLineNo = line.OpenOrderLineNo,
+                                                NoContrato = line.NoContratoFornecedor
                                             }).ToList()
                                         }).ToList();
 
@@ -2761,6 +2767,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 CenterResponsibilityCode = line.CenterResponsibilityCode,
                                                 OpenOrderNo = line.OpenOrderNo,
                                                 OpenOrderLineNo = line.OpenOrderLineNo,
+                                                NoContrato = line.NoContratoFornecedor
                                             }).ToList()
                                         }).ToList();
 
