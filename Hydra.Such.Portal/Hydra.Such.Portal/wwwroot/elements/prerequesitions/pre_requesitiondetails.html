@@ -3364,6 +3364,9 @@
                         this.$.ajax_ContratosFornecedor_list.body = JSON.stringify({ "noFornecedor": this.$._CBVendor.value });
                         this.$.ajax_ContratosFornecedor_list.generateRequest();
                     }
+                    else {
+                        this.ContratosFornecedores = null;
+                    }
                 },
 
 
