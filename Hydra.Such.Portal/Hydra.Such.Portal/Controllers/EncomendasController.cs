@@ -24,6 +24,8 @@ using Newtonsoft.Json;
 using Hydra.Such.Data.Logic.Encomendas;
 using Hydra.Such.Data.Logic.Approvals;
 using System.Data.SqlClient;
+using Hydra.Such.Data.Logic.Project;
+using Hydra.Such.Data.ViewModel.ProjectView;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -344,12 +346,35 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
                     Pedido.DataPedidoText = DateTime.Now.ToString("yyyy-MM-dd");
 
+                    if (details != null && !string.IsNullOrEmpty(details.RegionId))
+                    {
+                        Pedido.CodigoRegiao = details.RegionId;
+                        Pedido.CodigoRegiaoText = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.Region, "", details.RegionId).FirstOrDefault().Name;
+                    }
+                    if (details != null && !string.IsNullOrEmpty(details.FunctionalAreaId))
+                    {
+                        Pedido.CodigoAreaFuncional = details.FunctionalAreaId;
+                        Pedido.CodigoAreaFuncionalText = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.FunctionalArea, "", details.FunctionalAreaId).FirstOrDefault().Name;
+                    }
+                    if (details != null && !string.IsNullOrEmpty(details.RespCenterId))
+                    {
+                        Pedido.CodigoCentroResponsabilidade = details.RespCenterId;
+                        Pedido.CodigoCentroResponsabilidadeText = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.ResponsabilityCenter, "", details.RespCenterId).FirstOrDefault().Name;
+                    }
+
                     return Json(Pedido);
                 }
                 else
                 {
                     int idPedido = Convert.ToInt32(id);
                     PedidosPagamentoViewModel Pedido = DBPedidoPagamento.ParseToViewModel(DBPedidoPagamento.GetIDPedidosPagamento(idPedido));
+
+                    if (Pedido != null && !string.IsNullOrEmpty(Pedido.CodigoRegiao))
+                        Pedido.CodigoRegiaoText = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.Region, "", Pedido.CodigoRegiao).FirstOrDefault().Name;
+                    if (Pedido != null && !string.IsNullOrEmpty(Pedido.CodigoAreaFuncional))
+                        Pedido.CodigoAreaFuncionalText = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.FunctionalArea, "", Pedido.CodigoAreaFuncional).FirstOrDefault().Name;
+                    if (Pedido != null && !string.IsNullOrEmpty(Pedido.CodigoCentroResponsabilidade))
+                        Pedido.CodigoCentroResponsabilidadeText = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, Enumerations.Dimensions.ResponsabilityCenter, "", Pedido.CodigoCentroResponsabilidade).FirstOrDefault().Name;
 
                     var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(Pedido.NoEncomenda);
                     Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
@@ -385,12 +410,19 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
-                                        if (MDA != null)
+                                        if (!string.IsNullOrEmpty(Pedido.UserEditorPrioritario) && Pedido.UserEditorPrioritario.ToLower() == User.Identity.Name.ToLower())
                                         {
-                                            UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
-                                            if (UMDA != null)
-                                                Pedido.EditarPrioritario = true;
+                                            Pedido.EditarPrioritario = true;
+                                        }
+                                        else
+                                        {
+                                            MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
+                                            if (MDA != null)
+                                            {
+                                                UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
+                                                if (UMDA != null)
+                                                    Pedido.EditarPrioritario = true;
+                                            }
                                         }
                                     }
                                 }
@@ -447,6 +479,25 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
+                    if (!string.IsNullOrEmpty(User.Identity.Name))
+                    {
+                        ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                        if (CU != null)
+                        {
+                            data.UserEditorPrioritario = CU.EditorPrioritarioPedido;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(data.NoEncomenda))
+                    {
+                        EncomendasViewModel Enc = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoEncomenda, "", 0);
+                        if (Enc != null)
+                        {
+                            data.CodigoRegiao = Enc.RegionId;
+                            data.CodigoAreaFuncional = Enc.FunctionalAreaId;
+                            data.CodigoCentroResponsabilidade = Enc.RespCenterId;
+                        }
+                    }
                     data.Data = DateTime.Now;
                     data.DataPedido = DateTime.Now;
                     data.UserPedido = User.Identity.Name;

@@ -166,6 +166,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.RequisicaoStock = userConfig.RequisicaoStock.HasValue ? userConfig.RequisicaoStock : false;
                 result.AprovadorPedidoPag1 = userConfig.AprovadorPedidoPag1;
                 result.AprovadorPedidoPag2 = userConfig.AprovadorPedidoPag2;
+                result.EditorPrioritarioPedido = userConfig.EditorPrioritarioPedido;
                 result.AnulacaoPedidoPagamento = userConfig.AnulacaoPedidoPagamento.HasValue ? userConfig.AnulacaoPedidoPagamento : false;
                 result.CriarProjetoSemAprovacao = userConfig.CriarProjetoSemAprovacao.HasValue ? userConfig.CriarProjetoSemAprovacao : false;
                 result.CMHistoricoToActivo = userConfig.CMHistoricoToActivo.HasValue ? userConfig.CMHistoricoToActivo : false;
@@ -264,6 +265,7 @@ namespace Hydra.Such.Portal.Controllers
                 RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock.Value : false,
                 AprovadorPedidoPag1 = data.AprovadorPedidoPag1,
                 AprovadorPedidoPag2 = data.AprovadorPedidoPag2,
+                EditorPrioritarioPedido = data.EditorPrioritarioPedido,
                 AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false,
                 CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false,
                 CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false,
@@ -353,6 +355,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock : false;
                 userConfig.AprovadorPedidoPag1 = data.AprovadorPedidoPag1;
                 userConfig.AprovadorPedidoPag2 = data.AprovadorPedidoPag2;
+                userConfig.EditorPrioritarioPedido = data.EditorPrioritarioPedido;
                 userConfig.AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false;
                 userConfig.CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false;
                 userConfig.CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false;

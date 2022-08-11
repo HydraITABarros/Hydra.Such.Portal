@@ -28,6 +28,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataEnvioAprovacao { get; set; }
         public DateTime? DataValidacao { get; set; }
         public string UserValidacao { get; set; }
+        public string UserEditorPrioritario { get; set; }
         public bool? BloqueadoFaltaPagamento { get; set; }
         public string Aprovadores { get; set; }
         public decimal? ValorEncomenda { get; set; }
@@ -42,6 +43,9 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataPrioridade { get; set; }
         public string NumeroTransferencia { get; set; }
         public string RegiaoMercadoLocal { get; set; }
+        public string CodigoRegiao { get; set; }
+        public string CodigoAreaFuncional { get; set; }
+        public string CodigoCentroResponsabilidade { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }

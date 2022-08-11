@@ -38,6 +38,7 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public DateTime? DataValidacao { get; set; }
         public string DataValidacaoText { get; set; }
         public string UserValidacao { get; set; }
+        public string UserEditorPrioritario { get; set; }
         public bool? BloqueadoFaltaPagamento { get; set; }
         public string BloqueadoFaltaPagamentoText { get; set; }
         public string Aprovadores { get; set; }
@@ -60,6 +61,12 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string NumeroTransferencia { get; set; }
         public string RegiaoMercadoLocal { get; set; }
         public string RegiaoMercadoLocalText { get; set; }
+        public string CodigoRegiao { get; set; }
+        public string CodigoRegiaoText { get; set; }
+        public string CodigoAreaFuncional { get; set; }
+        public string CodigoAreaFuncionalText { get; set; }
+        public string CodigoCentroResponsabilidade { get; set; }
+        public string CodigoCentroResponsabilidadeText { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }

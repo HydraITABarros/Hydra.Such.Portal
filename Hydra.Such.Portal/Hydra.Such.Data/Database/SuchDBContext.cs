@@ -13342,6 +13342,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("UserValidacao")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.UserEditorPrioritario)
+                    .HasColumnName("UserEditorPrioritario")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Aprovadores)
                     .HasColumnName("Aprovadores")
                     .HasMaxLength(150);
@@ -13368,6 +13372,18 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.RegiaoMercadoLocal)
                     .HasColumnName("RegiaoMercadoLocal")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoRegiao)
+                    .HasColumnName("CodigoRegiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoAreaFuncional)
+                    .HasColumnName("CodigoAreaFuncional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodigoCentroResponsabilidade)
+                    .HasColumnName("CodigoCentroResponsabilidade")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.UtilizadorCriacao)
