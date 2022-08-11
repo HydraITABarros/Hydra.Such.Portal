@@ -393,11 +393,22 @@
                             </such-selectbox>
                         </div>
 
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.anulacaoPedidoPagamento}}"> Anulação Pedido Pagamento</vaadin-checkbox>
+                        <div class="col-sm-3">
+                            <such-selectbox id="ddEditorPrioritarioPedido" value="{{data.editorPrioritarioPedido}}" label="Editor Prioritário"
+                                            items="[[superiorHierarquicoList]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"ID"}, {"field":"value", "name":"Nome"}]'>
+                            </such-selectbox>
                         </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{data.validarPedidoPagamento}}"> Validar Pedido Pagamento</vaadin-checkbox>
+
+                        <div class="col-sm-3">
+                            <div class="col-lg-6" style="padding-top:15px">
+                                <vaadin-checkbox checked="{{data.anulacaoPedidoPagamento}}"> Anulação Pedido Pagamento</vaadin-checkbox>
+                            </div>
+                            <div class="col-lg-6" style="padding-top:15px">
+                                <vaadin-checkbox checked="{{data.validarPedidoPagamento}}"> Validar Pedido Pagamento</vaadin-checkbox>
+                            </div>
                         </div>
                     </div>
                 </div>

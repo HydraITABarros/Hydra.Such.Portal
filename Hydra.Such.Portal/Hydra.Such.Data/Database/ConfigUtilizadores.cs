@@ -46,6 +46,7 @@ namespace Hydra.Such.Data.Database
         public bool? RequisicaoStock { get; set; }
         public string AprovadorPedidoPag1 { get; set; }
         public string AprovadorPedidoPag2 { get; set; }
+        public string EditorPrioritarioPedido { get; set; }
         public bool? AnulacaoPedidoPagamento { get; set; }
         public bool? ValidarPedidoPagamento { get; set; }
         public bool? CriarProjetoSemAprovacao { get; set; }
