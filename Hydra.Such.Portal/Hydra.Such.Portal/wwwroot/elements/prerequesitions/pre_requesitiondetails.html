@@ -2669,7 +2669,7 @@
                                         openOrderNo: purchHeaderNo,
                                         openOrderLineNo: purchLineNo,
                                         totalCost: totalCost > 0 ? totalCost : "",
-                                        noContratoFornecedor: noContratoFornecedor
+                                        noContratoFornecedor: this.$._CLContratosFornecedores.value
                                     });
 
                                     this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
