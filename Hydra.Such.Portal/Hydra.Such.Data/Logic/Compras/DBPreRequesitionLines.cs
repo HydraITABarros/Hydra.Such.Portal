@@ -238,7 +238,9 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 TotalCostWithIVA = x.CustoUnitarioComIVA * x.QuantidadeARequerer,
                 ArmazemCDireta = x.LocalCompraDireta,
                 GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto,
-                TaxaIVA = x.TaxaIVA
+                TaxaIVA = x.TaxaIVA,
+                NoContratoFornecedor = x.NoContratoFornecedor
+                
             };
         }
 
@@ -285,7 +287,8 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 NºLinhaEncomendaAberto = x.OpenOrderLineNo,
                 LocalCompraDireta = x.LocalCode,
                 GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto,
-                TaxaIVA = x.TaxaIVA
+                TaxaIVA = x.TaxaIVA,
+                NoContratoFornecedor = x.NoContratoFornecedor
             };
         }
     }

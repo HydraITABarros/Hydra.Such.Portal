@@ -511,6 +511,36 @@
                     </div>
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoRegiao">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoRegiao" value="[[filter.codigoRegiao]]" />
+                </template>
+                <template>
+                    {{item.codigoRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoAreaFuncional.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoAreaFuncional" value="[[filter.codigoAreaFuncional]]" />
+                </template>
+                <template>
+                    {{item.codigoAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoCentroResponsabilidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoCentroResponsabilidade" value="[[filter.codigoCentroResponsabilidade]]" />
+                </template>
+                <template>
+                    {{item.codigoCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -934,7 +964,10 @@
                         "userValidacao": { hidden: false, label: "Utilizador da Validação" },
                         "dataValidacaoText": { hidden: false, label: "Data de Validação" },
                         "userArquivo": { hidden: false, label: "Utilizador do Arquivo" },
-                        "dataArquivoText": { hidden: false, label: "Data do Arquivo" }
+                        "dataArquivoText": { hidden: false, label: "Data do Arquivo" },
+                        "codigoRegiao": { hidden: false, label: "Cód. Região" },
+                        "codigoAreaFuncional": { hidden: false, label: "Cód. Área Funcional" },
+                        "codigoCentroResponsabilidade": { hidden: false, label: "Cód. Centro Responsabilidade" },
                     };
 
                     if (localStorage["pedidospagamentolist.ToggleColumn"]) {

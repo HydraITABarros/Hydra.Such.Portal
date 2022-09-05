@@ -1309,12 +1309,11 @@
                     }
                 },
                 _onFornecedorChanged: function (e) {
+                    this.$._CLContratosFornecedores._clearSelection();
+
                     if (this.$._CLSuppliers.value != "") {
                         this.$.ajax_ContratosFornecedor_list.body = JSON.stringify({ "noFornecedor": this.$._CLSuppliers.value });
                         this.$.ajax_ContratosFornecedor_list.generateRequest();
-                    }
-                    else {
-                        this.$._CLContratosFornecedores._clearSelection();
                     }
                 },
                 _RespChange: function (e) {

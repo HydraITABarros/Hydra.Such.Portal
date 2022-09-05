@@ -269,6 +269,25 @@
                         </div>
 
                         <div class="col-sm-3">
+                            <vaadin-text-field id="ddCodigoRegiao" label="Região" value="{{data.codigoRegiaoText}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddCodigoAreaFuncional" label="Área Funcional" value="{{data.codigoAreaFuncionalText}}" disabled></vaadin-text-field>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-6">
+                            <!--<such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-blur="_AutoUpdatePedidoPagamento" disabled="{{ !data.editarPrioritario }}"></such-textarea>-->
+                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-blur="_AutoUpdatePedidoPagamento" disabled="{{ !_permissions.update }}"></such-textarea>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddCodigoCentroResponsabilidade" label="Centro Responsabilidade" value="{{data.codigoCentroResponsabilidadeText}}" disabled></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
                             <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="idMercadoLocal" item-value-path="id" item-label-path="value" value="{{data.regiaoMercadoLocal}}" label="Mercado Local" disabled="{{ !data.editarPrioritario }}" on-value-changed="_AutoUpdatePedidoPagamento">
                                 <template>
                                     <table width="180px">
@@ -280,15 +299,8 @@
                             </vaadin-combo-box>
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-1" style="padding-top:25px">
                             <vaadin-checkbox id="ddPrioritario" checked="{{data.prioritario}}" on-click="_clickPrioritario" disabled="{{ !data.editarPrioritario }}">Prioritário</vaadin-checkbox>
-                        </div>
-                    </div>
-
-                    <div class="row break_clear">
-                        <div class="col-sm-6">
-                            <!--<such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-blur="_AutoUpdatePedidoPagamento" disabled="{{ !data.editarPrioritario }}"></such-textarea>-->
-                            <such-textarea id="ddDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="250" on-blur="_AutoUpdatePedidoPagamento" disabled="{{ !_permissions.update }}"></such-textarea>
                         </div>
 
                         <div class="col-sm-3">
