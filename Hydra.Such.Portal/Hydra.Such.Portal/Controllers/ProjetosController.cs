@@ -4911,6 +4911,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             InvoiceToClientNo = key.InvoiceToClientNo,
 
+                            CodProjeto = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.ProjectNo,
                             Date = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.Date,
                             DateFim = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.DateFim,
                             CommitmentNumber = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.CommitmentNumber,
